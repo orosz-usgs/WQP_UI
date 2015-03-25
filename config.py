@@ -1,1 +1,6 @@
-PREFERRED_URL_SCHEME = 'http' 
+PREFERRED_URL_SCHEME = 'https' 
+
+# Application defined config variables
+GEOSERVER_ENDPOINT = ''
+SLD_ENDPOINT = ''
+GA_TRACKING_CODE = ''
