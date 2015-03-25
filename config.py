@@ -1,0 +1,1 @@
+PREFERRED_URL_SCHEME = 'http' 
