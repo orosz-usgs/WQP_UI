@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" >
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<title>${param.title}</title>
+		
+		<link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/jquery-ui-1.10.3.custom/css/smoothness/jquery-ui-1.10.3.custom.css') }}" />
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/select2-3.4.5/select2.css') }}" />
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/select2-bootstrap/select2-bootstrap.css') }}" />
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/custom.css') }}" />
+		
+		<script type="text/javascript">
+		    <jsp:include page="config.jsp"></jsp:include>
+		</script>
+		
+		<script type="text/javascript" src="lib/jquery-1.10.2.min.js"></script>
+		<script type="text/javascript" src="lib/select2-3.4.5/select2.min.js"></script>
+		<script type="text/javascript" src="lib/bootstrap-3.1.0/dist/js/bootstrap.min.js"></script>
+		
+		
+		<script type="text/javascript">
+		    $(document).ready(function() {
+		         if (! Config.ALLOW_QA_ACCESS && location.hostname.search('wqp-test.er.usgs.gov') != -1) {
+		             $('#page-nav').hide();
+		             $('.index-box').hide();
+		             $('#content').html('<p>Sorry, you were trying to access the Water Quality Portal test site.  This site is currently not available, and you are being redirected to the Water Quality Portal main page at ' + 
+		               '<a href="http://www.waterqualitydata.us">http://www.waterqualitydata.us</a>' + 
+		               '. Please update your bookmarks.</p>');
+		             window.setTimeout(
+		               function() {
+		                    window.location.href = 'http://www.waterqualitydata.us';
+		                }, 
+		                10000);
+		        }
+		    });
+		</script>
+		
+		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+		   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+		   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		    
+	</head>
+</html>

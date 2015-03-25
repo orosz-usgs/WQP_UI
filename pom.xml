@@ -1,0 +1,251 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>gov.usgs.cida</groupId>
+	<artifactId>qw_portal_core</artifactId>
+	<packaging>pom</packaging>
+	<version>3.0-SNAPSHOT</version>
+	<name>WQP UI</name>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<cida.maven.url>http://internal.cida.usgs.gov/maven</cida.maven.url>
+	</properties>
+	
+	<url>https://www.waterqualitydata.us/</url>
+	<organization>
+	     <name>Center for Integrated Data Analytics</name>
+	     <url>http://cida.usgs.gov</url>
+	</organization>
+	
+	<developers>
+	     <developer>
+	         <name>Mary Bucknell</name>
+	         <email>mbucknell@usgs.gov</email>
+	         <organization>Center for Integrated Data Analytics</organization>
+	         <organizationUrl>http://cida.usgs.gov</organizationUrl>
+	         <timezone>-6</timezone>
+	     </developer>
+	 </developers>
+	 
+	 <licenses>
+	     <license>
+	         <name>Public Domain</name>
+	         <url>http://water.usgs.gov/software/help/notice/</url>
+	         <comments>
+	             See the url or the 'LICENSE' file for details
+	         </comments>
+	     </license>
+	 </licenses>
+	 
+	<repositories>
+        <repository>
+            <id>cida-public-releases</id>
+            <name>CIDA Releases</name>
+            <url>{$cida.maven.url}/content/repositories/cida-public-releases/</url>
+        </repository>
+		<repository>
+			<id>cida-qw-releases</id>
+			<url>${cida.maven.url}/content/repositories/cida-qw-releases</url>
+		</repository>
+		<repository>
+			<id>cida-qw-snapshots</id>
+			<url>${cida.maven.url}/content/repositories/cida-qw-snapshots</url>
+		</repository>
+		<repository>
+			<id>cida-thirdparty</id>
+			<url>${cida.maven.url}/content/repositories/cida-thirdparty</url>
+		</repository>
+		<repository>
+			<id>cida-releases</id>
+			<url>${cida.maven.url}/content/repositories/cida-releases</url>
+		</repository>
+		<repository>
+			<id>cida-snapshots</id>
+			<url>${cida.maven.url}/content/repositories/cida-snapshots</url>
+		</repository>
+        <repository>
+            <id>cida-public-snapshots</id>
+            <url>${cida.maven.url}/content/repositories/cida-public-snapshots/</url>
+        </repository>
+	</repositories>
+
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>http://cida-eros-wqpdev.er.usgs.gov:8081/jenkins/job/QW%20Portal/</url>
+	</ciManagement>
+
+	<scm>
+		<connection>scm:git:git@github.com:USGS-CIDA/WQP_UI.git</connection>
+        <developerConnection>scm:git:git@github.com:USGS-CIDA/WQP_UI.git</developerConnection>
+        <url>https://github.com/USGS-CIDA/WQP_UI</url>
+	</scm>
+
+	<distributionManagement>
+	    <repository>
+	        <id>cida-python-releases</id>
+	        <name>CIDA Python Releases</name>
+	        <url>http://internal.cida.usgs.gov/maven/content/repositories/cida-python-releases</url>
+	    </repository>
+	    <snapshotRepository>
+	        <id>cida-python-snapshots</id>
+	        <name>CIDA Python Snapshots</name>
+	        <url>http://internal.cida.usgs.gov/maven/content/repositories/cida-python-snapshots</url>
+	    </snapshotRepository>
+	</distributionManagement>
+
+
+	<issueManagement>
+		<system>JIRA</system>
+		<url>https://internal.cida.usgs.gov/jira/browse/WQP</url>
+	</issueManagement>
+	
+	<build>
+		<plugins>
+			<plugin>
+	      		<groupId>org.apache.maven.plugins</groupId>
+	      		<artifactId>maven-assembly-plugin</artifactId>
+	      		<version>2.5.3</version>
+	      		<executions>
+	        		<execution>
+		          		<id>create-distribution</id>
+		          		<phase>package</phase>
+		          		<goals>
+		            		<goal>single</goal>
+		          		</goals>
+		          		<configuration>
+			            	<descriptors>
+			              		<descriptor>assembly/zip.xml</descriptor>
+			            	</descriptors>
+		          		</configuration>
+	        		</execution>
+	      		</executions>
+	    	</plugin>		
+            <plugin> 
+                <groupId>com.github.klieber</groupId> 
+                <artifactId>phantomjs-maven-plugin</artifactId>
+               <version>0.2.1</version> 
+               <executions> 
+                    <execution>
+                        <goals> 
+                            <goal>install</goal> 
+                        </goals> 
+                    </execution> 
+                 </executions>
+                <configuration>
+                    <version>1.9.2</version>
+                </configuration>
+            </plugin>
+  			<plugin>
+				<groupId>com.github.searls</groupId>
+				<artifactId>jasmine-maven-plugin</artifactId>
+				<version>1.3.1.4</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<configuration>
+							<webDriverClassName>org.openqa.selenium.phantomjs.PhantomJSDriver</webDriverClassName>
+							<webDriverCapabilities>
+								<capability>
+									<name>phantomjs.binary.path</name>
+									<value>${phantomjs.binary}</value>
+								</capability>
+							</webDriverCapabilities>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<keepServerAlive>true</keepServerAlive>
+					<jsSrcDir>${project.basedir}/portal_ui/static</jsSrcDir>
+					<jsTestSrcDir>${project.basedir}/portal_ui/static/test/js</jsTestSrcDir>
+					<preloadSources>
+						<!-- JQLite is funky with angular and it's mocks, so use a real jquery 
+							implementation. -->
+						<source>/jquery-1.10.2.min.js</source>
+						<source>vendor/bootstrap-3.1.0/dist/js/bootstrap.min.js</source>
+						&gt;
+						<source>vendor/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js</source>
+						<source>vendor/jshashtable-3.0.js</source>
+						<source>vendor/jquery.numberformatter-1.2.4.min.js</source>
+						<source>vendor/select2-3.4.5/select2.js</source>
+						<source>http://cida.usgs.gov/js/openlayers/2.12/release/OpenLayers.js</source>
+						<source>vendor/angular.min.js</source>
+						<source>vendor/angular/angular-mocks.js</source>
+					</preloadSources>
+					<sourceIncludes>
+						<include>js/angular/**/*.js</include>
+						<include>js/*.js</include>
+					</sourceIncludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.github.timurstrekalov</groupId>
+				<artifactId>saga-maven-plugin</artifactId>
+				<version>1.5.2</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>coverage</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<baseDir>http://localhost:${jasmine.serverPort}</baseDir>
+					<outputDir>${project.build.directory}/coverage</outputDir>
+					<noInstrumentPatterns>
+						<pattern>.+/.+Spec\.js</pattern>
+						<pattern>.+/OpenLayers\.js</pattern>
+						<pattern>.+/src/lib/.+\.js</pattern>
+						<pattern>.+/spec/lib/.+\.js</pattern>
+					</noInstrumentPatterns>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.github.goldin</groupId>
+				<artifactId>copy-maven-plugin</artifactId>
+				<version>0.2.5</version>
+				<configuration>      <!-- use copy:copy to run -->
+				<failIfNotFound>false</failIfNotFound>
+				<resource>
+					<targetPath>${project.build.directory}/jasmine</targetPath>
+					<file>${project.build.directory}/coverage/total-coverage.dat</file>
+					<destFileName>total-coverage.dat</destFileName>
+					<replaces>
+						<replace>
+							<from>src/</from>
+							<!-- Regex to replace src/ with correct path name -->
+							<to>${project.basedir}/src/main/webapp/</to>
+							<!-- Replacement String to my JS src files -->
+						</replace>
+					</replaces>
+				</resource>
+			</configuration>
+		</plugin>
+		<plugin>
+			<groupId>org.lesscss</groupId>
+			<artifactId>lesscss-maven-plugin</artifactId>
+			<version>1.3.3</version>
+			<configuration>
+				<sourceDirectory>${project.basedir}/portal_ui/static/less</sourceDirectory>
+				<outputDirectory>${project.basedir}/portal_ui/static/styles</outputDirectory>
+				<compress>false</compress>
+				<includes>
+					<include>custom.less</include>
+				</includes>
+				<lessJs>${project.basedir}/portal_ui/static/vendor/less-1.6.3.js</lessJs>
+			</configuration>
+			<executions>
+				<execution>
+					<goals>
+						<goal>compile</goal>
+					</goals>
+				</execution>
+			</executions>
+		</plugin>
+	</plugins>
+	</build>
+
+</project>
