@@ -5,7 +5,9 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" >
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		
-		<title>${param.title}</title>
+		<title>
+			{% block title %}{% endblock %}
+		</title>
 		
 		<link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/jquery-ui-1.10.3.custom/css/smoothness/jquery-ui-1.10.3.custom.css') }}" />
@@ -75,8 +77,40 @@
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 	</head>
 	<body>
-		{% block page_content %}{% endblock %}
-		
+		<div id="wqp-page">
+			<div id="page-header">
+		    <div id="page-header-small">
+		        <div id="page-header-logo">
+		            <img src="{{ url_for('static', filename='img/NWQMC_newlogo.jpg') }}" />
+		        </div>
+		        <div id="page-header-text-div">
+		            <div id="page-header-sponser-div">NATIONAL WATER QUALITY MONITORING COUNCIL</div>
+		            <div id="page-header-tag-line-div">Working Together for Clean Water</div>
+		        </div>
+		    </div>
+		    <div id="page-header-full">
+		        <img src="{{ url_for('static', filename='img/NWQMC_header.jpg') }}">
+		        <div id="wqp-dummy-link"></div>
+		        <div id="page-title">
+		            <h1>
+		            	{% block page_header_title %}{% endblock %}
+		            </h1>
+		        </div>
+		    </div>
+			</div>
+			{% block page_content %}{% endblock %}
+			</div>
+		</div>
+		<script type="text/javascript">
+		    // Click on WQP part of theheader sends user home, otherwise to ACWI site
+		    $('#wqp-dummy-link').click(function() {
+		        window.location.assign("{{ url_for('home') }}");
+		        return false;
+		    });
+		    $('#page-header').click(function() {
+		        window.location.assign('http://acwi.gov/monitoring/');
+		    });
+		</script>
 		{% block body_page_script %}{% endblock %}
 		
 	</body>
