@@ -8,18 +8,18 @@ To run this application locally, you will need to do the following:
   2. Activate your virtualenv (depends on whether linux or windows)
   3. Run `pip install -r requirements.txt`
 2. Change to the `instance` directory and create config.py. It should contain the following:
-```python
-DEBUG = True
-
-# Do not use the same key as any of the deployment servers
-SECRET_KEY = 'local_secret_key'
-
-# points to the geoserver endpoint you want to use. 
-GEOSERVER_ENDPOINT = ''
-
-#points to the sld endpoint you want to use.
-SLD_ENDPOINT = ''
-```
+	```python
+	DEBUG = True
+	
+	# Do not use the same key as any of the deployment servers
+	SECRET_KEY = 'local_secret_key'
+	
+	# points to the geoserver endpoint you want to use. 
+	GEOSERVER_ENDPOINT = ''
+	
+	#points to the sld endpoint you want to use.
+	SLD_ENDPOINT = ''
+	```
 3. Need to compile the less style sheets into css. This can be done by running `mvn lesscss:compile`
 
 Now you can run the application within the virtualenv by executing:
