@@ -19,7 +19,7 @@ GEOSERVER_ENDPOINT = ''
 
 #points to the sld endpoint you want to use.
 SLD_ENDPOINT = ''
-``
+```
 
 Now you can run the application within the virtualenv by executing:
 `python run.py`
