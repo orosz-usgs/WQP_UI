@@ -5,6 +5,91 @@
 {% block page_header_title %}Water Quality Portal Questions/Comments{% endblock %}
 
 {% block page_content %}
-Contact us please!
+	<div id="page-content">
+        <p>The Water Quality Portal Team welcomes your comments on how we can improve 
+        our products. We strive to respond to every comment with an answer or 
+        an appropriate referral as quickly as possible. Most comments will be 
+        responded to within 10 business days.
+        </p>
+        <div id="ie-help">
+            <p> For assistance, call 1-800-424-9067 or email to <a href="mailto:STORET@epa.gov">STORET@epa.gov</a>.
+            You may also contact your &nbsp;<a href="http://www.epa.gov/storet/regional_contacts.html">EPA Regional STORET/ WQX Coordinator</a>.</p>
+        </div>
+        <div id="form-help">
+            <p>For assistance, call 1-800-424-9067 or use the form below to email us your question or comment.
+            You may also contact your&nbsp;<a href="http://www.epa.gov/storet/regional_contacts.html">EPA Regional STORET/ WQX Coordinator</a>.
+            </p>
+            <p>To use the form, fill in the fields and then click the Send comments button. An email window should appear. If the 
+            body of the message is blank, please fill in the information that
+            you added to the form. You should then click send. If you have problems using this form,
+            we suggest that you send us your comments by e-mail to:
+            <a href="mailto:STORET@epa.gov">STORET@epa.gov</a>.
+            </p>
+            <form action="mailto:STORET@epa.gov?subject=Water Quality Portal question/comments" enctype="text/plain" method="post" name="wqpform">
+                <table class="form-table">
+                  <tr> 
+                    <th><label for="name">Name:</label></th>
+                    <td> <input id="name" name="Name" size="30" /></td>
+                  </tr>
+                  <tr> 
+                    <th><label for="organization">Organization:</label></th>
+                    <td> 
+                      <input id="organization" name="Organization" size="30" />
+                    </td>
+                  </tr>
+                  <tr> 
+                    <th><label for="email">Email:</label></th>
+                    <td> 
+                      <input id="email" name="Email" size="30" />
+                    </td>
+                  </tr>
+                  <tr> 
+                    <th><label for="phone">Phone:</label></th>
+                    <td> 
+                      <input id="phone" name="Phone" size="20" />
+                    </td>
+                  </tr>
+                  <tr> 
+                    <th><label for="address">Address:</label></th>
+                    <td> 
+                      <textarea id="address" name="Physical Address" cols="30" rows="2"></textarea>
+                      <br/>
+                    </td>
+                  </tr>
+                  <tr> 
+                    <th colspan="2"><label for="comments">Your comments or questions:</label></th>
+                  </tr>
+                  <tr> 
+                    <td colspan="2" align="left"> 
+                      <textarea id="comments" name="Comments" cols="60" rows="6"></textarea>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="2" style="text-align: center;">
+                      <input type="hidden" value="" name="referring_page" />
+                      <button id="mail-submit-button" class="btn btn-default" type="submit" onclick="Javascript:document.wqpform.referring_page.value=document.referrer;">Send comments </button>
+                      <button type="reset" class="btn btn-default">Reset</button>
+                    </td>
+                  </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block body_page_script %}
+	{% include "partials/hide_non_usgs_epa_logos.html" %}
+	
+	<script type="text/javascript">
+		$(document).ready(function(){
+			var appName = navigator.appName;
+			if (navigator.appName == "Microsoft Internet Explorer") {
+				$('#form-help').hide();
+			}
+			else {
+				$('#ie-help').hide();
+			}
+		});
+	</script>
 {% endblock %}
 

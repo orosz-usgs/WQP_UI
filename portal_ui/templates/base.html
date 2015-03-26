@@ -79,32 +79,32 @@
 	<body>
 		<div id="wqp-page">
 			<div id="page-header">
-			    <div id="page-header-small">
-			        <div id="page-header-logo">
-			            <img src="{{ url_for('static', filename='img/NWQMC_newlogo.jpg') }}" />
-			        </div>
-			        <div id="page-header-text-div">
-			            <div id="page-header-sponser-div">NATIONAL WATER QUALITY MONITORING COUNCIL</div>
-			            <div id="page-header-tag-line-div">Working Together for Clean Water</div>
-			        </div>
-			    </div>
-			    <div id="page-header-full">
-			        <img src="{{ url_for('static', filename='img/NWQMC_header.jpg') }}">
-			        <div id="wqp-dummy-link"></div>
-			        <div id="page-title">
-			            <h1>
-			            	{% block page_header_title %}{% endblock %}
-			            </h1>
-			        </div>
-			    </div>
-			</div>
+				<div id="page-header-small">
+        			<div id="page-header-logo">
+            			<img src="{{ url_for('static', filename='img/NWQMC_newlogo.jpg') }}" />
+        			</div>
+        			<div id="page-header-text-div">
+            			<div id="page-header-sponser-div">NATIONAL WATER QUALITY MONITORING COUNCIL</div>
+            			<div id="page-header-tag-line-div">Working Together for Clean Water</div>
+            		</div>
+				</div>
+			
+				<div id="page-header-full">
+					<img src="{{ url_for('static', filename='img/NWQMC_header_web_960w.png') }}" />
+					<div id="page-title">
+						<h1>
+							{% block page_header_title %}{% endblock %}
+						</h1>
+					</div>
+				</div>
+			</div>	
 			
 			{% block page_content %}{% endblock %}
 			
 			<div id="footer-content">
 			    <hr />
 			    <div id="footer-row-div">
-			        <div id="contact-us-div"><a href="{{ url_for('contact_us') }}">Contact us</a></div>
+			        <div id="contact-us-div"><a href="">Contact us</a></div>
 			        <div class="logo">
 			            <a href="http://usgs.gov"><img alt="USGS Science for a changing world" src="{{ url_for('static', filename='img/USGS_logo.gif') }}"></img></a>
 			        </div>
@@ -116,7 +116,7 @@
 			        </div>
 			    </div>		
 			</div>
-		</div>
+		
 		
 		<script type="text/javascript">
 		    // Click on WQP part of theheader sends user home, otherwise to ACWI site
