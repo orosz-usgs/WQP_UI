@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Water Quality Data {% endblock %}
+
+{% block page_style %}
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/select2-3.4.5/select2.css') }}" />
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/select2-3.4.5/select2-bootstrap.css') }}" />
+{% endblock %}
+
+{% block body_page_script %}
+	<script type="text/javascript" src="{{ url_for('static', filename='vendor/select2-3.4.5/select2.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='vendor/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='vendor/jshashtable-3.0.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='vendor/jquery.numberformatter-1.2.4.min.js') }}"></script>    
+    <script type="text/javascript" src="http://cida.usgs.gov/js/openlayers/2.12/release/OpenLayers.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='vendor/LoadingPanel.js') }}"></script>
+    
+    <script type="text/javascript" src="{{ url_for('static', filename='js/HTTPHeaders.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/portalFormManagement.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/map_utils.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/IdentifyDialog.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/WQPGetFeature.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/SitesLayer.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/SiteImportWPSUtils.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/PortalDataMap.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/portalViews.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/onReady.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/tempOnReady.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/providers.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/portalModels.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/DataSourceUtils.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/placeSelects.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/portalHelp.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/stateFIPS.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/dateValidator.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/downloadProgressDialog.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/siteIdController.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/inputValidationView.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/portalValidators.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/downloadFormController.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/hucValidator.js') }}"></script>
+    
+	<script type="text/javascript">
+        $(document).ready(function(){
+            PORTAL.onReady();
+            PORTAL.tempOnReady();
+        });
+    </script>    
+{% endblock %}

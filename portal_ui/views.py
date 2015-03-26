@@ -11,4 +11,9 @@ def home():
 @app.route('/contact_us.jsp')
 @app.route('/contact_us/')
 def contact_us():
-    return render_template('contact_us.html');
+    return render_template('contact_us.html')
+
+@app.route('/portal.jsp')
+@app.route('/portal/')
+def portal():
+    return render_template('portal.html')

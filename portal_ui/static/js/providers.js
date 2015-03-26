@@ -8,7 +8,7 @@ PORTAL.MODELS.providers = function(){
         initialize : function(successFnc /* first argument is array of provider names */,
                               failureFnc /* function with argument String status */) {
             $.ajax({
-                url : 'codes/providers',
+                url : Config.CODES_ENDPOINT + '/providers',
                 data : {mimetype : 'xml'},
                 type : 'GET',
                 success: function(data, textStatus, jqXHR) {

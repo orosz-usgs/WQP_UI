@@ -9,19 +9,23 @@
 			{% block title %}{% endblock %}
 		</title>
 		
+		{% block page_style %}{% endblock %}
+		
 		<link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/jquery-ui-1.10.3.custom/css/smoothness/jquery-ui-1.10.3.custom.css') }}" />
-		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/select2-3.4.5/select2.css') }}" />
-		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/select2-3.4.5/select2-bootstrap.css') }}" />
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/custom.css') }}" />
 		
-		{% block page_style %}{% endblock %}
 		
 		<script type="text/javascript">
 		    Config = {};
 		    
 		    Config.GEOSERVER_ENDPOINT = "{{ config.GEOSERVER_ENDPOINT }}"
 		    Config.SLD_ENDPOINT = "{{ config.SLD_ENDPOINT }}"
+		    Config.CODES_ENDPOINT = "{{ config.CODES_ENDPOINT }}"
+		    Config.RESULT_ENDPOINT = "{{ config.RESULT_ENDPOINT }}"
+		    Config.STATION_ENDPOINT = "{{ config.STATION_ENDPOINT }}"
+		    Config.BIOLOGICAL_RESULT_ENDPOINT = "{{ config.BIOLOGICAL_RESULT_ENDPOINT }}"
+		    
 		    Config.IS_PROD = location.hostname == 'www.waterqualitydata.us';
     		Config.ALLOW_QA_ACCESS = true;
     		Config.GA_TRACKING_CODE = "{{ config.GA_TRACKING_CODE }}"
@@ -29,7 +33,6 @@
 		</script>
 		
 		<script type="text/javascript" src="{{ url_for('static', filename='vendor/jquery-1.10.2.min.js') }}"></script>
-		<script type="text/javascript" src="{{ url_for('static', filename='vendor/select2-3.4.5/select2.min.js') }}"></script>
 		<script type="text/javascript" src="{{ url_for('static', filename='vendor/bootstrap-3.1.0/dist/js/bootstrap.min.js') }}"></script>
 		
 		
@@ -107,7 +110,7 @@
 				    <div id="wqp-standard-navbar-collapse" class="navbar-collapse collapse">
 				        <ul class="nav navbar-nav">
 				            <li><a href="{{ url_for('home') }}">WQP Home</a></li>
-				            <li><a href="">Download Data</a></li>
+				            <li><a href="{{ url_for('portal') }}">Download Data</a></li>
 				            <li class="dropdown">
 				                <a class="dropdown-toggle" href="#" data-toggle="dropdown">How to use the WQP<span class="caret"></span></a>
 				                <ul class="dropdown-menu">

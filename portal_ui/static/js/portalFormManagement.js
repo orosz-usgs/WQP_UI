@@ -155,12 +155,11 @@ APP.RULES = {
 // URL Construction
 // ================
 APP.URLS = {};
-APP.URLS.LOCATION = window.location.href;
-APP.URLS.APP_BASE = APP.URLS.LOCATION.slice(0, APP.URLS.LOCATION.lastIndexOf('/') + 1);
+
 APP.URLS = {
-    Station : APP.URLS.APP_BASE + 'Station/search',
-    Result: APP.URLS.APP_BASE + 'Result/search',
-    biologicalresult: APP.URLS.APP_BASE + 'biologicalresult/search',
+    Station : Config.STATION_ENDPOINT + '/search',
+    Result: Config.RESULT_ENDPOINT + '/search',
+    biologicalresult: Config.BIOLOGICAL_RESULT_ENDPOINT + '/search',
     
     getQueryParams : function(forGoogle /* Boolean */) {
         var IGNORE_PARAM_LIST = ["north","south","east","west","resultType","source"];
