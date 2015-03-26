@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" >
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<title>
+			{% block title %}{% endblock %}
+		</title>
+		
+		<link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon" />
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/jquery-ui-1.10.3.custom/css/smoothness/jquery-ui-1.10.3.custom.css') }}" />
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/select2-3.4.5/select2.css') }}" />
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/select2-3.4.5/select2-bootstrap.css') }}" />
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/custom.css') }}" />
+		
+		{% block page_style %}{% endblock %}
+		
+		<script type="text/javascript">
+		    Config = {};
+		    
+		    Config.GEOSERVER_ENDPOINT = "{{ config.GEOSERVER_ENDPOINT }}"
+		    Config.SLD_ENDPOINT = "{{ config.SLD_ENDPOINT }}"
+		    Config.IS_PROD = location.hostname == 'www.waterqualitydata.us';
+    		Config.ALLOW_QA_ACCESS = true;
+    		Config.GA_TRACKING_CODE = "{{ config.GA_TRACKING_CODE }}"
+		    
+		</script>
+		
+		<script type="text/javascript" src="{{ url_for('static', filename='vendor/jquery-1.10.2.min.js') }}"></script>
+		<script type="text/javascript" src="{{ url_for('static', filename='vendor/select2-3.4.5/select2.min.js') }}"></script>
+		<script type="text/javascript" src="{{ url_for('static', filename='vendor/bootstrap-3.1.0/dist/js/bootstrap.min.js') }}"></script>
+		
+		
+		<script type="text/javascript">
+		    $(document).ready(function() {
+		         if (! Config.ALLOW_QA_ACCESS && location.hostname.search('wqp-test.er.usgs.gov') != -1) {
+		             $('#page-nav').hide();
+		             $('.index-box').hide();
+		             $('#content').html('<p>Sorry, you were trying to access the Water Quality Portal test site.  This site is currently not available, and you are being redirected to the Water Quality Portal main page at ' + 
+		               '<a href="http://www.waterqualitydata.us">http://www.waterqualitydata.us</a>' + 
+		               '. Please update your bookmarks.</p>');
+		             window.setTimeout(
+		               function() {
+		                    window.location.href = 'http://www.waterqualitydata.us';
+		                }, 
+		                10000);
+		        }
+		    });
+		</script>
+		
+		{% block head_page_script %}{% endblock %}
+		
+		<!-- If you need to remove google analytics from a page create a blank google_analytics_script block -->
+		{% block google_analytics_script %}
+			<script type="text/javascript">		
+	              var _gaq = _gaq || [];
+	              _gaq.push(['_setAccount', Config.GA_TRACKING_CODE]);
+	              _gaq.push (['_gat._anonymizeIp']);
+	              _gaq.push(['_trackPageview']);
+	
+	              (function() {
+	                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+	                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+	                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	              })();		
+	        </script>
+	    {% endblock %}
+		
+		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+		   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+		   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	</head>
+	<body>
+		<div id="wqp-page">
+			<div id="page-header">
+				<div id="page-header-small">
+        			<div id="page-header-logo">
+            			<img src="{{ url_for('static', filename='img/NWQMC_newlogo.jpg') }}" />
+        			</div>
+        			<div id="page-header-text-div">
+            			<div id="page-header-sponser-div">NATIONAL WATER QUALITY MONITORING COUNCIL</div>
+            			<div id="page-header-tag-line-div">Working Together for Clean Water</div>
+            		</div>
+				</div>
+			
+				<div id="page-header-full">
+					<img src="{{ url_for('static', filename='img/NWQMC_header_web_960w.png') }}" />
+					<div id="page-title">
+						<h1>
+							{% block page_header_title %}{% endblock %}
+						</h1>
+					</div>
+				</div>
+			</div>
+			
+			{% block nav_bar %}
+				<nav class="navbar" role="navigation">
+				    <div id="wqp-navbar-header" class="navbar-header">
+				        <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#wqp-standard-navbar-collapse">WQP Menu<span class="caret"></span></button>
+				    </div>
+				    <div id="wqp-standard-navbar-collapse" class="navbar-collapse collapse">
+				        <ul class="nav navbar-nav">
+				            <li><a href="{{ url_for('home') }}">WQP Home</a></li>
+				            <li><a href="">Download Data</a></li>
+				            <li class="dropdown">
+				                <a class="dropdown-toggle" href="#" data-toggle="dropdown">How to use the WQP<span class="caret"></span></a>
+				                <ul class="dropdown-menu">
+				                    <li><a href="">User Guide</a></li>
+				                    <li><a href="">Web Services Guide</a></li>
+				                    <li><a href="">FAQs</a></li>
+				                    <li><a href="">Upload Data</a></li>
+				                </ul>
+				            </li>
+				            <li> <a href="">National Results Coverage</a></li>
+				            <li class="dropdown">
+				                <a class="dropdown-toggle" href="#" data-toggle="dropdown">About the WQP<span class="caret"></span></a>
+				                <ul class="dropdown-menu">
+				                    <li> <a href="">What is the WQP?</a></li>
+				                    <li> <a href="">Contributing organizations</a></li>
+				                    <li class="interior-list"><a href="">Applications using the WQP</a></li>
+				                    <li> <a href="">Other Water Quality Portals</a></li>
+				                    <li> <a href="{{ url_for('contact_us') }}">Contact us</a></li>
+				                </ul>
+				            </li>
+				        </ul>
+				    </div>          
+				</nav>				
+			{% endblock %}
+			
+			{% block page_content %}{% endblock %}
+			
+			<div id="footer-content">
+			    <hr />
+			    <div id="footer-row-div">
+			        <div id="contact-us-div"><a href="{{ url_for('contact_us') }}">Contact us</a></div>
+			        <div class="logo">
+			            <a href="http://usgs.gov"><img alt="USGS Science for a changing world" src="{{ url_for('static', filename='img/USGS_logo.gif') }}"></img></a>
+			        </div>
+			        <div class="logo">
+			            <a href="http://epa.gov"><img alt="EPA" src="{{ url_for('static', filename='img/EPA_logo.gif') }}"></img></a>    
+			        </div>
+			        <div class="logo" id="USDA-logo-div">
+			            <a href="http://www.ars.usda.gov/"><img alt="USDA-ARS" src="{{ url_for('static', filename='img/USDA-Logo.png') }}"></img></a>
+			        </div>
+			    </div>		
+			</div>
+		
+		
+		<script type="text/javascript">
+		    // Click on WQP part of theheader sends user home, otherwise to ACWI site
+		    $('#wqp-dummy-link').click(function() {
+		        window.location.assign("{{ url_for('home') }}");
+		        return false;
+		    });
+		    $('#page-header').click(function() {
+		        window.location.assign('http://acwi.gov/monitoring/');
+		    });
+		</script>
+		
+		{% block body_page_script %}{% endblock %}
+		
+	</body>
+</html>

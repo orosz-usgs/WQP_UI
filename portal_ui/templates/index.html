@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Water Quality Data Home{% endblock %}
+
+{% block nav_bar %}{% endblock %}
+
+{% block page_content %}
+	<div class="index-header hidden-xs">
+        <h1> Water Quality Portal</h1>
+        <p>The Water Quality Portal (WQP) is a cooperative service sponsored by the United States Geological Survey (USGS),
+        the Environmental Protection Agency (EPA), and the National Water Quality Monitoring Council (NWQMC).
+        It serves data collected by over 400 state, federal, tribal, and local agencies.
+        </p>
+    </div>
+    <div class="index-box">
+        <div id="download-col" class="index-box-column">
+            <div class="index-box-primary" id="download-data-box">
+                <a href=""><h5>DOWNLOAD<br/>DATA</h5></a>
+                <p> Download water-quality data in Excel, CSV, TSV, and KML formats.<p>
+            </div>
+        </div>
+        <div id="info-col" class="index-box-column">
+            <div id="rsrc-doc-box" class="index-box-secondary">
+                <a class="main-link" href="portal_userguide.jsp">
+                <h5>HOW TO USE THE WQP</h5>
+                </a>
+                <ul>
+                    <li class="interior-list"><a href="">User Guide</a></li>
+                    <li class="interior-list"><a href=""> Web Services Guide</a></li>
+                    <li class="interior-list"><a href="">FAQs</a></li>
+                    <li class="interior-list"><a href="">Upload Data</a>
+                </ul>
+            </div>
+            <div id="coverage-box" class="index-box-secondary">
+                <a  href="coverage.jsp">
+                    <h5>NATIONAL RESULTS COVERAGE</h5>
+                    <p>Water-quality data in your state.</p>
+                </a>
+            </div>
+            <div id="about-box" class="index-box-secondary">
+                <a href="wqp_description.jsp">
+                <h5>ABOUT THE WQP</h5>
+                </a>
+                <ul>
+                    <li class="interior-list"><a href="">What is the WQP?</a></li>
+                    <li class="interior-list"><a href="">Contributing organizations</a></li>
+                    <li class="interior-list"><a href="">Other Water Quality Portals</a></li>
+                    <li class="interior-list"><a href="">Contact us</a></li>
+                </ul>
+            </div>
+        </div>
+	</div>
+{% endblock %}
+
+{% block body_page_script %}
+	{% include "partials/hide_non_usgs_epa_logos.html" %}
+	
+	<script type="text/javascript">
+        // The following code makes interior links clickable
+        $(document).ready(function(){
+            $(".index-box-primary").click(function(){
+                window.location=$(this).find("a").attr("href");
+                return false;
+             });
+            $(".index-box-secondary").click(function(){
+                window.location=$(this).find("a").attr("href");
+            })
+            $(".index-box-secondary .interior-list").click(function(){
+                window.location=$(this).find("a").attr("href");
+            });
+        });
+    </script>
+{% endblock %}
