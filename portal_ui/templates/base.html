@@ -97,14 +97,48 @@
 						</h1>
 					</div>
 				</div>
-			</div>	
+			</div>
+			
+			{% block nav_bar %}
+				<nav class="navbar" role="navigation">
+				    <div id="wqp-navbar-header" class="navbar-header">
+				        <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#wqp-standard-navbar-collapse">WQP Menu<span class="caret"></span></button>
+				    </div>
+				    <div id="wqp-standard-navbar-collapse" class="navbar-collapse collapse">
+				        <ul class="nav navbar-nav">
+				            <li><a href="{{ url_for('home') }}">WQP Home</a></li>
+				            <li><a href="">Download Data</a></li>
+				            <li class="dropdown">
+				                <a class="dropdown-toggle" href="#" data-toggle="dropdown">How to use the WQP<span class="caret"></span></a>
+				                <ul class="dropdown-menu">
+				                    <li><a href="">User Guide</a></li>
+				                    <li><a href="">Web Services Guide</a></li>
+				                    <li><a href="">FAQs</a></li>
+				                    <li><a href="">Upload Data</a></li>
+				                </ul>
+				            </li>
+				            <li> <a href="">National Results Coverage</a></li>
+				            <li class="dropdown">
+				                <a class="dropdown-toggle" href="#" data-toggle="dropdown">About the WQP<span class="caret"></span></a>
+				                <ul class="dropdown-menu">
+				                    <li> <a href="">What is the WQP?</a></li>
+				                    <li> <a href="">Contributing organizations</a></li>
+				                    <li class="interior-list"><a href="">Applications using the WQP</a></li>
+				                    <li> <a href="">Other Water Quality Portals</a></li>
+				                    <li> <a href="{{ url_for('contact_us') }}">Contact us</a></li>
+				                </ul>
+				            </li>
+				        </ul>
+				    </div>          
+				</nav>				
+			{% endblock %}
 			
 			{% block page_content %}{% endblock %}
 			
 			<div id="footer-content">
 			    <hr />
 			    <div id="footer-row-div">
-			        <div id="contact-us-div"><a href="">Contact us</a></div>
+			        <div id="contact-us-div"><a href="{{ url_for('contact_us') }}">Contact us</a></div>
 			        <div class="logo">
 			            <a href="http://usgs.gov"><img alt="USGS Science for a changing world" src="{{ url_for('static', filename='img/USGS_logo.gif') }}"></img></a>
 			        </div>
