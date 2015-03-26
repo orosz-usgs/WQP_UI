@@ -9,6 +9,7 @@ To run this application locally, you will need to do the following:
   3. Run `pip install -r requirements.txt`
 2. Change to the `instance` directory and create config.py. It should contain the following:
 ```python
+3. Need to compile the less style sheets into css. This can be done by running `mvn lesscss:compile`
 DEBUG = True
 
 # Do not use the same key as any of the deployment servers
