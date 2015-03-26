@@ -6,7 +6,7 @@ from . import app
 @app.route('/index.jsp')
 @app.route('/index/')
 def home():
-    return render_template('index.html', author='Mary')
+    return render_template('index.html')
 
 @app.route('/contact_us.jsp')
 @app.route('/contact_us/')
