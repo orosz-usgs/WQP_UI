@@ -22,9 +22,13 @@
 		    Config.GEOSERVER_ENDPOINT = "{{ config.GEOSERVER_ENDPOINT }}";
 		    Config.SLD_ENDPOINT = "{{ config.SLD_ENDPOINT }}";
 		    Config.CODES_ENDPOINT = "{{ config.CODES_ENDPOINT }}";
-		    Config.RESULT_ENDPOINT = "{{ config.RESULT_ENDPOINT }}";
-		    Config.STATION_ENDPOINT = "{{ config.STATION_ENDPOINT }}";
-		    Config.BIOLOGICAL_RESULT_ENDPOINT = "{{ config.BIOLOGICAL_RESULT_ENDPOINT }}";
+		    Config.SEARCH_QUERY_ENDPOINT = "{{ config.SEARCH_QUERY_ENDPOINT }}";
+		    
+		    Config.QUERY_URLS = {
+		    	Station : Config.SEARCH_QUERY_ENDPOINT + 'Station/search',
+		    	Result : Config.SEARCH_QUERY_ENDPOINT + 'Result/search',
+		    	biologicalresult : Config.SEARCH_QUERY_ENDPOINT + 'biologicalresult/search'
+		    };
 		    
 		    Config.GEOSERVER_PROXY_ENDPOINT = "{{ url_for('geoserverproxy', op='') }}";
 		    Config.STATIC_ENDPOINT = {{ url_for('static', filename='') }};

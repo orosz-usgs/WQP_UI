@@ -157,9 +157,6 @@ APP.RULES = {
 APP.URLS = {};
 
 APP.URLS = {
-    Station : Config.STATION_ENDPOINT + '/search',
-    Result: Config.RESULT_ENDPOINT + '/search',
-    biologicalresult: Config.BIOLOGICAL_RESULT_ENDPOINT + '/search',
     
     getQueryParams : function(forGoogle /* Boolean */) {
         var IGNORE_PARAM_LIST = ["north","south","east","west","resultType","source"];
@@ -179,7 +176,7 @@ APP.URLS = {
     getFormUrl: function(resultType /* string */, forGoogle /* boolean */) {
         // Return the url for the page's form for the result type,resultType.
         // The returned url is different if it is sent to google maps.
-        return APP.URLS[resultType] + "?" + APP.URLS.getQueryParams(forGoogle); // remove the first '&' in the query string
+        return Config.QUERY_URLS[resultType] + "?" + APP.URLS.getQueryParams(forGoogle); // remove the first '&' in the query string
     }
 };
 
