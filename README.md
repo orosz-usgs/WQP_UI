@@ -19,6 +19,12 @@ To run this application locally, you will need to do the following:
 	
 	#points to the sld endpoint you want to use.
 	SLD_ENDPOINT = ''
+	
+	#points to the codes endpoint
+	CODES_ENDPOINT = ''
+	
+	#points to the query endpoint. Does not include the type of data or 'search' part of the endpoint
+	SEARCH_QUERY_ENDPOINT = ''
 	```
 3. Need to compile the less style sheets into css. This can be done by running `mvn lesscss:compile`
 
@@ -26,3 +32,7 @@ Now you can run the application within the virtualenv by executing:
 `python run.py`
 
 The application can be accessed at 127.0.0.1:5050/index.
+
+The jasmine tests can be run by executing `mvn jasmine:bdd` and accessing `localhost:8234`
+
+The packaging, jasmine tests, and coverage report generation can be run by executing `mvn clean package`
