@@ -23,6 +23,8 @@ function SitesLayer(layerName /* String */,
     );
 
     this._createIdControl = function() {
+    	// Because we are using a proxy for wfs and wps calls, but not for wms, we must clone the layer
+    	// and change it's url to the proxy before creating the protocol. 
     	var dataLayer = this.dataLayer.clone();
     	dataLayer.url = Config.GEOSERVER_PROXY_ENDPOINT + 'ows';
     	var protocol = OpenLayers.Protocol.WFS.fromWMSLayer(dataLayer);
