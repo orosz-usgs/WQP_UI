@@ -162,9 +162,9 @@ PORTAL.MODELS.countyCodes = PORTAL.MODELS.codesWithKeys({
     }
 });
 
-PORTAL.MODELS.siteType = PORTAL.MODELS.codes({codes : 'siteType'});
+PORTAL.MODELS.siteType = PORTAL.MODELS.codes({codes : 'sitetype'});
 PORTAL.MODELS.organization = PORTAL.MODELS.codes({codes : 'organization'});
-PORTAL.MODELS.sampleMedia = PORTAL.MODELS.codes({codes : 'sampleMedia'});
-PORTAL.MODELS.characteristicType = PORTAL.MODELS.codes({codes : 'characteristicType'});
-PORTAL.MODELS.characteristicName = PORTAL.MODELS.codes({codes : 'characteristicName'});
+PORTAL.MODELS.sampleMedia = PORTAL.MODELS.codes({codes : 'samplemedia'});
+PORTAL.MODELS.characteristicType = PORTAL.MODELS.codes({codes : 'characteristictype'});
+PORTAL.MODELS.characteristicName = PORTAL.MODELS.codes({codes : 'characteristicname'});
 

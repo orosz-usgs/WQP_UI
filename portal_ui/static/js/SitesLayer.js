@@ -23,8 +23,11 @@ function SitesLayer(layerName /* String */,
     );
 
     this._createIdControl = function() {
+    	var dataLayer = this.dataLayer.clone();
+    	dataLayer.url = Config.GEOSERVER_PROXY_ENDPOINT + 'ows';
+    	var protocol = OpenLayers.Protocol.WFS.fromWMSLayer(dataLayer);
         this.idFeatureControl = new WQPGetFeature({
-            protocol: OpenLayers.Protocol.WFS.fromWMSLayer(this.dataLayer),
+            protocol: protocol,
             box: this._isBoxIDEnabled,
             click: !this._isBoxIDEnabled,
             clickTolerance: 5,

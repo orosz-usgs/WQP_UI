@@ -25,6 +25,8 @@
 		    Config.RESULT_ENDPOINT = "{{ config.RESULT_ENDPOINT }}";
 		    Config.STATION_ENDPOINT = "{{ config.STATION_ENDPOINT }}";
 		    Config.BIOLOGICAL_RESULT_ENDPOINT = "{{ config.BIOLOGICAL_RESULT_ENDPOINT }}";
+		    
+		    Config.GEOSERVER_PROXY_ENDPOINT = "{{ url_for('geoserverproxy', op='') }}";
 		    Config.STATIC_ENDPOINT = {{ url_for('static', filename='') }};
 		    
 		    Config.IS_PROD = location.hostname == 'www.waterqualitydata.us';
