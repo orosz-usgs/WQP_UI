@@ -7,7 +7,405 @@
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/select2-3.4.5/select2-bootstrap.css') }}" />
 {% endblock %}
 
+{% block head_page_script %}
+    <script type="text/javascript" src="{{ url_for('static', filename='js/HTTPHeaders.js') }}"></script>
+{% endblock %}
+
+{% block page_header_title %}Water Quality Data{% endblock %}
+
+{% block page_content %}
+	<div id="page-content">
+        <form role="form" id="params" name="params" action="{{ config.STATION_ENDPOINT }}/search"> 
+            <div class="panel" id="location-parameters">
+                <div class="panel-heading" >
+                    LOCATION
+                    <button type="button" class="show-hide-toggle" title="Show subsection">
+                        <img src="{{ url_for('static', filename='img/expand.png') }}" alt="show" />
+                    </button>
+                </div>
+                <div class="panel-body">
+                    <div id="place" class="subpanel">
+                        <div class="subpanel-heading">
+                            Place:
+                            <button type="button" class="show-hide-toggle" title="Show subsection">
+                                <img src="{{ url_for('static', filename='img/expand.png') }}" alt="show" />
+                            </button>
+                        </div>
+                        <div class="subpanel-body">
+                            <div class="form-group">
+                                <label class="control-label" for="countrycode">Country:</label>
+                                <div>
+                                    <input class="form-control" type="hidden" id="countrycode" name="countrycode" />
+                                    <button type="button" class="help-link popover-help" id="countryHelp" data-help="country">?</button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label" for="statecode">State:</label>
+                                <div>
+                                    <input class="form-control" type="hidden" id="statecode" name="statecode" />
+                                    <button type="button" class="help-link popover-help" id="stateHelp" data-help="state">?</button>                         
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label" for="countycode">County:</label>
+                                <div>
+                                    <input class="form-control" type="hidden" id="countycode" name="countycode" />
+                                    <button type="button" class="help-link popover-help" id="countyHelp" data-help="county">?</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="point-location" class="subpanel">
+                        <div class="subpanel-heading">
+                            Point Location:
+                            <button type="button" id="proximityHelp" class="popover-help" data-help="pointLocation" >?</button>
+                            <button type="button" class="show-hide-toggle" title="Show subsection">
+                                <img src="{{ url_for ('static', filename='img/expand.png') }}" alt="show" />
+                            </button>
+                        </div>
+                        <div class="subpanel-body">
+                            <div class="form-group">
+                                <label class="control-label" for="within">Within</label>
+                                <div>
+                                    <input class="form-control" type="text" name="within" id="within"  />
+                                </div>
+                            </div>
+                            <div id="miles-label">miles of</div>
+                            <div class="form-group">
+                                <label class="control-label" for="lat">Lat:</label>
+                                <div>
+                                    <input class="form-control" type="text" name="lat" size="7" id="lat" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label" for="long">Long:</label>
+                                <div>
+                                    <input class="form-control" type="text" name="long" id="long" />
+                                </div>
+                            </div>
+                            <div id="useMyLocation"></div>
+                        </div>
+                    </div>
+                    <div id="bounding-box" class="subpanel">
+                        <div class="subpanel-heading">
+                            Bounding Box: 
+                            <button type="button" id="bboxHelp" class="popover-help" data-help="boundingBox" >?</button>
+                            <button type="button" class="show-hide-toggle" title="Show subsection">
+                                <img src="{{ url_for('static', filename='img/expand.png') }}" alt="show" />
+                            </button>
+                        </div>
+                        <div class="subpanel-body">
+                            <div class="form-group">
+                                <label class="control-label" for="north">North:</label>
+                                <div>
+                                    <input class="form-control" type="text" name="north" id="north" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label" for="south">South:</label>
+                                <div>
+                                    <input class="form-control" type="text" name="south" id="south" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label" for="east">East:</label>
+                                <div>
+                                    <input class="form-control" type="text" name="east" id="east"  />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label" for="west">West:</label>
+                                <div>
+                                    <input class="form-control" type="text" name="west" id="west" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="site-and-sampling-params">
+                <div id="site-params" class="panel">
+                    <div class="panel-heading">
+                        SITE PARAMETERS
+                        <button type="button" class="show-hide-toggle" title="Show subsection">
+                            <img src="{{ url_for('static', filename='img/expand.png') }}" alt="show" />
+                        </button>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="control-label" for="siteType">Site Type:</label>
+                            <div>
+                                <input class="form-control" type="hidden" id="siteType" name="siteType" />
+                                <button type="button" class="help-link popover-help" id="siteTypeHelp" data-help="siteType">?</button>
+                            </div>
+                        </div>
+                        <div class="form-group" id="organization-id-select">
+                            <label class="control-label" for="organization">Organization ID:</label>
+                            <div>
+                                <input class="form-control" type="hidden" name="organization" id="organization" />
+                                <button type="button" class="help-link popover-help" id="organizationHelp" data-help="organization">?</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="siteid">Site ID:</label>
+                            <div>
+                                <input class="form-control" type="text" name="siteid" id="siteid" />
+                                <button type="button" class="help-link popover-help" id="siteHelp" data-help="siteID">?</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="huc">HUC:</label>
+                            <div>
+                                <input class="form-control" type="text" name="huc" id="huc" />
+                                <button type="button" class="help-link popover-help" id="hucHelp" data-help="huc">?</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="sampling-params" class="panel">
+                    <div class="panel-heading">
+                        SAMPLING PARAMETERS
+                        <button type="button" class="show-hide-toggle" title="Show subsection">
+                            <img src="{{ url_for('static', filename='img/expand.png') }}" alt="show" />
+                        </button>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="control-label" for="sampleMedia">Sample Media:</label>
+                            <div>
+                                <input class="form-control" type="hidden" name="sampleMedia" id="sampleMedia" />
+                                <button type="button" class="help-link popover-help" id="sampleMediaHelp" data-help="sampleMedia">?</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="characteristicType">Characteristic Group:</label>
+                            <div>
+                                <input class="form-control" type="hidden" name="characteristicType" id="characteristicType" />
+                                <button type="button" class="help-link popover-help" id="characteristicGroupHelp" data-help="characteristicGroup">?</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="characteristicName">Characteristics:</label>
+                            <div>
+                                <input class="form-control" type="hidden" name="characteristicName" id="characteristicName" />
+                                <button type="button" class="help-link popover-help" id="characteristicHelp" data-help="characteristicName">?</button>
+                            </div>
+                        </div>
+                        <div class="form-group" id='pcode-div'>
+                            <label class="control-label" for="pCode">Parameter Code: <span style="font-size:x-small;">(NWIS ONLY)</span></label>
+                            <div>
+                                <input class="form-control" type="text" name="pCode" id="pCode" />
+                                <button type="button" class="help-link popover-help" id="pCodeHelp"data-help="pcode">?</button>
+                            </div>
+                        </div>
+                        <div id="date-row">
+                            <div id="start-date-select" class="form-group">
+                                <label class="control-label" for="startDateLo">Date range - from:</label>
+                                <div>
+                                    <div>
+                                        <input class="form-control" type="text" id="startDateLo" name="startDateLo" placeholder="mm-dd-yyyy"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="end-date-select" class="form-group">
+                                <label class="control-label" for="startDateHi">to:</label>
+                                <div>
+                                    <div>
+                                        <input class="form-control" type="text" id="startDateHi" name="startDateHi" placeholder="mm-dd-yyyy" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="dummy-row"></div>
+            <div class="clearfix" visible-sm"></div>
+            <div id="data-type-parameters-div" class="panel">
+                <div class="panel-heading">
+                    DATA SOURCE
+                    <button type="button" class="show-hide-toggle" title="Show subsection">
+                        <img src="{{ url_for('static', filename='img/expand.png') }}" alt="show" />
+                    </button>
+                </div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="control-label" for="providers-select" title="Click in box and select one or more sources, otherwise data will be retrieved from all available providers">Select database:</label>
+                        <div>
+                            <select class="form-control" id="providers-select" name="providers" multiple></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--  hidden inputs -->
+            <input type="hidden" name="bBox" />
+            <input type="hidden" name="mimeType" value="csv" />
+            <input type="hidden" name="zip" checked="checked" id="zip" value="yes" />
+            <input type="hidden" name="resultType" value="Station" />
+        </form>
+        <div id="map-and-query-div" class="panel">
+            <div id="mapping-div" class="panel-body">
+                <div id="map-ops-button-div">
+                    <div id="show-on-map-button-div">
+                        <button type="button" class="show-hide-toggle" title="Show subsection">
+                            <img src="{{ url_for('static', filename='img/expand.png') }}" alt="show" />
+                        </button>
+                        <button type="button" class="btn" id="show-on-map-button">Show sites on map</button>
+                    </div>
+                </div>
+                <div id="query-map-box" style="display: none;">
+                    <div id="map-info-dialog" style="display: none;">
+                        <form method="get" style="vertical-align: top; display: inline-block;">
+                            <input type="hidden" name="zip" checked="checked" id="zip" value="yes" />
+                            <div id="map-info-data-type-div" style="vertical-align: top; display: inline-block;">
+                                Select data:
+                                <ul class="download-lists">
+                                    <li>
+                                        <input checked="checked" type="radio" name="resultType" id="dialog-sites" value="Station" />
+                                        <label for="dialog-sites">Sites only</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" name="resultType" id="dialog-samples" value="Result" />
+                                        <label for="dialog-samples">Sample results only</label>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div style="display: inline-block;" id="map-info-file-format-div">
+                                Select file format: 
+                                <ul class="download-lists">
+                                    <li>
+                                        <input type="radio" checked="checked" name="mimeType" id="dialog-csv" value="csv">
+                                        <label for="dialog-csv">Comma-separated</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" name="mimeType" id="dialog-tsv" value="tsv">
+                                        <label for="dialog-tsv">Tab-separated</label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" name="mimeType" id="dialog-xlsx" value="xlsx">
+                                        <label for="dialog-xlsx">MS Excel</label>
+                                    </li>
+                               </ul>
+                            </div>
+                            <div id="map-id-hidden-input-div"></div>
+                        </form>
+                        <div id="map-info-download-button-div" style="text-align: center;">
+                            <button class="btn" id="download-map-info-button">Download Data</button>
+                        </div>
+                        <hr />
+                        <div id="map-info-details-div"></div>
+                    </div>
+
+                    <div id="query-results-map"></div>
+                    <div id="map-loading-div" style="display: none;">
+                        <div class="outer-div" >
+                            <div class="inner-div">
+                                <button id="cancel-map-button" class="btn" type="button">Cancel mapping</button>
+                            </div>
+                        </div>
+                        <span style="text-align: center; vertical-align: middle">Generating map for query results</span>
+                    </div>
+                </div>
+            </div>
+            <div id="download-box" class="panel-body">
+                <div id="download-box-input-div">
+                    <div id="download-data-kind-box">
+                        <b>Select data:</b>
+                        <ul>
+                            <li>
+                                <input checked="checked" type="radio" name="resultType" id="sites" value="Station">
+                                <label for="sites">Sites only</label>
+                            </li>
+                            <li>
+                                <input type="radio" name="resultType" id="samples" value="Result">
+                                <label for="samples">Physical/Chemical results only</label>
+                            </li>
+                            <li>
+                                <input type="radio" name="resultType" id="biosamples" value="biologicalresult">
+                                <label for="biosamples">Biological results only</label>
+                            </li>
+                        </ul>
+                    </div>
+                    <div id="download-tabular-data">
+                        <b>File format:</b><br />
+                        <ul>
+                            <li>
+                                <input type="radio" checked="checked" name="mimeType" id="csv" value="csv" />
+                                <label for="csv">Comma-separated</label>
+                            </li>
+                            <li>
+                                <input type="radio" name="mimeType" id="tsv" value="tsv" />
+                                <label for="tsv">Tab-separated</label>
+                            </li>
+                            <li>
+                                <input type="radio" name="mimeType" id="xlsx" value="xlsx" />
+                                <label for="xlsx">MS Excel 2007+<span style="font-size: x-small;"></span></label>
+                            </li>
+                            <li>
+                                <input type="radio" name="mimeType" id="kml" value="kml" />
+                                <label for="kml">KML&nbsp;<span style="font-size: x-small;">(Keyhole Markup Language - this is available for Sites only)</span></label>
+                            </li>
+                       </ul>
+                    </div>
+                </div>
+                <div id="form-action">
+                    <button id="main-button" class="btn" type="submit">DOWNLOAD</button>
+                </div>
+            </div>
+            <div id="show-queries-div" class="panel-body">
+                <button class="btn" id="show-queries-button" type="button">Show RESTlike queries</button>
+                &nbsp;<button type="button" id="WQXSchemaHelp" class="popover-help" data-help="xmlSchema">?</button>
+                <div id="WSFeedback"></div>
+            </div>
+        </div>
+        <div id="org-id-dialog" style="display:none;">
+            <div id="org-id-loading-div">Loading list ... please wait</div>
+            <div id="org-id-toggles-div">
+                <p>For help, go to the <a href="portal_userguide.jsp#Organization">User Guide</a></p>
+                <div id="org-id-current-selections-div">
+                    <label><b>Current Selections:</b></label>
+                    <br />
+                    <textarea id="org-id-current-selections" readonly="readonly" disabled="disabled" rows=5></textarea>
+                    <br />
+                </div>
+                <div id="org-name-div">
+                    <p>Select organization IDs by org name</p>
+                    <div id="select-by-org-name">
+                    </div>
+                </div>
+            </div>
+        </div>
+	</div>
+	<div id="download-status-dialog" class="modal fade">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4></h4>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer"></div>
+            </div>
+        </div>
+    </div>
+    <div id="validate-download-dialog" class="modal fade">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4>Invalid Form Input</h4>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button id="validate-close-button" type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
 {% block body_page_script %}
+
 	<script type="text/javascript" src="{{ url_for('static', filename='vendor/select2-3.4.5/select2.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='vendor/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='vendor/jshashtable-3.0.js') }}"></script>
@@ -15,7 +413,6 @@
     <script type="text/javascript" src="http://cida.usgs.gov/js/openlayers/2.12/release/OpenLayers.js"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='vendor/LoadingPanel.js') }}"></script>
     
-    <script type="text/javascript" src="{{ url_for('static', filename='js/HTTPHeaders.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/portalFormManagement.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/map_utils.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/utils.js') }}"></script>

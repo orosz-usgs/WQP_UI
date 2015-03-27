@@ -77,13 +77,13 @@ function toggleShowHideSections(buttonEl, contentDivEl) {
     var buttonImgEl = buttonEl.find('img');
     if (buttonImgEl.attr('alt') === 'show') {
         buttonEl.attr('title', buttonEl.attr('title').replace('Show', 'Hide'));
-        buttonImgEl.attr('alt', 'hide').attr('src', 'img/collapse.png');
+        buttonImgEl.attr('alt', 'hide').attr('src', Config.STATIC_ENDPOINT + 'img/collapse.png');
         contentDivEl.slideDown();
         return true;
     }
     else {
         buttonEl.attr('title', buttonEl.attr('title').replace('Hide', 'Show'));
-        buttonImgEl.attr('alt', 'show').attr('src', 'img/expand.png');
+        buttonImgEl.attr('alt', 'show').attr('src', Config.STATIC_ENDPOINT + 'img/expand.png');
         contentDivEl.slideUp();
         return false;
     }

@@ -6,7 +6,7 @@ function SitesLayer(layerName /* String */,
 
     this.dataLayer = new OpenLayers.Layer.WMS(
             'Sites',
-            Config.GEOSERVER_ENDPOINT + '/wms',
+            Config.GEOSERVER_ENDPOINT + '/ows',
             {
                 layers: layerName,
                 styles: 'zoom_based_point',

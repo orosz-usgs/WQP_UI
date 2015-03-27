@@ -28,7 +28,7 @@ PORTAL.MODELS.codes = function(spec) {
         else {
             ajaxCalled = true;
             $.ajax({
-                    url: Config.CODES_ENDPOINT + spec.codes,
+                    url: Config.CODES_ENDPOINT + '/' + spec.codes,
                     type: 'GET',
                     data : {
                         mimeType : 'xml'
@@ -113,7 +113,7 @@ PORTAL.MODELS.codesWithKeys = function(spec) {
             ajaxData[spec.keyParameter] = keysToGet.join(';');
             ajaxData.mimeType = 'xml';
             $.ajax({
-                url : Config.CODES_ENDPOINT + spec.codes,
+                url : Config.CODES_ENDPOINT + '/' + spec.codes,
                 type: 'GET',
                 data : ajaxData,
                 success : function(data, textStatus, jqXHR) {

@@ -56,7 +56,7 @@ function PortalDataMap (mapDivId, updateDivId, identifyDialog /* IdentifyDialog 
 
 
     /* Initialize the portal data map */
-    OpenLayers.ProxyHost = "proxy/?url=";
+    OpenLayers.ProxyHost = ""; //proxy/?url=";
 
     // Add loading panel control
     var loadingPanel = new OpenLayers.Control.LoadingPanel();
@@ -117,7 +117,7 @@ function PortalDataMap (mapDivId, updateDivId, identifyDialog /* IdentifyDialog 
         var theseFormParams = formParams;
         var thisPortalDataMap = this;
         OpenLayers.Request.POST({
-            url : WPS_URL + '&identifier=gs:SiteImport',
+            url : '../geoserver/ows?identifier=gs:SiteImport',
             data : SiteImportWPSUtils.getRequestXML('gs:SiteImport', formParams),
             success: function(data) {
                 // Poll the process status WPS to determine the current status of building the new
@@ -129,7 +129,7 @@ function PortalDataMap (mapDivId, updateDivId, identifyDialog /* IdentifyDialog 
                     function() {
                         if (this.statusRequest.status) {
                             this.statusRequest = OpenLayers.Request.POST({
-                                url : WPS_URL + '&identifier=gs:SingleWpsStatus',
+                                url : '../geoserver/ows?identifier=gs:SingleWpsStatus',
                                 data: SiteImportWPSUtils.getRequestXML(
                                     'gs:SingleWpsStatus',
                                     [{ name : 'layerName', value : data.responseText}]),

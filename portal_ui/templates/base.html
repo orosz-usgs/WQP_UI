@@ -19,17 +19,17 @@
 		<script type="text/javascript">
 		    Config = {};
 		    
-		    Config.GEOSERVER_ENDPOINT = "{{ config.GEOSERVER_ENDPOINT }}"
-		    Config.SLD_ENDPOINT = "{{ config.SLD_ENDPOINT }}"
-		    Config.CODES_ENDPOINT = "{{ config.CODES_ENDPOINT }}"
-		    Config.RESULT_ENDPOINT = "{{ config.RESULT_ENDPOINT }}"
-		    Config.STATION_ENDPOINT = "{{ config.STATION_ENDPOINT }}"
-		    Config.BIOLOGICAL_RESULT_ENDPOINT = "{{ config.BIOLOGICAL_RESULT_ENDPOINT }}"
+		    Config.GEOSERVER_ENDPOINT = "{{ config.GEOSERVER_ENDPOINT }}";
+		    Config.SLD_ENDPOINT = "{{ config.SLD_ENDPOINT }}";
+		    Config.CODES_ENDPOINT = "{{ config.CODES_ENDPOINT }}";
+		    Config.RESULT_ENDPOINT = "{{ config.RESULT_ENDPOINT }}";
+		    Config.STATION_ENDPOINT = "{{ config.STATION_ENDPOINT }}";
+		    Config.BIOLOGICAL_RESULT_ENDPOINT = "{{ config.BIOLOGICAL_RESULT_ENDPOINT }}";
+		    Config.STATIC_ENDPOINT = {{ url_for('static', filename='') }};
 		    
 		    Config.IS_PROD = location.hostname == 'www.waterqualitydata.us';
     		Config.ALLOW_QA_ACCESS = true;
-    		Config.GA_TRACKING_CODE = "{{ config.GA_TRACKING_CODE }}"
-		    
+    		Config.GA_TRACKING_CODE = "{{ config.GA_TRACKING_CODE }}";
 		</script>
 		
 		<script type="text/javascript" src="{{ url_for('static', filename='vendor/jquery-1.10.2.min.js') }}"></script>
