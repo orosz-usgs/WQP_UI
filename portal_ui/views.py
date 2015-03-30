@@ -21,12 +21,21 @@ def contact_us():
 def portal():
     return render_template('portal.html')
 
-@app.route('/geoserver/<op>', methods=['POST'])
+@app.route('/coverage.jsp')
+@app.route('/coverage/')
+def coverage():
+    return render_template('coverage.html')
+
+@app.route('/geoserver/<op>', methods=['GET', 'POST'])
 def geoserverproxy(op):
     target_url = app.config['GEOSERVER_ENDPOINT'] + '/' + op
-    resp = requests.post(target_url, data=request.data, headers=request.headers)  
-    del resp.headers['content-encoding']
-    return (resp.text, resp.status_code, resp.headers.items())
+    if request.method == 'GET':
+        resp = requests.get(target_url + '?' + request.query_string)
+    else:
+        resp = requests.post(target_url, data=request.data, headers=request.headers)  
+        del resp.headers['content-encoding']
+        
+    return Response(resp.content, status=resp.status_code, headers=resp.headers.items())
     
         
     

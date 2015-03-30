@@ -56,7 +56,7 @@ function PortalDataMap (mapDivId, updateDivId, identifyDialog /* IdentifyDialog 
 
 
     /* Initialize the portal data map */
-    OpenLayers.ProxyHost = ""; //proxy/?url=";
+    OpenLayers.ProxyHost = ""
 
     // Add loading panel control
     var loadingPanel = new OpenLayers.Control.LoadingPanel();

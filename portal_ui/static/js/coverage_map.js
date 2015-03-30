@@ -18,7 +18,8 @@ CoverageMap.zoomTo = function(l, b, r, t) {
 
 // Creates and initializes the coverage mapper
 CoverageMap.init = function(divId) {
-    OpenLayers.ProxyHost = "proxy/?url=";
+	
+    OpenLayers.ProxyHost = ""
 
 	var detailDialogEl = $('#map-detail-dialog');
 
@@ -101,7 +102,7 @@ CoverageMap.init = function(divId) {
 	// Default to states and all sources with no styling
 	CoverageMap.dataLayer = new OpenLayers.Layer.WMS(
 			"Data",
-			Config.GEOSERVER_ENDPOINT + '/wms',
+			Config.GEOSERVER_PROXY_ENDPOINT + 'wms',
 			{
 				layers: CoverageMapConfig.LAYER_PARAM.states,
 				viewparams: CoverageMapConfig.get_viewparams('all_time', 'all')
@@ -121,7 +122,6 @@ CoverageMap.init = function(divId) {
 
 
 	var infoControl = new OpenLayers.Control.WMSGetFeatureInfo({
-		url: Config.GEOSERVER_ENDPOINT + '/wms',
 		title: "Detail information available by clicking",
 		queryVisible: true,
 		layers: [CoverageMap.dataLayer],
