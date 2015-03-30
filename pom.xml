@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>gov.usgs.cida</groupId>
-	<artifactId>qw_portal_core</artifactId>
+	<artifactId>wqp_ui</artifactId>
 	<packaging>pom</packaging>
 	<version>3.0-SNAPSHOT</version>
 	<name>WQP UI</name>
