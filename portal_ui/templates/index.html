@@ -15,7 +15,7 @@
     <div class="index-box">
         <div id="download-col" class="index-box-column">
             <div class="index-box-primary" id="download-data-box">
-                <a href=""><h5>DOWNLOAD<br/>DATA</h5></a>
+                <a href="{{ url_for('portal') }}"><h5>DOWNLOAD<br/>DATA</h5></a>
                 <p> Download water-quality data in Excel, CSV, TSV, and KML formats.<p>
             </div>
         </div>
@@ -32,13 +32,13 @@
                 </ul>
             </div>
             <div id="coverage-box" class="index-box-secondary">
-                <a  href="coverage.jsp">
+                <a  href="{{ url_for('coverage') }}">
                     <h5>NATIONAL RESULTS COVERAGE</h5>
                     <p>Water-quality data in your state.</p>
                 </a>
             </div>
             <div id="about-box" class="index-box-secondary">
-                <a href="wqp_description.jsp">
+                <a href="">
                 <h5>ABOUT THE WQP</h5>
                 </a>
                 <ul>

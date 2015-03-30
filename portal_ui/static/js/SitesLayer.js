@@ -6,7 +6,7 @@ function SitesLayer(layerName /* String */,
 
     this.dataLayer = new OpenLayers.Layer.WMS(
             'Sites',
-            Config.GEOSERVER_ENDPOINT + '/wms',
+            Config.GEOSERVER_PROXY_ENDPOINT + 'wms',
             {
                 layers: layerName,
                 styles: 'zoom_based_point',
@@ -23,8 +23,12 @@ function SitesLayer(layerName /* String */,
     );
 
     this._createIdControl = function() {
+    	// Because we are using a proxy for wfs and wps calls, but not for wms, we must clone the layer
+    	// and change it's url to the proxy before creating the protocol. 
+    	var dataLayer = this.dataLayer.clone();
+    	var protocol = OpenLayers.Protocol.WFS.fromWMSLayer(dataLayer);
         this.idFeatureControl = new WQPGetFeature({
-            protocol: OpenLayers.Protocol.WFS.fromWMSLayer(this.dataLayer),
+            protocol: protocol,
             box: this._isBoxIDEnabled,
             click: !this._isBoxIDEnabled,
             clickTolerance: 5,

@@ -19,7 +19,7 @@ PORTAL.CONTROLLER.retrieveSiteIdInfo = function(siteIds, updateFnc, successFnc) 
         var idsToGet = siteIds.slice(0, Math.min(siteIds.length, 50));
         updateFnc('Retrieving site ID data');
         $.ajax({
-            url : APP.URLS.Station,
+            url : Config.QUERY_URLS.Station,
             type : 'GET',
             data : 'siteid=' + encodeURIComponent(idsToGet.join(';')),
             success : function(data, textStatus, jqXHR) {

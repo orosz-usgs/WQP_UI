@@ -3,4 +3,7 @@ PREFERRED_URL_SCHEME = 'https'
 # Application defined config variables
 GEOSERVER_ENDPOINT = ''
 SLD_ENDPOINT = ''
+CODES_ENDPOINT = ''
+SEARCH_QUERY_ENDPOINT = ''
+
 GA_TRACKING_CODE = ''
