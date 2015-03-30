@@ -12,7 +12,10 @@ describe('Test IdentifyDialog', function() {
 
     beforeEach(function() {
     	Config = {
-        		CODES_ENDPOINT : 'http:fakecodesservice/codes'
+        		CODES_ENDPOINT : 'http:fakecodesservice/codes',
+        		QUERY_URLS : {
+        			Station : 'http://fakestationservice'
+        		}
         };
         dialogId = 'map-info-dialog';
         // Create base HTML

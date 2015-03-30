@@ -18,7 +18,9 @@ describe('Tests for siteIdController.retrieveSiteIdInfo', function() {
 
     beforeEach(function() {
     	Config = {
-    		STATION_ENDPOINT : 'http://fakestationendpoint'
+    		QUERY_URLS : {
+    			Station: 'http://fakestationendpoint'
+    		}
     	}
         server = sinon.fakeServer.create();
         updateSpy = jasmine.createSpy('updateSpy');
@@ -39,7 +41,7 @@ describe('Tests for siteIdController.retrieveSiteIdInfo', function() {
         PORTAL.CONTROLLER.retrieveSiteIdInfo(['S1', 'S2'], updateSpy, successSpy);
 
         expect(server.requests.length).toBe(1);
-        expect(server.requests[0].url).toContain(Config.STATION_ENDPOINT);
+        expect(server.requests[0].url).toContain(Config.QUERY_URLS.Station);
         expect(server.requests[0].url).toContain('siteid=' + encodeURIComponent('S1;S2'));
         expect(updateSpy.calls[0].args[0]).toEqual('Retrieving site ID data');
     });
