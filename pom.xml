@@ -2,7 +2,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>gov.usgs.cida</groupId>
+	<groupId>gov.usgs.cida.wqp</groupId>
 	<artifactId>wqp_ui</artifactId>
 	<packaging>pom</packaging>
 	<version>3.0-SNAPSHOT</version>
