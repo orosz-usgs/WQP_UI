@@ -10,7 +10,7 @@ from .utils import pull_feed
 @app.route('/index/')
 def home():
     return render_template('index.html')
-
+ 
 @app.route('/contact_us.jsp')
 @app.route('/contact_us/')
 def contact_us():
@@ -27,10 +27,18 @@ def portal_userguide():
     feed_url = "https://my.usgs.gov/confluence/createrssfeed.action?types=page&spaces=qwdp&title=myUSGS+4.0+RSS+Feed&labelString=wqp_user_guide&excludedSpaceKeys%3D&sort=modified&maxResults=1&timeSpan=3650&showContent=true&confirm=Create+RSS+Feed"
     return render_template('portal_userguide.html', feed_content=pull_feed(feed_url))
 
+@app.route('/webservices_documentation.jsp')
+@app.route('/webservices_documentation/')
+def webservices_documentation():
+    feed_url = "https://my.usgs.gov/confluence/createrssfeed.action?types=page&spaces=qwdp&title=myUSGS+4.0+RSS+Feed&labelString=wqp_web_services_guide&excludedSpaceKeys%3D&sort=modified&maxResults=1&timeSpan=3650&showContent=true&confirm=Create+RSS+Feed"
+    return render_template('webservices_documentation.html', feed_content=pull_feed(feed_url))
+
+
 @app.route('/coverage.jsp')
 @app.route('/coverage/')
 def coverage():
     return render_template('coverage.html')
+
 
 @app.route('/geoserver/<op>', methods=['GET', 'POST'])
 def geoserverproxy(op):
