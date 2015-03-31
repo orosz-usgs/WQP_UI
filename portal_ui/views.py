@@ -62,6 +62,12 @@ def wqp_description():
     return render_template('wqp_description.html', feed_content=pull_feed(feed_url))
 
 
+@app.route('/orgs.jsp')
+@app.route('/orgs/')
+def orgs():
+    feed_url = "https://my.usgs.gov/confluence/createrssfeed.action?types=page&spaces=qwdp&title=myUSGS+4.0+RSS+Feed&labelString=contributing_orgs&excludedSpaceKeys%3D&sort=modified&maxResults=1&timeSpan=3650&showContent=true&confirm=Create+RSS+Feed"
+    return render_template('orgs.html', feed_content=pull_feed(feed_url))
+
 @app.route('/geoserver/<op>', methods=['GET', 'POST'])
 def geoserverproxy(op):
     target_url = app.config['GEOSERVER_ENDPOINT'] + '/' + op
