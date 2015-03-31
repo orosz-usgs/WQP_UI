@@ -31,7 +31,8 @@ def geoserverproxy(op):
     target_url = app.config['GEOSERVER_ENDPOINT'] + '/' + op
     if request.method == 'GET':
         resp = requests.get(target_url + '?' + request.query_string)
-        resp.headers['Content-Length'] = ''
+        # This fixed an an ERR_INVALID_CHUNKED_ENCODING when the app was run on the deployment server.
+        resp.headers['transfer-encoding'] = ''
     else:
         resp = requests.post(target_url, data=request.data, headers=request.headers)  
         del resp.headers['content-encoding']
