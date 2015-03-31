@@ -55,6 +55,13 @@ def coverage():
     return render_template('coverage.html')
 
 
+@app.route('/wqp_description.jsp')
+@app.route('/wqp_description/')
+def wqp_description():
+    feed_url = "https://my.usgs.gov/confluence/createrssfeed.action?types=page&spaces=qwdp&title=myUSGS+4.0+RSS+Feed&labelString=wqp_about&excludedSpaceKeys%3D&sort=modified&maxResults=1&timeSpan=3650&showContent=true&confirm=Create+RSS+Feed"
+    return render_template('wqp_description.html', feed_content=pull_feed(feed_url))
+
+
 @app.route('/geoserver/<op>', methods=['GET', 'POST'])
 def geoserverproxy(op):
     target_url = app.config['GEOSERVER_ENDPOINT'] + '/' + op
