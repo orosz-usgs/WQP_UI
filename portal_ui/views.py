@@ -3,8 +3,8 @@ import requests
 
 from flask import render_template, request, Response
 
-
 from . import app
+from .utils import pull_feed
 
 @app.route('/index.jsp')
 @app.route('/index/')
@@ -20,6 +20,12 @@ def contact_us():
 @app.route('/portal/')
 def portal():
     return render_template('portal.html')
+
+@app.route('/portal_userguide.jsp')
+@app.route('/portal_userguide/')
+def portal_userguide():
+    feed_url = "https://my.usgs.gov/confluence/createrssfeed.action?types=page&spaces=qwdp&title=myUSGS+4.0+RSS+Feed&labelString=wqp_user_guide&excludedSpaceKeys%3D&sort=modified&maxResults=1&timeSpan=3650&showContent=true&confirm=Create+RSS+Feed"
+    return render_template('portal_userguide.html', feed_content=pull_feed(feed_url))
 
 @app.route('/coverage.jsp')
 @app.route('/coverage/')
@@ -38,7 +44,9 @@ def geoserverproxy(op):
         del resp.headers['content-encoding']
         
     return Response(resp.content, status=resp.status_code, headers=resp.headers.items())
-    
+   
+   
+ 
         
     
     
