@@ -1,4 +1,3 @@
-PREFERRED_URL_SCHEME = 'https' 
 
 #Config for Flask-Collect
 COLLECT_STATIC_ROOT = 'static/'
