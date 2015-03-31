@@ -41,6 +41,14 @@ def faqs():
     return render_template('faqs.html', feed_content=pull_feed(feed_url))
 
 
+@app.route('/upload_data.jsp')
+@app.route('/upload_data/')
+def upload_data():
+    feed_url = "https://my.usgs.gov/confluence/createrssfeed.action?types=page&spaces=qwdp&title=myUSGS+4.0+RSS+Feed&labelString=wqp_upload_data&excludedSpaceKeys%3D&sort=modified&maxResults=1&timeSpan=3650&showContent=true&confirm=Create+RSS+Feed"
+    return render_template('upload_data.html', feed_content=pull_feed(feed_url))
+
+
+
 @app.route('/coverage.jsp')
 @app.route('/coverage/')
 def coverage():
