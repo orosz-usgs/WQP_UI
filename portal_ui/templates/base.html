@@ -31,7 +31,7 @@
 		    };
 		    
 		    Config.GEOSERVER_PROXY_ENDPOINT = "{{ url_for('geoserverproxy', op='') }}";
-		    Config.STATIC_ENDPOINT = {{ url_for('static', filename='') }};
+		    Config.STATIC_ENDPOINT = "{{ url_for('static', filename='') }}";
 		    
 		    Config.IS_PROD = location.hostname == 'www.waterqualitydata.us';
     		Config.ALLOW_QA_ACCESS = true;
@@ -39,12 +39,12 @@
 		</script>
 		
 		<script type="text/javascript" src="{{ url_for('static', filename='vendor/jquery-1.10.2.min.js') }}"></script>
-		<script type="text/javascript" src="{{ url_for('static', filename='vendor/bootstrap-3.1.0/dist/js/bootstrap.min.js') }}"></script>
+		<script type="text/javascript" src="{{ url_for('static', filename='vendor/bootstrap-3.1.0/js/bootstrap.min.js') }}"></script>
 		
 		
 		<script type="text/javascript">
 		    $(document).ready(function() {
-		         if (! Config.ALLOW_QA_ACCESS && location.hostname.search('wqp-test.er.usgs.gov') != -1) {
+		         if (!Config.ALLOW_QA_ACCESS && location.hostname.search('wqp-test.er.usgs.gov') != -1) {
 		             $('#page-nav').hide();
 		             $('.index-box').hide();
 		             $('#content').html('<p>Sorry, you were trying to access the Water Quality Portal test site.  This site is currently not available, and you are being redirected to the Water Quality Portal main page at ' + 

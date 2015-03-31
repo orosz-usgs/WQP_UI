@@ -56,3 +56,4 @@ target/
 #Eclipse files
 .project
 .pydevproject
+/static/
