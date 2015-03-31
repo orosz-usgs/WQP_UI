@@ -31,6 +31,7 @@ def geoserverproxy(op):
     target_url = app.config['GEOSERVER_ENDPOINT'] + '/' + op
     if request.method == 'GET':
         resp = requests.get(target_url + '?' + request.query_string)
+        resp.headers['Content-Length'] = ''
     else:
         resp = requests.post(target_url, data=request.data, headers=request.headers)  
         del resp.headers['content-encoding']
