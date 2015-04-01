@@ -23,6 +23,7 @@
 		    Config.SLD_ENDPOINT = "{{ config.SLD_ENDPOINT }}";
 		    Config.CODES_ENDPOINT = "{{ config.CODES_ENDPOINT }}";
 		    Config.SEARCH_QUERY_ENDPOINT = "{{ config.SEARCH_QUERY_ENDPOINT }}";
+		    Config.PUBLIC_SRSNAMES_ENDPOINT = "{{ config.PUBLIC_SRSNAMES_ENDPOINT }}";
 		    
 		    Config.QUERY_URLS = {
 		    	Station : Config.SEARCH_QUERY_ENDPOINT + 'Station/search',
@@ -120,20 +121,20 @@
 				            <li class="dropdown">
 				                <a class="dropdown-toggle" href="#" data-toggle="dropdown">How to use the WQP<span class="caret"></span></a>
 				                <ul class="dropdown-menu">
-				                    <li><a href="">User Guide</a></li>
-				                    <li><a href="">Web Services Guide</a></li>
-				                    <li><a href="">FAQs</a></li>
-				                    <li><a href="">Upload Data</a></li>
+				                    <li><a href="{{ url_for('portal_userguide') }}">User Guide</a></li>
+				                    <li><a href="{{ url_for('webservices_documentation') }}">Web Services Guide</a></li>
+				                    <li><a href="{{ url_for('faqs') }}">FAQs</a></li>
+				                    <li><a href="{{ url_for('upload_data') }}">Upload Data</a></li>
 				                </ul>
 				            </li>
 				            <li> <a href="{{ url_for('coverage') }}">National Results Coverage</a></li>
 				            <li class="dropdown">
 				                <a class="dropdown-toggle" href="#" data-toggle="dropdown">About the WQP<span class="caret"></span></a>
 				                <ul class="dropdown-menu">
-				                    <li> <a href="">What is the WQP?</a></li>
-				                    <li> <a href="">Contributing organizations</a></li>
-				                    <li class="interior-list"><a href="">Applications using the WQP</a></li>
-				                    <li> <a href="">Other Water Quality Portals</a></li>
+				                    <li> <a href="{{ url_for('wqp_description') }}">What is the WQP?</a></li>
+				                    <li> <a href="{{ url_for('orgs') }}">Contributing organizations</a></li>
+				                    <li> <a href="{{ url_for('apps_using_portal') }}">Applications using the WQP</a></li>
+				                    <li> <a href="{{ url_for('other_portal_links') }}">Other Water Quality Portals</a></li>
 				                    <li> <a href="{{ url_for('contact_us') }}">Contact us</a></li>
 				                </ul>
 				            </li>

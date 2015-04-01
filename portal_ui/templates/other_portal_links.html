@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Other Water Quality Portals{% endblock %}
+
+{% block google_analytics_script %}{% endblock %}
+
+{% block page_header_title %}Other Water Quality Portals{% endblock %}
+
+{% block page_content %}
+	<div id="content" class="main-body user-guide">
+		{{ feed_content|safe }}
+	</div>
+{% endblock %}
+
+{% block body_page_script %}
+	{% include "partials/hide_non_usgs_epa_logos.html" %}
+{% endblock %}
