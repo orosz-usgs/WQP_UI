@@ -4,9 +4,14 @@ describe('Unit Test: Controllers', function() {
 	describe('srsnames controller', function() {
 		var scope, ctrl, $httpBackend, rootScope;
 		
+		Config = {
+				PUBLIC_SRSNAMES_ENDPOINT : 'http://fakeendpoint.com/names'
+		};
+		
 		beforeEach(inject(function(_$httpBackend_, $rootScope, $controller) {
+			
 			$httpBackend = _$httpBackend_;
-			$httpBackend.expectGET('public_srsnames?mimeType=json').respond({
+			$httpBackend.expectGET(Config.PUBLIC_SRSNAMES_ENDPOINT + '?mimeType=json').respond({
 				"maxLastRevDate": "May 2013",
 				"pcodes": [{
 					"parm_cd": "00004",
