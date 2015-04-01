@@ -165,7 +165,7 @@
 						<!-- JQLite is funky with angular and it's mocks, so use a real jquery 
 							implementation. -->
 						<source>vendor/jquery-1.10.2.min.js</source>
-						<source>vendor/bootstrap-3.1.0/dist/js/bootstrap.js</source>
+						<source>vendor/bootstrap-3.1.0/js/bootstrap.js</source>
 						<source>vendor/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js</source>
 						<source>vendor/jshashtable-3.0.js</source>
 						<source>vendor/jquery.numberformatter-1.2.4.min.js</source>
