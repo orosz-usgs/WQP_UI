@@ -76,6 +76,19 @@ def apps_using_portal():
     return render_template('apps_using_portal.html', feed_content=pull_feed(feed_url))
 
 
+@app.route('/other_portal_links.jsp')
+@app.route('/other_portal_links/')
+def other_portal_links():
+    feed_url = "https://my.usgs.gov/confluence/createrssfeed.action?types=page&spaces=qwdp&title=myUSGS+4.0+RSS+Feed&labelString=other_portal_links&excludedSpaceKeys%3D&sort=modified&maxResults=1&timeSpan=3650&showContent=true&confirm=Create+RSS+Feed"
+    return render_template('other_portal_links.html', feed_content=pull_feed(feed_url))
+
+
+@app.route('/public_srsnames.jsp')
+@app.route('/public_srsnames/')
+def public_srsnames():
+    return render_template('public_srsnames.html')
+    
+
 @app.route('/geoserver/<op>', methods=['GET', 'POST'])
 def geoserverproxy(op):
     target_url = app.config['GEOSERVER_ENDPOINT'] + '/' + op

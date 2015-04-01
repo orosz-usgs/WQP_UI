@@ -23,6 +23,7 @@
 		    Config.SLD_ENDPOINT = "{{ config.SLD_ENDPOINT }}";
 		    Config.CODES_ENDPOINT = "{{ config.CODES_ENDPOINT }}";
 		    Config.SEARCH_QUERY_ENDPOINT = "{{ config.SEARCH_QUERY_ENDPOINT }}";
+		    Config.PUBLIC_SRSNAMES_ENDPOINT = "{{ config.PUBLIC_SRSNAMES_ENDPOINT }}";
 		    
 		    Config.QUERY_URLS = {
 		    	Station : Config.SEARCH_QUERY_ENDPOINT + 'Station/search',
@@ -133,7 +134,7 @@
 				                    <li> <a href="{{ url_for('wqp_description') }}">What is the WQP?</a></li>
 				                    <li> <a href="{{ url_for('orgs') }}">Contributing organizations</a></li>
 				                    <li> <a href="{{ url_for('apps_using_portal') }}">Applications using the WQP</a></li>
-				                    <li> <a href="">Other Water Quality Portals</a></li>
+				                    <li> <a href="{{ url_for('other_portal_links') }}">Other Water Quality Portals</a></li>
 				                    <li> <a href="{{ url_for('contact_us') }}">Contact us</a></li>
 				                </ul>
 				            </li>
