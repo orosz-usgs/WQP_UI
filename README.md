@@ -11,6 +11,8 @@ To run this application locally, you will need to do the following:
 	```python
 	DEBUG = True
 	
+	ASSETS_DEBUG = True # This will disable minimizing js and css assets but less files will still compile.
+	
 	# Do not use the same key as any of the deployment servers
 	SECRET_KEY = 'local_secret_key'
 	
@@ -29,7 +31,6 @@ To run this application locally, you will need to do the following:
 	#points to the public srsnames endpoint you want to use.
 	PUBLIC_SRSNAMES_ENDPOINT = ''
 	```
-3. Need to compile the less style sheets into css. This can be done by running `mvn lesscss:compile`
 
 Now you can run the application within the virtualenv by executing:
 `python run.py`
