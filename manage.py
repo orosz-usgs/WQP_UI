@@ -1,3 +1,4 @@
+from flask.ext.assets import ManageAssets
 from flask.ext.collect import Collect
 from flask.ext.script import Manager, Command
 
@@ -20,4 +21,6 @@ if __name__ == "__main__":
     manager = Manager(app)
 
     manager.add_command('collect', CollectStaticFiles())
+    manager.add_command('assets', ManageAssets())
+    
     manager.run()
