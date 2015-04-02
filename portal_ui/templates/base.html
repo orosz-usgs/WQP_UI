@@ -12,8 +12,10 @@
 		{% block page_style %}{% endblock %}
 		
 		<link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/vnd.microsoft.icon" />
-		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/jquery-ui-1.10.3.custom/css/smoothness/jquery-ui-1.10.3.custom.css') }}" />
-		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/custom.css') }}" />
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/jquery-ui-1.10.3.custom/css/smoothness/jquery-ui-1.10.3.custom.min.css') }}" />
+		{% assets "custom_less" %}
+			<link rel="stylesheet"  type="text/css" href="{{ ASSET_URL }}" >
+		{% endassets %}
 		
 		
 		<script type="text/javascript">

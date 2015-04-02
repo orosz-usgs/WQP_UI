@@ -221,27 +221,7 @@
 		  			<value>${project.basedir}/portal_ui/static</value>
 		  		</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.lesscss</groupId>
-				<artifactId>lesscss-maven-plugin</artifactId>
-				<version>1.3.3</version>
-				<configuration>
-					<sourceDirectory>${project.basedir}/portal_ui/static/less</sourceDirectory>
-					<outputDirectory>${project.basedir}/portal_ui/static/styles</outputDirectory>
-					<compress>false</compress>
-					<includes>
-						<include>custom.less</include>
-					</includes>
-					<lessJs>${project.basedir}/portal_ui/static/vendor/less-1.6.3.js</lessJs>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+
 		</plugins>
 	</build>
 

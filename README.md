@@ -25,6 +25,9 @@ To run this application locally, you will need to do the following:
 	
 	#points to the query endpoint. Does not include the type of data or 'search' part of the endpoint
 	SEARCH_QUERY_ENDPOINT = ''
+	
+	#points to the public srsnames endpoint you want to use.
+	PUBLIC_SRSNAMES_ENDPOINT = ''
 	```
 3. Need to compile the less style sheets into css. This can be done by running `mvn lesscss:compile`
 
