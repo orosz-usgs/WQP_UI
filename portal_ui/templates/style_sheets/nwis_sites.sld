@@ -14,8 +14,12 @@
               <sld:Mark>
                 <sld:WellKnownName>triangle</sld:WellKnownName>
                 <sld:Fill>
-                  <sld:CssParameter name="fill">#00FF00</sld:CssParameter>
+                  <sld:CssParameter name="fill">#006F41</sld:CssParameter>
                 </sld:Fill>
+                <sld:Stroke>
+                    <sld:CssParameter name="stroke">#000000</sld:CssParameter>
+                    <sld:CssParameter name="stroke-width">2</sld:CssParameter>
+                </sld:Stroke>
               </sld:Mark>
               <sld:Size>17</sld:Size>
             </sld:Graphic>

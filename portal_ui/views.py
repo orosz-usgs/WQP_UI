@@ -8,6 +8,7 @@ from .utils import pull_feed
 
 @app.route('/index.jsp')
 @app.route('/index/')
+@app.route('/')
 def home():
     return render_template('index.html')
  
