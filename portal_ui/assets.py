@@ -6,6 +6,15 @@ from . import app
 bundles = {
     'custom_less' : Bundle(
         'less/custom.less',
+        depends=[
+            'less/coverage.less',
+            'less/footer.less',
+            'less/header.less',
+            'less/index.less',
+            'less/page_content.less',
+            'less/portal_form.less',
+            'less/site_nav.less',
+            'less/variables.less'],
         filters='less,cssmin', 
         output='gen/custom.css'),
     'portal_js' : Bundle(
