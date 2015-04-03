@@ -72,3 +72,54 @@ MapUtils.getLayer = function(layer, options) {
     }
 }
 
+/*
+ * @ returns a promise which is resolved when the layer has been created. The
+ *   layer is returned in the deferred's response
+ */
+MapUtils.getNWISSitesLayer = function(options, params) {
+	options = options ? options : {};
+	params = params ? params : {};
+	var defaultOptions = {
+		layers: 'NWC:gagesII',
+		version: '1.1.1',
+		format: 'image/png',
+		transparent : true,
+		tiled: true
+	};
+	var defaultParams = {
+		isBaseLayer : false,
+		displayInLayerSwitcher : true,
+		visibility : false,
+		singleTile : true // If sending an SLD_BODY parameter it must be a single tile.
+	}
+	
+	var finalParams = $.extend({}, defaultParams, params);
+	var finalOptions = $.extend({}, defaultOptions, options);
+	
+	var sldDeferred = $.Deferred();
+	$.ajax({
+		url : Config.NWIS_SITE_SLD_URL,
+		dataType : 'text',
+		success : function(data) {
+			finalOptions.sld_body = data;
+			sldDeferred.resolve(new OpenLayers.Layer.WMS(
+					'NWIS Sites',
+					'http://cida.usgs.gov/nwc/proxy/geoserver/NWC/wms',
+					finalOptions,
+					finalParams
+				)
+			);
+		},
+		error : function() {
+			sldDeferred.resolve(new OpenLayers.Layer.WMS(
+					'NWIS Sites',
+					'http://cida.usgs.gov/nwc/proxy/geoserver/NWC/wms',
+					finalOptions,
+					finalParams
+				)
+			)
+		}
+	});
+	return sldDeferred;
+}
+

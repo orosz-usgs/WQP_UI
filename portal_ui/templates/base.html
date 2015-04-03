@@ -35,7 +35,7 @@
 		    
 		    Config.GEOSERVER_PROXY_ENDPOINT = "{{ url_for('geoserverproxy', op='') }}";
 		    Config.STATIC_ENDPOINT = "{{ url_for('static', filename='') }}";
-		    
+		    Config.NWIS_SITE_SLD_URL = "{{ url_for('nwis_site_sld') }}";
 		    Config.IS_PROD = location.hostname == 'www.waterqualitydata.us';
     		Config.ALLOW_QA_ACCESS = true;
     		Config.GA_TRACKING_CODE = "{{ config.GA_TRACKING_CODE }}";

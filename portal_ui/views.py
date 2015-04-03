@@ -102,7 +102,12 @@ def geoserverproxy(op):
         
     return Response(resp.content, status=resp.status_code, headers=resp.headers.items())
    
-   
+ 
+@app.route('/nwis_site_sld/')
+def nwis_site_sld():
+    resp = app.make_response(render_template('style_sheets/nwis_sites.sld')) 
+    resp.headers['Content-Type'] = 'text/xml; charset=utf-8'
+    return resp
  
         
     

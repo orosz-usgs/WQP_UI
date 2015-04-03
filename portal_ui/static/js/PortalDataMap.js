@@ -74,6 +74,10 @@ function PortalDataMap (mapDivId, updateDivId, identifyDialog /* IdentifyDialog 
     }
     this.map.addLayers(baseLayers);
 
+    MapUtils.getNWISSitesLayer().then(function(layer) {
+    	this.map.addLayer(layer);
+    }.bind(this));
+
     // Initialize map center and zoom level.
     this.map.zoomTo(3);
     var center = new OpenLayers.LonLat(MapUtils.DEFAULT_CENTER.lon, MapUtils.DEFAULT_CENTER.lat);
