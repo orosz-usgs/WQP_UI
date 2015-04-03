@@ -92,21 +92,27 @@
 		<div id="wqp-page">
 			<div id="page-header">
 				<div id="page-header-small">
-        			<div id="page-header-logo">
-            			<img src="{{ url_for('static', filename='img/NWQMC_newlogo.jpg') }}" />
-        			</div>
-        			<div id="page-header-text-div">
-            			<div id="page-header-sponser-div">NATIONAL WATER QUALITY MONITORING COUNCIL</div>
-            			<div id="page-header-tag-line-div">Working Together for Clean Water</div>
-            		</div>
+					<a href="http://acwi.gov/monitoring/">
+	        			<div id="page-header-logo">
+	            			<img src="{{ url_for('static', filename='img/NWQMC_newlogo.jpg') }}" />
+	        			</div>
+	        			<div id="page-header-text-div">
+	            			<div id="page-header-sponser-div">NATIONAL WATER QUALITY MONITORING COUNCIL</div>
+	            			<div id="page-header-tag-line-div">Working Together for Clean Water</div>
+	            		</div>
+					</a>
 				</div>
 			
 				<div id="page-header-full">
-					<img src="{{ url_for('static', filename='img/NWQMC_header_web_960w.png') }}" />
+					<a href="http://acwi.gov/monitoring/">
+						<img src="{{ url_for('static', filename='img/NWQMC_header_web_960w.png') }}" />
+					</a>
 					<div id="page-title">
-						<h1>
-							{% block page_header_title %}{% endblock %}
-						</h1>
+						<a href="{{ url_for('home') }}">
+							<h1>
+								{% block page_header_title %}{% endblock %}
+							</h1>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -162,18 +168,6 @@
 			        </div>
 			    </div>		
 			</div>
-		
-		
-		<script type="text/javascript">
-		    // Click on WQP part of theheader sends user home, otherwise to ACWI site
-		    $('#wqp-dummy-link').click(function() {
-		        window.location.assign("{{ url_for('home') }}");
-		        return false;
-		    });
-		    $('#page-header').click(function() {
-		        window.location.assign('http://acwi.gov/monitoring/');
-		    });
-		</script>
 		
 		{% block body_page_script %}{% endblock %}
 		
