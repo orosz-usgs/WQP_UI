@@ -5,7 +5,7 @@
 	<groupId>gov.usgs.cida.wqp</groupId>
 	<artifactId>wqp_ui</artifactId>
 	<packaging>pom</packaging>
-	<version>3.0-SNAPSHOT</version>
+	<version>3.0</version>
 	<name>WQP UI</name>
 
 	<properties>
@@ -80,7 +80,8 @@
 		<connection>scm:git:git@github.com:USGS-CIDA/WQP_UI.git</connection>
         <developerConnection>scm:git:git@github.com:USGS-CIDA/WQP_UI.git</developerConnection>
         <url>https://github.com/USGS-CIDA/WQP_UI</url>
-	</scm>
+	  <tag>wqp_ui-3.0</tag>
+  </scm>
 
 	<distributionManagement>
 	    <repository>
