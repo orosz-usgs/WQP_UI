@@ -1,0 +1,93 @@
+/* This file contains styles that can be used on any page on the site */
+#wqp-page {
+    .container;
+    background-color: @wqp-page-color;
+}
+#public-srsnames-page #footer-content {
+    .container;
+}
+/* Style for input elements that are disabled */
+.disabled {
+	color: #AAAAAA;
+}
+
+.show-hide-toggle {
+    border: 0px;
+    background-color : inherit;
+}
+/* Override styling for bootstrap's popover */
+.popover {
+    color: black;
+    font-weight : normal;
+    max-width: 300px;
+    width: 300px;
+    @media(min-width: @screen-sm-min) {
+        max-width: 400px;
+        width : 400px;
+    }
+    .popover-title {
+        font-weight: bold;
+    }
+}
+
+/* Override styling for bootstrap's panel */
+#page-content .panel {
+    .panel-default;
+    .panel-heading {
+        color: #034e91;
+        font-weight: bold;    
+    }
+}
+/* Style for lists and tables displayed on the user guide pages */
+.user-guide h4 {
+    color: #1E701E;
+}
+.user-guide ul {
+    margin-top: 3px;
+    margin-bottom: 3px;
+    padding: 0px;
+    list-style: none;
+}
+.user-guide li a{
+	text-decoration:none;
+	font-weight: bold;
+}
+.user-guide li+a:hover {
+	text-decoration: underline;
+}
+.user-guide li ul {
+    margin-top: 3px;
+	margin-bottom: 3px;
+    padding-left: 2em;
+	list-style: none;
+}
+.user-guide li>ul a{
+	font-weight: normal;
+}
+.user-guide table {
+	border-collapse: collapse;
+	background: #f7f0e4;
+        margin-bottom: 10px;
+}
+.user-guide th {
+	padding: 4px;	
+	border: solid 1px grey;
+}
+.user-guide td {
+	padding: 4px;
+	border: solid 1px grey;
+}
+.user-guide blockquote {
+    font-size : @font-size-base;
+    border-left: 0px;
+}
+/* Style for the loadingPanel control */
+.olControlLoadingPanel {
+    background-image: url('../img/loading.gif');
+    position: relative;
+    width: 100%;
+    height: 20px;
+    background-position: center;
+    background-repeat:no-repeat;
+    display: none;
+}
