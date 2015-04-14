@@ -35,7 +35,7 @@ PORTAL.tempOnReady = function() {
         var resultSection = "<div class=\"show-query-text\"><b>Physical/Chemical results</b><br><textarea readonly=\"readonly\" rows='6'>" + APP.URLS.getFormUrl('Result') + "</textarea></div>";
         var biologicalResultSection = "<div class=\"show-query-text\"><b>Biological results</b><br><textarea readonly=\"readonly\" rows='6'>" + APP.URLS.getFormUrl('biologicalresult') + "</textarea></div>";
 
-        $('#WSFeedback').html(stationSection + resultSection + biologicalResultSection);
+        $('#WSFeedback').html(stationSection + resultSection); // temporarily reoving + biologicalResultSection);
     });
     // Initialize portal data map and identify dialog
     var identifyDialog = new IdentifyDialog('map-info-dialog', function(resultType) { return APP.URLS[resultType];});
