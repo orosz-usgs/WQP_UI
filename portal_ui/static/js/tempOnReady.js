@@ -18,7 +18,7 @@ PORTAL.tempOnReady = function() {
         var sensitive = !($('#download-box #samples').prop('checked')) && !($('#download-box #biosamples').prop('checked'));
         setEnabled($('#download-box #kml'), sensitive);
 
-        $('#params').attr('action', APP.URLS[$(this).val()]);
+        $('#params').attr('action', APP.URLS.getFormUrl($(this).val()));
         $('#params input[name="resultType"]:hidden').val($(this).val());
     });
 
