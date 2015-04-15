@@ -96,14 +96,15 @@ def geoserverproxy(op):
     app.logger.info('geoserver url goes to ' + target_url + '?' + request.query_string)
     if request.method == 'GET':
         resp = requests.get(target_url + '?' + request.query_string)
+        resp.headers['X-Frame-Options'] = 'SAMEORIGIN'
         # This fixed an an ERR_INVALID_CHUNKED_ENCODING when the app was run on the deployment server.
-        app.logger.info('Response content is %s' % resp.content)
-        resp.headers['transfer-encoding'] = ''
+        #resp.headers['transfer-encoding'] = ''
     else:
         resp = requests.post(target_url, data=request.data, headers=request.headers)  
         del resp.headers['content-encoding']
         
-    return Response(resp.content, status=resp.status_code, headers=resp.headers.items())
+    fresp = Response(resp.content, status=resp.status_code, headers=resp.headers.items())
+    return fresp
    
  
 @app.route('/nwis_site_sld/')

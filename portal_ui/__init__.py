@@ -26,6 +26,5 @@ def log_request():
 
 
 
-
 import assets
 import views
