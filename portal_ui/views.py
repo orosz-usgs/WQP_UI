@@ -93,10 +93,11 @@ def public_srsnames():
 @app.route('/geoserver/<op>', methods=['GET', 'POST'])
 def geoserverproxy(op):
     target_url = app.config['GEOSERVER_ENDPOINT'] + '/' + op
-    app.logger.info('geoserver url goes to %s' % target_url)
+    app.logger.info('geoserver url goes to ' + target_url + '?' + request.query_string)
     if request.method == 'GET':
         resp = requests.get(target_url + '?' + request.query_string)
         # This fixed an an ERR_INVALID_CHUNKED_ENCODING when the app was run on the deployment server.
+        app.logger.info('Response content is %s' % resp.content)
         resp.headers['transfer-encoding'] = ''
     else:
         resp = requests.post(target_url, data=request.data, headers=request.headers)  
