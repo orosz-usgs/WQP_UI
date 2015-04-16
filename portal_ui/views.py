@@ -1,7 +1,7 @@
 
 import requests
 
-from flask import render_template, request, Response
+from flask import render_template, request, make_response
 
 from . import app
 from .utils import pull_feed
@@ -104,8 +104,7 @@ def geoserverproxy(op):
         resp = requests.post(target_url, data=request.data, headers=request.headers)  
         del resp.headers['content-encoding']
         
-    fresp = Response(resp.content, status=resp.status_code, headers=resp.headers.items())
-    fresp.headers['X-Frame-Options'] = 'SAMEORIGIN'
+    fresp = make_response(resp.content, resp.status_code, resp.headers.items())
     return fresp
    
  
