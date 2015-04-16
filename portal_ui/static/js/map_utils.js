@@ -103,7 +103,7 @@ MapUtils.getNWISSitesLayer = function(options, params) {
 		success : function(data) {
 			finalOptions.sld_body = data;
 			sldDeferred.resolve(new OpenLayers.Layer.WMS(
-					'NWIS Sites',
+					'NWIS Stream Gages',
 					'http://cida.usgs.gov/nwc/proxy/geoserver/NWC/wms',
 					finalOptions,
 					finalParams
