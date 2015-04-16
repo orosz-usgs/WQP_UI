@@ -105,6 +105,7 @@ CoverageMap.init = function(divId) {
 			Config.GEOSERVER_PROXY_ENDPOINT + 'wms',
 			{
 				layers: CoverageMapConfig.LAYER_PARAM.states,
+				format: 'image/png',
 				viewparams: CoverageMapConfig.get_viewparams('all_time', 'all')
 			},
 			{
@@ -161,7 +162,7 @@ CoverageMap.updateDataLayerSLD = function(display_by, date_filter, source) {
 CoverageMap.updateLegend = function(imgEl, display_by, date_filter, source){
 	imgEl.attr(
 			'src',
-			Config.GEOSERVER_ENDPOINT + '/wms?request=GetLegendGraphic&format=image/png&layer=' + CoverageMapConfig.LAYER_PARAM[display_by] +
+			Config.GEOSERVER_PROXY_ENDPOINT + 'wms?request=GetLegendGraphic&format=image/png&layer=' + CoverageMapConfig.LAYER_PARAM[display_by] +
 			'&legend_options=fontName:Verdana;fontAntiAliasing:true;' +
 			'&sld=' + encodeURIComponent(CoverageMapConfig.get_sld_param(display_by, date_filter, source)));
 };
