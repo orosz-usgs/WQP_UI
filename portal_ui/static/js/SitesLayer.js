@@ -10,7 +10,8 @@ function SitesLayer(layerName /* String */,
             {
                 layers: layerName,
                 styles: 'zoom_based_point',
-                        transparent: true
+                format: 'image/png',
+                transparent: true
             },
             {
                 displayInLayerSwitcher: false,
