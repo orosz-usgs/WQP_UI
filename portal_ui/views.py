@@ -4,7 +4,7 @@ import requests
 from flask import render_template, request, make_response, redirect, url_for
 
 from . import app
-from .utils import pull_feed
+from .utils import pull_feed, geoserver_proxy_request
 
 @app.route('/index.jsp')
 @app.route('/index/')
@@ -116,19 +116,16 @@ def public_srsnames():
     return render_template('public_srsnames.html')
     
 
-@app.route('/geoserver/<op>', methods=['GET', 'POST'])
-def geoserverproxy(op):
-    target_url = app.config['GEOSERVER_ENDPOINT'] + '/' + op
+@app.route('/coverage_geoserver/<op>', methods=['GET', 'POST'])
+def coverage_geoserverproxy(op):
+    target_url = app.config['COVERAGE_MAP_GEOSERVER_ENDPOINT'] + '/' + op
+    return geoserver_proxy_request(target_url);
     
-    if request.method == 'GET':
-        resp = requests.get(target_url + '?' + request.query_string)
-                # This fixed an an ERR_INVALID_CHUNKED_ENCODING when the app was run on the deployment server.
-        del resp.headers['transfer-encoding']
-    else:
-        resp = requests.post(target_url, data=request.data, headers=request.headers)  
-        del resp.headers['content-encoding']
-        
-    return make_response(resp.content, resp.status_code, resp.headers.items())
+
+@app.route('/sites_geoserver/<op>', methods=['GET', 'POST'])
+def sites_geoserverproxy(op):
+    target_url = app.config['SITES_MAP_GEOSERVER_ENDPOINT'] + '/' + op
+    return geoserver_proxy_request(target_url);
    
  
 @app.route('/nwis_site_sld/')

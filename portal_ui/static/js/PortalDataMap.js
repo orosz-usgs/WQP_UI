@@ -121,7 +121,7 @@ function PortalDataMap (mapDivId, updateDivId, identifyDialog /* IdentifyDialog 
         var theseFormParams = formParams;
         var thisPortalDataMap = this;
         OpenLayers.Request.POST({
-            url : Config.GEOSERVER_PROXY_ENDPOINT + 'ows?identifier=gs:SiteImport',
+            url : Config.SITES_GEOSERVER_ENDPOINT + 'ows?identifier=gs:SiteImport',
             data : SiteImportWPSUtils.getRequestXML('gs:SiteImport', formParams),
             success: function(data) {
                 // Poll the process status WPS to determine the current status of building the new
@@ -133,7 +133,7 @@ function PortalDataMap (mapDivId, updateDivId, identifyDialog /* IdentifyDialog 
                     function() {
                         if (this.statusRequest.status) {
                             this.statusRequest = OpenLayers.Request.POST({
-                                url : Config.GEOSERVER_PROXY_ENDPOINT + 'ows?identifier=gs:SingleWpsStatus',
+                                url : Config.SITES_GEOSERVER_ENDPOINT + 'ows?identifier=gs:SingleWpsStatus',
                                 data: SiteImportWPSUtils.getRequestXML(
                                     'gs:SingleWpsStatus',
                                     [{ name : 'layerName', value : data.responseText}]),

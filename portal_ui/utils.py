@@ -1,6 +1,9 @@
 
-from bs4 import BeautifulSoup
 import feedparser
+import requests
+
+from bs4 import BeautifulSoup
+from flask import request, make_response
 
 def pull_feed(feed_url):
     """
@@ -32,4 +35,17 @@ def pull_feed(feed_url):
 
     return post
 
+def geoserver_proxy_request(target_url):
+    if request.method == 'GET':
+        resp = requests.get(target_url + '?' + request.query_string)
+        # This fixed an an ERR_INVALID_CHUNKED_ENCODING when the app was run on the deployment server.
+        if 'transfer-encoding' in resp.headers:
+            del resp.headers['transfer-encoding']
+            
+    else:
+        resp = requests.post(target_url, data=request.data, headers=request.headers)
+        if 'content-encoding' in resp.headers: 
+            del resp.headers['content-encoding']
+        
+    return make_response(resp.content, resp.status_code, resp.headers.items())    
 
