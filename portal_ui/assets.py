@@ -28,7 +28,6 @@ bundles = {
         'js/PortalDataMap.js',
         'js/portalViews.js',
         'js/onReady.js',
-        'js/tempOnReady.js',
         'js/providers.js',
         'js/portalModels.js',
         'js/DataSourceUtils.js',

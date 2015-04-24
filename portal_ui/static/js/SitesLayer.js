@@ -1,17 +1,36 @@
-function SitesLayer(layerName /* String */,
-                    enableBoxId/* Boolean */,
-                    selectFeatureFnc /* Event handler for featureselected */) {
+
+/*'
+ * Provides methods to create a site layer and to add an id control
+ * @param {Array of {Object - with name and value properties} formParams
+ * @param {Boolean} enableBoxId
+ * @param {Function} selectFeatureFnc - function to execute when selecting features on the layer
+ * @returns {Object}
+ */
+
+function SitesLayer(formParams,
+					enableBoxId,
+                    selectFeatureFnc) {
     this._isBoxIDEnabled = enableBoxId;
     this._selectFeatureFnc = selectFeatureFnc;
+    
+    var getSearchParams = function(formParams) {
+    	var result = [];
+    	$.each(formParams, function(index, param) {
+    		var paramStr = param.name + ':' + param.value.replace(';', '|');
+    		result.push(paramStr);
+    	});
+    	return result.join(';');   	
+    };
 
     this.dataLayer = new OpenLayers.Layer.WMS(
             'Sites',
             Config.SITES_GEOSERVER_ENDPOINT + 'wms',
             {
-                layers: layerName,
-                styles: 'zoom_based_point',
+                layers: 'wqp_sites',
+                styles: 'wqp_sources',
                 format: 'image/png',
-                transparent: true
+                transparent: true,
+                searchParams : getSearchParams(formParams)
             },
             {
                 displayInLayerSwitcher: false,
@@ -24,10 +43,7 @@ function SitesLayer(layerName /* String */,
     );
 
     this._createIdControl = function() {
-    	// Because we are using a proxy for wfs and wps calls, but not for wms, we must clone the layer
-    	// and change it's url to the proxy before creating the protocol. 
-    	var dataLayer = this.dataLayer.clone();
-    	var protocol = OpenLayers.Protocol.WFS.fromWMSLayer(dataLayer);
+    	var protocol = OpenLayers.Protocol.WFS.fromWMSLayer(this.dataLayer);
         this.idFeatureControl = new WQPGetFeature({
             protocol: protocol,
             box: this._isBoxIDEnabled,

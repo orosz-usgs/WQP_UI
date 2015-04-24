@@ -103,7 +103,68 @@ function PortalDataMap (mapDivId, updateDivId, identifyDialog /* IdentifyDialog 
             this.completeFnc = null;
         }
     };
+    
+    /*
+     * Removes the previous data layer if any and any identification dialogs. Retrieves
+     * and displays the new data layer
+     * @param {Array of {Object with name and value properties}} formParams
+     */
+    this.showDataLayer = function(formParams) {
+    	var self = this;
+    	// Clean up previous data Layer
+        if (this.dataLayer) {
+            this.dataLayer.removeFromMap(this.map);
+            this._selectBoxLayer.destroyFeatures();
+            this.map.removeLayer(this._selectBoxLayer);
+        }
+        if (this._identifyDialog.dialogEl.dialog('isOpen')) {
+            this._identifyDialog.dialogEl.dialog('close');
+        }
+        if (this._popupIdentify) {
+            this.map.removePopup(this._popupIdentify);
+        }
+        this.dataLayer = new SitesLayer(
+        		formParams,
+                this._boxIdentifyOn,
+                function(ev, selectBoundingBox) {
+                    var siteIds = [];
+                    var degreeBBox;
+                    var i;
 
+                    self._updateSelectBoxLayer();
+                    // If we are on an extra small device, use an openlayers popup and
+                    // just display the site ids
+                    for (i = 0; i < ev.features.length; i++) {
+                         siteIds.push(ev.features[i].attributes.id);
+                    }
+                    if ($('body').width() < 750) {
+                        PORTAL.CONTROLLER.retrieveSiteIdInfo(siteIds, function(html) {
+                            this._popupIdentify = new OpenLayers.Popup.FramedCloud(
+                                'idPopup',
+                                selectBoundingBox.getCenterLonLat(),
+                                null,
+                                html,
+                                null,
+                                true,
+                                function() {
+                                    self._popupIdentify = null;
+                                    self.cancelIdentifyOp();
+                                    self.destroy();
+                                }
+                            );
+                            self.map.addPopup(this._popupIdentify, true);
+                        });
+                    }
+                    else {
+                        degreeBBox = selectBoundingBox.transform(MapUtils.MERCATOR_PROJECTION, MapUtils.WGS84_PROJECTION);
+                        self._identifyDialog.updateAndShowDialog(siteIds, degreeBBox, formParams);
+                    }
+                }
+        );
+        this.dataLayer.addToMap(this.map);
+        this.map.addLayer(this._selectBoxLayer);
+        
+    }
     this.fetchDataLayer = function(
         formParams /* array of object {'name' : xx, 'value': xx } */,
         complete /* function to call when operation is complete whether it succeeded or failed */) {
