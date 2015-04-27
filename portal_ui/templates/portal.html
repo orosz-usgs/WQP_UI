@@ -410,7 +410,7 @@
     <script type="text/javascript" src="{{ url_for('static', filename='vendor/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='vendor/jshashtable-3.0.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='vendor/jquery.numberformatter-1.2.4.min.js') }}"></script>    
-    <script type="text/javascript" src="http://cida.usgs.gov/js/openlayers/2.12/release/OpenLayers.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='vendor/OpenLayers/OpenLayers.debug.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='vendor/LoadingPanel.js') }}"></script>
     {% assets "portal_js" %}
     	<script type="text/javascript" src="{{ ASSET_URL }}"></script>

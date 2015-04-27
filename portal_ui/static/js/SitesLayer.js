@@ -21,16 +21,18 @@ function SitesLayer(formParams,
     	});
     	return result.join(';');   	
     };
+    
+    this.searchParams = getSearchParams(formParams);
 
     this.dataLayer = new OpenLayers.Layer.WMS(
             'Sites',
             Config.SITES_GEOSERVER_ENDPOINT + 'wms',
             {
                 layers: 'wqp_sites',
-                styles: 'wqp_sources',
+                styles: 'wqp_sites',
                 format: 'image/png',
                 transparent: true,
-                searchParams : getSearchParams(formParams)
+                searchParams : this.searchParams
             },
             {
                 displayInLayerSwitcher: false,
@@ -42,8 +44,24 @@ function SitesLayer(formParams,
             }
     );
 
+    console.log('Search params ' + encodeURI(this.searchParams));
     this._createIdControl = function() {
-    	var protocol = OpenLayers.Protocol.WFS.fromWMSLayer(this.dataLayer);
+    	var filter = new OpenLayers.Filter.Comparison({
+    		type : OpenLayers.Filter.Comparison.EQUAL_TO,
+    		property : 'searchParams',
+    		value : encodeURIComponent(this.searchParams)
+    	});
+    	var protocol = new OpenLayers.Protocol.WFS({
+    		version: '1.1.0',
+    		url : Config.SITES_GEOSERVER_ENDPOINT + 'wfs',
+    		srsName : 'EPSG:900913',
+    		featureType : 'wqp_sites',
+    		featurePrefix: '',
+    		searchParams : this.searchParams,
+    		defaultFilter : filter
+    	});
+    	    	
+    	//var protocol = OpenLayers.Protocol.WFS.fromWMSLayer(this.dataLayer);
         this.idFeatureControl = new WQPGetFeature({
             protocol: protocol,
             box: this._isBoxIDEnabled,
