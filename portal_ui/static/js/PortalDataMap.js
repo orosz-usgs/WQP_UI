@@ -123,7 +123,7 @@ function PortalDataMap (mapDivId, updateDivId, identifyDialog /* IdentifyDialog 
         if (this._popupIdentify) {
             this.map.removePopup(this._popupIdentify);
         }
-        this.dataLayer = new SitesLayer(
+        this.dataLayer = new WQP.SitesLayer(
         		formParams,
                 this._boxIdentifyOn,
                 function(ev, selectBoundingBox) {
@@ -161,6 +161,7 @@ function PortalDataMap (mapDivId, updateDivId, identifyDialog /* IdentifyDialog 
                     }
                 }
         );
+        
         this.dataLayer.addToMap(this.map);
         this.map.addLayer(this._selectBoxLayer);
         
@@ -297,6 +298,7 @@ function processStatus (responseData /* object returned from WPS Post*/, portalD
                        }
                    }
             );
+            
             portalDataMap.dataLayer.addToMap(portalDataMap.map);
             portalDataMap.map.addLayer(portalDataMap._selectBoxLayer);
 
