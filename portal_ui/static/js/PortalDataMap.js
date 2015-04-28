@@ -136,7 +136,7 @@ function PortalDataMap (mapDivId, updateDivId, identifyDialog /* IdentifyDialog 
                     // If we are on an extra small device, use an openlayers popup and
                     // just display the site ids
                     for (i = 0; i < ev.features.length; i++) {
-                         siteIds.push(ev.features[i].attributes.id);
+                         siteIds.push(ev.features[i].attributes.name);
                     }
                     if ($('body').width() < 750) {
                         PORTAL.CONTROLLER.retrieveSiteIdInfo(siteIds, function(html) {
