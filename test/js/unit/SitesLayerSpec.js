@@ -2,7 +2,11 @@ describe ("Tests SitesLayer", function(){
     
     var map;
     
-    var selectSpy;
+    var selectSpy, loadendSpy;
+    var formParams = [
+                      {name: 'param1', value: 'value1'},
+                      {name : 'param2', value: 'valu2'}
+    ];
 
     beforeEach(function() {
         $('body').append('<div id="map-div"></div>');
@@ -10,9 +14,10 @@ describe ("Tests SitesLayer", function(){
         map = new OpenLayers.Map('map-div');  
         
         selectSpy = jasmine.createSpy('selectSpy');
+        loadendSpy = jasmine.createSpy('loadendSpy');
         
         Config = {
-            GEOSERVER_ENDPOINT: 'http://faketestserver.com'
+            SITES_GEOSERVER_ENDPOINT: 'http://faketestserver.com'
         };
     });
     
@@ -21,14 +26,14 @@ describe ("Tests SitesLayer", function(){
     });
     
     it('Expects layer and control object created', function() {
-        var layer = new SitesLayer('testLayer', false, selectSpy);
+        var layer = new SitesLayer(formParams, loadendSpy, false, selectSpy);
         expect(layer.dataLayer).toBeDefined();
         expect(layer.idFeatureControl).toBeDefined();
-        expect(layer.dataLayer.params.LAYERS).toEqual('testLayer');
+        expect(layer.dataLayer.params.LAYERS).toEqual('wqp_sites');
     });
     
     it('Expects addToMap to add the layer and the control with the control set to use box to the map', function() {
-        var layer = new SitesLayer('testLayer', true, selectSpy);
+        var layer = new SitesLayer(formParams, loadendSpy, true, selectSpy);
         layer.addToMap(map);
         
         expect(map.layers).toContain(layer.dataLayer);
@@ -40,7 +45,7 @@ describe ("Tests SitesLayer", function(){
     });
     
     it('Expects addToMap to add the layer and the control with the control set to use click to the map', function() {
-        var layer = new SitesLayer('testLayer', false, selectSpy);
+        var layer = new SitesLayer(formParams, loadendSpy, false, selectSpy);
         layer.addToMap(map);
         
         expect(map.layers).toContain(layer.dataLayer);
@@ -52,7 +57,7 @@ describe ("Tests SitesLayer", function(){
     });
     
     it('Expects removeFromMap to remove the layer and the control from the map', function() {
-         var layer = new SitesLayer('testLayer', true, selectSpy);
+         var layer = new SitesLayer(formParams, loadendSpy, true, selectSpy);
          layer.addToMap(map);
          
          layer.removeFromMap(map);
@@ -62,7 +67,7 @@ describe ("Tests SitesLayer", function(){
     });
     
     it('Expects enableBoxId to set the click and box attributes appropriately', function() {
-        var layer = new SitesLayer('testLayer', true, selectSpy);
+        var layer = new SitesLayer(formParams, loadendSpy, true, selectSpy);
         layer.addToMap(map);
         
         layer.enableBoxId(map, false);

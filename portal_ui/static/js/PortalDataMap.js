@@ -123,7 +123,7 @@ function PortalDataMap (mapDivId, updateDivId, identifyDialog /* IdentifyDialog 
         if (this._popupIdentify) {
             this.map.removePopup(this._popupIdentify);
         }
-        this.dataLayer = new WQP.SitesLayer(
+        this.dataLayer = new SitesLayer(
         		formParams,
         		loadendCallback,
                 this._boxIdentifyOn,
