@@ -75,6 +75,7 @@ function SitesLayer (formParams,
     		url : Config.SITES_GEOSERVER_ENDPOINT + 'wfs',
     		srsName : 'EPSG:900913',
     		featureType : 'wqp_sites',
+    		featureNS : '',
     		featurePrefix: '',
     		defaultFilter : filter
     	});
