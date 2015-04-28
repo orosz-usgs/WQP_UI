@@ -11,7 +11,7 @@
 function SitesLayer (formParams,
 						loadendCallback,
 						enableBoxId,
-	                    selectFeatureFnc) {
+						selectFeatureFnc) {
     this._isBoxIDEnabled = enableBoxId;
     this._selectFeatureFnc = selectFeatureFnc;
     

@@ -268,7 +268,7 @@ PORTAL.onReady = function() {
         $('#WSFeedback').html(stationSection + resultSection); // temporarily reoving + biologicalResultSection);
     });
     // Initialize portal data map and identify dialog
-    var identifyDialog = new IdentifyDialog('map-info-dialog', function(resultType) { return APP.URLS[resultType];});
+    var identifyDialog = new IdentifyDialog('map-info-dialog', APP.URLS.getFormUrl);
 
     // Add click handler for map show/hide button
     $('#mapping-div .show-hide-toggle').click(function() {
