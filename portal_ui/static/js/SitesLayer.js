@@ -24,12 +24,14 @@ var WQP = WQP || {};
 	/*
 	 * Provides methods to create a site layer and to add an id control
 	 * @param {Array of {Object - with name and value properties} formParams
+	 * @param {Function} loadendCallback - to be called when loadend event is triggered.
 	 * @param {Boolean} enableBoxId
 	 * @param {Function} selectFeatureFnc - function to execute when selecting features on the layer
 	 * @returns {Object}
 	 */
 	
 	WQP.SitesLayer = function (formParams,
+						loadendCallback,
 						enableBoxId,
 	                    selectFeatureFnc) {
 	    this._isBoxIDEnabled = enableBoxId;
@@ -37,10 +39,19 @@ var WQP = WQP || {};
 	    
 	    var getSearchParams = function(formParams) {
 	    	var result = [];
+	    	providerValues = [];
 	    	$.each(formParams, function(index, param) {
-	    		var paramStr = param.name + ':' + param.value.replace(';', '|');
-	    		result.push(paramStr);
+	    		if (param.name === 'providers') {
+	    			providerValues.push(param.value);
+	    		}
+	    		else {
+	    			var paramStr = param.name + ':' + param.value.replace(';', '|');
+	    			result.push(paramStr);
+	    		}
 	    	});
+	    	if (providerValues.length > 0) {
+	    		result.push('providers:' + providerValues.join('|'));
+	    	}
 	    	return result.join(';');   	
 	    };
 	    
@@ -51,7 +62,7 @@ var WQP = WQP || {};
 	            Config.SITES_GEOSERVER_ENDPOINT + 'wms',
 	            {
 	                layers: 'wqp_sites',
-	                styles : 'wqp_sites', 
+	                styles : 'wqp_sources', 
 	                format: 'image/png',
 	                transparent: true,
 	                searchParams : this.searchParams
@@ -71,6 +82,9 @@ var WQP = WQP || {};
 	                
 	            }
 	    );
+	    this.dataLayer.events.register('loadend', this, function(ev) {
+	    	loadendCallback();
+	    });
 	
 	    this._createIdControl = function() {
 	    	var filter = new OpenLayers.Filter.Comparison({

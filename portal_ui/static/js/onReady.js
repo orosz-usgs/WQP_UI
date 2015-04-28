@@ -160,16 +160,12 @@ PORTAL.onReady = function() {
             _gaq.push(['_trackEvent', 'Portal Map', 'MapCreate',  decodeURIComponent(APP.URLS.getQueryParams()), parseInt(count)]);
 
             // Start mapping process by disabling the show site button and then requesting the layer
-//            $('#show-on-map-button').attr('disabled', 'disabled').removeClass('query-button').addClass('disable-query-button');
+            $('#show-on-map-button').attr('disabled', 'disabled').removeClass('query-button').addClass('disable-query-button');
             var formParams = getFormValues($('#params'),
                     ['north', 'south', 'east', 'west', 'resultType', 'source', 'mimeType', 'zip','__ncforminfo' /*input is injected by barracuda firewall*/]);
-            PORTAL.portalDataMap.showDataLayer(formParams);
-//            PORTAL.portalDataMap.fetchDataLayer(getFormValues($('#params'),
-//               ['north', 'south', 'east', 'west', 'resultType', 'source', 'mimeType', 'zip','__ncforminfo' /*input is injected by barracuda firewall*/]),
-//               function() {
-//                    $('#show-on-map-button').removeAttr('disabled').removeClass('disable-query-button').addClass('query-button');
-//                }
-//            );
+            PORTAL.portalDataMap.showDataLayer(formParams, function() {
+            	$('#show-on-map-button').removeAttr('disabled').removeClass('disable-query-button').addClass('query-button');            	
+            });
         });
 
         //Get the head request. We are doing this synchronously which is why the timeout is needed
