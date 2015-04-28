@@ -1,17 +1,49 @@
-function SitesLayer(layerName /* String */,
-                    enableBoxId/* Boolean */,
-                    selectFeatureFnc /* Event handler for featureselected */) {
+
+/*
+ * Provides methods to create a site layer and to add an id control
+ * @param {Array of {Object - with name and value properties} formParams
+ * @param {Function} loadendCallback - to be called when loadend event is triggered.
+ * @param {Boolean} enableBoxId
+ * @param {Function} selectFeatureFnc - function to execute when selecting features on the layer
+ * @returns {Object}
+ */
+	
+function SitesLayer (formParams,
+						loadendCallback,
+						enableBoxId,
+						selectFeatureFnc) {
     this._isBoxIDEnabled = enableBoxId;
     this._selectFeatureFnc = selectFeatureFnc;
+    
+    var getSearchParams = function(formParams) {
+    	var result = [];
+    	providerValues = [];
+    	$.each(formParams, function(index, param) {
+    		if (param.name === 'providers') {
+    			providerValues.push(param.value);
+    		}
+    		else {
+    			var paramStr = param.name + ':' + param.value.replace(';', '|');
+    			result.push(paramStr);
+    		}
+    	});
+    	if (providerValues.length > 0) {
+    		result.push('providers:' + providerValues.join('|'));
+    	}
+    	return result.join(';');   	
+    };
+    
+    this.searchParams = getSearchParams(formParams);
 
     this.dataLayer = new OpenLayers.Layer.WMS(
             'Sites',
-            Config.GEOSERVER_PROXY_ENDPOINT + 'wms',
+            Config.SITES_GEOSERVER_ENDPOINT + 'wms',
             {
-                layers: layerName,
-                styles: 'zoom_based_point',
+                layers: 'wqp_sites',
+                styles : 'wqp_sources', 
                 format: 'image/png',
-                transparent: true
+                transparent: true,
+                searchParams : this.searchParams
             },
             {
                 displayInLayerSwitcher: false,
@@ -19,15 +51,35 @@ function SitesLayer(layerName /* String */,
                 transitionEffect: 'resize',
                 singleTile: true,
                 visibility: true,
-                opacity: 0.75
+                opacity: 0.75,
+                tileOptions: {
+					// http://www.faqs.org/rfcs/rfc2616.html
+					// This will cause any request larger than this many characters to be a POST
+					maxGetUrlLength: 1024
+				}
+                
             }
     );
+    this.dataLayer.events.register('loadend', this, function(ev) {
+    	loadendCallback();
+    });
 
     this._createIdControl = function() {
-    	// Because we are using a proxy for wfs and wps calls, but not for wms, we must clone the layer
-    	// and change it's url to the proxy before creating the protocol. 
-    	var dataLayer = this.dataLayer.clone();
-    	var protocol = OpenLayers.Protocol.WFS.fromWMSLayer(dataLayer);
+    	var filter = new OpenLayers.Filter.Comparison({
+    		type : OpenLayers.Filter.Comparison.EQUAL_TO,
+    		property : 'searchParams',
+    		value : encodeURIComponent(this.searchParams)
+    	});
+    	var protocol = new OpenLayers.Protocol.WFS({
+    		version: '1.1.0',
+    		url : Config.SITES_GEOSERVER_ENDPOINT + 'wfs',
+    		srsName : 'EPSG:900913',
+    		featureType : 'wqp_sites',
+    		featurePrefix: '',
+    		defaultFilter : filter
+    	});
+    	    	
+    	//var protocol = OpenLayers.Protocol.WFS.fromWMSLayer(this.dataLayer);
         this.idFeatureControl = new WQPGetFeature({
             protocol: protocol,
             box: this._isBoxIDEnabled,
@@ -40,6 +92,9 @@ function SitesLayer(layerName /* String */,
 
         this.idFeatureControl.events.register('featuresselected', this, function(ev) {
             this._selectFeatureFnc(ev, this.idFeatureControl.getLastBoundingBox());
+        });
+        this.idFeatureControl.events.register('clickout', this, function(ev) {
+        	console.log('No feature selected');
         });
     };
 
@@ -74,4 +129,3 @@ function SitesLayer(layerName /* String */,
         }
     };
 };
-

@@ -35,7 +35,7 @@ function getCheckBoxHtml(id, className, value) {
 
 function getFormValues(formEl /* form jquery element */, ignoreList /* String array of form parameters */) {
     /* Return an array of objects representing the form elements, where each object is 'name' and 'value' */
-    var allInputs = formEl.serializeArray();
+	var allInputs = formEl.serializeArray();
     var result = [];
     for (var i = 0; i < allInputs.length; i++) {
         if ($.inArray(allInputs[i].name, ignoreList) === -1 && allInputs[i].value) {
