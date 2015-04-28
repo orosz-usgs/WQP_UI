@@ -236,13 +236,19 @@
         .make-sm-column(4);
         .make-md-column(3);
     }
-    #box-identify-div {
-        padding-top: 4px;
-        .make-sm-column(8);
-        .make-md-column(9);
-    }
     label {
         font-weight : normal;
+    }
+    #query-map-legend-div {
+    	.make-row();
+    	.make-sm-column(8);
+        .make-md-column(9);
+        
+        div {
+        	display:inline-block;
+        	padding-left: 10px;
+        }
+        
     }
 }
 #query-map-box {
