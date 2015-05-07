@@ -44,18 +44,22 @@ describe('Tests for PORTAL.VIEWS functions and objects', function() {
     describe('Tests for PORTAL.VIEWS.createCodeSelect', function() {
         var testModel;
         var testSpec;
+        var server;
 
         beforeEach(function() {
+        	server = sinon.fakeServer.create();
             $('body').append('<div id="test-div">' +
                     '<input type="hidden" id="test-select2" />' +
                     '</div>');
-            testModel = PORTAL.MODELS.codes({codes : 'testCode'});
+            testModel = PORTAL.MODELS.cachedCodes({codes : 'testCode'});
+            spyOn(testModel, 'processData').andCallThrough();
             testSpec = {model : testModel};
 
             spyOn($.fn, 'select2');
         });
 
         afterEach(function() {
+        	server.restore();
             $('#test-div').remove();
         });
 
@@ -117,14 +121,13 @@ describe('Tests for PORTAL.VIEWS functions and objects', function() {
             var testQuery;
 
             testSpec.getKeys = getKeysSpy;
-            spyOn(testModel, 'processData');
 
             PORTAL.VIEWS.createCodeSelect($('#test-select2'), testSpec);
 
             testQuery = $.fn.select2.calls[0].args[0].query;
             testQuery();
 
-            expect(testModel.processData.calls[0].args[1]).toEqual(['One']);
+            expect(testModel.processData.calls[0].args[0]).toEqual(['One']);
         });
 
         it('Expects the default formatSelection function to return the id', function(){
@@ -146,7 +149,8 @@ describe('Tests for PORTAL.VIEWS functions and objects', function() {
 
             server = sinon.fakeServer.create();
 
-            testModel = PORTAL.MODELS.codes({codes : 'testCode'});
+            testModel = PORTAL.MODELS.cachedCodes({codes : 'testCode'});
+            spyOn(testModel, 'processData').andCallThrough();
             testSpec = {model : testModel};
 
             spyOn($.fn, 'select2');
@@ -162,9 +166,9 @@ describe('Tests for PORTAL.VIEWS functions and objects', function() {
         it('Expects query function to compile the correct results if data is an array', function() {
             var options;
 
-            var testData = '<Codes><Code value="v1" desc="Text1" providers="P1"/>' +
-                '<Code value="v3" desc="Text3" providers="P1 P2" />' +
-                '<Code value="v2" desc="" providers="P1"/></Codes>';
+            var testData = '{"codes" : [{"value" : "v1:T1", "desc" : "Text1", "providers" : "P1"},' +
+        	'{"value" : "v1:T3", "desc" : "Text3", "providers" : "P1 P2"},' +
+        	'{"value" : "v1:T2", "providers" : "P1"}]}';
 
 
             PORTAL.VIEWS.createCodeSelect($('#test-select2'), testSpec);
@@ -172,28 +176,28 @@ describe('Tests for PORTAL.VIEWS functions and objects', function() {
             options.query({term : '', callback : callbackSpy});
 
             // This gives the model data and calls processData's function.
-            server.requests[0].respond(200, {'Content-Type' : 'text/xml'}, testData);
+            server.requests[0].respond(200, {'Content-Type' : 'text/json'}, testData);
 
             expect(callbackSpy).toHaveBeenCalled();
             expect(callbackSpy.calls[0].args[0]).toEqual({
                 results : [
-                    {id : 'v1', text : 'Text1 (All)'},
-                    {id : 'v3', text : 'Text3 (All)'},
-                    {id : 'v2', text : 'v2 (All)'}
+                    {id : 'v1:T1', text : 'Text1 (All)'},
+                    {id : 'v1:T3', text : 'Text3 (All)'},
+                    {id : 'v1:T2', text : 'v1:T2 (All)'}
                     ]
             });
         });
 
         it('Expects an empty results array passed to options.callbacks when an empty array is processed', function() {
             var options;
-            var testData = '<Codes></Codes>';
+            var testData = '{"codes" : []}';
 
             PORTAL.VIEWS.createCodeSelect($('#test-select2'), testSpec);
             options = $.fn.select2.calls[0].args[0];
             options.query({term : '', callback : callbackSpy});
 
             // This gives the model data and calls processData's function.
-            server.requests[0].respond(200, {'Content-Type' : 'text/xml'}, testData);
+            server.requests[0].respond(200, {'Content-Type' : 'text/json'}, testData);
 
             expect(callbackSpy).toHaveBeenCalled();
             expect(callbackSpy.calls[0].args[0]).toEqual({results : []});
@@ -211,7 +215,7 @@ describe('Tests for PORTAL.VIEWS functions and objects', function() {
 
             server = sinon.fakeServer.create();
 
-            testModel = PORTAL.MODELS.codesWithKeys({
+            testModel = PORTAL.MODELS.cachedCodesWithKeys({
                 codes : 'testCode',
                 keyParameter : 'parentParm',
                 parseKey : function(id) {
@@ -238,20 +242,18 @@ describe('Tests for PORTAL.VIEWS functions and objects', function() {
         it('Expects query function to compile the correct results if data is an array', function() {
             var options;
 
-            var testData = '<Codes><Code value="v1:T1" desc="Text1" providers="P1"/>' +
-                '<Code value="v1:T3" desc="Text3" providers="P1 P2" />' +
-                '<Code value="v1:T2" desc="" providers="P1"/>' +
-                '<Code value="v2:T4" desc="Text4" providers="P2" />' +
-                '<Code value="v2:T5" desc="Text5" providers="P1 P2" />' +
-                '</Codes>';
-
-
+            var testData = '{"codes" : [{"value" : "v1:T1", "desc" : "Text1", "providers" : "P1"},' +
+        	'{"value" : "v1:T3", "desc" : "Text3", "providers" : "P1 P2"},' +
+        	'{"value" : "v1:T2", "providers" : "P1"},' +
+        	'{"value" : "v2:T4", "desc" : "Text4", "providers" : "P2"},' +
+         	'{"value" : "v2:T5", "desc" : "Text5", "providers" : "P1 P2"}]}';
+            
             PORTAL.VIEWS.createCodeSelect($('#test-select2'), testSpec);
             options = $.fn.select2.calls[0].args[0];
             options.query({term : '', callback : callbackSpy});
 
             // This gives the model data and calls processData's function.
-            server.requests[0].respond(200, {'Content-Type' : 'text/xml'}, testData);
+            server.requests[0].respond(200, {'Content-Type' : 'text/json'}, testData);
 
             expect(callbackSpy).toHaveBeenCalled();
             expect(callbackSpy.calls[0].args[0]).toEqual({
@@ -267,14 +269,14 @@ describe('Tests for PORTAL.VIEWS functions and objects', function() {
 
         it('Expects an empty results array passed to options.callbacks when an empty array is processed', function() {
             var options;
-            var testData = '<Codes></Codes>';
+            var testData = '{"codes" : []}';
 
             PORTAL.VIEWS.createCodeSelect($('#test-select2'), testSpec);
             options = $.fn.select2.calls[0].args[0];
             options.query({term : '', callback : callbackSpy});
 
             // This gives the model data and calls processData's function.
-            server.requests[0].respond(200, {'Content-Type' : 'text/xml'}, testData);
+            server.requests[0].respond(200, {'Content-Type' : 'text/json'}, testData);
 
             expect(callbackSpy).toHaveBeenCalled();
             expect(callbackSpy.calls[0].args[0]).toEqual({results : []});

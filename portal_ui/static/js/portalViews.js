@@ -27,12 +27,12 @@ PORTAL.VIEWS.createStaticSelect2 = function(el /* jquery select element */, ids 
  * @param {jquery element selecting a hidden input} el
  * @param {Object} spec
  *  spec has the following properties
-     * model : object which inherits from PORTAL.MODELS.codes or PORTAL.MODELS.codesWithKeys
-     * isMatch : function with two parameters - data (object with id, desc and providers) and searchTerm - String.
+     @prop {Object} model : object which inherits from PORTAL.MODELS.cachedCodes or PORTAL.MODELS.codesWithKeys
+     @prop {Function} isMatch : function with two parameters - data (object with id, desc and providers) and searchTerm - String.
      *     isMatch is optional. By default it will try to match only the descr property
-     * formatData : function takes data (object with id, desc, and providers) and produces a select2 result object
+     @prop {Function} formatData : function takes data (object with id, desc, and providers) and produces a select2 result object
      *     with id and text properties. This is optional
-     * getKeys : function which when called returns an array of keys used in model.processData.
+     @prop {Function} getKeys : function which when called returns an array of keys used in model.processData.
  * @param {Object} select2Options
  * @returns {undefined}
  */
@@ -84,7 +84,7 @@ PORTAL.VIEWS.createCodeSelect = function(el /* jquery hidden input elements */, 
             return object.id;
         },
         query: function(options) {
-            spec.model.processData(function(data) {
+        	spec.model.processData(spec.getKeys()).done(function(data) {
                 var i, key;
                 var results = [];
                 var dataArray = [];
@@ -106,7 +106,7 @@ PORTAL.VIEWS.createCodeSelect = function(el /* jquery hidden input elements */, 
                     }
                 }
                 options.callback({'results' : results});
-            }, spec.getKeys());
+            });
         }
     };
 
