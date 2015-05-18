@@ -1,8 +1,6 @@
 describe('Tests for PORTAL.MODELS.providers', function() {
     var server;
     var successSpy, failureSpy;
-    
-    var RESPONSE = '{"codes" : [{"value": "Src1"}, {"value" : "Src2"}, {"value" : "Src3"}]}';
    
     beforeEach(function() {
     	Config  = {
@@ -23,23 +21,24 @@ describe('Tests for PORTAL.MODELS.providers', function() {
     });
    
     it('Should call ajax to get data when initialize function is invoked', function() {
-        PORTAL.MODELS.providers.initialize();
+        PORTAL.MODELS.providers.initialize(successSpy, failureSpy);
         expect(server.requests.length).toBe(1);
         expect(server.requests[0].url).toContain(Config.CODES_ENDPOINT + '/providers');
     });
    
     it('Should call initialize the ids and call successFnc when a successful ajax call is made', function() {
-        PORTAL.MODELS.providers.initialize().done(successSpy).fail(failureSpy);
+        PORTAL.MODELS.providers.initialize(successSpy, failureSpy);
 
-        server.requests[0].respond(200, {'Content-Type' : 'text/json'}, RESPONSE);
+        var response = '<providers><provider>Src1</provider><provider>Src2</provider><provider>Src3</provider></providers>';
+        server.requests[0].respond(200, {'Content-Type' : 'text/xml'}, response);
         
-        expect(successSpy).toHaveBeenCalled();
+        expect(successSpy).toHaveBeenCalledWith(['Src1', 'Src2', 'Src3']);
         expect(failureSpy).not.toHaveBeenCalled();
         expect(PORTAL.MODELS.providers.getIds()).toEqual(['Src1', 'Src2', 'Src3']);
     });
     
     it('Should call failureFnc when an unsuccessful call is made.', function() {
-        PORTAL.MODELS.providers.initialize().done(successSpy).fail(failureSpy);
+        PORTAL.MODELS.providers.initialize(successSpy, failureSpy);
         server.requests[0].respond(500, 'Bad data');
         
         expect(failureSpy).toHaveBeenCalledWith('Internal Server Error');
@@ -50,8 +49,9 @@ describe('Tests for PORTAL.MODELS.providers', function() {
     describe('Tests formatAvailableProviders', function() {
         
         beforeEach(function() {
-            PORTAL.MODELS.providers.initialize();
-            server.requests[0].respond(200, {'Content-Type' : 'text/json'}, RESPONSE);
+            PORTAL.MODELS.providers.initialize(successSpy, failureSpy);
+            var response = '<providers><provider>Src1</provider><provider>Src2</provider><provider>Src3</provider></providers>';
+            server.requests[0].respond(200, {'Content-Type' : 'text/xml'}, response);
         });
         
         it('Expects "all" to be returned if all available providers are specified', function() {
