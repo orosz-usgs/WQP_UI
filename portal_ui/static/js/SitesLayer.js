@@ -23,7 +23,7 @@ function SitesLayer (formParams,
     			providerValues.push(param.value);
     		}
     		else {
-    			var paramStr = param.name + ':' + param.value.replace(';', '|');
+    			var paramStr = param.name + ':' + param.value.replace(/;/g, '|');
     			result.push(paramStr);
     		}
     	});
