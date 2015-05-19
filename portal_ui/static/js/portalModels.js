@@ -28,10 +28,10 @@ PORTAL.MODELS.cachedCodes = function(spec) {
         // Make an ajax call to get the data if it has not been previously retrieved.
         if (!ajaxCalled) {
             ajaxCalled = true;
-			if (ajaxCompleteDeferred.state() === 'rejected') {
-				// Start a new deferred
-				ajaxCompleteDeferred = $.Deferred();
-			}
+        	if (ajaxCompleteDeferred.state() === 'rejected') {
+        		// Start a new deferred
+        		ajaxCompleteDeferred = $.Deferred();
+        	}
             $.ajax({
                     url: Config.CODES_ENDPOINT + '/' + spec.codes,
                     type: 'GET',
@@ -39,14 +39,14 @@ PORTAL.MODELS.cachedCodes = function(spec) {
                         mimeType : 'json'
                     },
                     success : function(data, textStatus, jqXHR) {
-						$.each(data.codes, function(index, code) {
-							cachedData.push({
-								id: code.value,
-								desc : (code.hasOwnProperty('desc') && (code.desc)  ? code.desc : code.value),
-								providers : code.providers
-							});
-						});
-						ajaxCompleteDeferred.resolve(cachedData);
+                    	$.each(data.codes, function(index, code) {
+                            cachedData.push({
+                                id: code.value,
+                                desc : (code.hasOwnProperty('desc') && (code.desc)  ? code.desc : code.value),
+                                providers : code.providers
+                            });
+                        });
+                        ajaxCompleteDeferred.resolve(cachedData);
                     },
 
                     error : function(jqXHR, textStatus, error) {
@@ -56,7 +56,7 @@ PORTAL.MODELS.cachedCodes = function(spec) {
                     }
                 });
         }
-        return ajaxCompleteDeferred.promise();
+    	return ajaxCompleteDeferred.promise();
     };
 
     return that;
@@ -129,13 +129,13 @@ PORTAL.MODELS.cachedCodesWithKeys = function(spec) {
                         cachedData[keysToGet[k]] = [];
                     }
                     $.each(data.codes, function(index, code) {
-						var thisData = {
-								id : code.value,
-								desc : (code.hasOwnProperty('desc') && (code.desc) ? code.desc : code.value),
-								providers : code.providers
-						};
-						var key = spec.parseKey(thisData.id);
-						cachedData[key].push(thisData);
+                    	var thisData = {
+                    			id : code.value,
+                    			desc : (code.hasOwnProperty('desc') && (code.desc) ? code.desc : code.value),
+                    			providers : code.providers
+                    	}
+                    	var key = spec.parseKey(thisData.id);
+                        cachedData[key].push(thisData);
                     });
                     deferred.resolve(getData(keys));
                 },
@@ -173,4 +173,5 @@ PORTAL.MODELS.siteType = PORTAL.MODELS.cachedCodes({codes : 'sitetype'});
 PORTAL.MODELS.organization = PORTAL.MODELS.cachedCodes({codes : 'organization'});
 PORTAL.MODELS.sampleMedia = PORTAL.MODELS.cachedCodes({codes : 'samplemedia'});
 PORTAL.MODELS.characteristicType = PORTAL.MODELS.cachedCodes({codes : 'characteristictype'});
+PORTAL.MODELS.characteristicName = PORTAL.MODELS.cachedCodes({codes : 'characteristicname'});
 
