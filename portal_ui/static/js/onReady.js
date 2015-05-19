@@ -12,11 +12,13 @@ PORTAL.onReady = function() {
 
     PORTAL.downloadProgressDialog = PORTAL.VIEWS.downloadProgressDialog($('#download-status-dialog'));
 
-    PORTAL.MODELS.providers.initialize().done(function() {
-    	PORTAL.VIEWS.createStaticSelect2($('#providers-select'), PORTAL.MODELS.providers.getIds());
-    }).fail(function(error) {
-    	alert('Unable to retrieve provider list with error: ' + error);
-    });
+    PORTAL.MODELS.providers.initialize().done(
+		function() {
+			PORTAL.VIEWS.createStaticSelect2($('#providers-select'),
+					PORTAL.MODELS.providers.getIds());
+		}).fail(function(error) {
+		alert('Unable to retrieve provider list with error: ' + error);
+	});
 
     placeSelects = PORTAL.VIEWS.placeSelects($('#countrycode'), $('#statecode'), $('#countycode'));
 
@@ -50,29 +52,11 @@ PORTAL.onReady = function() {
     );
     PORTAL.VIEWS.createCodeSelect($('#sampleMedia'), {model : PORTAL.MODELS.sampleMedia}, select2Options);
     PORTAL.VIEWS.createCodeSelect($('#characteristicType'), {model : PORTAL.MODELS.characteristicType}, select2Options);
-    PORTAL.VIEWS.createCodeSelect(
+    PORTAL.VIEWS.createPagedCodeSelect(
             $('#characteristicName'),
-            {model : PORTAL.MODELS.characteristicName},
+            {codes : 'characteristicname'},
             $.extend({}, select2Options, {
-                closeOnSelect : false,
-                minimumInputLength :  2,
-                // We want the characterstics sorted by result length.
-                sortResults : function(results, container, query) {
-                    if (query.term) {
-                        results.sort(function(a, b) {
-                            if (a.text.length > b.text.length) {
-                                return 1;
-                            }
-                            else if (a.text.length < b.text.length) {
-                                return -1;
-                            }
-                            else {
-                                return 0;
-                            }
-                        });
-                    }
-                    return results;
-                }
+                closeOnSelect : false
             })
     );
 
@@ -161,9 +145,9 @@ PORTAL.onReady = function() {
             $('#show-on-map-button').attr('disabled', 'disabled').removeClass('query-button').addClass('disable-query-button');
             var formParams = getFormValues($('#params'),
                     ['north', 'south', 'east', 'west', 'resultType', 'source', 'mimeType', 'zip','__ncforminfo' /*input is injected by barracuda firewall*/]);
-            PORTAL.portalDataMap.showDataLayer(formParams, function() {
-            	$('#show-on-map-button').removeAttr('disabled').removeClass('disable-query-button').addClass('query-button');            	
-            });
+			PORTAL.portalDataMap.showDataLayer(formParams, function() {
+				$('#show-on-map-button').removeAttr('disabled').removeClass('disable-query-button').addClass('query-button');
+			});
         });
 
         //Get the head request. We are doing this synchronously which is why the timeout is needed
@@ -215,7 +199,7 @@ PORTAL.onReady = function() {
                     3: "Request timed out"
             };
             var errorMessage = errorTypes[error.code];
-            if (error.code == 0 || error.code == 2) {
+            if (error.code === 0 || error.code === 2) {
                     errorMessage = errorMessage + " " + error.message;
             }
             alert(errorMessage);
