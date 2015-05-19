@@ -5,35 +5,28 @@ PORTAL.MODELS.providers = function(){
     var ids = [];
 
     return {
-    	/*
-    	 * @return {$.Deferred.promise} which is resolved if the fetch of providers is a success and rejected with the erro
-    	 * message if the request fails. 
-    	 */
-        initialize : function() {
-        	var deferred = $.Deferred();
+        initialize : function(successFnc /* first argument is array of provider names */,
+                              failureFnc /* function with argument String status */) {
             $.ajax({
                 url : Config.CODES_ENDPOINT + '/providers',
-                data : {mimeType : 'json'},
+                data : {mimetype : 'xml'},
                 type : 'GET',
                 success: function(data, textStatus, jqXHR) {
                     ids = [];
-                    $.each(data.codes, function(index, code) {
-                    	ids.push(code.value);
+                    $(data).find('provider').each(function() {
+                        ids.push($(this).text());
                     });
-                    deferred.resolve();
+                    successFnc(ids);
                 },
                 error : function(jqXHR, textStatus, error) {
                     ids = [];
-                    deferred.reject(error);
+                    failureFnc(error);
                 }
             });
-            return deferred.promise();
         },
-        
         getIds : function() {
             return ids;
         },
-        
         formatAvailableProviders : function(availableProviders /* String containing space separated list of providers */) {
             /*
              * Returns a formatted string describing the availableProviders. The function will remove ids that are not
