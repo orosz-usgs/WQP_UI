@@ -7,10 +7,11 @@ PORTAL.MODELS = PORTAL.MODELS || {};
  *          codes - String used in the url to retrieve the model's data.
  * @returns {PORTAL.MODELS.codes.that}
  *      properties:
- *          getData - function that returns a promise. If resolved, returns the array of codes data. 
- *              If rejected, returns the error message.
+ *          processData - function takes a processFnc parameter. This function will
+ *                        take an an array of objects parameter. Each object will have
+ *                        an id, desc, and providers property.
  */
-PORTAL.MODELS.cachedCodes = function(spec) {
+PORTAL.MODELS.codes = function(spec) {
     /* spec object has property codes - String */
     var that = {};
 
@@ -19,44 +20,38 @@ PORTAL.MODELS.cachedCodes = function(spec) {
     var ajaxCalled = false;
     var ajaxCompleteDeferred = $.Deferred();
 
-    /*
-     * 
-     * @return {$.Deferred.promise}. A resolved promise returns {Array of Object} where each object
-     * has String properties: id, desc, and providers. A rejected promise returns {String} with the error message.
-     */
-    that.processData = function() {
+    that.processData = function(processFnc /* Function with Array of objects argument. objects have id, desc, and providers properties */) {
         // Make an ajax call to get the data if it has not been previously retrieved.
-        if (!ajaxCalled) {
+        if (ajaxCalled) {
+            ajaxCompleteDeferred.done(processFnc);
+        }
+        else {
             ajaxCalled = true;
-        	if (ajaxCompleteDeferred.state() === 'rejected') {
-        		// Start a new deferred
-        		ajaxCompleteDeferred = $.Deferred();
-        	}
             $.ajax({
                     url: Config.CODES_ENDPOINT + '/' + spec.codes,
                     type: 'GET',
                     data : {
-                        mimeType : 'json'
+                        mimeType : 'xml'
                     },
                     success : function(data, textStatus, jqXHR) {
-                    	$.each(data.codes, function(index, code) {
+                        $(data).find('Code').each(function() {
                             cachedData.push({
-                                id: code.value,
-                                desc : (code.hasOwnProperty('desc') && (code.desc)  ? code.desc : code.value),
-                                providers : code.providers
+                                id: $(this).attr('value'),
+                                desc : $(this).attr('desc') || $(this).attr('value'),
+                                providers : $(this).attr('providers')
                             });
                         });
+                        processFnc(cachedData);
                         ajaxCompleteDeferred.resolve(cachedData);
                     },
 
                     error : function(jqXHR, textStatus, error) {
                         alert('Can\'t  get ' + spec.codes + ', Server error: ' + error);
-                        ajaxCompleteDeferred.reject(error);
                         ajaxCalled = false;
                     }
                 });
         }
-    	return ajaxCompleteDeferred.promise();
+
     };
 
     return that;
@@ -64,18 +59,22 @@ PORTAL.MODELS.cachedCodes = function(spec) {
 /*
  *
  * @param {Object} spec -
- *          @prop {String} codes - Used in the ajax url to retrieve the data
- *          @prop {String} keyParameter - the parameter name to use to retrieve the appropriate data subset
- *          @prop {Function} parseKey - Takes the id from a data Object and produce it's key
+ *      spec properties
+ *          codes - String used in the ajax url to retrieve the data
+ *          keyParameter - String - the parameter name to use to retrieve the appropriate data subset
+ *          parseKey - Function which will take the id from a data Object and produce it's key
  * @returns {PORTAL.MODELS.codesWithKeys.that}
  *      properties:
- *          @prop {Function} processData - Returns {$.Deferred.promise}. When resolved will contain the data requested.
- *          
- *          function takes a processFnc parameter and keys (Array of strings_). The processFnc function will
+ *          processData - function takes a processFnc parameter and keys (Array of strings_). The orocessFnc function will
  *                        take an an array of objects parameter. Each object will have
  *                        an id, desc, and providers property.
  */
-PORTAL.MODELS.cachedCodesWithKeys = function(spec) {
+PORTAL.MODELS.codesWithKeys = function(spec) {
+/* spec object has property
+ * codes - String,
+ * keyParameter - String *,
+ * parseKey - function which will take the id from the raw data and produce its key
+ */
     var that = {};
 
     var cachedData = {}; /* Will be an object where each value is an array of objects with properties id, desc, and providers */
@@ -91,17 +90,12 @@ PORTAL.MODELS.cachedCodesWithKeys = function(spec) {
         return results;
     };
 
-    /*
-     * @param {Array of String} keys - the specific keys' cached data that will be returned in the resolve promise
-     * @return {$.Deferred.promise -  A resolved promise returns {Array of Object} where each object
-     * has String properties: id, desc, and providers. A rejected promise returns {String} with the error message.
-     */
-    that.processData = function(keys) {
+    that.processData = function(processFnc /* Function with object argument, where keys are the code keys and the values are an array of object with properties id, desc, and providers.  */,
+        keys /* Array of strings */) {
 
         var keysToGet = [];
         var i;
         var ajaxData = {};
-        var deferred = $.Deferred();
 
         // Determine if we already have the requested data cached
         for (i = 0; i < keys.length; i++){
@@ -112,55 +106,54 @@ PORTAL.MODELS.cachedCodesWithKeys = function(spec) {
 
         if (keysToGet.length === 0) {
             // Can get all keys from the cache
-            deferred.resolve(getData(keys));
+            processFnc(getData(keys));
         }
         else {
             // We have to retrieve at least some of the keys //
             ajaxData[spec.keyParameter] = keysToGet.join(';');
-            ajaxData.mimeType = 'json';
+            ajaxData.mimeType = 'xml';
             $.ajax({
                 url : Config.CODES_ENDPOINT + '/' + spec.codes,
                 type: 'GET',
                 data : ajaxData,
                 success : function(data, textStatus, jqXHR) {
                     var k;
-                    //Initialize cache for each key
+
                     for (k = 0; k < keysToGet.length; k++) {
                         cachedData[keysToGet[k]] = [];
                     }
-                    $.each(data.codes, function(index, code) {
-                    	var thisData = {
-                    			id : code.value,
-                    			desc : (code.hasOwnProperty('desc') && (code.desc) ? code.desc : code.value),
-                    			providers : code.providers
-                    	}
-                    	var key = spec.parseKey(thisData.id);
+                    $(data).find('Code').each(function() {
+                        var thisData = {
+                            id: $(this).attr('value'),
+                            desc : $(this).attr('desc') || $(this).attr('value'),
+                            providers : $(this).attr('providers')
+                        };
+                        var key = spec.parseKey(thisData.id);
                         cachedData[key].push(thisData);
                     });
-                    deferred.resolve(getData(keys));
+
+                    processFnc(getData(keys));
                 },
                 error : function(jqXHR, textStatus, error) {
                     alert("Can't get " + spec.codes + ', Server error: ' + error);
-                    deferred.reject(error);
                 }
             });
         }
-        return deferred.promise();
     };
 
     return that;
 };
 
 // Objects that represent the available values for portal selections.
-PORTAL.MODELS.countryCodes = PORTAL.MODELS.cachedCodes({codes : 'countrycode'});
-PORTAL.MODELS.stateCodes = PORTAL.MODELS.cachedCodesWithKeys({
+PORTAL.MODELS.countryCodes = PORTAL.MODELS.codes({codes : 'countrycode'});
+PORTAL.MODELS.stateCodes = PORTAL.MODELS.codesWithKeys({
     codes : 'statecode',
     keyParameter : 'countrycode',
     parseKey : function(id) {
         return id.split(':')[0];
     }
 });
-PORTAL.MODELS.countyCodes = PORTAL.MODELS.cachedCodesWithKeys({
+PORTAL.MODELS.countyCodes = PORTAL.MODELS.codesWithKeys({
     codes: 'countycode',
     keyParameter : 'statecode',
     parseKey: function(id) {
@@ -169,9 +162,9 @@ PORTAL.MODELS.countyCodes = PORTAL.MODELS.cachedCodesWithKeys({
     }
 });
 
-PORTAL.MODELS.siteType = PORTAL.MODELS.cachedCodes({codes : 'sitetype'});
-PORTAL.MODELS.organization = PORTAL.MODELS.cachedCodes({codes : 'organization'});
-PORTAL.MODELS.sampleMedia = PORTAL.MODELS.cachedCodes({codes : 'samplemedia'});
-PORTAL.MODELS.characteristicType = PORTAL.MODELS.cachedCodes({codes : 'characteristictype'});
-PORTAL.MODELS.characteristicName = PORTAL.MODELS.cachedCodes({codes : 'characteristicname'});
+PORTAL.MODELS.siteType = PORTAL.MODELS.codes({codes : 'sitetype'});
+PORTAL.MODELS.organization = PORTAL.MODELS.codes({codes : 'organization'});
+PORTAL.MODELS.sampleMedia = PORTAL.MODELS.codes({codes : 'samplemedia'});
+PORTAL.MODELS.characteristicType = PORTAL.MODELS.codes({codes : 'characteristictype'});
+PORTAL.MODELS.characteristicName = PORTAL.MODELS.codes({codes : 'characteristicname'});
 
