@@ -1,7 +1,7 @@
 
 import requests
 
-from flask import render_template, request, make_response, redirect, url_for, send_file
+from flask import render_template, request, make_response, redirect, url_for
 
 from . import app
 from .utils import pull_feed, geoserver_proxy_request
