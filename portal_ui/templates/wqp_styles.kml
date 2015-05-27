@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<kml xmlns="">
+<Document id="wqp_styles">
+	<Style id="normalARSSite">
+		<IconStyle>
+			<Icon>
+				<href>../img/orangecir.png</href>
+			</Icon>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="highlightARSSite">
+		<IconStyle>
+			<Icon>
+				<href>../img/orangecir.png</href>
+			</Icon>
+		</IconStyle>
+		<LabelStyle>
+			<scale>1</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="normalNWISSite">
+		<IconStyle>
+			<Icon>
+				<href>../img/bluecir.png</href>
+			</Icon>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="highlightNWISSite">
+		<IconStyle>
+			<Icon>
+				<href>../img/bluecir.png</href>
+			</Icon>
+		</IconStyle>
+		<LabelStyle>
+			<scale>1</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="normalSTORETSite">
+		<IconStyle>
+			<Icon>
+				<href>../img/magentacir.png</href>
+			</Icon>
+		</IconStyle>
+		<LabelStyle>
+			<scale>0</scale>
+		</LabelStyle>
+	</Style>
+	<Style id="highlightSTORETSite">
+		<IconStyle>
+			<Icon>
+				<href>../img/magentacir.png</href>
+			</Icon>
+		</IconStyle>
+		<LabelStyle>
+			<scale>1</scale>
+		</LabelStyle>
+	</Style>
+</Document>
+</kml>
