@@ -134,11 +134,24 @@ def nwis_site_sld():
     resp.headers['Content-Type'] = 'text/xml; charset=utf-8'
     return resp
  
+
 @app.route('/crossdomain.xml')
 def crossdomain():
     xml = render_template('crossdomain.xml')
-    response= make_response(xml)
+    response = make_response(xml)
     response.headers["Content-Type"] = "application/xml"  
     return response   
     
-    
+
+@app.route('/kml/wqp_styles.kml')
+def kml():
+    xml = render_template('wqp_styles.kml')
+    response = make_response(xml)
+    response.headers["Content-Type"] = "application/vnd.google-earth.kml+xml"
+    return response
+
+
+@app.route('/img/<image_file>')
+def images(image_file):
+    return app.send_static_file('img/'+image_file)
+
