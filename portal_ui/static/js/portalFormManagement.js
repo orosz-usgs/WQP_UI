@@ -21,10 +21,16 @@ APP.DOWNLOAD = {
 
     makeHeadRequest: function(urlString /* url to send as HEAD request */, providers /* array of providers, if empty all providers*/, resultType, fileFormat){
         // Make headrequest and process the response, updating the progress dialog
-        // as neeed.
+        // TODO: Update to use asynchronous request using jquery.
         var http = new XMLHttpRequest();
         http.open('HEAD', urlString, false); //synchronous
         http.send();
+        if (http.statusText !== 'OK') {
+        	PORTAL.downloadProgressDialog.updateProgress({
+                message : 'Error contacting the server: ' + http.statusText
+            });
+        	return;
+        }
         var headers = new HTTPHeaders(http.getAllResponseHeaders());
         var warnings = headers.getWarnings();
 

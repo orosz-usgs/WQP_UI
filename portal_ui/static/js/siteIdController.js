@@ -21,7 +21,7 @@ PORTAL.CONTROLLER.retrieveSiteIdInfo = function(siteIds, updateFnc, successFnc) 
         $.ajax({
             url : Config.QUERY_URLS.Station,
             type : 'GET',
-            data : 'siteid=' + encodeURIComponent(idsToGet.join(';')),
+            data : 'siteid=' + encodeURIComponent(idsToGet.join(';')) + '&mimeType=xml',
             success : function(data, textStatus, jqXHR) {
                 var detailHtml = '';
                 var orgEls = $(data).find('Organization');

@@ -47,6 +47,9 @@ PORTAL.VIEWS.createPagedCodeSelect = function(el, spec, select2Options) {
 		allowClear : true,
 		multiple : true,
 		separator : ';',
+		formatSelection : function(object, container) {
+			return object.id;
+		},
 		ajax : {
 			url : Config.CODES_ENDPOINT + '/' + spec.codes,
 			dataType : 'json',
