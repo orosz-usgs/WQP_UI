@@ -15,10 +15,10 @@ def home():
     return render_template('index.html')
  
 @app.route('/contact_us.jsp')
-@app.route('/contact_us/', endpoint='contact-canonical')
+@app.route('/contact_us/', endpoint='contact_us-canonical')
 def contact_us():
     if request.path == '/contact_us.jsp':
-        return redirect(url_for('contact-canonical')), 301
+        return redirect(url_for('contact_us-canonical')), 301
     return render_template('contact_us.html')
 
 @app.route('/portal.jsp')
