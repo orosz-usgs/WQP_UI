@@ -273,6 +273,10 @@
                                         <input type="radio" name="resultType" id="dialog-samples" value="Result" />
                                         <label for="dialog-samples">Sample results only</label>
                                     </li>
+                                    <li>
+                                        <input type="radio" name="resultType" id="dialog-biosamples" value="Result" />
+                                        <label for="dialog-biosamples">Sample results with biological metadata</label>
+                                    </li>
                                 </ul>
                             </div>
                             <div style="display: inline-block;" id="map-info-file-format-div">
@@ -323,11 +327,11 @@
                             </li>
                             <li>
                                 <input type="radio" name="resultType" id="samples" value="Result">
-                                <label for="samples">Physical/Chemical results only</label>
+                                <label for="samples">Sample results only</label>
                             </li>
-                            <li style="display:none";>
-                                <input type="radio" name="resultType" id="biosamples" value="biologicalresult">
-                                <label for="biosamples">Biological results only</label>
+                            <li>
+                                <input type="radio" name="resultType" id="biosamples" value="Result">
+                                <label for="biosamples">Sample results with biological metadata</label>
                             </li>
                         </ul>
                     </div>
@@ -348,7 +352,7 @@
                             </li>
                             <li>
                                 <input type="radio" name="mimeType" id="kml" value="kml" />
-                                <label for="kml">KML&nbsp;<span style="font-size: x-small;">(Keyhole Markup Language - this is available for Sites only)</span></label>
+                                <label for="kml">KML&nbsp;<span style="font-size: x-small;">(Keyhole Markup Language - for Sites only)</span></label>
                             </li>
                        </ul>
                     </div>

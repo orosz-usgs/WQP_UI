@@ -11,8 +11,18 @@ function IdentifyDialog(dialogDivId, downloadUrlFunc /* function returns url str
         var dialogFormEl = this.dialogEl.find('form');
         var resultType = this.dialogEl.find('input[name="resultType"]:checked').val();
         var url = downloadUrlFunc(resultType);
+        var $biosamplesRadio = this.dialogEl.find('#dialog-biosamples');
 
         dialogFormEl.attr('action', url);
+        
+        // Add/remove the dataProfile input based in the dialog-biosamples radio
+        if ($biosamplesRadio.prop('checked')) {
+			if (dialogFormEl.find('input[name="dataProfile"]').length === 0) {
+				dialogFormEl.append('<input type="hidden" name="dataProfile" value="biological" />');
+			}
+		} else {
+			this.dialogEl.find('input[name="dataProfile"]').remove();
+		}
 
         _gaq.push(['_trackEvent', 'Portal Page', 'IdentifyDownload' + resultType,  url + '?' + dialogFormEl.serialize()]);
         dialogFormEl.submit();
