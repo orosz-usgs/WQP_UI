@@ -19,7 +19,8 @@ describe('Test IdentifyDialog', function() {
         };
         dialogId = 'map-info-dialog';
         // Create base HTML
-        var resultTypeRadioHtml = '<input checked="checked" type="radio" name="resultType" id="sites" value="Station"><input type="radio" name="resultType" id="samples" value="Result">';
+        var resultTypeRadioHtml = '<input checked="checked" type="radio" name="resultType" id="dialog-sites" value="Station"><input type="radio" name="resultType" id="dialog-samples" value="Result">' +
+        	'<input type="radio" name="resultType" id="dialog-biosamples" value="Bio Result">';
         var formHtml = '<form method="get">' +
             '<input type="radio" checked="checked" name="mimeType" id="csv" value="csv">' +
             '<input type="radio" name="mimeType" id="tsv" value="tab">' +
@@ -164,13 +165,23 @@ describe('Test IdentifyDialog', function() {
 
             });
             it('Expect form action to reflect radio input value', function() {
-                identifyDialog.dialogEl.find('#sites').click();
+                identifyDialog.dialogEl.find('#dialog-sites').click();
                 identifyDialog._downloadButtonEl.click();
                 expect(identifyDialog.dialogEl.find('form').attr('action'), 'Station/search');
 
-                identifyDialog.dialogEl.find('#samples').click();
+                identifyDialog.dialogEl.find('#dialog-samples').click();
                 identifyDialog._downloadButtonEl.click();
                 expect(identifyDialog.dialogEl.find('form').attr('action'), 'Result/search');
+                
+                identifyDialog.dialogEl.find('#dialog-biosamples').click();
+                identifyDialog._downloadButtonEl.click();
+                expect(identifyDialog.dialogEl.find('form').attr('action'), 'Result/search');
+                expect(identifyDialog.dialogEl.find('form input[name="dataProfile"]').length).toBe(1);
+                
+                identifyDialog.dialogEl.find('#dialog-samples').click();
+                identifyDialog._downloadButtonEl.click();
+                expect(identifyDialog.dialogEl.find('form').attr('action'), 'Result/search');
+                expect(identifyDialog.dialogEl.find('form input[name="dataProfile"]').length).toBe(0);
 
             });
             it('Expect download form submitted when download button is clicked', function() {

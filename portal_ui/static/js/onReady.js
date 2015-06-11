@@ -242,7 +242,7 @@ PORTAL.onReady = function() {
 				$form.append('<input type="hidden" name="dataProfile" value="biological" />');
 			}
 		} else {
-			$('input[name="dataProfile"]').remove();
+			$form.find('input[name="dataProfile"]').remove();
 		}
 	});
 
