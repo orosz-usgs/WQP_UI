@@ -226,26 +226,37 @@ PORTAL.onReady = function() {
     // Update the form's action url.
     // Toggle the sensitivity of the Show Sites on map button
 
-    $('#download-box input[name=resultType]').click(function(){
-        var sensitive = !($('#download-box #samples').prop('checked')) && !($('#download-box #biosamples').prop('checked'));
-        setEnabled($('#download-box #kml'), sensitive);
+    $('#download-box input[name=resultType]').click(function() {
+		var $form = $('#params');
+		var $biosamplesRadio = $('#download-box #biosamples');
+		var sensitive = !($('#download-box #samples').prop('checked')) && !($biosamplesRadio.prop('checked'));
 
-        $('#params').attr('action', APP.URLS.getFormUrl($(this).val()));
-        $('#params input[name="resultType"]:hidden').val($(this).val());
-    });
+		setEnabled($('#download-box #kml'), sensitive);
+
+		$form.attr('action', APP.URLS.getFormUrl($(this).val()));
+		$form.find('input[name="resultType"]:hidden').val($(this).val());
+		
+		// If biological results desired add a hidden input, otherwise remove it.
+		if ($biosamplesRadio.prop('checked')) {
+			if ($form.find('input[name="dataProfile"]').length === 0) {
+				$form.append('<input type="hidden" name="dataProfile" value="biological" />');
+			}
+		} else {
+			$form.find('input[name="dataProfile"]').remove();
+		}
+	});
 
     //Update bBox hidden input if any of the bounding box text fields are updated
     $('#bounding-box input').change(function() {
         $(APP.DOM.form).find('input[name=bBox]').val(APP.DOM.getBBox());
     });
-
+    
     // Add click handler for the Show queries button
     $('#show-queries-button').click(function() {
         // Generate the request from the form
         // REST Request (there used to be SOAP request please see svn for previous revisions)
         var stationSection = "<div class=\"show-query-text\"><b>Sites</b><br><textarea readonly=\"readonly\" rows='6'>" + APP.URLS.getFormUrl('Station') + "</textarea></div>";
-        var resultSection = "<div class=\"show-query-text\"><b>Physical/Chemical results</b><br><textarea readonly=\"readonly\" rows='6'>" + APP.URLS.getFormUrl('Result') + "</textarea></div>";
-        var biologicalResultSection = "<div class=\"show-query-text\"><b>Biological results</b><br><textarea readonly=\"readonly\" rows='6'>" + APP.URLS.getFormUrl('biologicalresult') + "</textarea></div>";
+        var resultSection = "<div class=\"show-query-text\"><b>Results</b><br><textarea readonly=\"readonly\" rows='6'>" + APP.URLS.getFormUrl('Result') + "</textarea></div>";
 
         $('#WSFeedback').html(stationSection + resultSection); // temporarily reoving + biologicalResultSection);
     });
