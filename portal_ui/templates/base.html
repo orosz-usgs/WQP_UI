@@ -108,7 +108,7 @@
 						<img src="{{ url_for('static', filename='img/NWQMC_header_web_960w.png') }}" />
 					</a>
 					<div id="page-title">
-						<a href="{{ url_for('home') }}">
+						<a href="{{ url_for('home-canonical') }}">
 							<h1>
 								{% block page_header_title %}{% endblock %}
 							</h1>
@@ -124,26 +124,26 @@
 				    </div>
 				    <div id="wqp-standard-navbar-collapse" class="navbar-collapse collapse">
 				        <ul class="nav navbar-nav">
-				            <li><a href="{{ url_for('home') }}">WQP Home</a></li>
-				            <li><a href="{{ url_for('portal') }}">Download Data</a></li>
+				            <li><a href="{{ url_for('home-canonical') }}">WQP Home</a></li>
+				            <li><a href="{{ url_for('portal-canonical') }}">Download Data</a></li>
 				            <li class="dropdown">
 				                <a class="dropdown-toggle" href="#" data-toggle="dropdown">How to use the WQP<span class="caret"></span></a>
 				                <ul class="dropdown-menu">
-				                    <li><a href="{{ url_for('portal_userguide') }}">User Guide</a></li>
-				                    <li><a href="{{ url_for('webservices_documentation') }}">Web Services Guide</a></li>
-				                    <li><a href="{{ url_for('faqs') }}">FAQs</a></li>
-				                    <li><a href="{{ url_for('upload_data') }}">Upload Data</a></li>
+				                    <li><a href="{{ url_for('portal_userguide-canonical') }}">User Guide</a></li>
+				                    <li><a href="{{ url_for('webservices_documentation-canonical') }}">Web Services Guide</a></li>
+				                    <li><a href="{{ url_for('faqs-canonical') }}">FAQs</a></li>
+				                    <li><a href="{{ url_for('upload_data-canonical') }}">Upload Data</a></li>
 				                </ul>
 				            </li>
-				            <li> <a href="{{ url_for('coverage') }}">National Results Coverage</a></li>
+				            <li> <a href="{{ url_for('coverage-canonical') }}">National Results Coverage</a></li>
 				            <li class="dropdown">
 				                <a class="dropdown-toggle" href="#" data-toggle="dropdown">About the WQP<span class="caret"></span></a>
 				                <ul class="dropdown-menu">
-				                    <li> <a href="{{ url_for('wqp_description') }}">What is the WQP?</a></li>
-				                    <li> <a href="{{ url_for('orgs') }}">Contributing organizations</a></li>
-				                    <li> <a href="{{ url_for('apps_using_portal') }}">Applications using the WQP</a></li>
-				                    <li> <a href="{{ url_for('other_portal_links') }}">Other Water Quality Portals</a></li>
-				                    <li> <a href="{{ url_for('contact_us') }}">Contact us</a></li>
+				                    <li> <a href="{{ url_for('wqp_description-canonical') }}">What is the WQP?</a></li>
+				                    <li> <a href="{{ url_for('orgs-canonical') }}">Contributing organizations</a></li>
+				                    <li> <a href="{{ url_for('apps_using_portal-canonical') }}">Applications using the WQP</a></li>
+				                    <li> <a href="{{ url_for('other_portal_links-canonical') }}">Other Water Quality Portals</a></li>
+				                    <li> <a href="{{ url_for('contact_us-canonical') }}">Contact us</a></li>
 				                </ul>
 				            </li>
 				        </ul>
@@ -156,7 +156,7 @@
 			<div id="footer-content">
 			    <hr />
 			    <div id="footer-row-div">
-			        <div id="contact-us-div"><a href="{{ url_for('contact_us') }}">Contact us</a></div>
+			        <div id="contact-us-div"><a href="{{ url_for('contact_us-canonical') }}">Contact us</a></div>
 			        <div class="logo">
 			            <a href="http://usgs.gov"><img alt="USGS Science for a changing world" src="{{ url_for('static', filename='img/USGS_logo.gif') }}"></img></a>
 			        </div>
