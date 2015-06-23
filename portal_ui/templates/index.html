@@ -15,24 +15,24 @@
     <div class="index-box">
         <div id="download-col" class="index-box-column">
             <div class="index-box-primary" id="download-data-box">
-                <a href="{{ url_for('portal') }}"><h5>DOWNLOAD<br/>DATA</h5></a>
+                <a href="{{ url_for('portal-canonical') }}"><h5>DOWNLOAD<br/>DATA</h5></a>
                 <p> Download water-quality data in Excel, CSV, TSV, and KML formats.<p>
             </div>
         </div>
         <div id="info-col" class="index-box-column">
             <div id="rsrc-doc-box" class="index-box-secondary">
-                <a class="main-link" href="portal_userguide.jsp">
+                <a class="main-link" href="{{ url_for('portal_userguide-canonical') }}">
                 <h5>HOW TO USE THE WQP</h5>
                 </a>
                 <ul>
-                    <li class="interior-list"><a href="{{ url_for('portal_userguide') }}">User Guide</a></li>
-                    <li class="interior-list"><a href="{{ url_for('webservices_documentation') }}"> Web Services Guide</a></li>
-                    <li class="interior-list"><a href="{{ url_for('faqs') }}">FAQs</a></li>
-                    <li class="interior-list"><a href="{{ url_for('upload_data') }}">Upload Data</a>
+                    <li class="interior-list"><a href="{{ url_for('portal_userguide-canonical') }}">User Guide</a></li>
+                    <li class="interior-list"><a href="{{ url_for('webservices_documentation-canonical') }}"> Web Services Guide</a></li>
+                    <li class="interior-list"><a href="{{ url_for('faqs-canonical') }}">FAQs</a></li>
+                    <li class="interior-list"><a href="{{ url_for('upload_data-canonical') }}">Upload Data</a>
                 </ul>
             </div>
             <div id="coverage-box" class="index-box-secondary">
-                <a  href="{{ url_for('coverage') }}">
+                <a  href="{{ url_for('coverage-canonical') }}">
                     <h5>NATIONAL RESULTS COVERAGE</h5>
                     <p>Water-quality data in your state.</p>
                 </a>
@@ -42,10 +42,10 @@
                 <h5>ABOUT THE WQP</h5>
                 </a>
                 <ul>
-                    <li class="interior-list"><a href="{{ url_for('wqp_description') }}">What is the WQP?</a></li>
-                    <li class="interior-list"><a href="{{ url_for('orgs') }}">Contributing organizations</a></li>
-                    <li class="interior-list"><a href="{{ url_for('other_portal_links') }}">Other Water Quality Portals</a></li>
-                    <li class="interior-list"><a href="{{ url_for('contact_us') }}">Contact us</a></li>
+                    <li class="interior-list"><a href="{{ url_for('wqp_description-canonical') }}">What is the WQP?</a></li>
+                    <li class="interior-list"><a href="{{ url_for('orgs-canonical') }}">Contributing organizations</a></li>
+                    <li class="interior-list"><a href="{{ url_for('other_portal_links-canonical') }}">Other Water Quality Portals</a></li>
+                    <li class="interior-list"><a href="{{ url_for('contact_us-canonical') }}">Contact us</a></li>
                 </ul>
             </div>
         </div>
