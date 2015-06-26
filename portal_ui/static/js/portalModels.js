@@ -173,4 +173,4 @@ PORTAL.MODELS.siteType = PORTAL.MODELS.cachedCodes({codes : 'sitetype'});
 PORTAL.MODELS.organization = PORTAL.MODELS.cachedCodes({codes : 'organization'});
 PORTAL.MODELS.sampleMedia = PORTAL.MODELS.cachedCodes({codes : 'samplemedia'});
 PORTAL.MODELS.characteristicType = PORTAL.MODELS.cachedCodes({codes : 'characteristictype'});
-
+PORTAL.MODELS.assemblage = PORTAL.MODELS.cachedCodes({codes : 'assemblage'});

@@ -59,6 +59,7 @@ PORTAL.onReady = function() {
                 closeOnSelect : false
             })
     );
+    PORTAL.VIEWS.createCodeSelect($('#assemblage'), {model : PORTAL.MODELS.assemblage}, select2Options);
 
     // Add input validations and reformatting handlers
     PORTAL.VIEWS.inputValidation({
