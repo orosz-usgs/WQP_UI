@@ -83,12 +83,12 @@ PORTAL.MODELS.help = {
         placement : 'auto',
         title: 'Site Type Help',
         content : '\
-        <div>\
-        A site type is a generalized location in the hydrologic cycle, or a man-made \
-        feature thought to affect the hydrologic conditions measured at a site. Site types can be selected \
-        from the drop down list. The available data sources are listed in parenthesis for each \
-        site type. Multiple site types may be selected.\
-        </div>'
+	        <div>\
+	        A site type is a generalized location in the hydrologic cycle, or a man-made \
+	        feature thought to affect the hydrologic conditions measured at a site. Site types can be selected \
+	        from the drop down list. The available data sources are listed in parenthesis for each \
+	        site type. Multiple site types may be selected.\
+	        </div>'
     },
     organization : {
         placement : 'auto',
@@ -168,6 +168,13 @@ PORTAL.MODELS.help = {
         The available data \
         sources are listed in parenthesis for each characteristic. Multiple characteristics may \
         be selected. </div>'
+    },
+    assemblage : {
+    	placement : 'auto',
+    	title : 'Assemblage Help',
+    	content : '\
+    		<div>TODO: ADD HELP</div>'
+    		
     },
     pcode : {
         placement: 'auto',
