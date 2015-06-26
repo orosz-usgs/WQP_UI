@@ -249,6 +249,7 @@
             <input type="hidden" name="mimeType" value="csv" />
             <input type="hidden" name="zip" checked="checked" id="zip" value="yes" />
             <input type="hidden" name="resultType" value="Station" />
+            <input type="hidden" name="sorted" value="no" />
         </form>
         <div id="map-and-query-div" class="panel">
             <div id="mapping-div" class="panel-body">
@@ -363,6 +364,11 @@
                             </li>
                        </ul>
                     </div>
+                    <div id="download-sorted-data-div">
+                    	<input type="checkbox" name="sorted" id="sorted" />
+                    	<label for="sorted">Sort data</label>
+                    </div>
+                    <div></div>
                 </div>
                 <div id="form-action">
                     <button id="main-button" class="btn" type="submit">DOWNLOAD</button>
