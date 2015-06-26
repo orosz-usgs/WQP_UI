@@ -246,6 +246,17 @@ PORTAL.onReady = function() {
 			$form.find('input[name="dataProfile"]').remove();
 		}
 	});
+    
+	//Update the sorted checkbox hidden input when changed
+	$('#sorted').change(function() {
+		var $hidden = $('#params input[name="sorted"]');
+		if ($(this).is(':checked')) {
+			$hidden.val('yes');
+		}
+		else {
+			$hidden.val('no');
+		}
+	});
 
     //Update bBox hidden input if any of the bounding box text fields are updated
     $('#bounding-box input').change(function() {
