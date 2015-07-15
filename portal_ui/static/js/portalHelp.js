@@ -173,8 +173,8 @@ PORTAL.MODELS.help = {
     	placement : 'auto',
     	title : 'Assemblage Help',
     	content : '\
-    		<div>TODO: ADD HELP</div>'
-    		
+    		<div>The Assemblage is specific to biological collection data, and refers to "An association \
+    		of interacting populations of organisms in a given waterbody."  For example, macroinvertabrates or fish/necton  </div>'
     },
     pcode : {
         placement: 'auto',
