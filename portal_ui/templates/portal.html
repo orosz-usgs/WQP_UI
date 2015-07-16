@@ -192,7 +192,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                        	<label class="control-label" for="assemblage">Assemblage</label>
+                        	<label class="control-label" for="assemblage">Assemblage:</label>
                         	<div>
                         		<input class="form-control" type="hidden" name="assemblage" id="assemblage" />
                         		<button type="button" class="help-link popover-help" id="assemblageHelp" data-help="assemblage">?</button>
@@ -202,9 +202,19 @@
                             <label class="control-label" for="pCode">Parameter Code: <span style="font-size:x-small;">(NWIS ONLY)</span></label>
                             <div>
                                 <input class="form-control" type="text" name="pCode" id="pCode" />
-                                <button type="button" class="help-link popover-help" id="pCodeHelp"data-help="pcode">?</button>
+                                <button type="button" class="help-link popover-help" id="pCodeHelp" data-help="pcode">?</button>              
                             </div>
                         </div>
+	                    <div id="nawqa-project-div">
+	                    	<label class="control-label" for="project">
+	                    		NAWQA Program Only (NAWQA, NASQAN, and NMN):&nbsp;
+	                    	</label>
+	                    	<div>
+	                    		<input type="checkbox" name="project" id="project"	                    		
+	                    			value="National Water Quality Assessment (NAWQA) Program;National Monitoring Network (NMN);National Stream Quality Accounting Network (NASQAN)"/>
+                                <button type="button" class="help-link popover-help" id="nawqaHelp" data-help="nawqa">?</button>              
+                            </div>
+	                    </div>
                         <div id="date-row">
                             <div id="start-date-select" class="form-group">
                                 <label class="control-label" for="startDateLo">Date range - from:</label>

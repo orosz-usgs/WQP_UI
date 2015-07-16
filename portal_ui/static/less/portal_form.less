@@ -43,13 +43,14 @@
 }
 
 // General form-group styles
-#params .form-group {
+#params .form-group, #params .checkbox {
     margin-bottom: 5px;
     .make-row();
     
     .control-label {
         text-align: right;
         margin-top: 6px;
+        font-weight: bold;
     }
     
     >div {
@@ -164,6 +165,23 @@
             .make-sm-column(7);
             .make-md-column(8);
         }
+    }
+    
+    #nawqa-project-div {
+    	.make-row();
+    	padding-left : 8px;
+    	margin-top : 15px;
+    	margin-bottom:10px;
+    	label {
+    		.make-xs-column(9);
+    		.make-md-column(10);
+    		.make-lg-column(8);
+    	}
+    	> div {
+    		.make-xs-column(3);
+    		.make-md-column(2);
+    		.make-lg-column(4);
+    	}
     }
     
     // The date row has some special formatting so that on larger screens, the dates are on a single row.
