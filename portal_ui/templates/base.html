@@ -39,6 +39,7 @@
 		    Config.IS_PROD = location.hostname == 'www.waterqualitydata.us';
     		Config.ALLOW_QA_ACCESS = true;
     		Config.GA_TRACKING_CODE = "{{ config.GA_TRACKING_CODE }}";
+    		Config.NAWQA_ONLY_PROJECTS = "{{ config.NAWQA_ONLY_PROJECTS }}";
 		</script>
 		
 		<script type="text/javascript" src="{{ url_for('static', filename='vendor/jquery-1.10.2.min.js') }}"></script>

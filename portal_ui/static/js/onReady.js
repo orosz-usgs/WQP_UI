@@ -60,6 +60,13 @@ PORTAL.onReady = function() {
             })
     );
     PORTAL.VIEWS.createCodeSelect($('#assemblage'), {model : PORTAL.MODELS.assemblage}, select2Options);
+	PORTAL.VIEWS.createPagedCodeSelect(
+			$('#project-code'),
+			{codes : 'project'},
+			$.extend({}, select2Options, {
+				closeOnSelect : false
+			})
+	);
 
     // Add input validations and reformatting handlers
     PORTAL.VIEWS.inputValidation({
@@ -145,7 +152,7 @@ PORTAL.onReady = function() {
             // Start mapping process by disabling the show site button and then requesting the layer
             $('#show-on-map-button').attr('disabled', 'disabled').removeClass('query-button').addClass('disable-query-button');
             var formParams = getFormValues($('#params'),
-                    ['north', 'south', 'east', 'west', 'resultType', 'source', 'mimeType', 'zip','__ncforminfo' /*input is injected by barracuda firewall*/]);
+                    ['north', 'south', 'east', 'west', 'resultType', 'source', 'project_code', 'nawqa_project', 'mimeType', 'zip','__ncforminfo' /*input is injected by barracuda firewall*/]);
 			PORTAL.portalDataMap.showDataLayer(formParams, function() {
 				$('#show-on-map-button').removeAttr('disabled').removeClass('disable-query-button').addClass('query-button');
 			});
@@ -262,6 +269,29 @@ PORTAL.onReady = function() {
     $('#bounding-box input').change(function() {
         $(APP.DOM.form).find('input[name=bBox]').val(APP.DOM.getBBox());
     });
+    
+    //Update the project hidden input if the project-code input  or nawqa-project input changes
+	$('#project-code, #nawqa-project').change(function() {
+		var nawqaValues = '';
+		var projectCodes = [];
+		var projectCodeValues;
+
+		var d = $('#project-code').select2('data');
+		$.each($('#project-code').select2('data'), function(index, el) {
+			projectCodes.push(el.id);
+		});
+		projectCodeValues = projectCodes.join(';');
+
+		if ($('#nawqa-project').is(':checked')) {
+			nawqaValues += Config.NAWQA_ONLY_PROJECTS;
+		}
+	
+		if (nawqaValues !== '' && projectCodeValues !== '') {
+			nawqaValues += ';';
+		}
+		
+		$(APP.DOM.form).find('input[name="project"]').val(nawqaValues + projectCodeValues);
+	});
     
     // Add click handler for the Show queries button
     $('#show-queries-button').click(function() {
