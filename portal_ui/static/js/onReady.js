@@ -60,6 +60,13 @@ PORTAL.onReady = function() {
             })
     );
     PORTAL.VIEWS.createCodeSelect($('#assemblage'), {model : PORTAL.MODELS.assemblage}, select2Options);
+	PORTAL.VIEWS.createPagedCodeSelect(
+			$('#project_code'),
+			{codes : 'project'},
+			$.extend({}, select2Options, {
+				closeOnSelect : false
+			})
+	);
 
     // Add input validations and reformatting handlers
     PORTAL.VIEWS.inputValidation({

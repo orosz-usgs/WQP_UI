@@ -176,6 +176,12 @@ PORTAL.MODELS.help = {
     		<div>The Assemblage is specific to biological collection data, and refers to "An association \
     		of interacting populations of organisms in a given waterbody."  For example, macroinvertabrates or fish/necton  </div>'
     },
+    project : {
+    	placement : 'auto',
+    	title : 'Project Help',
+    	content : '\
+    		The Project under which the sample was collected.'
+    },
     pcode : {
         placement: 'auto',
         title: 'Parameter Code Help',
