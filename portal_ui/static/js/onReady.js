@@ -59,6 +59,13 @@ PORTAL.onReady = function() {
                 closeOnSelect : false
             })
     );
+    PORTAL.VIEWS.createPagedCodeSelect(
+    		$('#subject-taxonomic-name'),
+    		{codes : 'subjecttaxonomicname'},
+    		$.extend({}, select2Options, {
+    			closeOnSelect : false
+    		})
+    );
     PORTAL.VIEWS.createCodeSelect($('#assemblage'), {model : PORTAL.MODELS.assemblage}, select2Options);
 	PORTAL.VIEWS.createPagedCodeSelect(
 			$('#project-code'),

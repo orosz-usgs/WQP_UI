@@ -169,6 +169,11 @@ PORTAL.MODELS.help = {
         sources are listed in parenthesis for each characteristic. Multiple characteristics may \
         be selected. </div>'
     },
+    taxonomicName : {
+    	placement : 'auto',
+    	title : 'Taxonomic Name Help',
+    	content : ''
+    },
     assemblage : {
     	placement : 'auto',
     	title : 'Assemblage Help',
