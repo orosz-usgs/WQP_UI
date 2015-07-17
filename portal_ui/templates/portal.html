@@ -199,9 +199,9 @@
                         	</div>
                         </div>
                         <div class="form-group">
-                        	<label class="control-label" for="project_code">Project:</label>
+                        	<label class="control-label" for="project-code">Project:</label>
                         	<div>
-                        		<input class="form-control" type="hidden" name="project" id="project_code" />
+                        		<input class="form-control" type="hidden" name="project_code" id="project-code" />
                         		<button type="button" class="help-link popover-help" id="projectHelp" data-help="project">?</button>
                         	</div>
                         </div>
@@ -213,12 +213,11 @@
                             </div>
                         </div>
 	                    <div id="nawqa-project-div">
-	                    	<label class="control-label" for="nawqa_project">
+	                    	<label class="control-label" for="nawqa-project">
 	                    		NAWQA Program Only (NAWQA, NASQAN, and NMN):&nbsp;
 	                    	</label>
 	                    	<div>
-	                    		<input type="checkbox" name="project" id="nawqa_project"	                    		
-	                    			value="National Water Quality Assessment (NAWQA) Program;National Monitoring Network (NMN);National Stream Quality Accounting Network (NASQAN)"/>
+	                    		<input type="checkbox" name="nawqa_project" id="nawqa-project"/>
                                 <button type="button" class="help-link popover-help" id="nawqaHelp" data-help="nawqa">?</button>              
                             </div>
 	                    </div>
@@ -267,6 +266,7 @@
             <input type="hidden" name="zip" checked="checked" id="zip" value="yes" />
             <input type="hidden" name="resultType" value="Station" />
             <input type="hidden" name="sorted" value="no" />
+            <input type="hidden" name="project" />
         </form>
         <div id="map-and-query-div" class="panel">
             <div id="mapping-div" class="panel-body">

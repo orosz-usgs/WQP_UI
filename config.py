@@ -14,3 +14,5 @@ SEARCH_QUERY_ENDPOINT = ''
 PUBLIC_SRSNAMES_ENDPOINT = ''
 
 GA_TRACKING_CODE = ''
+
+NAWQA_ONLY_PROJECTS = 'National Water Quality Assessment (NAWQA) Program;National Monitoring Network (NMN);National Stream Quality Accounting Network (NASQAN)'

@@ -99,7 +99,7 @@ APP.DOWNLOAD = {
 // USGS-EPA Business Rules
 // =======================
 APP.RULES = {
-    isBBoxValid: function(myForm /* DOM element */){
+		isBBoxValid: function(myForm /* DOM element */){
         // Determine if the contents of the bounding box fields are valid . If bBox not valid,
         // update the download dialog and return false.
         // Otherwise return true.
@@ -165,7 +165,7 @@ APP.URLS = {};
 APP.URLS = {
     
     getQueryParams : function(forGoogle /* Boolean */) {
-        var IGNORE_PARAM_LIST = ["north","south","east","west","resultType","source"];
+        var IGNORE_PARAM_LIST = ["north","south","east","west","resultType","source", "nawqa_project", "project_code"];
 
         var ignoreList = (forGoogle)? IGNORE_PARAM_LIST.concat(["mimeType","zip"]): IGNORE_PARAM_LIST;
         var result = getFormQuery($(APP.DOM.form), ignoreList);
