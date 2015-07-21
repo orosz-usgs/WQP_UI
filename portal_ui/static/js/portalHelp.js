@@ -171,9 +171,9 @@ PORTAL.MODELS.help = {
     },
     project : {
     	placement : 'auto',
-    	title : 'Project Help',
+    	title : 'Project ID Help',
     	content : '\
-    		The Project Identifier is a designator used to uniquely identify a data collection project within a context of an organization.'
+    		The Project identifier is a designator used to uniquely identify a data collection project within a context of an organization.'
     },
     pcode : {
         placement: 'auto',
@@ -197,7 +197,7 @@ PORTAL.MODELS.help = {
     	placement: 'auto',
         title: 'NAWQA Program Only Help',
         content: '\
-        	<div>National Water Quality Assessment Program Samples Only (NAWQA, NASQAN, and NMN)</div' 	
+        	<div>National Water Quality Assessment Program Samples Only (NAWQA, NASQAN, and NMN)</div>'
     },
     biologicalparams : {
     	placement: 'auto',
@@ -217,7 +217,7 @@ PORTAL.MODELS.help = {
     	title : 'Assemblage Help',
     	content : '\
     		<div>The Assemblage is specific to biological collection data, and refers to "An association \
-    		of interacting populations of organisms in a given waterbody."  For example, macroinvertabrates or fish/necton  </div>'
+    		of interacting populations of organisms in a given waterbody."  Examples include macroinvertabrates and fish/necton.  </div>'
     },
 
     xmlSchema : {
