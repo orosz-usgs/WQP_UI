@@ -169,23 +169,11 @@ PORTAL.MODELS.help = {
         sources are listed in parenthesis for each characteristic. Multiple characteristics may \
         be selected. </div>'
     },
-    taxonomicName : {
-    	placement : 'auto',
-    	title : 'Taxonomic Name Help',
-    	content : ''
-    },
-    assemblage : {
-    	placement : 'auto',
-    	title : 'Assemblage Help',
-    	content : '\
-    		<div>The Assemblage is specific to biological collection data, and refers to "An association \
-    		of interacting populations of organisms in a given waterbody."  For example, macroinvertabrates or fish/necton  </div>'
-    },
     project : {
     	placement : 'auto',
-    	title : 'Project Help',
+    	title : 'Project ID Help',
     	content : '\
-    		The Project under which the sample was collected.'
+    		The Project identifier is a designator used to uniquely identify a data collection project within a context of an organization.'
     },
     pcode : {
         placement: 'auto',
@@ -209,8 +197,29 @@ PORTAL.MODELS.help = {
     	placement: 'auto',
         title: 'NAWQA Program Only Help',
         content: '\
-        	<div>National Water Quality Assessment Program Samples Only (NAWQA, NASQAN, and NMN)</div' 	
+        	<div>National Water Quality Assessment Program Samples Only (NAWQA, NASQAN, and NMN)</div>'
     },
+    biologicalparams : {
+    	placement: 'auto',
+        title: 'Biological Sampling Parameters Help',
+        content: '\
+        	<div>These parameters are related to samples of biological organisms, such as species name or the assemblage that a group of organisms belongs to</div'
+    },
+    taxonomicName : {
+    	placement : 'auto',
+    	title : 'Taxonomic Name Help',
+    	content : '\
+        	<div>The Taxonomic Name parameter queries the SubjectTaxonomicName in the WQP output.  This is typically in Genus species binomial nomenclature form.  For example, \
+        	to look for sites sampled for the shovelnose sturgeon, enter <i>Scaphirhynchus platorynchus</i></div>'
+    },
+    assemblage : {
+    	placement : 'auto',
+    	title : 'Assemblage Help',
+    	content : '\
+    		<div>The Assemblage is specific to biological collection data, and refers to "An association \
+    		of interacting populations of organisms in a given waterbody."  Examples include macroinvertabrates and fish/nekton.  </div>'
+    },
+
     xmlSchema : {
         placement : 'auto',
         title: 'WQX-Outbound Schema Info',

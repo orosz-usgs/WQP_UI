@@ -191,22 +191,9 @@
                                 <button type="button" class="help-link popover-help" id="characteristicHelp" data-help="characteristicName">?</button>
                             </div>
                         </div>
+
                         <div class="form-group">
-                        	<label class="control-label" for="assemblage">Assemblage:</label>
-                        	<div>
-                        		<input class="form-control" type="hidden" name="assemblage" id="assemblage" />
-                        		<button type="button" class="help-link popover-help" id="assemblageHelp" data-help="assemblage">?</button>
-                        	</div>
-                        </div>
-                        <div class="form-group">
-                        	<label class="control-label" for="subjectTaxonomicName">Taxonomic Name:</label>
-                        	<div>
-                        		<input class="form-control" type="hidden" name="subjectTaxonomicName" id="subject-taxonomic-name" />
-                        		<button type="button" class="help-link popover-help" id="taxonomicNameHelp" data-help="taxonomicName">?</button>
-                        	</div>
-                        </div>
-                        <div class="form-group">
-                        	<label class="control-label" for="project-code">Project:</label>
+                        	<label class="control-label" for="project-code">Project ID:</label>
                         	<div>
                         		<input class="form-control" type="hidden" name="project_code" id="project-code" />
                         		<button type="button" class="help-link popover-help" id="projectHelp" data-help="project">?</button>
@@ -219,7 +206,8 @@
                                 <button type="button" class="help-link popover-help" id="pCodeHelp" data-help="pcode">?</button>              
                             </div>
                         </div>
-	                    <div id="nawqa-project-div">
+	                    <!-- commenting out nawqa project section for the moment
+                        <div id="nawqa-project-div">
 	                    	<label class="control-label" for="nawqa-project">
 	                    		NAWQA Program (NAWQA, NASQAN, and NMN):&nbsp;
 	                    	</label>
@@ -228,6 +216,7 @@
                                 <button type="button" class="help-link popover-help" id="nawqaHelp" data-help="nawqa">?</button>              
                             </div>
 	                    </div>
+	                    -->
                         <div id="date-row">
                             <div id="start-date-select" class="form-group">
                                 <label class="control-label" for="startDateLo">Date range - from:</label>
@@ -246,11 +235,36 @@
                                 </div>
                             </div>
                         </div>
+                        <div id="biological" class="subpanel">
+                            <div class="subpanel-heading">
+                            Biological sampling parameters:
+                            <button type="button" id="bboxHelp" class="popover-help" data-help="biologicalparams" >?</button>
+                            <button type="button" class="show-hide-toggle" title="Show subsection">
+                                <img src="{{ url_for('static', filename='img/expand.png') }}" alt="show" />
+                            </button>
+                            </div>
+                            <div class="subpanel-body">
+                                <div class="form-group">
+                                    <label class="control-label" for="assemblage">Assemblage:</label>
+                                    <div>
+                                        <input class="form-control" type="hidden" name="assemblage" id="assemblage" />
+                                        <button type="button" class="help-link popover-help" id="assemblageHelp" data-help="assemblage">?</button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="subjectTaxonomicName">Taxonomic Name:</label>
+                                    <div>
+                                        <input class="form-control" type="hidden" name="subjectTaxonomicName" id="subject-taxonomic-name" />
+                                        <button type="button" class="help-link popover-help" id="taxonomicNameHelp" data-help="taxonomicName">?</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="dummy-row"></div>
-            <div class="clearfix" visible-sm"></div>
+            <div class="clearfix" ></div>
             <div id="data-type-parameters-div" class="panel">
                 <div class="panel-heading">
                     DATA SOURCE
@@ -408,7 +422,7 @@
         <div id="org-id-dialog" style="display:none;">
             <div id="org-id-loading-div">Loading list ... please wait</div>
             <div id="org-id-toggles-div">
-                <p>For help, go to the <a href="portal_userguide.jsp#Organization">User Guide</a></p>
+                <p>For help, go to the <a href="{{ url_for('portal_userguide-canonical') }}#Organization">User Guide</a></p>
                 <div id="org-id-current-selections-div">
                     <label><b>Current Selections:</b></label>
                     <br />
