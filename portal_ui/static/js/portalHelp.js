@@ -217,7 +217,7 @@ PORTAL.MODELS.help = {
     	title : 'Assemblage Help',
     	content : '\
     		<div>The Assemblage is specific to biological collection data, and refers to "An association \
-    		of interacting populations of organisms in a given waterbody."  Examples include macroinvertabrates and fish/necton.  </div>'
+    		of interacting populations of organisms in a given waterbody."  Examples include macroinvertabrates and fish/nekton.  </div>'
     },
 
     xmlSchema : {
