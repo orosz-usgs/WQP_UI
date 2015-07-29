@@ -12,7 +12,8 @@ PORTAL.onReady = function() {
 
     PORTAL.portalDataMap; // Don't initialize portalDataMap until it has been shown.
 
-    APP.DOM.form = document.getElementById("params");
+    //TODO: remove this
+    var appForm = document.getElementById("params");
 
     PORTAL.downloadProgressDialog = PORTAL.VIEWS.downloadProgressDialog($('#download-status-dialog'));
 
@@ -172,7 +173,7 @@ PORTAL.onReady = function() {
         //Get the head request. We are doing this synchronously which is why the timeout is needed
         // so that we don't get stuck in the click callback. Should look at making this asynchronous.
         setTimeout(function() {
-            APP.DOWNLOAD.beforeSubmit(APP.DOM.form, 'Station');
+            APP.DOWNLOAD.beforeSubmit(appForm, 'Station');
         }, 500);
     });
 
@@ -180,17 +181,17 @@ PORTAL.onReady = function() {
     $('#main-button').click(function(event){
         if (!PORTAL.CONTROLLERS.validateDownloadForm()) { return; }
         event.preventDefault();
-        _gaq.push(['_trackEvent', 'Portal Page', APP.DOM.getResultType() + 'Count', decodeURIComponent(APP.URLS.getQueryParams())]);
+        _gaq.push(['_trackEvent', 'Portal Page', $('#params input[name="resultType"]').val() + 'Count', decodeURIComponent(APP.URLS.getQueryParams())]);
 
         PORTAL.downloadProgressDialog.show('download', function(count) {
-             _gaq.push(['_trackEvent', 'Portal Page', APP.DOM.getResultType() + 'Download', decodeURIComponent(APP.URLS.getQueryParams()), parseInt(count)]);
+             _gaq.push(['_trackEvent', 'Portal Page', $('#params input[name="resultType"]').val() + 'Download', decodeURIComponent(APP.URLS.getQueryParams()), parseInt(count)]);
              $('#params').submit();
         });
 
         //Get the head request. We are doing this synchronously which is why the timeout is needed
         // so that we don't get stuck in the click callback. Should look at making this asynchronous.
         setTimeout(function() {
-            APP.DOWNLOAD.beforeSubmit(APP.DOM.form,  $(APP.DOM.form).find('input[name=resultType]').val());
+            APP.DOWNLOAD.beforeSubmit(appForm,  $('#params input[name=resultType]').val());
         }, 500);
     });
 
@@ -309,7 +310,7 @@ PORTAL.onReady = function() {
 			nawqaValues += ';';
 		}
 		
-		$(APP.DOM.form).find('input[name="project"]').val(nawqaValues + projectCodeValues);
+		$('#params input[name="project"]').val(nawqaValues + projectCodeValues);
 	});
     
     // Add click handler for the Show queries button

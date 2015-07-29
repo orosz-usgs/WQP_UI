@@ -168,7 +168,7 @@ APP.URLS = {
         var IGNORE_PARAM_LIST = ["north","south","east","west","resultType","source", "nawqa_project", "project_code"];
 
         var ignoreList = (forGoogle)? IGNORE_PARAM_LIST.concat(["mimeType","zip"]): IGNORE_PARAM_LIST;
-        var result = getFormQuery($(APP.DOM.form), ignoreList);
+        var result = getFormQuery($('#params'), ignoreList);
 
         if (forGoogle) {
             if (!result){
@@ -186,13 +186,5 @@ APP.URLS = {
     }
 };
 
-/* DOM elements and functions to retrieve info from the DOM. Elements will be assigned
-/* after the document has loaded.
-*/
-APP.DOM = {
-    getResultType: function(){
-        return $(APP.DOM.form).find('input[name="resultType"]').val();
-    }
-};
 
 
