@@ -151,52 +151,64 @@ PORTAL.onReady = function() {
 
     // Set up Show Sites button
     $('#show-on-map-button').click(function() {
-        if (!PORTAL.CONTROLLERS.validateDownloadForm()) { return; }
-        _gaq.push(['_trackEvent', 'Portal Map', 'MapCount', decodeURIComponent(APP.URLS.getQueryParams())]);
-        PORTAL.downloadProgressDialog.show('map', function(count) {
-            // Show the map if it is currently hidden
-            if ($('#query-map-box').is(':hidden')) {
-                $('#mapping-div .show-hide-toggle').click();
-            }
-
-            _gaq.push(['_trackEvent', 'Portal Map', 'MapCreate',  decodeURIComponent(APP.URLS.getQueryParams()), parseInt(count)]);
-
-            // Start mapping process by disabling the show site button and then requesting the layer
-            $('#show-on-map-button').attr('disabled', 'disabled').removeClass('query-button').addClass('disable-query-button');
-            var formParams = getFormValues($('#params'),
-                    ['north', 'south', 'east', 'west', 'resultType', 'source', 'project_code', 'nawqa_project', 'mimeType', 'zip','__ncforminfo' /*input is injected by barracuda firewall*/]);
+    	var fileFormat = 'xml';
+		var showMap = function(totalCount) {
+			// Show the map if it is currently hidden
+			if ($('#query-map-box').is(':hidden')) {
+				$('#mapping-div .show-hide-toggle').click();
+			}
+			
+			_gaq.push(['_trackEvent', 'Portal Map', 'MapCreate',  decodeURIComponent(APP.URLS.getQueryParams()), parseInt(totalCount)]);
+			// Start mapping process by disabling the show site button and then requesting the layer
+			$('#show-on-map-button').attr('disabled', 'disabled').removeClass('query-button').addClass('disable-query-button');
+			var formParams = getFormValues($('#params'),
+					['north', 'south', 'east', 'west', 'resultType', 'source', 'project_code', 'nawqa_project', 'mimeType', 'zip','__ncforminfo' /*input is injected by barracuda firewall*/]);
 			PORTAL.portalDataMap.showDataLayer(formParams, function() {
 				$('#show-on-map-button').removeAttr('disabled').removeClass('disable-query-button').addClass('query-button');
 			});
-        });
+		};
 
-        //Get the head request. We are doing this synchronously which is why the timeout is needed
-        // so that we don't get stuck in the click callback. Should look at making this asynchronous.
-        setTimeout(function() {
-            APP.DOWNLOAD.beforeSubmit(appForm, 'Station');
-        }, 500);
+        if (!PORTAL.CONTROLLERS.validateDownloadForm()) { return; }
+        
+        _gaq.push(['_trackEvent', 'Portal Map', 'MapCount', decodeURIComponent(APP.URLS.getQueryParams())]);
+        
+        PORTAL.downloadProgressDialog.show('map');
+		PORTAL.getHeadRequest('Station').done(function(response) {
+			var counts = PORTAL.DataSourceUtils.getCountsFromHeader(response, PORTAL.MODELS.providers.getIds());
+
+			PORTAL.downloadProgressDialog.updateProgress(counts, 'Station', fileFormat, showMap);
+			
+		}).fail(function(message) {
+			PORTAL.downloadProgressDialog.cancelProgress(message);
+		});
     });
 
     // Set up the Download button
-    $('#main-button').click(function(event){
-        if (!PORTAL.CONTROLLERS.validateDownloadForm()) { return; }
-        event.preventDefault();
-        _gaq.push(['_trackEvent', 'Portal Page', $('#params input[name="resultType"]').val() + 'Count', decodeURIComponent(APP.URLS.getQueryParams())]);
-
-        PORTAL.downloadProgressDialog.show('download', function(count) {
-             _gaq.push(['_trackEvent', 'Portal Page', $('#params input[name="resultType"]').val() + 'Download', decodeURIComponent(APP.URLS.getQueryParams()), parseInt(count)]);
-             $('#params').submit();
-        });
-
-        //Get the head request. We are doing this synchronously which is why the timeout is needed
-        // so that we don't get stuck in the click callback. Should look at making this asynchronous.
-        setTimeout(function() {
-            APP.DOWNLOAD.beforeSubmit(appForm,  $('#params input[name=resultType]').val());
-        }, 500);
-    });
+	$('#main-button').click(function(event){
+		var startDownload = function(totalCount) {
+			_gaq.push(['_trackEvent', 'Portal Page', $('#params input[name="resultType"]').val() + 'Download', decodeURIComponent(APP.URLS.getQueryParams()), parseInt(totalCount)]);
+			$('#params').submit();
+		};
+		var fileFormat = $('input[name="mimeType"]').val();
+		var resultType = $('#params input[name="resultType"]').val();
+		
+		if (!PORTAL.CONTROLLERS.validateDownloadForm()) { return; }
+		
+		event.preventDefault();
+		_gaq.push(['_trackEvent', 'Portal Page', resultType + 'Count', decodeURIComponent(APP.URLS.getQueryParams())]);
+		
+		PORTAL.downloadProgressDialog.show('download');
+		PORTAL.getHeadRequest(resultType).done(function(response) {
+			var counts = PORTAL.DataSourceUtils.getCountsFromHeader(response, PORTAL.MODELS.providers.getIds());
+			
+			PORTAL.downloadProgressDialog.updateProgress(counts, resultType, fileFormat, startDownload);
+			
+		}).fail(function(message) {
+			PORTAL.downloadProgressDialog.cancelProgress(message);
+		});
+	});
 
     // GeoLocation easter egg. Most of code copied from Head First HTML5
-
     function updateMyLocation(){
             if (navigator.geolocation && navigator.geolocation.getCurrentPosition){
                     navigator.geolocation.getCurrentPosition(updateFormLocation, displayError,{timeout: 8000, maximumAge: 60000});
