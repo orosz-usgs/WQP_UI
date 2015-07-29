@@ -190,11 +190,6 @@ APP.URLS = {
 /* after the document has loaded.
 */
 APP.DOM = {
-    getBBox: function(){
-        var myForm = APP.DOM.form;
-        return (myForm.north.value && myForm.west.value && myForm.south.value && myForm.east.value)?
-                myForm.west.value + "," + myForm.south.value + "," + myForm.east.value + "," + myForm.north.value: "";
-    },
     getResultType: function(){
         return $(APP.DOM.form).find('input[name="resultType"]').val();
     }

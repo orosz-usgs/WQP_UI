@@ -1,6 +1,10 @@
+/*jslint browser: true*/
+/*global $*/
+
 var PORTAL = PORTAL || {};
 
 PORTAL.onReady = function() {
+	"use strict";
  
     var placeSelects;
     var select2Options = {
@@ -273,9 +277,17 @@ PORTAL.onReady = function() {
 	});
 
     //Update bBox hidden input if any of the bounding box text fields are updated
-    $('#bounding-box input').change(function() {
-        $(APP.DOM.form).find('input[name=bBox]').val(APP.DOM.getBBox());
-    });
+	$('#bounding-box input').change(function() {
+		var north = $('#north').val();
+		var south = $('#south').val();
+		var east = $('#east').val();
+		var west = $('#west').val();
+		var bboxVal = '';
+		if ((north) && (south) && (east) && (west)) {
+			bboxVal = west + ',' + south + ',' + east + ',' + north;
+		}
+		$('#params input[name="bBox"]').val(bboxVal);
+	});
     
     //Update the project hidden input if the project-code input  or nawqa-project input changes
 	$('#project-code, #nawqa-project').change(function() {
