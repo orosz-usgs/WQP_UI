@@ -16,6 +16,7 @@ PORTAL.getHeadRequest = function(resultType) {
 	$.ajax({
 		url : url,
 		method: 'HEAD',
+		cache : false,
 		success : function(data, textStatus, jqXHR) {
 			deferred.resolve(jqXHR);
 		},
