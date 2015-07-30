@@ -1,6 +1,10 @@
+/*jslint browser: true*/
+/*global $*/
+
 var PORTAL = PORTAL || {};
 
 PORTAL.onReady = function() {
+	"use strict";
  
     var placeSelects;
     var select2Options = {
@@ -8,7 +12,8 @@ PORTAL.onReady = function() {
 
     PORTAL.portalDataMap; // Don't initialize portalDataMap until it has been shown.
 
-    APP.DOM.form = document.getElementById("params");
+    //TODO: remove this
+    var appForm = document.getElementById("params");
 
     PORTAL.downloadProgressDialog = PORTAL.VIEWS.downloadProgressDialog($('#download-status-dialog'));
 
@@ -146,52 +151,64 @@ PORTAL.onReady = function() {
 
     // Set up Show Sites button
     $('#show-on-map-button').click(function() {
-        if (!PORTAL.CONTROLLERS.validateDownloadForm()) { return; }
-        _gaq.push(['_trackEvent', 'Portal Map', 'MapCount', decodeURIComponent(APP.URLS.getQueryParams())]);
-        PORTAL.downloadProgressDialog.show('map', function(count) {
-            // Show the map if it is currently hidden
-            if ($('#query-map-box').is(':hidden')) {
-                $('#mapping-div .show-hide-toggle').click();
-            }
-
-            _gaq.push(['_trackEvent', 'Portal Map', 'MapCreate',  decodeURIComponent(APP.URLS.getQueryParams()), parseInt(count)]);
-
-            // Start mapping process by disabling the show site button and then requesting the layer
-            $('#show-on-map-button').attr('disabled', 'disabled').removeClass('query-button').addClass('disable-query-button');
-            var formParams = getFormValues($('#params'),
-                    ['north', 'south', 'east', 'west', 'resultType', 'source', 'project_code', 'nawqa_project', 'mimeType', 'zip','__ncforminfo' /*input is injected by barracuda firewall*/]);
+    	var fileFormat = 'xml';
+		var showMap = function(totalCount) {
+			// Show the map if it is currently hidden
+			if ($('#query-map-box').is(':hidden')) {
+				$('#mapping-div .show-hide-toggle').click();
+			}
+			
+			_gaq.push(['_trackEvent', 'Portal Map', 'MapCreate',  decodeURIComponent(PORTAL.URLS.getQueryParams()), parseInt(totalCount)]);
+			// Start mapping process by disabling the show site button and then requesting the layer
+			$('#show-on-map-button').attr('disabled', 'disabled').removeClass('query-button').addClass('disable-query-button');
+			var formParams = getFormValues($('#params'),
+					['north', 'south', 'east', 'west', 'resultType', 'source', 'project_code', 'nawqa_project', 'mimeType', 'zip','__ncforminfo' /*input is injected by barracuda firewall*/]);
 			PORTAL.portalDataMap.showDataLayer(formParams, function() {
 				$('#show-on-map-button').removeAttr('disabled').removeClass('disable-query-button').addClass('query-button');
 			});
-        });
+		};
 
-        //Get the head request. We are doing this synchronously which is why the timeout is needed
-        // so that we don't get stuck in the click callback. Should look at making this asynchronous.
-        setTimeout(function() {
-            APP.DOWNLOAD.beforeSubmit(APP.DOM.form, 'Station');
-        }, 500);
+        if (!PORTAL.CONTROLLERS.validateDownloadForm()) { return; }
+        
+        _gaq.push(['_trackEvent', 'Portal Map', 'MapCount', decodeURIComponent(PORTAL.URLS.getQueryParams())]);
+        
+        PORTAL.downloadProgressDialog.show('map');
+		PORTAL.getHeadRequest('Station').done(function(response) {
+			var counts = PORTAL.DataSourceUtils.getCountsFromHeader(response, PORTAL.MODELS.providers.getIds());
+
+			PORTAL.downloadProgressDialog.updateProgress(counts, 'Station', fileFormat, showMap);
+			
+		}).fail(function(message) {
+			PORTAL.downloadProgressDialog.cancelProgress(message);
+		});
     });
 
     // Set up the Download button
-    $('#main-button').click(function(event){
-        if (!PORTAL.CONTROLLERS.validateDownloadForm()) { return; }
-        event.preventDefault();
-        _gaq.push(['_trackEvent', 'Portal Page', APP.DOM.getResultType() + 'Count', decodeURIComponent(APP.URLS.getQueryParams())]);
-
-        PORTAL.downloadProgressDialog.show('download', function(count) {
-             _gaq.push(['_trackEvent', 'Portal Page', APP.DOM.getResultType() + 'Download', decodeURIComponent(APP.URLS.getQueryParams()), parseInt(count)]);
-             $('#params').submit();
-        });
-
-        //Get the head request. We are doing this synchronously which is why the timeout is needed
-        // so that we don't get stuck in the click callback. Should look at making this asynchronous.
-        setTimeout(function() {
-            APP.DOWNLOAD.beforeSubmit(APP.DOM.form,  $(APP.DOM.form).find('input[name=resultType]').val());
-        }, 500);
-    });
+	$('#main-button').click(function(event){
+		var startDownload = function(totalCount) {
+			_gaq.push(['_trackEvent', 'Portal Page', $('#params input[name="resultType"]').val() + 'Download', decodeURIComponent(PORTAL.URLS.getQueryParams()), parseInt(totalCount)]);
+			$('#params').submit();
+		};
+		var fileFormat = $('input[name="mimeType"]').val();
+		var resultType = $('#params input[name="resultType"]').val();
+		
+		if (!PORTAL.CONTROLLERS.validateDownloadForm()) { return; }
+		
+		event.preventDefault();
+		_gaq.push(['_trackEvent', 'Portal Page', resultType + 'Count', decodeURIComponent(PORTAL.URLS.getQueryParams())]);
+		
+		PORTAL.downloadProgressDialog.show('download');
+		PORTAL.getHeadRequest(resultType).done(function(response) {
+			var counts = PORTAL.DataSourceUtils.getCountsFromHeader(response, PORTAL.MODELS.providers.getIds());
+			
+			PORTAL.downloadProgressDialog.updateProgress(counts, resultType, fileFormat, startDownload);
+			
+		}).fail(function(message) {
+			PORTAL.downloadProgressDialog.cancelProgress(message);
+		});
+	});
 
     // GeoLocation easter egg. Most of code copied from Head First HTML5
-
     function updateMyLocation(){
             if (navigator.geolocation && navigator.geolocation.getCurrentPosition){
                     navigator.geolocation.getCurrentPosition(updateFormLocation, displayError,{timeout: 8000, maximumAge: 60000});
@@ -248,7 +265,7 @@ PORTAL.onReady = function() {
 
 		setEnabled($('#download-box #kml'), sensitive);
 
-		$form.attr('action', APP.URLS.getFormUrl($(this).val()));
+		$form.attr('action', PORTAL.URLS.getFormUrl($(this).val()));
 		$form.find('input[name="resultType"]:hidden').val($(this).val());
 		
 		// If biological results desired add a hidden input, otherwise remove it.
@@ -273,9 +290,17 @@ PORTAL.onReady = function() {
 	});
 
     //Update bBox hidden input if any of the bounding box text fields are updated
-    $('#bounding-box input').change(function() {
-        $(APP.DOM.form).find('input[name=bBox]').val(APP.DOM.getBBox());
-    });
+	$('#bounding-box input').change(function() {
+		var north = $('#north').val();
+		var south = $('#south').val();
+		var east = $('#east').val();
+		var west = $('#west').val();
+		var bboxVal = '';
+		if ((north) && (south) && (east) && (west)) {
+			bboxVal = west + ',' + south + ',' + east + ',' + north;
+		}
+		$('#params input[name="bBox"]').val(bboxVal);
+	});
     
     //Update the project hidden input if the project-code input  or nawqa-project input changes
 	$('#project-code, #nawqa-project').change(function() {
@@ -297,20 +322,20 @@ PORTAL.onReady = function() {
 			nawqaValues += ';';
 		}
 		
-		$(APP.DOM.form).find('input[name="project"]').val(nawqaValues + projectCodeValues);
+		$('#params input[name="project"]').val(nawqaValues + projectCodeValues);
 	});
     
     // Add click handler for the Show queries button
     $('#show-queries-button').click(function() {
         // Generate the request from the form
         // REST Request (there used to be SOAP request please see svn for previous revisions)
-        var stationSection = "<div class=\"show-query-text\"><b>Sites</b><br><textarea readonly=\"readonly\" rows='6'>" + APP.URLS.getFormUrl('Station') + "</textarea></div>";
-        var resultSection = "<div class=\"show-query-text\"><b>Results</b><br><textarea readonly=\"readonly\" rows='6'>" + APP.URLS.getFormUrl('Result') + "</textarea></div>";
+        var stationSection = "<div class=\"show-query-text\"><b>Sites</b><br><textarea readonly=\"readonly\" rows='6'>" + PORTAL.URLS.getFormUrl('Station') + "</textarea></div>";
+        var resultSection = "<div class=\"show-query-text\"><b>Results</b><br><textarea readonly=\"readonly\" rows='6'>" + PORTAL.URLS.getFormUrl('Result') + "</textarea></div>";
 
         $('#WSFeedback').html(stationSection + resultSection); // temporarily reoving + biologicalResultSection);
     });
     // Initialize portal data map and identify dialog
-    var identifyDialog = new IdentifyDialog('map-info-dialog', APP.URLS.getFormUrl);
+    var identifyDialog = new IdentifyDialog('map-info-dialog', PORTAL.URLS.getFormUrl);
 
     // Add click handler for map show/hide button
     $('#mapping-div .show-hide-toggle').click(function() {

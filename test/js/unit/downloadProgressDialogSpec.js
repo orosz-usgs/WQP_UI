@@ -1,5 +1,4 @@
-// Disabling because they fail only when run with phantomjs on the CentOS CI server.
-xdescribe('Tests for PORTAl.VIEWS.downloadProgressDialog', function() {
+describe('Tests for PORTAl.VIEWS.downloadProgressDialog', function() {
     var thisDialog;
     var continueSpy;
 
@@ -20,15 +19,17 @@ xdescribe('Tests for PORTAl.VIEWS.downloadProgressDialog', function() {
     });
 
     it('Expects the dialog to be visible with appropriate content and header when show is called', function() {
-        thisDialog.show('map', continueSpy);
+        thisDialog.show('map');
         expect($('#progress-dialog').is(':visible')).toBe(true);
         expect($('.modal-header h4').html()).toContain('Map Sites');
         expect($('.modal-body').html()).toContain('Please wait');
+        expect($('.modal-footer').html()).toEqual('');
 
-        thisDialog.show('download', continueSpy);
+        thisDialog.show('download');
         expect($('#progress-dialog').is(':visible')).toBe(true);
         expect($('.modal-header h4').html()).toContain('Download');
         expect($('.modal-body').html()).toContain('Please wait');
+        expect($('.modal-footer').html()).toEqual('');
     });
 
     it('Expects the dialog to be hidden after calling hide', function() {
@@ -37,151 +38,159 @@ xdescribe('Tests for PORTAl.VIEWS.downloadProgressDialog', function() {
         expect($('#progress-dialog').is(':visible')).toEqual(false);
     });
 
-    it('Expects the dialog to be updated the second time show is called', function() {
-        thisDialog.show('map', continueSpy);
-        thisDialog.hide();
-        thisDialog.show('download', continueSpy);
-        expect($('#progress-dialog').is(':visible')).toBe(true);
-        expect($('.modal-header h4').html()).toContain('Download');
-        expect($('.modal-body').html()).toContain('Please wait');
+	describe('Tests for updateProgress when dialog is for map', function() {
+		var counts;
+		beforeEach(function() {
+			spyOn(PORTAL.MODELS.providers, 'getIds').andReturn(['DS1', 'DS2']);
+			thisDialog.show('map');
+			
+			counts = {
+					DS1 : {
+						results : '24',
+						sites : '10'
+					},
+					DS2 : {
+						results : '50',
+						sites : '20'
+					},
+					total : {
+						results : '100',
+						sites : '50'
+					}
+			};
+		});
+
+		it('Expects when totalCounts exceed limit that download is canceled', function() {
+			counts.total.sites = '250,001';
+			thisDialog.updateProgress(counts, 'Station', 'xml', continueSpy);
+			
+			expect($('.modal-body').html()).toContain('query is returning more than 250,000 sites');
+			expect($('#progress-ok-btn').length).toEqual(1);
+			expect($('#progress-cancel-btn').length).toEqual(0);
+			expect($('#progress-continue-btn').length).toEqual(0);
+			
+			$('#progress-ok-btn').click();
+			expect($('#progress-dialog').is(':visible')).toBe(false);
+			expect(continueSpy).not.toHaveBeenCalled();
+		});
+
+		it('Expects when totalCounts is under limit, that the status message is updated to allow the action', function() {
+			counts.total.sites = '249,999';
+			thisDialog.updateProgress(counts, 'Station', 'xml', continueSpy);
+			
+			expect($('.modal-body').html()).toContain('map the sites');
+			expect($('#progress-ok-btn').length).toEqual(0);
+			expect($('#progress-cancel-btn').length).toEqual(1);
+			expect($('#progress-continue-btn').length).toEqual(1);
+			
+			$('#progress-cancel-btn').click();
+			expect($('#progress-dialog').is(':visible')).toBe(false);
+			expect(continueSpy).not.toHaveBeenCalled();
+			
+			thisDialog.show('map');
+			thisDialog.updateProgress(counts, 'Station', 'xml', continueSpy);
+			
+			$('#progress-continue-btn').click();
+			expect(continueSpy).toHaveBeenCalledWith('249,999');
+			expect($('#progress-dialog').is(':visible')).toBe(false);
+		});
     });
 
-    it('When updateProgress is call, expects the status to be updated if no counts with an Ok button which closes the dialog', function() {
-        thisDialog.show('map', continueSpy);
-        thisDialog.updateProgress({
-            message : 'Can\'t contact the server'
-        });
-        expect($('.modal-body').html()).toContain('Can\'t contact the server');
-        expect($('#progress-ok-btn').length).toEqual(1);
-        expect($('#progress-cancel-btn').length).toEqual(0);
-        expect($('#progress-continue-btn').length).toEqual(0);
+	describe('Tests for updateProgress when dialog is for download', function(){
+		beforeEach(function() {
+			spyOn(PORTAL.MODELS.providers, 'getIds').andReturn(['DS1', 'DS2']);
+			thisDialog.show('download');
+			
+			counts = {
+					DS1 : {
+						results : '24',
+						sites : '10'
+					},
+					DS2 : {
+						results : '50',
+						sites : '20'
+					},
+					total : {
+						results : '100',
+						sites : '50'
+					}
+			};
+		});
 
-        $('#progress-ok-btn').click();
-        expect($('#progress-dialog').is(':visible')).toBe(false);
+		it('Expects when the dialog is for downloads and the fileFormat is not xlsx, that the download is always allowed', function() {
+			counts.total = {
+				sites: '250,001',
+				results : '1,123,456'
+			};
+			thisDialog.updateProgress(counts, 'Station', 'csv', continueSpy);
+			
+			expect($('.modal-body').html()).toContain('download the data');
+			expect($('#progress-cancel-btn').length).toEqual(1);
+			expect($('#progress-continue-btn').length).toEqual(1);
+			expect($('#progress-ok-btn').length).toEqual(0);
+			
+			$('#progress-continue-btn').click();
+			expect($('#progress-dialog').is(':visible')).toBe(false);
+			expect(continueSpy).toHaveBeenCalledWith('250,001');
+			
+			thisDialog.show('download', continueSpy);
+			thisDialog.updateProgress(counts, 'Results', 'tsv', continueSpy);
+			
+			expect($('.modal-body').html()).toContain('download the data');
+			expect($('#progress-ok-btn').length).toEqual(0);
+			expect($('#progress-cancel-btn').length).toEqual(1);
+			expect($('#progress-continue-btn').length).toEqual(1);
+			
+			$('#progress-continue-btn').click();
+			
+			expect($('#progress-dialog').is(':visible')).toBe(false);
+			expect(continueSpy).toHaveBeenCalledWith('1,123,456');
+		});
+		
+		it('Expects when the dialog is for downloads and the fileFormat is xlsx, that the download is allowed if counts are less than or equal to 1,048,575', function() {
+			counts.total = {
+				sites : '1,048,574',
+				results : '2,000,000'
+			};
+			thisDialog.updateProgress(counts, 'Station', 'xlsx', continueSpy);
+			
+			expect($('.modal-body').html()).toContain('download the data');
+			expect($('#progress-ok-btn').length).toEqual(0);
+			expect($('#progress-cancel-btn').length).toEqual(1);
+			expect($('#progress-continue-btn').length).toEqual(1);
+			
+			$('#progress-continue-btn').click();
+			expect($('#progress-dialog').is(':visible')).toBe(false);
+			expect(continueSpy).toHaveBeenCalledWith('1,048,574');
+		});
+		
+		it('Expects when the dialog is for downloads and the fileFormat is xlsx, the download is not allowed if counts are greater than 1048575', function() {
+			counts.total = {
+				sites : '1,048,574',
+				results : '2,000,000'
+			};
+			thisDialog.updateProgress(counts, 'Results', 'xlsx', continueSpy);
+		
+			expect($('.modal-body').html()).toContain('more than 1,048,575');
+			expect($('#progress-ok-btn').length).toEqual(1);
+			expect($('#progress-cancel-btn').length).toEqual(0);
+			expect($('#progress-continue-btn').length).toEqual(0);
+			
+			$('#progress-ok-btn').click();
+			expect($('#progress-dialog').is(':visible')).toBe(false);
+			expect(continueSpy).not.toHaveBeenCalled();
+		});
     });
-
-    describe('Tests for updateProgress when dialog is for map', function() {
-        beforeEach(function() {
-            thisDialog.show('map', continueSpy);
-        });
-
-        it('Expects when totalCounts exceed limit that download is canceled', function() {
-            thisDialog.updateProgress({
-                totalCounts : '250,001',
-                message: 'Counts messages'
-            });
-
-            expect($('.modal-body').html()).toContain('Counts messages');
-            expect($('.modal-body').html()).toContain('query is returning more than 250,000 sites');
-            expect($('#progress-ok-btn').length).toEqual(1);
-            expect($('#progress-cancel-btn').length).toEqual(0);
-            expect($('#progress-continue-btn').length).toEqual(0);
-
-            $('#progress-ok-btn').click();
-            expect($('#progress-dialog').is(':visible')).toBe(false);
-            expect(continueSpy).not.toHaveBeenCalled();
-        });
-
-        it('Expects when totalCounts is under limit, that the status message is updated to allow the action', function() {
-            thisDialog.updateProgress({
-                totalCounts : '249,999',
-                message: 'Counts messages'
-            });
-
-            expect($('.modal-body').html()).toContain('Counts messages');
-            expect($('.modal-body').html()).toContain('map the sites');
-            expect($('#progress-ok-btn').length).toEqual(0);
-            expect($('#progress-cancel-btn').length).toEqual(1);
-            expect($('#progress-continue-btn').length).toEqual(1);
-
-            $('#progress-cancel-btn').click();
-            expect($('#progress-dialog').is(':visible')).toBe(false);
-            expect(continueSpy).not.toHaveBeenCalled();
-
-            thisDialog.show('map', continueSpy);
-            thisDialog.updateProgress({
-                totalCounts : '249,999',
-                message: 'Counts messages'
-            });
-
-            $('#progress-continue-btn').click();
-            expect(continueSpy).toHaveBeenCalledWith('249,999');
-            expect($('#progress-dialog').is(':visible')).toBe(false);
-        });
-    });
-
-    describe('Tests for updateProgress when dialog is for download', function(){
-        beforeEach(function() {
-            thisDialog.show('download', continueSpy);
-        });
-
-        it('Expects when the dialog is for downloads and the fileFormat is not xlsx, that the download is always allowed', function() {
-            thisDialog.updateProgress({
-                totalCounts : '250,001',
-                message : 'Counts messages',
-                fileFormat : 'csv'
-            });
-
-            expect($('.modal-body').html()).toContain('Counts messages');
-            expect($('.modal-body').html()).toContain('download the data');
-            expect($('#progress-cancel-btn').length).toEqual(1);
-            expect($('#progress-continue-btn').length).toEqual(1);
-            expect($('#progress-ok-btn').length).toEqual(0);
-
-            $('#progress-continue-btn').click();
-            expect($('#progress-dialog').is(':visible')).toBe(false);
-            expect(continueSpy).toHaveBeenCalledWith('250,001');
-
-            thisDialog.show('download', continueSpy);
-            thisDialog.updateProgress({
-                totalCounts : '2,000,000',
-                message : 'Counts messages',
-                fileFormat : 'tsv'
-            });
-            expect($('.modal-body').html()).toContain('Counts messages');
-            expect($('.modal-body').html()).toContain('download the data');
-            expect($('#progress-ok-btn').length).toEqual(0);
-            expect($('#progress-cancel-btn').length).toEqual(1);
-            expect($('#progress-continue-btn').length).toEqual(1);
-
-            $('#progress-continue-btn').click();
-
-            expect($('#progress-dialog').is(':visible')).toBe(false);
-            expect(continueSpy).toHaveBeenCalledWith('2,000,000');
-        });
-
-        it('Expects when the dialog is for downloads and the fileFormat is xlsx, that the download is allowed if counts are less than or equal to 1,048,575', function() {
-            thisDialog.updateProgress({
-                totalCounts : '1,048,575',
-                message : 'Counts messages',
-                fileFormat : 'xlsx'
-            });
-            expect($('.modal-body').html()).toContain('Counts messages');
-            expect($('.modal-body').html()).toContain('download the data');
-            expect($('#progress-ok-btn').length).toEqual(0);
-            expect($('#progress-cancel-btn').length).toEqual(1);
-            expect($('#progress-continue-btn').length).toEqual(1);
-
-            $('#progress-continue-btn').click();
-            expect($('#progress-dialog').is(':visible')).toBe(false);
-            expect(continueSpy).toHaveBeenCalledWith('1,048,575');
-        });
-
-        it('Expects when the dialog is for downloads and the fileFormat is xlsx, the donwload is not allowed if counts are greater than 1048575', function() {
-            thisDialog.updateProgress({
-                totalCounts : '1,048,576',
-                message : 'Counts messages',
-                fileFormat : 'xlsx'
-            });
-
-            expect($('.modal-body').html()).toContain('more than 1,048,575');
-            expect($('#progress-ok-btn').length).toEqual(1);
-            expect($('#progress-cancel-btn').length).toEqual(0);
-            expect($('#progress-continue-btn').length).toEqual(0);
-
-            $('#progress-ok-btn').click();
-            expect($('#progress-dialog').is(':visible')).toBe(false);
-            expect(continueSpy).not.toHaveBeenCalled();
-        });
-    });
+	
+	it('Expects a call to cancelProgress to show the message and an ok button', function() {
+		thisDialog.show('download')
+		thisDialog.cancelProgress('Cancel message');
+		expect($('.modal-body').html()).toContain('Cancel message');
+		expect($('#progress-ok-btn').length).toEqual(1);
+		expect($('#progress-cancel-btn').length).toEqual(0);
+		expect($('#progress-continue-btn').length).toEqual(0);
+		
+		$('#progress-ok-btn').click();
+		expect($('#progress-dialog').is(':visible')).toBe(false);
+	});
 });

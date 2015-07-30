@@ -2,6 +2,7 @@ var PORTAL = PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 
 PORTAL.VIEWS.downloadProgressDialog = function(el) {
+	"use strict";
 
     var that = {};
 
@@ -26,17 +27,16 @@ PORTAL.VIEWS.downloadProgressDialog = function(el) {
         }
     };
 
-    var continueFnc;
     var opKind;
 
     var buttonHtml = function(id, label) {
         return '<button id="' + id + '" type="button" class="btn btn-default">' + label + '</button>';
     };
 
-    that.show = function(thisOpKind, thisContinueFnc) {
-        continueFnc = thisContinueFnc;
+    that.show = function(thisOpKind) {
         opKind = thisOpKind;
-
+        
+        el.find('.modal-footer').html('');
         el.find('.modal-body').html('Validating query ... Please wait.');
         el.find('.modal-header h4').html(DIALOG[opKind].title);
         el.modal('show');
@@ -45,40 +45,67 @@ PORTAL.VIEWS.downloadProgressDialog = function(el) {
     that.hide = function() {
         el.modal('hide');
     };
+    
+	that.updateProgress = function(counts, resultType, fileFormat, continueFnc) {
+		var i;
+		var id;
+		
+		var resultsReturned = resultType !== 'Station';
+		var totalCount = resultsReturned ? counts.total.results : counts.total.sites;
+	
+		var getCountMessage = function(){
+			// Return a string showing the site counts, formatted to be shown in html.
+			var message = 'Your query will return ';
+			var providers = PORTAL.MODELS.providers.getIds();
+			if (resultsReturned) {
+				message += '<b>' + counts.total.results + '</b> sample results from <b>' + counts.total.sites + '</b> sites:<br />';
+				for (i = 0; i < providers.length; i++) {
+					id = providers[i];
+					message += 'From ' + id + ': ' + counts[id].results + ' sample results from ' + counts[id].sites + ' sites<br />';
+				}
+			}
+			else {
+				message += counts.total.sites + ':<br />';
+				for (i = 0; i < providers.length; i++) {
+					id = providers[i];
+					message += 'From ' + id + ': ' + counts[id].sites + '<br/>';
+				}
+			}
+			return message;
+		};
+		
 
-    that.updateProgress = function(options) {
-        if('totalCounts' in options) {
-            if (DIALOG[opKind].cancelDownload(options.totalCounts, options.fileFormat)) {
-                el.find('.modal-body').html(options.message + DIALOG[opKind].cancelMessage);
-                el.find('.modal-footer').html(buttonHtml('progress-ok-btn', 'Ok'));
-                $('#progress-ok-btn').click(function() {
-                    el.modal('hide');
-                });
-            }
-            else {
-                el.find('.modal-body').html(options.message + '<p>Click Continue to ' + DIALOG[opKind].continueMessage);
-                el.find('.modal-footer').html(buttonHtml('progress-cancel-btn', 'Cancel') +
-                        buttonHtml('progress-continue-btn', 'Continue'));
-                $('#progress-cancel-btn').click(function() {
-                    el.modal('hide');
-                });
-                $('#progress-continue-btn').click(function() {
-                    el.modal('hide');
-                    continueFnc(options.totalCounts);
-                });
-            }
-        }
-        else {
-            el.find('.modal-body').html('Request canceled: <br>' + options.message);
-            el.find('.modal-footer').html(buttonHtml('progress-ok-btn', 'Ok'));
-            $('#progress-ok-btn').click(function() {
+		if (totalCount === '0') {
+			that.cancelProgress('Your query returned no data to download.');
+		}
+		else if (DIALOG[opKind].cancelDownload(totalCount, fileFormat)) {
+			that.cancelProgress(getCountMessage() + DIALOG[opKind].cancelMessage);
+		}
+		
+		else {
+			el.find('.modal-body').html(getCountMessage() + '<p>Click Continue to ' + DIALOG[opKind].continueMessage);
+            el.find('.modal-footer').html(buttonHtml('progress-cancel-btn', 'Cancel') +
+                    buttonHtml('progress-continue-btn', 'Continue'));
+            $('#progress-cancel-btn').click(function() {
                 el.modal('hide');
             });
-        }
-    };
+            $('#progress-continue-btn').click(function() {
+                el.modal('hide');
+                continueFnc(totalCount);
+            });			
+		}
+	};
+    
+	that.cancelProgress = function(message) {
+		el.find('.modal-body').html(message);
+		el.find('.modal-footer').html(buttonHtml('progress-ok-btn', 'Ok'));
+		$('#progress-ok-btn').click(function() {
+			el.modal('hide');
+		});
+	};
 
     return that;
 
-}
+};
 
 
