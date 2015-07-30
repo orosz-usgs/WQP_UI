@@ -10,10 +10,7 @@ PORTAL.onReady = function() {
     var select2Options = {
     };
 
-    PORTAL.portalDataMap; // Don't initialize portalDataMap until it has been shown.
-
-    //TODO: remove this
-    var appForm = document.getElementById("params");
+    PORTAL.portalDataMap = undefined;  // Don't initialize portalDataMap until it has been shown.
 
     PORTAL.downloadProgressDialog = PORTAL.VIEWS.downloadProgressDialog($('#download-status-dialog'));
 
@@ -64,13 +61,13 @@ PORTAL.onReady = function() {
                 closeOnSelect : false
             })
     );
-    PORTAL.VIEWS.createPagedCodeSelect(
-    		$('#subject-taxonomic-name'),
-    		{codes : 'subjecttaxonomicname'},
-    		$.extend({}, select2Options, {
-    			closeOnSelect : false
-    		})
-    );
+	PORTAL.VIEWS.createPagedCodeSelect(
+		$('#subject-taxonomic-name'),
+		{codes : 'subjecttaxonomicname'},
+		$.extend({}, select2Options, {
+			closeOnSelect : false
+		})
+	);
     PORTAL.VIEWS.createCodeSelect($('#assemblage'), {model : PORTAL.MODELS.assemblage}, select2Options);
 	PORTAL.VIEWS.createPagedCodeSelect(
 			$('#project-code'),
@@ -150,15 +147,15 @@ PORTAL.onReady = function() {
     });
 
     // Set up Show Sites button
-    $('#show-on-map-button').click(function() {
-    	var fileFormat = 'xml';
+	$('#show-on-map-button').click(function() {
+		var fileFormat = 'xml';
 		var showMap = function(totalCount) {
 			// Show the map if it is currently hidden
 			if ($('#query-map-box').is(':hidden')) {
 				$('#mapping-div .show-hide-toggle').click();
 			}
 			
-			_gaq.push(['_trackEvent', 'Portal Map', 'MapCreate',  decodeURIComponent(PORTAL.URLS.getQueryParams()), parseInt(totalCount)]);
+			_gaq.push(['_trackEvent', 'Portal Map', 'MapCreate',  decodeURIComponent(PORTAL.queryServices.getQueryParams()), parseInt(totalCount)]);
 			// Start mapping process by disabling the show site button and then requesting the layer
 			$('#show-on-map-button').attr('disabled', 'disabled').removeClass('query-button').addClass('disable-query-button');
 			var formParams = getFormValues($('#params'),
@@ -167,26 +164,26 @@ PORTAL.onReady = function() {
 				$('#show-on-map-button').removeAttr('disabled').removeClass('disable-query-button').addClass('query-button');
 			});
 		};
-
-        if (!PORTAL.CONTROLLERS.validateDownloadForm()) { return; }
-        
-        _gaq.push(['_trackEvent', 'Portal Map', 'MapCount', decodeURIComponent(PORTAL.URLS.getQueryParams())]);
-        
-        PORTAL.downloadProgressDialog.show('map');
-		PORTAL.getHeadRequest('Station').done(function(response) {
+	
+		if (!PORTAL.CONTROLLERS.validateDownloadForm()) { return; }
+		
+		_gaq.push(['_trackEvent', 'Portal Map', 'MapCount', decodeURIComponent(PORTAL.queryServices.getQueryParams())]);
+		
+		PORTAL.downloadProgressDialog.show('map');
+		PORTAL.queryServices.getHeadRequest('Station').done(function(response) {
 			var counts = PORTAL.DataSourceUtils.getCountsFromHeader(response, PORTAL.MODELS.providers.getIds());
-
+		
 			PORTAL.downloadProgressDialog.updateProgress(counts, 'Station', fileFormat, showMap);
 			
 		}).fail(function(message) {
 			PORTAL.downloadProgressDialog.cancelProgress(message);
 		});
-    });
+	});
 
     // Set up the Download button
 	$('#main-button').click(function(event){
 		var startDownload = function(totalCount) {
-			_gaq.push(['_trackEvent', 'Portal Page', $('#params input[name="resultType"]').val() + 'Download', decodeURIComponent(PORTAL.URLS.getQueryParams()), parseInt(totalCount)]);
+			_gaq.push(['_trackEvent', 'Portal Page', $('#params input[name="resultType"]').val() + 'Download', decodeURIComponent(PORTAL.queryServices.getQueryParams()), parseInt(totalCount)]);
 			$('#params').submit();
 		};
 		var fileFormat = $('input[name="mimeType"]').val();
@@ -195,10 +192,10 @@ PORTAL.onReady = function() {
 		if (!PORTAL.CONTROLLERS.validateDownloadForm()) { return; }
 		
 		event.preventDefault();
-		_gaq.push(['_trackEvent', 'Portal Page', resultType + 'Count', decodeURIComponent(PORTAL.URLS.getQueryParams())]);
+		_gaq.push(['_trackEvent', 'Portal Page', resultType + 'Count', decodeURIComponent(PORTAL.queryServices.getQueryParams())]);
 		
 		PORTAL.downloadProgressDialog.show('download');
-		PORTAL.getHeadRequest(resultType).done(function(response) {
+		PORTAL.queryServices.getHeadRequest(resultType).done(function(response) {
 			var counts = PORTAL.DataSourceUtils.getCountsFromHeader(response, PORTAL.MODELS.providers.getIds());
 			
 			PORTAL.downloadProgressDialog.updateProgress(counts, resultType, fileFormat, startDownload);
@@ -265,7 +262,7 @@ PORTAL.onReady = function() {
 
 		setEnabled($('#download-box #kml'), sensitive);
 
-		$form.attr('action', PORTAL.URLS.getFormUrl($(this).val()));
+		$form.attr('action', PORTAL.queryServices.getFormUrl($(this).val()));
 		$form.find('input[name="resultType"]:hidden').val($(this).val());
 		
 		// If biological results desired add a hidden input, otherwise remove it.
@@ -329,13 +326,13 @@ PORTAL.onReady = function() {
     $('#show-queries-button').click(function() {
         // Generate the request from the form
         // REST Request (there used to be SOAP request please see svn for previous revisions)
-        var stationSection = "<div class=\"show-query-text\"><b>Sites</b><br><textarea readonly=\"readonly\" rows='6'>" + PORTAL.URLS.getFormUrl('Station') + "</textarea></div>";
-        var resultSection = "<div class=\"show-query-text\"><b>Results</b><br><textarea readonly=\"readonly\" rows='6'>" + PORTAL.URLS.getFormUrl('Result') + "</textarea></div>";
+        var stationSection = "<div class=\"show-query-text\"><b>Sites</b><br><textarea readonly=\"readonly\" rows='6'>" + PORTAL.queryServices.getFormUrl('Station') + "</textarea></div>";
+        var resultSection = "<div class=\"show-query-text\"><b>Results</b><br><textarea readonly=\"readonly\" rows='6'>" + PORTAL.queryServices.getFormUrl('Result') + "</textarea></div>";
 
         $('#WSFeedback').html(stationSection + resultSection); // temporarily reoving + biologicalResultSection);
     });
     // Initialize portal data map and identify dialog
-    var identifyDialog = new IdentifyDialog('map-info-dialog', PORTAL.URLS.getFormUrl);
+    var identifyDialog = new IdentifyDialog('map-info-dialog', PORTAL.queryServices.getFormUrl);
 
     // Add click handler for map show/hide button
     $('#mapping-div .show-hide-toggle').click(function() {

@@ -18,7 +18,7 @@ bundles = {
         filters='less,cssmin', 
         output='gen/custom.css'),
     'portal_js' : Bundle(
-        'js/portalFormManagement.js',
+        'js/queryService.js',
         'js/map_utils.js',
         'js/utils.js',
         'js/IdentifyDialog.js',
