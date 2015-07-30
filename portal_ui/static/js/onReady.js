@@ -158,7 +158,7 @@ PORTAL.onReady = function() {
 				$('#mapping-div .show-hide-toggle').click();
 			}
 			
-			_gaq.push(['_trackEvent', 'Portal Map', 'MapCreate',  decodeURIComponent(APP.URLS.getQueryParams()), parseInt(totalCount)]);
+			_gaq.push(['_trackEvent', 'Portal Map', 'MapCreate',  decodeURIComponent(PORTAL.URLS.getQueryParams()), parseInt(totalCount)]);
 			// Start mapping process by disabling the show site button and then requesting the layer
 			$('#show-on-map-button').attr('disabled', 'disabled').removeClass('query-button').addClass('disable-query-button');
 			var formParams = getFormValues($('#params'),
@@ -170,7 +170,7 @@ PORTAL.onReady = function() {
 
         if (!PORTAL.CONTROLLERS.validateDownloadForm()) { return; }
         
-        _gaq.push(['_trackEvent', 'Portal Map', 'MapCount', decodeURIComponent(APP.URLS.getQueryParams())]);
+        _gaq.push(['_trackEvent', 'Portal Map', 'MapCount', decodeURIComponent(PORTAL.URLS.getQueryParams())]);
         
         PORTAL.downloadProgressDialog.show('map');
 		PORTAL.getHeadRequest('Station').done(function(response) {
@@ -186,7 +186,7 @@ PORTAL.onReady = function() {
     // Set up the Download button
 	$('#main-button').click(function(event){
 		var startDownload = function(totalCount) {
-			_gaq.push(['_trackEvent', 'Portal Page', $('#params input[name="resultType"]').val() + 'Download', decodeURIComponent(APP.URLS.getQueryParams()), parseInt(totalCount)]);
+			_gaq.push(['_trackEvent', 'Portal Page', $('#params input[name="resultType"]').val() + 'Download', decodeURIComponent(PORTAL.URLS.getQueryParams()), parseInt(totalCount)]);
 			$('#params').submit();
 		};
 		var fileFormat = $('input[name="mimeType"]').val();
@@ -195,7 +195,7 @@ PORTAL.onReady = function() {
 		if (!PORTAL.CONTROLLERS.validateDownloadForm()) { return; }
 		
 		event.preventDefault();
-		_gaq.push(['_trackEvent', 'Portal Page', resultType + 'Count', decodeURIComponent(APP.URLS.getQueryParams())]);
+		_gaq.push(['_trackEvent', 'Portal Page', resultType + 'Count', decodeURIComponent(PORTAL.URLS.getQueryParams())]);
 		
 		PORTAL.downloadProgressDialog.show('download');
 		PORTAL.getHeadRequest(resultType).done(function(response) {
@@ -265,7 +265,7 @@ PORTAL.onReady = function() {
 
 		setEnabled($('#download-box #kml'), sensitive);
 
-		$form.attr('action', APP.URLS.getFormUrl($(this).val()));
+		$form.attr('action', PORTAL.URLS.getFormUrl($(this).val()));
 		$form.find('input[name="resultType"]:hidden').val($(this).val());
 		
 		// If biological results desired add a hidden input, otherwise remove it.
@@ -329,13 +329,13 @@ PORTAL.onReady = function() {
     $('#show-queries-button').click(function() {
         // Generate the request from the form
         // REST Request (there used to be SOAP request please see svn for previous revisions)
-        var stationSection = "<div class=\"show-query-text\"><b>Sites</b><br><textarea readonly=\"readonly\" rows='6'>" + APP.URLS.getFormUrl('Station') + "</textarea></div>";
-        var resultSection = "<div class=\"show-query-text\"><b>Results</b><br><textarea readonly=\"readonly\" rows='6'>" + APP.URLS.getFormUrl('Result') + "</textarea></div>";
+        var stationSection = "<div class=\"show-query-text\"><b>Sites</b><br><textarea readonly=\"readonly\" rows='6'>" + PORTAL.URLS.getFormUrl('Station') + "</textarea></div>";
+        var resultSection = "<div class=\"show-query-text\"><b>Results</b><br><textarea readonly=\"readonly\" rows='6'>" + PORTAL.URLS.getFormUrl('Result') + "</textarea></div>";
 
         $('#WSFeedback').html(stationSection + resultSection); // temporarily reoving + biologicalResultSection);
     });
     // Initialize portal data map and identify dialog
-    var identifyDialog = new IdentifyDialog('map-info-dialog', APP.URLS.getFormUrl);
+    var identifyDialog = new IdentifyDialog('map-info-dialog', PORTAL.URLS.getFormUrl);
 
     // Add click handler for map show/hide button
     $('#mapping-div .show-hide-toggle').click(function() {

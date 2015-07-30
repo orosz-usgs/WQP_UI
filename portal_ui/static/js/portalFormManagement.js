@@ -6,7 +6,7 @@ var PORTAL = PORTAL || {};
 
 PORTAL.getHeadRequest = function(resultType) {
 	var deferred = $.Deferred();
-	var url = APP.URLS.getFormUrl(resultType);
+	var url = PORTAL.URLS.getFormUrl(resultType);
 	
 	if (url.length > 2000) {
 		deferred.resolve('Too many query criteria selected.  <br>Please reduce your selections <br>' +
@@ -26,14 +26,13 @@ PORTAL.getHeadRequest = function(resultType) {
 	return deferred.promise();
 };
 
-var APP = {};
 
 // ================
 // URL Construction
 // ================
-APP.URLS = {};
+PORTAL.URLS = {};
 
-APP.URLS = {
+PORTAL.URLS = {
     
     getQueryParams : function(forGoogle /* Boolean */) {
         var IGNORE_PARAM_LIST = ["north","south","east","west","resultType","source", "nawqa_project", "project_code"];
@@ -53,7 +52,7 @@ APP.URLS = {
     getFormUrl: function(resultType /* string */, forGoogle /* boolean */) {
         // Return the url for the page's form for the result type,resultType.
         // The returned url is different if it is sent to google maps.
-        return Config.QUERY_URLS[resultType] + "?" + APP.URLS.getQueryParams(forGoogle); // remove the first '&' in the query string
+        return Config.QUERY_URLS[resultType] + "?" + PORTAL.URLS.getQueryParams(forGoogle); // remove the first '&' in the query string
     }
 };
 
