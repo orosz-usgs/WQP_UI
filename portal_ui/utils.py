@@ -16,7 +16,7 @@ def pull_feed(feed_url):
     # Process html to remove unwanted mark-up and fix links
     post = ''
     if len(feed['entries']) > 0:
-        soup = BeautifulSoup(feed['entries'][0].summary)
+        soup = BeautifulSoup(feed['entries'][0].summary, 'html.parser')
 
         # Remove edited by paragraph
         soup.p.extract()
