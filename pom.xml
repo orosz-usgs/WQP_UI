@@ -160,24 +160,21 @@
 				</executions>
 				<configuration>
 					<keepServerAlive>true</keepServerAlive>
-					<jsSrcDir>${project.basedir}/portal_ui/static</jsSrcDir>
+					<jsSrcDir>${project.basedir}/portal_ui</jsSrcDir>
 					<jsTestSrcDir>${project.basedir}/test/js</jsTestSrcDir>
 					<preloadSources>
-						<!-- JQLite is funky with angular and it's mocks, so use a real jquery 
-							implementation. -->
-						<source>vendor/jquery-1.10.2.min.js</source>
-						<source>vendor/bootstrap-3.1.0/js/bootstrap.js</source>
-						<source>vendor/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js</source>
-						<source>vendor/jshashtable-3.0.js</source>
-						<source>vendor/jquery.numberformatter-1.2.4.min.js</source>
-						<source>vendor/select2-3.4.5/select2.js</source>
+						<source>bower_components/jquery/dist/jquery.min.js</source>
+						<source>bower_components/bootstrap/dist/js/bootstrap.min.js</source>
+						<source>bower_components/jquery-ui/jquery-ui.min.js</source>
+						<source>bower_components/numeral/min/numeral.min.js</source>
+						<source>bower_components/select2/dist/js/select2.min.js</source>
 						<source>http://cida.usgs.gov/js/openlayers/2.12/release/OpenLayers.js</source>
-						<source>vendor/angular.min.js</source>
+						<source>static/vendor/angular.min.js</source>
 						<source>vendor/angular/angular-mocks.js</source>
 					</preloadSources>
 					<sourceIncludes>
-						<include>js/angular/**/*.js</include>
-						<include>js/*.js</include>
+						<include>static/js/angular/**/*.js</include>
+						<include>static/js/*.js</include>
 					</sourceIncludes>
 				</configuration>
 			</plugin>
