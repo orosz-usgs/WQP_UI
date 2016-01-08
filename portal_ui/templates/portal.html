@@ -3,8 +3,8 @@
 {% block title %}Water Quality Data {% endblock %}
 
 {% block page_style %}
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/select2-3.4.5/select2.css') }}" />
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/select2-3.4.5/select2-bootstrap.css') }}" />
+	<link rel="stylesheet" type="text/css" href="{{ url_for('bower.static', filename='select2/dist/css/select2.min.css') }}" />
+	<link rel="stylesheet" type="text/css" href="{{ url_for('bower.static', filename='select2-bootstrap-theme/select2-bootstrap.min.css') }}" />
 {% endblock %}
 
 {% block page_header_title %}Water Quality Data{% endblock %}
@@ -463,11 +463,10 @@
 
 {% block body_page_script %}
 
-	<script type="text/javascript" src="{{ url_for('static', filename='vendor/select2-3.4.5/select2.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='vendor/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='vendor/jshashtable-3.0.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='vendor/jquery.numberformatter-1.2.4.min.js') }}"></script>    
-    <script type="text/javascript" src="{{ url_for('static', filename='vendor/OpenLayers/OpenLayers.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('bower.static', filename='select2/dist/js/select2.full.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('bower.static', filename='/jquery-ui.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('bower.static', filename='numeral/numeral.min.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='vendor/OpenLayers/OpenLayers.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='vendor/LoadingPanel.js') }}"></script>
     {% assets "portal_js" %}
     	<script type="text/javascript" src="{{ ASSET_URL }}"></script>
