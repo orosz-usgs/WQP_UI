@@ -4,14 +4,14 @@
 
 {% block page_style %}
 	<link rel="stylesheet" type="text/css" href="{{ url_for('bower.static', filename='select2/dist/css/select2.min.css') }}" />
-	<link rel="stylesheet" type="text/css" href="{{ url_for('bower.static', filename='select2-bootstrap-theme/select2-bootstrap.min.css') }}" />
+	<link rel="stylesheet" type="text/css" href="{{ url_for('bower.static', filename='select2-bootstrap-theme/dist/select2-bootstrap.min.css') }}" />
 {% endblock %}
 
 {% block page_header_title %}Water Quality Data{% endblock %}
 
 {% block page_content %}
 	<div id="page-content">
-        <form role="form" id="params" name="params" autocomplete="false" action="{{ config.SEARCH_QUERY_ENDPOINT }}Station/search">
+        <form role="form" id="params" name="params" autocomplete="off" action="{{ config.SEARCH_QUERY_ENDPOINT }}Station/search">
             <div class="panel" id="location-parameters">
                 <div class="panel-heading" >
                     LOCATION
@@ -31,21 +31,21 @@
                             <div class="form-group">
                                 <label class="control-label" for="countrycode">Country:</label>
                                 <div>
-                                    <input class="form-control" type="hidden" id="countrycode" name="countrycode" />
+                                    <select multiple class="form-control" id="countrycode" name="countrycode" data-placeholder="All"></select>
                                     <button type="button" class="help-link popover-help" id="countryHelp" data-help="country">?</button>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="control-label" for="statecode">State:</label>
                                 <div>
-                                    <input class="form-control" type="hidden" id="statecode" name="statecode" />
+                                    <select multiple class="form-control" id="statecode" name="statecode" data-placeholder="All"></select>
                                     <button type="button" class="help-link popover-help" id="stateHelp" data-help="state">?</button>                         
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label class="control-label" for="countycode">County:</label>
                                 <div>
-                                    <input class="form-control" type="hidden" id="countycode" name="countycode" />
+                                    <select multiple class="form-control" id="countycode" name="countycode" data-placeholder="All"></select>
                                     <button type="button" class="help-link popover-help" id="countyHelp" data-help="county">?</button>
                                 </div>
                             </div>
@@ -131,14 +131,14 @@
                         <div class="form-group">
                             <label class="control-label" for="siteType">Site Type:</label>
                             <div>
-                                <input class="form-control" type="hidden" id="siteType" name="siteType" />
+                                <select multiple class="form-control" id="siteType" name="siteType" data-placeholder="All"></select>
                                 <button type="button" class="help-link popover-help" id="siteTypeHelp" data-help="siteType">?</button>
                             </div>
                         </div>
                         <div class="form-group" id="organization-id-select">
                             <label class="control-label" for="organization">Organization ID:</label>
                             <div>
-                                <input class="form-control" type="hidden" name="organization" id="organization" />
+                                <select multiple class="form-control" name="organization" id="organization" data-placeholder="All"></select>
                                 <button type="button" class="help-link popover-help" id="organizationHelp" data-help="organization">?</button>
                             </div>
                         </div>
@@ -169,21 +169,21 @@
                         <div class="form-group">
                             <label class="control-label" for="sampleMedia">Sample Media:</label>
                             <div>
-                                <input class="form-control" type="hidden" name="sampleMedia" id="sampleMedia" />
+                                <select multiple class="form-control" name="sampleMedia" id="sampleMedia" data-placeholder="All"></select>
                                 <button type="button" class="help-link popover-help" id="sampleMediaHelp" data-help="sampleMedia">?</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="characteristicType">Characteristic Group:</label>
                             <div>
-                                <input class="form-control" type="hidden" name="characteristicType" id="characteristicType" />
+                                <select multiple class="form-control" name="characteristicType" id="characteristicType" data-placeholder="All"></select>
                                 <button type="button" class="help-link popover-help" id="characteristicGroupHelp" data-help="characteristicGroup">?</button>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="characteristicName">Characteristics:</label>
                             <div>
-                                <input class="form-control" type="hidden" name="characteristicName" id="characteristicName" />
+                                <select multiple class="form-control" name="characteristicName" id="characteristicName" data-placeholder="All"></select>
                                 <button type="button" class="help-link popover-help" id="characteristicHelp" data-help="characteristicName">?</button>
                             </div>
                         </div>
@@ -191,7 +191,7 @@
                         <div class="form-group">
                         	<label class="control-label" for="project-code">Project ID:</label>
                         	<div>
-                        		<input class="form-control" type="hidden" name="project_code" id="project-code" />
+                        		<select multiple class="form-control" name="project_code" id="project-code" data-placeholder="All"></select>
                         		<button type="button" class="help-link popover-help" id="projectHelp" data-help="project">?</button>
                         	</div>
                         </div>
@@ -243,14 +243,14 @@
                                 <div class="form-group">
                                     <label class="control-label" for="assemblage">Assemblage:</label>
                                     <div>
-                                        <input class="form-control" type="hidden" name="assemblage" id="assemblage" />
+                                        <select multiple class="form-control" name="assemblage" id="assemblage" data-placeholder="All"></select>
                                         <button type="button" class="help-link popover-help" id="assemblageHelp" data-help="assemblage">?</button>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label" for="subjectTaxonomicName">Taxonomic Name:</label>
                                     <div>
-                                        <input class="form-control" type="hidden" name="subjectTaxonomicName" id="subject-taxonomic-name" />
+                                        <select multiple class="form-control" name="subjectTaxonomicName" id="subject-taxonomic-name" data-placeholder="All"></select>
                                         <button type="button" class="help-link popover-help" id="taxonomicNameHelp" data-help="taxonomicName">?</button>
                                     </div>
                                 </div>
@@ -462,10 +462,10 @@
 {% endblock %}
 
 {% block body_page_script %}
-
+	<script type="text/javascript" src="{{ url_for('bower.static', filename='underscore/underscore.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='select2/dist/js/select2.full.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('bower.static', filename='/jquery-ui.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('bower.static', filename='numeral/numeral.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('bower.static', filename='jquery-ui/jquery-ui.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('bower.static', filename='numeral/min/numeral.min.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='vendor/OpenLayers/OpenLayers.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='vendor/LoadingPanel.js') }}"></script>
     {% assets "portal_js" %}

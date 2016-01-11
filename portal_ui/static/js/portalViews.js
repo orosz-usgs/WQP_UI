@@ -9,16 +9,12 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
  */
 PORTAL.VIEWS.createStaticSelect2 = function(el, ids, select2Options) {
 	var defaultOptions = {
-		placeholder : 'All',
-		allowClear : true
+		allowClear : true,
+		theme : 'bootstrap',
+		data : _.map(ids, function(id) {
+			return {id: id, text: id};
+		})
 	};
-	var selectHtml = '';
-	var i;
-
-	for (i = 0; i < ids.length; i++) {
-		selectHtml += '<option value="' + ids[i] + '">' + ids[i] + '</option>';
-	}
-	el.append(selectHtml);
 	el.select2($.extend({}, defaultOptions, select2Options));
 };
 
@@ -79,49 +75,40 @@ PORTAL.VIEWS.createPagedCodeSelect = function(el, spec, select2Options) {
 	};
 	el.select2($.extend(defaultOptions, select2Options));
 };
-
 /*
- *
- * @param {jquery element selecting a hidden input} el
- * @param {Object} spec
- *  spec has the following properties
- @prop {Object} model : object which inherits from PORTAL.MODELS.cachedCodes or PORTAL.MODELS.codesWithKeys
- @prop {Function} isMatch : function with two parameters - data (object with id, desc and providers) and searchTerm - String.
- *     isMatch is optional. By default it will try to match only the descr property
- @prop {Function} formatData : function takes data (object with id, desc, and providers) and produces a select2 result object
- *     with id and text properties. This is optional
- @prop {Function} getKeys : function which when called returns an array of keys used in model.processData.
- * @param {Object} select2Options
- * @returns {undefined}
+@param {jquery element selecting a select input} el
+@param {Object} options
+	@prop {Object} model - object which is created by a call to PORTAL.MODELS.cachedCodes
+	@prop {Function} isMatch - Optional function with two parameters - term {Object} which contains a term property for the search term and
+		data {Object} representing an option. Should return data if the term matches data otherwise return null
+	@prop {Function} formatData - Optional function takes data (object with id, desc, and providers) and produces a select2 result object
+		  with id and text properties.
+@param {Object} select2Options
  */
-PORTAL.VIEWS.createCodeSelect = function(
-		el /* jquery hidden input elements */, spec /* Object */,
-		select2Options /* select2 options which will be merged with defaults */) {
-	/*
-	 * spec has the following properties
-	 * model : object which inherits from PORTAL.MODELS.codes or PORTAL.MODELS.codesWithKeys
-	 * isMatch : function with two parameters - data (object with id, desc and providers) and searchTerm - String.
-	 *     isMatch is optional. By default it will try to match only the descr property
-	 * formatData : function takes data (object with id, desc, and providers) and produces a select2 result object
-	 *     with id and text properties. This is optional
-	 * getKeys : function which when called returns an array of keys used in model.processData.
-	 *
-	 */
+PORTAL.VIEWS.createCodeSelect = function(el , options, select2Options) {
+	var getCodes;
 
 	// Assign defaults for optional parameters
-	if (!('isMatch' in spec)) {
-		spec.isMatch = function(data, searchTerm) {
-			if (searchTerm) {
-				return (data.desc.toUpperCase().indexOf(
-						searchTerm.toUpperCase()) > -1);
-			} else {
-				return true;
+	if (!_.has(options, 'isMatch')) {
+		options.isMatch = function(term, data) {
+			var termMatcher;
+			if (_.has(term, 'term')) {
+				termMatcher = RegExp(term.term, 'i');
+				if (termMatcher.test(data.id)) {
+					return data;
+				}
+				else {
+					return null;
+				}
+			}
+			else {
+				return data;
 			}
 		};
 	}
 
-	if (!('formatData' in spec)) {
-		spec.formatData = function(data) {
+	if (!_.has(options, 'formatData')) {
+		options.formatData = function(data) {
 			return {
 				id : data.id,
 				text : data.desc + ' (' + PORTAL.MODELS.providers.formatAvailableProviders(data.providers) + ')'
@@ -129,47 +116,24 @@ PORTAL.VIEWS.createCodeSelect = function(
 		};
 	}
 
-	if (!('getKeys' in spec)) {
-		spec.getKeys = function() {
-			return;
-		};
-	}
-
-	var defaultOptions = {
-		placeholder : 'All',
-		allowClear : true,
-		multiple : true,
-		separator : ';',
-		formatSelection : function(object, container) {
-			return object.id;
-		},
-		query : function(options) {
-			spec.model.processData(spec.getKeys()).done(function(data) {
-				var i, key;
-				var results = [];
-				var dataArray = [];
-
-				if (length in data && data.length > 0) {
-					dataArray = dataArray.concat(data);
-				} else {
-					for (key in data) {
-						if ((data[key]) && data[key].length > 0) {
-							dataArray = dataArray.concat(data[key]);
-						}
-					}
-				}
-
-				for (i = 0; i < dataArray.length; i++) {
-					if (spec.isMatch(dataArray[i], options.term)) {
-						results.push(spec.formatData(dataArray[i]));
-					}
-				}
-				options.callback({
-					'results' : results
-				});
-			});
+	options.model.fetch().done(function(data) {
+		var defaultOptions = {
+			allowClear : true,
+			theme : 'bootstrap',
+			matcher : options.isMatch
 		}
-	};
+		if (_.isArray(data)) {
+			defaultOptions.data = _.map(data, options.formatData)
+		}
+		else {
+			defaultOptions.data = _.chain(data)
+				.values()
+				.map(data, options.formatData)
+				.value();
+		}
 
-	el.select2($.extend(defaultOptions, select2Options));
+		el.select2($.extend(defaultOptions, select2Options));
+
+	});
+
 };

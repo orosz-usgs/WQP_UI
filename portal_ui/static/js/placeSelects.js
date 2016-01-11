@@ -16,27 +16,33 @@ PORTAL.VIEWS.placeSelects = function(countryEl, stateEl, countyEl) {
      * @ returns an array of currently selected contries
      */
     that.getCountries = function() {
-        var results = countryEl.select2('val');
-        if (results.length === 0) {
-            return ['US'];
+        var results = countryEl.val();
+        if (!results) {
+            results = ['US'];
         }
-        else {
-            return results;
-        }
+        return results;
     };
 
     /*
      * @returns an array of currently selected states
      */
     that.getStates = function() {
-        return stateEl.select2('val');
+        var results = stateEl.val();
+        if (!results) {
+            results = [];
+        }
+        return results;
     };
 
     /*
      * @returns an array of currently selected counties
      */
     that.getCounties = function() {
-        return countyEl.select2('val');
+        var results = countyEl.val();
+        if (!results) {
+            results = [];
+        }
+        return results;
     };
 
     /* Putting the isMatch functions in the returned object for ease of testing
@@ -44,15 +50,21 @@ PORTAL.VIEWS.placeSelects = function(countryEl, stateEl, countyEl) {
      * @param {String} searchTerm
      * @returns boolean
      */
-    that.isCountryMatch = function (data, searchTerm) {
-        if (searchTerm) {
-            var search = searchTerm.toUpperCase();
-
-            return((data.id.toUpperCase().indexOf(search) > -1) ||
-                    (data.desc.toUpperCase().indexOf(search) > -1));
+    that.isCountryMatch = function (searchTerm, data) {
+		var termMatcher;
+		var lookup;
+        if (_.has(searchTerm, 'term') && (searchTerm.term)) {
+			termMatcher = RegExp(searchTerm.term, 'i');
+			lookup =  PORTAL.MODELS.countryCodes.getLookup(data.id);
+			if (termMatcher.test(data.id) || (termMatcher.test(lookup.desc))) {
+				return data;
+			}
+			else {
+				return null;
+			}
         }
         else {
-            return true;
+            return data;
         }
     };
 
@@ -77,7 +89,7 @@ PORTAL.VIEWS.placeSelects = function(countryEl, stateEl, countyEl) {
     };
 
     /*
-     * @param {Object with id, desc, and providers properties} data
+     * @param {Option Object with id, desc, and providers properties} data
      * @param {String} searchTerm
      * @returns boolean
      */
@@ -99,30 +111,29 @@ PORTAL.VIEWS.placeSelects = function(countryEl, stateEl, countyEl) {
         isMatch : that.isCountryMatch
     };
 
-    PORTAL.VIEWS.createCodeSelect(countryEl, countrySpec, {
-    });
+    PORTAL.VIEWS.createCodeSelect(countryEl, countrySpec, {});
 
-    countryEl.on('change', function(e) {
+//    countryEl.on('change', function(e) {
         /* update states */
-        var states = stateEl.select2('data');
+//        var states = stateEl.select2('data');
 
-        var newStates = [];
+//        var newStates = [];
 
-        for (var i = 0; i < states.length; i++) {
-            var keep = false;
-            for (var j = 0; j < e.val.length; j++) {
-                if (states[i].id.split(':')[0] === e.val[j]) {
-                    keep = true;
-                    break;
-                }
-            }
-            if (keep) {
-                newStates.push(states[i]);
-            }
-        }
+//        for (var i = 0; i < states.length; i++) {
+//            var keep = false;
+//            for (var j = 0; j < e.val.length; j++) {
+//                if (states[i].id.split(':')[0] === e.val[j]) {
+//                    keep = true;
+//                    break;
+//                }
+//            }
+//            if (keep) {
+//                newStates.push(states[i]);
+//            }
+//        }
 
-        stateEl.select2('data', newStates, true);
-    });
+//        stateEl.select2('data', newStates, true);
+//    });
 
     /*
      * Initialize state select2
@@ -134,41 +145,41 @@ PORTAL.VIEWS.placeSelects = function(countryEl, stateEl, countyEl) {
         getKeys : that.getCountries
     };
 
-    PORTAL.VIEWS.createCodeSelect(stateEl, stateSpec, {
-        formatSelection: function(object, container) {
-            var codes = object.id.split(':');
-            if (codes[0] === 'US') {
-                return codes[0] + ':' + stateFIPS.getPostalCode(codes[1]);
-            }
-            else {
-                return object.id;
-            }
-        }
-    });
+ //   PORTAL.VIEWS.createCodeSelect(stateEl, stateSpec, {
+ //       formatSelection: function(object, container) {
+ //           var codes = object.id.split(':');
+ //           if (codes[0] === 'US') {
+ //               return codes[0] + ':' + stateFIPS.getPostalCode(codes[1]);
+ //           }
+ //           else {
+ //               return object.id;
+ //           }
+ //       }
+ //   });
 
-   stateEl.on('change', function(e) {
-        var counties = countyEl.select2('data');
+//   stateEl.on('change', function(e) {
+//        var counties = countyEl.select2('data');
 
-        var newCounties = [];
+//        var newCounties = [];
 
-        for (var i = 0; i < counties.length; i++) {
-            var codes = counties[i].id.split(':');
-            var stateCode = codes[0] + ':' + codes[1];
+//        for (var i = 0; i < counties.length; i++) {
+//            var codes = counties[i].id.split(':');
+//            var stateCode = codes[0] + ':' + codes[1];
 
-            var keep = false;
-            for (var j = 0; j < e.val.length; j++) {
-                if (stateCode === e.val[j]) {
-                    keep = true;
-                    break;
-                }
-            }
-            if (keep) {
-                newCounties.push(counties[i]);
-            }
-        }
+//            var keep = false;
+//            for (var j = 0; j < e.val.length; j++) {
+//                if (stateCode === e.val[j]) {
+//                    keep = true;
+//                    break;
+//                }
+//            }
+//            if (keep) {
+//                newCounties.push(counties[i]);
+//            }
+//        }
 
-        countyEl.select2('data', newCounties, true);
-    });
+//        countyEl.select2('data', newCounties, true);
+//    });
 
     /*
      * Initialize count select2
@@ -179,17 +190,17 @@ PORTAL.VIEWS.placeSelects = function(countryEl, stateEl, countyEl) {
         getKeys : that.getStates
     };
 
-    PORTAL.VIEWS.createCodeSelect(countyEl, countySpec, {
-        formatSelection : function(object, container) {
-            var codes = object.id.split(':');
-            if (codes[0] === 'US') {
-                return codes[0] + ':' + stateFIPS.getPostalCode(codes[1]) + ':' + codes[2];
-            }
-            else {
-                return object.id;
-            }
-        }
-    });
+//    PORTAL.VIEWS.createCodeSelect(countyEl, countySpec, {
+//        formatSelection : function(object, container) {
+//            var codes = object.id.split(':');
+//            if (codes[0] === 'US') {
+//                return codes[0] + ':' + stateFIPS.getPostalCode(codes[1]) + ':' + codes[2];
+//            }
+//            else {
+//                return object.id;
+//            }
+//        }
+//    });
 
     countyEl.on('select2-opening', function(e) {
         if (that.getStates().length === 0) {

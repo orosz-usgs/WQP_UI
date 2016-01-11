@@ -2,64 +2,67 @@ var PORTAL = PORTAL || {};
 PORTAL.MODELS = PORTAL.MODELS || {};
 /*
  *
- * @param {Object} spec
- *      spec properties:
- *          codes - String used in the url to retrieve the model's data.
- * @returns {PORTAL.MODELS.codes.that}
- *      properties:
- *          getData - function that returns a promise. If resolved, returns the array of codes data. 
- *              If rejected, returns the error message.
+ * @param {Object} options
+ * 		@props {String} codes - String used in the url to retrieve the model's data.
+ * @returns {PORTAL.MODELS.cachedCodes}
+ *      @prop {function} fetch - function that returns a promise. If resolved, returns the array of codes data.
+ *          @resolved - {Array} - data returned from the fetch
+ *          @rejected - {String} - descriptive error message
+ *      @prop {function} getData - Returns {Array} from the last successful call to fetch or the empty array if no
+ *          successful calls have yet been made.
+ *
  */
-PORTAL.MODELS.cachedCodes = function(spec) {
-    /* spec object has property codes - String */
-    var that = {};
+PORTAL.MODELS.cachedCodes = function(options) {
+    var self = {};
 
     var cachedData = [];
 
-    var ajaxCalled = false;
-    var ajaxCompleteDeferred = $.Deferred();
+	var URL = Config.CODES_ENDPOINT + '/' + options.codes;
 
     /*
      * 
      * @return {$.Deferred.promise}. A resolved promise returns {Array of Object} where each object
      * has String properties: id, desc, and providers. A rejected promise returns {String} with the error message.
      */
-    that.processData = function() {
-        // Make an ajax call to get the data if it has not been previously retrieved.
-        if (!ajaxCalled) {
-            ajaxCalled = true;
-			if (ajaxCompleteDeferred.state() === 'rejected') {
-				// Start a new deferred
-				ajaxCompleteDeferred = $.Deferred();
-			}
-            $.ajax({
-                    url: Config.CODES_ENDPOINT + '/' + spec.codes,
-                    type: 'GET',
-                    data : {
-                        mimeType : 'json'
-                    },
-                    success : function(data, textStatus, jqXHR) {
-						$.each(data.codes, function(index, code) {
-							cachedData.push({
-								id: code.value,
-								desc : (code.hasOwnProperty('desc') && (code.desc)  ? code.desc : code.value),
-								providers : code.providers
-							});
-						});
-						ajaxCompleteDeferred.resolve(cachedData);
-                    },
+    self.fetch = function() {
+		var fetchDeferred = $.Deferred();
+		$.ajax({
+			url: URL,
+			type: 'GET',
+			data : {
+				mimeType : 'json'
+			},
+			success : function(data, textStatus, jqXHR) {
+				cachedData = _.map(data.codes, function(code) {
+					return {
+						id : code.value,
+						desc : (_.has(code, 'desc') && (code.desc)) ? code.desc : code.value, // defaults to value
+						providers : code.providers
+					}
+				});
 
-                    error : function(jqXHR, textStatus, error) {
-                        alert('Can\'t  get ' + spec.codes + ', Server error: ' + error);
-                        ajaxCompleteDeferred.reject(error);
-                        ajaxCalled = false;
-                    }
-                });
-        }
-        return ajaxCompleteDeferred.promise();
+				fetchDeferred.resolve(cachedData);
+			},
+
+			error : function(jqXHR, textStatus, error) {
+				alert('Can\'t  get ' + spec.codes + ', Server error: ' + error);
+				fetchDeferred.reject(error);
+			}
+		});
+        return fetchDeferred.promise();
     };
 
-    return that;
+	self.getAll  = function() {
+		return cachedData;
+	}
+
+	self.getLookup = function(id) {
+		return _.find(cachedData, function(lookup) {
+			return (lookup.id === id);
+		});
+	}
+
+    return self;
 };
 /*
  *

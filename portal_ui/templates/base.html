@@ -20,6 +20,29 @@
 		{% block head_page_script %}{% endblock %}
 		
 		<!-- If you need to remove google analytics from a page create a blank google_analytics_script block -->
+		<script type="text/javascript">
+		    Config = {};
+
+		    Config.SLD_ENDPOINT = "{{ config.SLD_ENDPOINT }}";
+		    Config.CODES_ENDPOINT = "{{ config.CODES_ENDPOINT }}";
+		    Config.SEARCH_QUERY_ENDPOINT = "{{ config.SEARCH_QUERY_ENDPOINT }}";
+		    Config.PUBLIC_SRSNAMES_ENDPOINT = "{{ config.PUBLIC_SRSNAMES_ENDPOINT }}";
+
+		    Config.QUERY_URLS = {
+		    	Station : Config.SEARCH_QUERY_ENDPOINT + 'Station/search',
+		    	Result : Config.SEARCH_QUERY_ENDPOINT + 'Result/search',
+		    	biologicalresult : Config.SEARCH_QUERY_ENDPOINT + 'biologicalresult/search'
+		    };
+
+		    Config.SITES_GEOSERVER_ENDPOINT = "{{ url_for('sites_geoserverproxy', op='') }}";
+		    Config.COVERAGE_MAP_GEOSERVER_ENDPOINT = "{{ url_for('coverage_geoserverproxy', op='') }}";
+		    Config.STATIC_ENDPOINT = "{{ url_for('static', filename='') }}";
+		    Config.NWIS_SITE_SLD_URL = "{{ url_for('nwis_site_sld') }}";
+		    Config.IS_PROD = location.hostname == 'www.waterqualitydata.us';
+    		Config.ALLOW_QA_ACCESS = true;
+    		Config.GA_TRACKING_CODE = "{{ config.GA_TRACKING_CODE }}";
+    		Config.NAWQA_ONLY_PROJECTS = "{{ config.NAWQA_ONLY_PROJECTS }}";
+		</script>
 		{% block google_analytics_script %}
 			<script type="text/javascript">		
 	              var _gaq = _gaq || [];
@@ -124,29 +147,6 @@
 			    </div>		
 			</div>
 		</div>
-		<script type="text/javascript">
-		    Config = {};
-
-		    Config.SLD_ENDPOINT = "{{ config.SLD_ENDPOINT }}";
-		    Config.CODES_ENDPOINT = "{{ config.CODES_ENDPOINT }}";
-		    Config.SEARCH_QUERY_ENDPOINT = "{{ config.SEARCH_QUERY_ENDPOINT }}";
-		    Config.PUBLIC_SRSNAMES_ENDPOINT = "{{ config.PUBLIC_SRSNAMES_ENDPOINT }}";
-
-		    Config.QUERY_URLS = {
-		    	Station : Config.SEARCH_QUERY_ENDPOINT + 'Station/search',
-		    	Result : Config.SEARCH_QUERY_ENDPOINT + 'Result/search',
-		    	biologicalresult : Config.SEARCH_QUERY_ENDPOINT + 'biologicalresult/search'
-		    };
-
-		    Config.SITES_GEOSERVER_ENDPOINT = "{{ url_for('sites_geoserverproxy', op='') }}";
-		    Config.COVERAGE_MAP_GEOSERVER_ENDPOINT = "{{ url_for('coverage_geoserverproxy', op='') }}";
-		    Config.STATIC_ENDPOINT = "{{ url_for('static', filename='') }}";
-		    Config.NWIS_SITE_SLD_URL = "{{ url_for('nwis_site_sld') }}";
-		    Config.IS_PROD = location.hostname == 'www.waterqualitydata.us';
-    		Config.ALLOW_QA_ACCESS = true;
-    		Config.GA_TRACKING_CODE = "{{ config.GA_TRACKING_CODE }}";
-    		Config.NAWQA_ONLY_PROJECTS = "{{ config.NAWQA_ONLY_PROJECTS }}";
-		</script>
 
 		<script type="text/javascript" src="{{ url_for('bower.static', filename='jquery/dist/jquery.js') }}"></script>
 		<script type="text/javascript" src="{{ url_for('bower.static', filename='bootstrap/dist/js/bootstrap.js') }}"></script>

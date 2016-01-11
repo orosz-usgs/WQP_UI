@@ -34,15 +34,34 @@ function getCheckBoxHtml(id, className, value) {
 }
 
 function getFormValues(formEl /* form jquery element */, ignoreList /* String array of form parameters */) {
-    /* Return an array of objects representing the form elements, where each object is 'name' and 'value' */
+    /* Return an array of objects representing the form elements, where each object is 'name' and 'value'
+     * multi selects are combined into a single string separated by ';' */
+    //TODO: consider if there is a better way of handling this
+    var pushValue = function(arr, input) {
+        arr.push(input.value);
+        return arr;
+    };
+
 	var allInputs = formEl.serializeArray();
-    var result = [];
-    for (var i = 0; i < allInputs.length; i++) {
-        if ($.inArray(allInputs[i].name, ignoreList) === -1 && allInputs[i].value) {
-            result.push(allInputs[i]);
-        }
-    }
-    return result;
+    var allMultiSelects = _.map(formEl.find('select[multiple]'), function(el) {
+        return el.name;
+    });
+    var result = _.reject(allInputs, function(input) {
+        return _.contains(allMultiSelects, input.name);
+    });
+
+    _.each(allMultiSelects, function(name) {
+        var theseInputs = _.filter(allInputs, function(input) {
+            return (input.name === name);
+        });
+
+        var mergedInputValue = _.reduce(theseInputs, pushValue, []).join(';');
+        result.push({name : name, value : mergedInputValue});
+    });
+
+    return _.reject(result, function(input) {
+        return _.contains(ignoreList, input.name);
+    });
 }
 
 function getFormQuery(formEl /* form jquery element */,  ignoreList /* String array of form parameters */) {

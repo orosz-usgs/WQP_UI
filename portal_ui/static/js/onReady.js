@@ -10,17 +10,19 @@ PORTAL.onReady = function() {
     var select2Options = {
     };
 
+
     PORTAL.portalDataMap = undefined;  // Don't initialize portalDataMap until it has been shown.
 
     PORTAL.downloadProgressDialog = PORTAL.VIEWS.downloadProgressDialog($('#download-status-dialog'));
 
-    PORTAL.MODELS.providers.initialize().done(
-		function() {
+    PORTAL.MODELS.providers.initialize()
+		.done(function() {
 			PORTAL.VIEWS.createStaticSelect2($('#providers-select'),
 					PORTAL.MODELS.providers.getIds());
-		}).fail(function(error) {
-		alert('Unable to retrieve provider list with error: ' + error);
-	});
+		})
+		.fail(function(error) {
+			alert('Unable to retrieve provider list with error: ' + error);
+		});
 
     placeSelects = PORTAL.VIEWS.placeSelects($('#countrycode'), $('#statecode'), $('#countycode'));
 
