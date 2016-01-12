@@ -38,46 +38,31 @@ PORTAL.onReady = function() {
                         text : data.id + ' - ' + data.desc
                     };
                 },
-                isMatch : function(data, searchTerm) {
-                    if (searchTerm) {
-                        var searchTermUpper = searchTerm.toUpperCase();
-                        return ((data.id.toUpperCase().indexOf(searchTermUpper) > - 1) ||
-                                (data.desc.toUpperCase().indexOf(searchTermUpper) > -1));
+                isMatch : function(searchTerm, data) {
+                    if (_.has(searchTerm, 'term')) {
+                        var searchTermUpper = searchTerm.term.toUpperCase();
+                        if ((data.id.toUpperCase().indexOf(searchTermUpper) > - 1) || (data.text.toUpperCase().indexOf(searchTermUpper) > - 1)) {
+							return data;
+						}
+						else {
+							return null;
+						}
                     }
                     else {
-                        return true;
+                        return data;
                     }
                 }
             },
             $.extend({}, select2Options, {
-                closeOnSelect : false,
-                minimumInputLength : 2
+                minimumInputLength : 2,
             })
     );
     PORTAL.VIEWS.createCodeSelect($('#sampleMedia'), {model : PORTAL.MODELS.sampleMedia}, select2Options);
     PORTAL.VIEWS.createCodeSelect($('#characteristicType'), {model : PORTAL.MODELS.characteristicType}, select2Options);
-    PORTAL.VIEWS.createPagedCodeSelect(
-            $('#characteristicName'),
-            {codes : 'characteristicname'},
-            $.extend({}, select2Options, {
-                closeOnSelect : false
-            })
-    );
-	PORTAL.VIEWS.createPagedCodeSelect(
-		$('#subject-taxonomic-name'),
-		{codes : 'subjecttaxonomicname'},
-		$.extend({}, select2Options, {
-			closeOnSelect : false
-		})
-	);
+    PORTAL.VIEWS.createPagedCodeSelect($('#characteristicName'), {codes : 'characteristicname'}, select2Options);
+	PORTAL.VIEWS.createPagedCodeSelect($('#subject-taxonomic-name'), {codes : 'subjecttaxonomicname'}, select2Options);
     PORTAL.VIEWS.createCodeSelect($('#assemblage'), {model : PORTAL.MODELS.assemblage}, select2Options);
-	PORTAL.VIEWS.createPagedCodeSelect(
-			$('#project-code'),
-			{codes : 'project'},
-			$.extend({}, select2Options, {
-				closeOnSelect : false
-			})
-	);
+	PORTAL.VIEWS.createPagedCodeSelect($('#project-code'), {codes : 'project'}, select2Options);
 
     // Add input validations and reformatting handlers
     PORTAL.VIEWS.inputValidation({

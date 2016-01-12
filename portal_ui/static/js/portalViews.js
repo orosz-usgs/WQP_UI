@@ -39,36 +39,34 @@ PORTAL.VIEWS.createPagedCodeSelect = function(el, spec, select2Options) {
 	}
 
 	var defaultOptions = {
-		placeholder : 'All',
 		allowClear : true,
-		multiple : true,
-		separator : ';',
-		formatSelection : function(object, container) {
-			return object.id;
+		theme : 'bootstrap',
+		templateSelection : function(object) {
+			return (_.has(object, 'id')) ? object.id : null;
 		},
 		ajax : {
 			url : Config.CODES_ENDPOINT + '/' + spec.codes,
 			dataType : 'json',
-			data : function(term, page) {
+			data : function(params) {
 				return {
-					text : term,
+					text : params.term,
 					pagesize : spec.pagesize,
-					pagenumber : page,
+					pagenumber : params.page,
 					mimeType : 'json'
 				};
 			},
-			quietMillis : 250,
-			results : function(data, page, query) {
-				var results = [];
-				$.each(data.codes, function(index, code) {
-					results.push({
+			delay : 250,
+			processResults : function(data, params) {
+				var results = _.map(data.codes, function(code) {
+					return {
 						id : code.value,
 						text : spec.formatData(code)
-					});
+					};
 				});
+
 				return {
 					results : results,
-					more : ((spec.pagesize * page) < data.recordCount)
+					more : ((spec.pagesize * params.page) < data.recordCount)
 				};
 			}
 		}
@@ -120,7 +118,17 @@ PORTAL.VIEWS.createCodeSelect = function(el , options, select2Options) {
 		var defaultOptions = {
 			allowClear : true,
 			theme : 'bootstrap',
-			matcher : options.isMatch
+			matcher : options.isMatch,
+			templateSelection : function(organization) {
+				var result;
+				if (_.has(organization, 'id')) {
+					result = organization.id;
+				}
+				else {
+					result = null;
+				}
+				return result;
+			}
 		}
 		if (_.isArray(data)) {
 			defaultOptions.data = _.map(data, options.formatData)
