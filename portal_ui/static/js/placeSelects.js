@@ -111,75 +111,78 @@ PORTAL.VIEWS.placeSelects = function(countryEl, stateEl, countyEl) {
         isMatch : that.isCountryMatch
     };
 
-    PORTAL.VIEWS.createCodeSelect(countryEl, countrySpec, {});
+    PORTAL.VIEWS.createCodeSelect(countryEl, countrySpec, {
+		templateSelection : function(country) {
+			var result;
+			if (_.has(country, 'id')) {
+				result = country.id;
+			}
+			else {
+				result = null;
+			}
+			return result;
+		}
+	});
 
-//    countryEl.on('change', function(e) {
+    countryEl.on('change', function(e) {
         /* update states */
-//        var states = stateEl.select2('data');
+		var countries = $(e.target).val();
+        var states = stateEl.val();
 
-//        var newStates = [];
+		var newStates;
 
-//        for (var i = 0; i < states.length; i++) {
-//            var keep = false;
-//            for (var j = 0; j < e.val.length; j++) {
-//                if (states[i].id.split(':')[0] === e.val[j]) {
-//                    keep = true;
-//                    break;
-//                }
-//            }
-//            if (keep) {
-//                newStates.push(states[i]);
-//            }
-//        }
-
-//        stateEl.select2('data', newStates, true);
-//    });
+		if (!countries) {
+			countries = ['US'];
+		}
+		newStates = _.filter(states, function(state) {
+			var countryCode = state.split(':')[0];
+			return _.contains(countries, countryCode);
+		});
+		stateEl.val(newStates).trigger('change');
+	});
 
     /*
      * Initialize state select2
      */
-
     var stateSpec = {
         model : PORTAL.MODELS.stateCodes,
         isMatch : that.isStateMatch,
         getKeys : that.getCountries
     };
 
- //   PORTAL.VIEWS.createCodeSelect(stateEl, stateSpec, {
- //       formatSelection: function(object, container) {
- //           var codes = object.id.split(':');
- //           if (codes[0] === 'US') {
- //               return codes[0] + ':' + stateFIPS.getPostalCode(codes[1]);
- //           }
- //           else {
- //               return object.id;
- //           }
- //       }
- //   });
+    PORTAL.VIEWS.createCascadedCodeSelect(stateEl, stateSpec, {
+        templateSelection : function(state) {
+			var codes;
+			var result;
+			if (_.has(state, 'id')) {
+				codes = state.id.split(':');
 
-//   stateEl.on('change', function(e) {
-//        var counties = countyEl.select2('data');
+				if (codes[0] === 'US') {
+					result = codes[0] + ':' + stateFIPS.getPostalCode(codes[1]);
+				}
+				else {
+					result = state.id;
+				}
+			}
+			else {
+				result = null;
+			}
+			return result;
+		}
+    });
 
-//        var newCounties = [];
+	stateEl.on('change', function(ev) {
+		var states = $(ev.target).val();
+		var counties = countyEl.val();
 
-//        for (var i = 0; i < counties.length; i++) {
-//            var codes = counties[i].id.split(':');
-//            var stateCode = codes[0] + ':' + codes[1];
+		var newCounties = _.filter(counties, function(county) {
+			var codes = county.split(':');
+			var stateCode = codes[0] + ':' + codes[1];
+			return _.contains(states, stateCode);
+		});
+		countyEl.val(newCounties).trigger('change');
 
-//            var keep = false;
-//            for (var j = 0; j < e.val.length; j++) {
-//                if (stateCode === e.val[j]) {
-//                    keep = true;
-//                    break;
-//                }
-//            }
-//            if (keep) {
-//                newCounties.push(counties[i]);
-//            }
-//        }
-
-//        countyEl.select2('data', newCounties, true);
-//    });
+	});
 
     /*
      * Initialize count select2
@@ -190,17 +193,26 @@ PORTAL.VIEWS.placeSelects = function(countryEl, stateEl, countyEl) {
         getKeys : that.getStates
     };
 
-//    PORTAL.VIEWS.createCodeSelect(countyEl, countySpec, {
-//        formatSelection : function(object, container) {
-//            var codes = object.id.split(':');
-//            if (codes[0] === 'US') {
-//                return codes[0] + ':' + stateFIPS.getPostalCode(codes[1]) + ':' + codes[2];
-//            }
-//            else {
-//                return object.id;
-//            }
-//        }
-//    });
+    PORTAL.VIEWS.createCascadedCodeSelect(countyEl, countySpec, {
+		templateSelection : function(county) {
+			var codes;
+			var result;
+			if (_.has(county, 'id')) {
+				codes = county.id.split(':');
+
+				if (codes[0] === 'US') {
+					result = codes[0] + ':' + stateFIPS.getPostalCode(codes[1]) + ':' + codes[2];
+				}
+				else {
+					results = codes.id;
+				}
+			}
+			else {
+				result = nll;
+			}
+			return result;
+		}
+	})
 
     countyEl.on('select2-opening', function(e) {
         if (that.getStates().length === 0) {

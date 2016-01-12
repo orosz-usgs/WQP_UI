@@ -133,7 +133,88 @@ PORTAL.VIEWS.createCodeSelect = function(el , options, select2Options) {
 		}
 
 		el.select2($.extend(defaultOptions, select2Options));
-
 	});
-
 };
+/*
+ * @param {jquery element selecting a select input} el
+ * @param {Object} options
+ * 		@prop {Object} model - object which is created by a call to PORTAL.MODELS.codesWithKeys
+ *		@prop {Function} isMatch - Optional function with two parameters - term {Object} which contains a term property for the search term and
+ *			data {Object} representing an option. Should return data if the term matches data otherwise return null
+ *		@prop {Function} formatData - Optional function takes data (object with id, desc, and providers) and produces a select2 result object
+ *			with id and text properties.
+ *		@prop {Function} getKeys - returns an array of keys to use when retrieving valid options for this select.
+ *	@param {Object} select2Options
+ */
+PORTAL.VIEWS.createCascadedCodeSelect = function(el, options, select2Options) {
+// Assign defaults for optional parameters
+	var defaultOptions = {
+		allowClear : true,
+		theme : 'bootstrap'
+	}
+	if (!_.has(options, 'isMatch')) {
+		options.isMatch = function(term, data) {
+			var termMatcher;
+			if (_.has(term, 'term')) {
+				termMatcher = RegExp(term.term, 'i');
+				if (termMatcher.test(data.id)) {
+					return data;
+				}
+				else {
+					return null;
+				}
+			}
+			else {
+				return data;
+			}
+		};
+	}
+
+	defaultOptions.matcher = options.isMatch;
+
+	if (!_.has(options, 'formatData')) {
+		options.formatData = function(data) {
+			return {
+				id : data.id,
+				text : data.desc + ' (' + PORTAL.MODELS.providers.formatAvailableProviders(data.providers) + ')'
+			};
+		};
+	}
+
+	defaultOptions.ajax = {
+		transport : function(params, success, failure) {
+			var deferred = $.Deferred();
+			var modelKeys = _.pluck(PORTAL.MODELS.stateCodes.getAll, 'key').sort();
+			var selectedKeys = options.getKeys().sort();
+			if (_.isEqual(modelKeys, selectedKeys)) {
+				deferred.resolved();
+			}
+			else {
+				options.model.fetch(selectedKeys)
+					.done(function(data) {
+						deferred.resolve(data);
+					})
+					.fail(function() {
+						deferred.reject();
+					})
+			}
+			deferred.done(success).fail(failure);
+
+			return deferred.promise();
+		},
+		processResults : function(resp) {
+			var result = _.chain(resp)
+				.map(function (keyData) {
+					return keyData.data;
+				})
+				.flatten()
+				.map(function (lookup) {
+					return options.formatData(lookup);
+				})
+				.value();
+			return {results: result};
+		}
+	}
+
+	el.select2($.extend(defaultOptions, select2Options));
+}
