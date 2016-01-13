@@ -131,8 +131,9 @@ PORTAL.MODELS.codesWithKeys = function(options) {
 	};
 
 	self.getAll = function() {
-		return cacheData;
+		return cachedData;
 	}
+
 
     return self;
 };

@@ -73,16 +73,14 @@ PORTAL.VIEWS.placeSelects = function(countryEl, stateEl, countyEl) {
      * @param {String} searchTerm
      * @returns boolean
      */
-    that.isStateMatch = function(data, searchTerm) {
+    that.isStateMatch = function(searchTerm, lookup) {
+		var termMatcher;
+		var codes;
         if (searchTerm) {
-            var search = searchTerm.toUpperCase();
-            var codes = data.id.split(':');
-            var stateDesc = data.desc.split(',');
-            var stateName = stateDesc[stateDesc.length - 1].toUpperCase();
-
-            return ((codes[0] === 'US') && (stateFIPS.getPostalCode(codes[1]).indexOf(search) > - 1) ||
-                    (stateName.indexOf(search) > -1));
-        }
+			termMatcher = RegExp(searchTerm, 'i');
+			codes = lookup.id.split(':')
+			return (termMatcher.test(lookup.id) || (termMatcher.test(lookup.desc)) || termMatcher.test(stateFIPS.getPostalCode(codes[1])));
+		}
         else {
             return true;
         }
@@ -93,10 +91,13 @@ PORTAL.VIEWS.placeSelects = function(countryEl, stateEl, countyEl) {
      * @param {String} searchTerm
      * @returns boolean
      */
-    that.isCountyMatch = function(data, searchTerm) {
+    that.isCountyMatch = function(searchTerm, lookup) {
+		var termMatcher;
+		var county;
         if (searchTerm) {
-            var codes = data.desc.split(',');
-            return (codes[codes.length - 1].toUpperCase().indexOf(searchTerm.toUpperCase()) > -1);
+			termMatcher = RegExp(searchTerm, 'i');
+            county = _.last(lookup.desc.split(','));
+			return termMatcher.test(county);
         }
         else {
             return true;

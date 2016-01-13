@@ -178,8 +178,6 @@ PORTAL.VIEWS.createCascadedCodeSelect = function(el, options, select2Options) {
 		};
 	}
 
-	defaultOptions.matcher = options.isMatch;
-
 	if (!_.has(options, 'formatData')) {
 		options.formatData = function(data) {
 			return {
@@ -192,10 +190,19 @@ PORTAL.VIEWS.createCascadedCodeSelect = function(el, options, select2Options) {
 	defaultOptions.ajax = {
 		transport : function(params, success, failure) {
 			var deferred = $.Deferred();
-			var modelKeys = _.pluck(PORTAL.MODELS.stateCodes.getAll, 'key').sort();
+			var cachedData = options.model.getAll();
+			var modelKeys = _.pluck(cachedData, 'key').sort();
 			var selectedKeys = options.getKeys().sort();
 			if (_.isEqual(modelKeys, selectedKeys)) {
-				deferred.resolved();
+				deferred.resolve(_.map(cachedData, function(keyLookups) {
+					var filteredLookups = _.filter(keyLookups.data, function(lookup) {
+						return options.isMatch(params.data.term, lookup);
+					});
+					return {
+						key : keyLookups.key,
+						data : filteredLookups
+					};
+				}));
 			}
 			else {
 				options.model.fetch(selectedKeys)
