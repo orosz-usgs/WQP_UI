@@ -1,15 +1,14 @@
+describe('Unit Test: Controllers', function () {
 
-describe('Unit Test: Controllers', function() {
-
-	describe('srsnames controller', function() {
+	describe('srsnames controller', function () {
 		var scope, ctrl, $httpBackend, rootScope;
-		
+
 		Config = {
-				PUBLIC_SRSNAMES_ENDPOINT : 'http://fakeendpoint.com/names'
+			PUBLIC_SRSNAMES_ENDPOINT: 'http://fakeendpoint.com/names'
 		};
-		
-		beforeEach(inject(function(_$httpBackend_, $rootScope, $controller) {
-			
+
+		beforeEach(inject(function (_$httpBackend_, $rootScope, $controller) {
+
 			$httpBackend = _$httpBackend_;
 			$httpBackend.expectGET(Config.PUBLIC_SRSNAMES_ENDPOINT + '?mimeType=json').respond({
 				"maxLastRevDate": "May 2013",
@@ -26,43 +25,43 @@ describe('Unit Test: Controllers', function() {
 					"resultparticlesizebasis": "ccc",
 					"last_rev_dt": "2008-02-21"
 				},
-				{
-					"parm_cd": "00310",
-					"description": "Biochemical oxygen demand, water, unfiltered, 5 days at 20 degrees Celsius, milligrams per liter",
-					"characteristicname": "Biochemical oxygen demand, standard conditions",
-					"measureunitcode": "mg/l",
-					"resultsamplefraction": "Total",
-					"resulttemperaturebasis": "20 deg C",
-					"resultstatisticalbasis": "",
-					"resulttimebasis": "5 Day",
-					"resultweightbasis": "",
-					"resultparticlesizebasis": "",
-					"last_rev_dt": "2008-06-23"
-				}]
+					{
+						"parm_cd": "00310",
+						"description": "Biochemical oxygen demand, water, unfiltered, 5 days at 20 degrees Celsius, milligrams per liter",
+						"characteristicname": "Biochemical oxygen demand, standard conditions",
+						"measureunitcode": "mg/l",
+						"resultsamplefraction": "Total",
+						"resulttemperaturebasis": "20 deg C",
+						"resultstatisticalbasis": "",
+						"resulttimebasis": "5 Day",
+						"resultweightbasis": "",
+						"resultparticlesizebasis": "",
+						"last_rev_dt": "2008-06-23"
+					}]
 			});
 
 			rootScope = $rootScope;
 			scope = $rootScope.$new();
 			ctrl = $controller(srsnames, {
-				$scope : scope
+				$scope: scope
 			});
 		}));
 
 
-		it('data should be undefined', function() {
+		it('data should be undefined', function () {
 			expect(scope.data).not.toBeDefined();
 		});
 
-		it('should get a last change date from the backend', function() {
+		it('should get a last change date from the backend', function () {
 			$httpBackend.flush();
 			expect(scope.data.length).toBe(2);
 		});
 
-		it('should get data rows from the backend', function() {
+		it('should get data rows from the backend', function () {
 			$httpBackend.flush();
 			expect(scope.maxLastRevDate).toBe('May 2013');
 		});
-		
+
 	});
 
 });
