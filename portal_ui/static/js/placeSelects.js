@@ -215,7 +215,7 @@ PORTAL.VIEWS.placeSelects = function (countryEl, stateEl, countyEl) {
 					result = codes[0] + ':' + stateFIPS.getPostalCode(codes[1]) + ':' + codes[2];
 				}
 				else {
-					result = codes.id;
+					result = county.id;
 				}
 			}
 			else {

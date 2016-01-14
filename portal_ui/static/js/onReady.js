@@ -40,8 +40,8 @@ PORTAL.onReady = function () {
 			isMatch: function (searchTerm, data) {
 				var termMatcher;
 				if (searchTerm) {
-					termMatcher = RegExp(searchTerm, 'i');
-					return (termMatcher.test(data.id) || termMatcher.test(data.text));
+					termMatcher = new RegExp(searchTerm, 'i');
+					return (termMatcher.test(data.id) || termMatcher.test(data.desc));
 				}
 				else {
 					return true;
