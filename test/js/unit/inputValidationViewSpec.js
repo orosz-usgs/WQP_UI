@@ -1,14 +1,14 @@
-describe('Tests for PORTAL.VIEWS.inputValidation', function() {
+describe('Tests for PORTAL.VIEWS.inputValidation', function () {
     var validationFnc;
-    beforeEach(function() {
-        validationFnc = function(value) {
+    beforeEach(function () {
+        validationFnc = function (value) {
             if (value === 'Val1') {
-                return {isValid : true};
+                return {isValid: true};
             }
             else
                 return {
-                    isValid : false,
-                    errorMessage : 'Value must be Val1'
+                    isValid: false,
+                    errorMessage: 'Value must be Val1'
                 };
         };
         $('body').append('<div id="test-div">' +
@@ -21,38 +21,38 @@ describe('Tests for PORTAL.VIEWS.inputValidation', function() {
 
     });
 
-    afterEach(function() {
+    afterEach(function () {
         $('#test-div').remove();
     });
 
-    describe('Tests for PORTAL.VIEWS.inputValidation without an updateFnc', function() {
-        beforeEach(function() {
+    describe('Tests for PORTAL.VIEWS.inputValidation without an updateFnc', function () {
+        beforeEach(function () {
             PORTAL.VIEWS.inputValidation({
-                inputEl : $('input[type="text"]'),
-                validationFnc : validationFnc
+                inputEl: $('input[type="text"]'),
+                validationFnc: validationFnc
             });
         });
 
-        it('Expects a failed validation to all alert classes and display error messages', function(){
+        it('Expects a failed validation to all alert classes and display error messages', function () {
             $('#test-input1').val('Val2').change();
             expect($('#input-parent1').attr('class')).toEqual('alert alert-danger');
             expect($('#input-parent1').find('.error-message').html()).toEqual('Value must be Val1');
             expect($('#input-parent2').attr('class')).not.toBeDefined();
             expect($('#input-parent2').find('.error-message').length).toBe(0);
         });
-        it('Expects a failed validation followed by a successful one to clear the error indicator', function() {
+        it('Expects a failed validation followed by a successful one to clear the error indicator', function () {
             $('#test-input2').val('Val2').change();
             $('#test-input2').val('Val1').change();
             expect($('#input-parent2').attr('class')).not.toContain('alert alert-danger');
             expect($('#input-parent2').find('.error-message').length).toBe(0);
         });
-        it('Expects an initial successful validation to not change anything', function() {
+        it('Expects an initial successful validation to not change anything', function () {
             $('#test-input1').val('Val1').change();
             expect($('#input-parent1').attr('class')).not.toBeDefined();
             expect($('#input-parent1').find('.error-message').length).toBe(0);
         });
 
-        it('Expects two failed validations to show only one message', function() {
+        it('Expects two failed validations to show only one message', function () {
             $('#test-input1').val('Val2').change();
             $('#test-input1').val('Val3').change();
             expect($('#input-parent1').find('.error-message').length).toBe(1);
@@ -60,12 +60,12 @@ describe('Tests for PORTAL.VIEWS.inputValidation', function() {
         });
     });
 
-    describe('Tests for PORTAL.VIEWS.inputValidation with an updateFnc', function() {
+    describe('Tests for PORTAL.VIEWS.inputValidation with an updateFnc', function () {
         var fnc;
 
-        beforeEach(function() {
+        beforeEach(function () {
             fnc = {
-                updateFnc :  function(value) {
+                updateFnc: function (value) {
                     return value.toUpperCase();
                 }
             }
@@ -73,19 +73,19 @@ describe('Tests for PORTAL.VIEWS.inputValidation', function() {
             spyOn(fnc, 'updateFnc').andCallThrough();
 
             PORTAL.VIEWS.inputValidation({
-                inputEl : $('input[type="text"]'),
-                validationFnc : validationFnc,
-                updateFnc : fnc.updateFnc
+                inputEl: $('input[type="text"]'),
+                validationFnc: validationFnc,
+                updateFnc: fnc.updateFnc
             });
         });
 
-        it('Expects successful validation to call updateFnc and update the value', function() {
+        it('Expects successful validation to call updateFnc and update the value', function () {
             $('#test-input1').val('Val1').change();
             expect(fnc.updateFnc).toHaveBeenCalledWith('Val1');
             expect($('#test-input1').val()).toEqual('VAL1');
         });
 
-        it('Expects invalid validation to not call updateFnc', function() {
+        it('Expects invalid validation to not call updateFnc', function () {
             $('#test-input1').val('xxx').change();
             expect(fnc.updateFnc).not.toHaveBeenCalled();
         });
