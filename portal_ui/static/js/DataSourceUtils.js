@@ -1,11 +1,11 @@
 var PORTAL = PORTAL || {};
 
 
-PORTAL.DataSourceUtils = (function() {
+PORTAL.DataSourceUtils = (function () {
 	"use strict";
-	
+
 	var that = {};
-	
+
 	/*
 	 * @param {jqXHR} xhr - from an ajax call
 	 * @param {Array of String} dataSources - the array of providers for which we expect count headers.
@@ -13,21 +13,21 @@ PORTAL.DataSourceUtils = (function() {
 	 *    itself an Object with properties for sites and results containing the counts. All counts
 	 *    are strings.
 	 */
-    that.getCountsFromHeader = function(xhr, dataSources ) {
-		
+	that.getCountsFromHeader = function (xhr, dataSources) {
+
 		// Return the first value of the key from the headers. If the key
 		// is not in the header return 0.
-		var formatCount = function(key) {           
+		var formatCount = function (key) {
 			var countHeader = xhr.getResponseHeader(key);
-		
-			if (countHeader && countHeader !== '0'){
+
+			if (countHeader && countHeader !== '0') {
 				return numeral(countHeader).format('0,0');
 			}
 			else {
 				return '0';
 			}
 		};
-		
+
 		var result = {};
 		for (var i = 0; i < dataSources.length; i++) {
 			var id = dataSources[i];
@@ -40,9 +40,9 @@ PORTAL.DataSourceUtils = (function() {
 			sites: formatCount('Total-Site-Count'),
 			results: formatCount('Total-Result-Count')
 		};
-		
+
 		return result;
-    };
-	
+	};
+
 	return that;
 }());
