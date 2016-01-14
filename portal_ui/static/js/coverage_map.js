@@ -1,13 +1,22 @@
+/* jslint browser: true */
+/* global numeral */
+/* global OpenLayers */
+/* global $ */
+/* global MapUtils */
+/* global CoverageMapConfig */
+/* global Config */
+
 var CoverageMap = {};
 
-CoverageMap.map; // Set at initialization
-CoverageMap.dataLayer; // Set at initialization. The parameters can be changed to get different data layers.
+CoverageMap.map = null; // Set at initialization
+CoverageMap.dataLayer = null; // Set at initialization. The parameters can be changed to get different data layers.
 
 // The array defines the order of the base layers in the layer switcher. First one in list will be selected.
 // The strings map to properties in MapUtils.BASE_LAYERS.
 CoverageMap.BASE_LAYERS = ['light_grey_base', 'world_street'];
 
 CoverageMap.zoomTo = function (l, b, r, t) {
+	"use strict";
 	var bounds = new OpenLayers.Bounds(l, b, r, t);
 
 	bounds.transform(MapUtils.WGS84_PROJECTION, MapUtils.MERCATOR_PROJECTION);
@@ -18,14 +27,14 @@ CoverageMap.zoomTo = function (l, b, r, t) {
 
 // Creates and initializes the coverage mapper
 CoverageMap.init = function (divId) {
-
-	OpenLayers.ProxyHost = ""
+	"use strict";
+	OpenLayers.ProxyHost = "";
 
 	var detailDialogEl = $('#map-detail-dialog');
 
 	var getCount = function (object, property) {
 		if (property in object) {
-			return $.formatNumber(object[property], {format: '#,###', locale: 'us'});
+			return numeral(object[property]).format('0,0');
 		}
 		else {
 			return '0';
@@ -40,12 +49,12 @@ CoverageMap.init = function (divId) {
 		var discreteSampleCount = getCount(feature.attributes, 'DISCRETE_SAMPLE_COUNT');
 		html += discreteSampleCount + '</p>';
 
-		if ((discreteSampleCount > 0) && (CoverageMap.get_date_filter() == 'all_time')) {
+		if ((discreteSampleCount > 0) && (CoverageMap.get_date_filter() ==='all_time')) {
 			var minDate = feature.attributes.MIND.split('-');
 			var maxDate = feature.attributes.MAXD.split('-');
 
-			html += '<p>Samples taken from&nbsp;' + feature.attributes.MIND
-				+ '&nbsp;to&nbsp;' + feature.attributes.MAXD + '</p>';
+			html += '<p>Samples taken from&nbsp;' + feature.attributes.MIND +
+				'&nbsp;to&nbsp;' + feature.attributes.MAXD + '</p>';
 		}
 		if (CoverageMap.get_data_source() === 'all') {
 			html += '<p><b>EPA STORET discrete samples:&nbsp;</b>' + getCount(feature.attributes, 'EPA_DISCRETE_SAMPLE_COUNT') + '</br>';
@@ -71,7 +80,7 @@ CoverageMap.init = function (divId) {
 		else {
 			html += '<div id="coverage-map-id-title">No Feature info available</div>';
 		}
-		html += '</div>'
+		html += '</div>';
 		CoverageMap.map.addPopup(new OpenLayers.Popup.FramedCloud(
 			"idPopup",
 			CoverageMap.map.getLonLatFromPixel(xy),
@@ -152,6 +161,7 @@ CoverageMap.init = function (divId) {
 };
 
 CoverageMap.updateDataLayerSLD = function (display_by, date_filter, source) {
+	"use strict";
 	CoverageMap.dataLayer.mergeNewParams({
 		layers: CoverageMapConfig.LAYER_PARAM[display_by],
 		viewparams: CoverageMapConfig.get_viewparams(date_filter, source),
@@ -160,6 +170,7 @@ CoverageMap.updateDataLayerSLD = function (display_by, date_filter, source) {
 };
 
 CoverageMap.updateLegend = function (imgEl, display_by, date_filter, source) {
+	"use strict";
 	imgEl.attr(
 		'src',
 		Config.COVERAGE_MAP_GEOSERVER_ENDPOINT + 'wms?request=GetLegendGraphic&format=image/png&layer=' + CoverageMapConfig.LAYER_PARAM[display_by] +
@@ -169,13 +180,16 @@ CoverageMap.updateLegend = function (imgEl, display_by, date_filter, source) {
 
 // next three functions return the coverage map display options.
 CoverageMap.get_display_by = function () {
+	"use strict";
 	return $('input[name="display-by"]:checked').val();
 };
 CoverageMap.get_date_filter = function () {
+	"use strict";
 	return $('input[name="date"]:checked').val();
 };
 
 CoverageMap.get_data_source = function () {
+	"use strict";
 	return $('input[name="data-source"]:checked').val();
 
 };
