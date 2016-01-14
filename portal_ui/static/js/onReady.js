@@ -38,17 +38,13 @@ PORTAL.onReady = function () {
 				};
 			},
 			isMatch: function (searchTerm, data) {
-				if (_.has(searchTerm, 'term')) {
-					var searchTermUpper = searchTerm.term.toUpperCase();
-					if ((data.id.toUpperCase().indexOf(searchTermUpper) > -1) || (data.text.toUpperCase().indexOf(searchTermUpper) > -1)) {
-						return data;
-					}
-					else {
-						return null;
-					}
+				var termMatcher;
+				if (searchTerm) {
+					termMatcher = RegExp(searchTerm, 'i');
+					return (termMatcher.test(data.id) || termMatcher.test(data.text));
 				}
 				else {
-					return data;
+					return true;
 				}
 			}
 		},

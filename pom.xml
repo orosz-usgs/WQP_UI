@@ -163,6 +163,7 @@
 					<jsSrcDir>${project.basedir}/portal_ui</jsSrcDir>
 					<jsTestSrcDir>${project.basedir}/test/js</jsTestSrcDir>
 					<preloadSources>
+                        <source>bower_components/underscore/underscore-min.js</source>
 						<source>bower_components/jquery/dist/jquery.min.js</source>
 						<source>bower_components/bootstrap/dist/js/bootstrap.min.js</source>
 						<source>bower_components/jquery-ui/jquery-ui.min.js</source>

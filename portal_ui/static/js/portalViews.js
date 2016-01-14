@@ -1,13 +1,18 @@
+/*jslint browser: true */
+/*global $ */
+/*global _ */
+/*global Config */
+
 var PORTAL = PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 
 /*
- * @param {jquery element selecting a hidden input} el
- * @param {Array of Strings to be used for selection options} ids
+ * @param {jquery element for select} el
+ * @param {Array of Strings} ids -  to be used for select options
  * @param {Object} select2Options
- * @returns {undefined}
  */
 PORTAL.VIEWS.createStaticSelect2 = function(el, ids, select2Options) {
+	"use strict";
 	var defaultOptions = {
 		allowClear : true,
 		theme : 'bootstrap',
@@ -28,6 +33,7 @@ PORTAL.VIEWS.createStaticSelect2 = function(el, ids, select2Options) {
  * @param {Object} select2Options
  */
 PORTAL.VIEWS.createPagedCodeSelect = function(el, spec, select2Options) {
+	"use strict";
 	spec.pagesize = (spec.pagesize) ? spec.pagesize : 20;
 
 	if (!('formatData' in spec)) {
@@ -77,68 +83,72 @@ PORTAL.VIEWS.createPagedCodeSelect = function(el, spec, select2Options) {
 @param {jquery element selecting a select input} el
 @param {Object} options
 	@prop {Object} model - object which is created by a call to PORTAL.MODELS.cachedCodes
-	@prop {Function} isMatch - Optional function with two parameters - term {Object} which contains a term property for the search term and
-		data {Object} representing an option. Should return data if the term matches data otherwise return null
+	@prop {Function} isMatch - Optional function with two parameters - term {String} which contains the search term and
+		lookup {Object} representing an object in model. Should return Boolean
 	@prop {Function} formatData - Optional function takes data (object with id, desc, and providers) and produces a select2 result object
 		  with id and text properties.
 @param {Object} select2Options
  */
 PORTAL.VIEWS.createCodeSelect = function(el , options, select2Options) {
-	var getCodes;
+	"use strict";
+	var isMatch;
+	var formatData;
 
 	// Assign defaults for optional parameters
-	if (!_.has(options, 'isMatch')) {
-		options.isMatch = function(term, data) {
+	if (_.has(options, 'isMatch')) {
+		isMatch = options.isMatch;
+	}
+	else {
+		isMatch = function(term, lookup) {
 			var termMatcher;
-			if (_.has(term, 'term')) {
-				termMatcher = RegExp(term.term, 'i');
-				if (termMatcher.test(data.id)) {
+			if (term) {
+				termMatcher = new RegExp(term, 'i');
+				return termMatcher.test(lookup.desc);
+			}
+			else {
+				return true;
+			}
+		};
+	}
+	if (_.has(options, 'formatData')) {
+		formatData = options.formatData;
+	}
+	else {
+		formatData = function(data) {
+			return {
+				id: data.id,
+				text: data.desc + ' (' + PORTAL.MODELS.providers.formatAvailableProviders(data.providers) + ')'
+			};
+		};
+	}
+
+	// Fetch the options
+	options.model.fetch().done(function(data) {
+		//Initialize the select2
+		var defaultOptions = {
+			allowClear : true,
+			theme : 'bootstrap',
+			matcher : function(term, data) {
+				var searchTerm = (_.has(term, 'term')) ? term.term : '';
+				if (isMatch(searchTerm, options.model.getLookup(data.id))) {
 					return data;
 				}
 				else {
 					return null;
 				}
-			}
-			else {
-				return data;
-			}
-		};
-	}
-
-	if (!_.has(options, 'formatData')) {
-		options.formatData = function(data) {
-			return {
-				id : data.id,
-				text : data.desc + ' (' + PORTAL.MODELS.providers.formatAvailableProviders(data.providers) + ')'
-			};
-		};
-	}
-
-	options.model.fetch().done(function(data) {
-		var defaultOptions = {
-			allowClear : true,
-			theme : 'bootstrap',
-			matcher : options.isMatch,
-			templateSelection : function(organization) {
+			},
+			templateSelection : function(data) {
 				var result;
-				if (_.has(organization, 'id')) {
-					result = organization.id;
+				if (_.has(data, 'id')) {
+					result = data.id;
 				}
 				else {
 					result = null;
 				}
 				return result;
-			}
-		}
-		if (_.isArray(data)) {
-			defaultOptions.data = _.map(data, options.formatData)
-		}
-		else {
-			defaultOptions.data = _.chain(data)
-				.values()
-				.map(data, options.formatData)
-				.value();
-		}
+			},
+			data : _.map(data, formatData)
+		};
 
 		el.select2($.extend(defaultOptions, select2Options));
 	});
@@ -148,32 +158,28 @@ PORTAL.VIEWS.createCodeSelect = function(el , options, select2Options) {
  * @param {Object} options
  * 		@prop {Object} model - object which is created by a call to PORTAL.MODELS.codesWithKeys
  *		@prop {Function} isMatch - Optional function with two parameters - term {Object} which contains a term property for the search term and
- *			data {Object} representing an option. Should return data if the term matches data otherwise return null
+ *			data {Object} representing an option. Should return Boolean.
  *		@prop {Function} formatData - Optional function takes data (object with id, desc, and providers) and produces a select2 result object
  *			with id and text properties.
  *		@prop {Function} getKeys - returns an array of keys to use when retrieving valid options for this select.
  *	@param {Object} select2Options
  */
 PORTAL.VIEWS.createCascadedCodeSelect = function(el, options, select2Options) {
-// Assign defaults for optional parameters
+	"use strict";
+	// Assign defaults for optional parameters
 	var defaultOptions = {
 		allowClear : true,
 		theme : 'bootstrap'
-	}
+	};
 	if (!_.has(options, 'isMatch')) {
 		options.isMatch = function(term, data) {
 			var termMatcher;
-			if (_.has(term, 'term')) {
-				termMatcher = RegExp(term.term, 'i');
-				if (termMatcher.test(data.id)) {
-					return data;
-				}
-				else {
-					return null;
-				}
+			if (term) {
+				termMatcher = new RegExp(term.term, 'i');
+				return termMatcher.test(data.id);
 			}
 			else {
-				return data;
+				return true;
 			}
 		};
 	}
@@ -187,22 +193,20 @@ PORTAL.VIEWS.createCascadedCodeSelect = function(el, options, select2Options) {
 		};
 	}
 
+	// Set up the ajax transport property to fetch the options if they need to be refreshed,
+	// otherwise use what is in the model.
 	defaultOptions.ajax = {
 		transport : function(params, success, failure) {
 			var deferred = $.Deferred();
-			var cachedData = options.model.getAll();
-			var modelKeys = _.pluck(cachedData, 'key').sort();
+			var modelKeys = options.model.getAllKeys().sort();
 			var selectedKeys = options.getKeys().sort();
+			var filteredLookups;
+
 			if (_.isEqual(modelKeys, selectedKeys)) {
-				deferred.resolve(_.map(cachedData, function(keyLookups) {
-					var filteredLookups = _.filter(keyLookups.data, function(lookup) {
-						return options.isMatch(params.data.term, lookup);
-					});
-					return {
-						key : keyLookups.key,
-						data : filteredLookups
-					};
-				}));
+				filteredLookups = _.filter(options.model.getAll(), function(lookup) {
+					return options.isMatch(params.data.term, lookup);
+				});
+				deferred.resolve(filteredLookups);
 			}
 			else {
 				options.model.fetch(selectedKeys)
@@ -211,25 +215,19 @@ PORTAL.VIEWS.createCascadedCodeSelect = function(el, options, select2Options) {
 					})
 					.fail(function() {
 						deferred.reject();
-					})
+					});
 			}
 			deferred.done(success).fail(failure);
 
 			return deferred.promise();
 		},
 		processResults : function(resp) {
-			var result = _.chain(resp)
-				.map(function (keyData) {
-					return keyData.data;
-				})
-				.flatten()
-				.map(function (lookup) {
-					return options.formatData(lookup);
-				})
-				.value();
+			var result = _.map(resp, function(lookup) {
+				return options.formatData(lookup);
+			});
 			return {results: result};
 		}
-	}
+	};
 
 	el.select2($.extend(defaultOptions, select2Options));
-}
+};

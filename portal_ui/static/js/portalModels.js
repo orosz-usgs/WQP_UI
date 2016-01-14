@@ -1,31 +1,35 @@
+/*jslint browser: true */
+/*global Config */
+/*global $ */
+/*global _ */
+/*global alert */
+
+
 var PORTAL = PORTAL || {};
 PORTAL.MODELS = PORTAL.MODELS || {};
+
 /*
- *
  * @param {Object} options
- * 		@props {String} codes - String used in the url to retrieve the model's data.
+ * 		@prop {String} codes - String used in the url to retrieve the model's data.
  * @returns {PORTAL.MODELS.cachedCodes}
- *      @prop {function} fetch - function that returns a promise. If resolved, returns the array of codes data.
- *          @resolved - {Array} - data returned from the fetch
- *          @rejected - {String} - descriptive error message
- *      @prop {function} getData - Returns {Array} from the last successful call to fetch or the empty array if no
- *          successful calls have yet been made.
- *
+ *      @prop {Function} fetch
+ *      @prop {Function} getAll
+  *     @prop {Function} getLookups
  */
 PORTAL.MODELS.cachedCodes = function(options) {
+	"use strict";
     var self = {};
 
     var cachedData = [];
 
-	var URL = Config.CODES_ENDPOINT + '/' + options.codes;
-
     /*
-     * 
-     * @return {$.Deferred.promise}. A resolved promise returns {Array of Object} where each object
-     * has String properties: id, desc, and providers. A rejected promise returns {String} with the error message.
+     * @return {$.Promise}.
+     * 		@resolve {Array of Objects} - Each object has String properties: id, desc, and providers.
+     * 	    @reject {String} - the error message.
      */
     self.fetch = function() {
 		var fetchDeferred = $.Deferred();
+		var URL = Config.CODES_ENDPOINT + '/' + options.codes;
 		$.ajax({
 			url: URL,
 			type: 'GET',
@@ -38,29 +42,37 @@ PORTAL.MODELS.cachedCodes = function(options) {
 						id : code.value,
 						desc : (_.has(code, 'desc') && (code.desc)) ? code.desc : code.value, // defaults to value
 						providers : code.providers
-					}
+					};
 				});
 
 				fetchDeferred.resolve(cachedData);
 			},
 
 			error : function(jqXHR, textStatus, error) {
-				alert('Can\'t  get ' + spec.codes + ', Server error: ' + error);
+				alert('Can\'t  get ' + options.codes + ', Server error: ' + error);
 				fetchDeferred.reject(error);
 			}
 		});
         return fetchDeferred.promise();
     };
 
+	/*
+	 * @returns {Array of Objects} - Each object has String properties: id, desc, and providers. This is the
+	 * same object that is returned with the last successfully fetch.
+	 */
 	self.getAll  = function() {
 		return cachedData;
-	}
+	};
 
+	/*
+	 * @returns {Object} - The object in the model with the matching id property. Object contains id, desc, and providers
+	 * 		properties. Return undefined if no object exists
+	 */
 	self.getLookup = function(id) {
 		return _.find(cachedData, function(lookup) {
 			return (lookup.id === id);
 		});
-	}
+	};
 
     return self;
 };
@@ -71,29 +83,27 @@ PORTAL.MODELS.cachedCodes = function(options) {
  *          @prop {String} keyParameter - the parameter name to use to retrieve the appropriate data subset
  *          @prop {Function} parseKey - function takes a lookup item and returns a string for the key it represents.
  * @returns {PORTAL.MODELS.codesWithKeys}
- *          @prop {Function} fetch -
- *          	@param {Array of String} keys
- *          	@returns {$.Deferred.promise}. When resolved will contain the data requested.
- *          	If rejected contains a descriptive error string
+ *          @prop {Function} fetch
  * 			@prop {Function} getAll
- *				@returns {Array of Objects} - each object has two properties. key is a string indicating the data's key and
- * 					data which is an array of lookups, with id, desc, and providers properties.
+ * 			@prop {Function} getAllKeys
+ *			@prop {Function} getDataForKey
  *
  */
 PORTAL.MODELS.codesWithKeys = function(options) {
+	"use strict";
     var self = {};
 
     var cachedData = []; /* Each object where each value is an array of objects with properties id, desc, and providers */
 
-	var URL = Config.CODES_ENDPOINT + '/' + options.codes;
 	/*
 	 * @param {Array of String} keys - the set of keys to be used when retrieving the lookup codes
 	 * @returns {Jquery.Promise}
-	 * 		@resolved - the cached Data object
-	 * 		@rejected - descriptive error string
+	 * 		@resolve {Array of Objects} - each object is a lookup with id, desc, and providers properties.
+	 * 		@reject {String} descriptive error string
 	 */
 	self.fetch = function(keys) {
 		var fetchDeferred = $.Deferred();
+		var URL = Config.CODES_ENDPOINT + '/' + options.codes;
 
 		$.ajax({
 			url : URL + '?' + options.keyParameter + '=' + keys.join(';'),
@@ -114,15 +124,15 @@ PORTAL.MODELS.codesWithKeys = function(options) {
 									id : lookup.value,
 									desc : (_.has(lookup, 'desc') && (lookup.desc)) ? lookup.desc : lookup.value, // defaults to value
 									providers : lookup.providers
-								}
+								};
 							})
 							.value()
-					}
+					};
 				});
-				fetchDeferred.resolve(cachedData);
+				fetchDeferred.resolve(self.getAll());
 			},
 			error : function(jqXHR, textStatus, error) {
-				alert("Can't get " + spec.codes + ', Server error: ' + error);
+				alert("Can't get " + options.codes + ', Server error: ' + error);
 				fetchDeferred.reject(error);
 			}
 		});
@@ -130,10 +140,36 @@ PORTAL.MODELS.codesWithKeys = function(options) {
 		return fetchDeferred.promise();
 	};
 
+	/*
+	 * @return {Array of Object} - Object has id, desc, and providers string properties
+	 */
 	self.getAll = function() {
-		return cachedData;
-	}
+		return _.chain(cachedData).pluck('data').flatten().value();
+	};
 
+	/*
+	 * @return {Array of String}
+	 */
+	self.getAllKeys = function() {
+		return _.pluck(cachedData, 'key');
+	};
+
+	/*
+	 * @return {Array of Objects} - Each object is a lookup with id, desc, and providers properties. Return undefined if that key
+	 * is not in the model
+	 */
+	self.getDataForKey = function(key) {
+		var isMatch = function(object) {
+			return object.key === key;
+		};
+		var lookup = _.find(cachedData, isMatch);
+		if (lookup) {
+			return lookup.data;
+		}
+		else {
+			return undefined;
+		}
+	}
 
     return self;
 };
