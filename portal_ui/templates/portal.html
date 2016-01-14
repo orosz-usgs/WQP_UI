@@ -3,15 +3,15 @@
 {% block title %}Water Quality Data {% endblock %}
 
 {% block page_style %}
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/select2-3.4.5/select2.css') }}" />
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/select2-3.4.5/select2-bootstrap.css') }}" />
+	<link rel="stylesheet" type="text/css" href="{{ url_for('bower.static', filename='select2/dist/css/select2.min.css') }}" />
+	<link rel="stylesheet" type="text/css" href="{{ url_for('bower.static', filename='select2-bootstrap-theme/dist/select2-bootstrap.min.css') }}" />
 {% endblock %}
 
 {% block page_header_title %}Water Quality Data{% endblock %}
 
 {% block page_content %}
 	<div id="page-content">
-        <form role="form" id="params" name="params" autocomplete="false" action="{{ config.SEARCH_QUERY_ENDPOINT }}Station/search">
+        <form role="form" id="params" name="params" autocomplete="off" action="{{ config.SEARCH_QUERY_ENDPOINT }}Station/search">
             <div class="panel" id="location-parameters">
                 <div class="panel-heading" >
                     LOCATION
@@ -31,24 +31,24 @@
                             <div class="form-group">
                                 <label class="control-label" for="countrycode">Country:</label>
                                 <div>
-                                    <input class="form-control" type="hidden" id="countrycode" name="countrycode" />
-                                    <button type="button" class="help-link popover-help" id="countryHelp" data-help="country">?</button>
+                                    <select multiple class="form-control" id="countrycode" name="countrycode" data-placeholder="All" style="width: 100%"></select>
                                 </div>
+								<button type="button" class="help-link popover-help" id="countryHelp" data-help="country">?</button>
                             </div>
                             <div class="form-group">
                                 <label class="control-label" for="statecode">State:</label>
                                 <div>
-                                    <input class="form-control" type="hidden" id="statecode" name="statecode" />
-                                    <button type="button" class="help-link popover-help" id="stateHelp" data-help="state">?</button>                         
+                                    <select multiple class="form-control" id="statecode" name="statecode" data-placeholder="All" style="width: 100%"></select>
                                 </div>
+								<button type="button" class="help-link popover-help" id="stateHelp" data-help="state">?</button>
                             </div>
                             <div class="form-group">
                                 <label class="control-label" for="countycode">County:</label>
                                 <div>
-                                    <input class="form-control" type="hidden" id="countycode" name="countycode" />
-                                    <button type="button" class="help-link popover-help" id="countyHelp" data-help="county">?</button>
+                                    <select multiple class="form-control" id="countycode" name="countycode" data-placeholder="All" style="width: 100%"></select>
                                 </div>
-                            </div>
+								<button type="button" class="help-link popover-help" id="countyHelp" data-help="county">?</button>
+                           </div>
                         </div>
                     </div>
                     <div id="point-location" class="subpanel">
@@ -131,30 +131,30 @@
                         <div class="form-group">
                             <label class="control-label" for="siteType">Site Type:</label>
                             <div>
-                                <input class="form-control" type="hidden" id="siteType" name="siteType" />
-                                <button type="button" class="help-link popover-help" id="siteTypeHelp" data-help="siteType">?</button>
+                                <select multiple class="form-control" id="siteType" name="siteType" data-placeholder="All" style="width: 100%"></select>
                             </div>
+							<button type="button" class="help-link popover-help" id="siteTypeHelp" data-help="siteType">?</button>
                         </div>
                         <div class="form-group" id="organization-id-select">
                             <label class="control-label" for="organization">Organization ID:</label>
                             <div>
-                                <input class="form-control" type="hidden" name="organization" id="organization" />
-                                <button type="button" class="help-link popover-help" id="organizationHelp" data-help="organization">?</button>
+                                <select multiple class="form-control" name="organization" id="organization" data-placeholder="All" style="width: 100%" style="width: 100%"></select>
                             </div>
+							<button type="button" class="help-link popover-help" id="organizationHelp" data-help="organization">?</button>
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="siteid">Site ID:</label>
                             <div>
                                 <input class="form-control" type="text" name="siteid" id="siteid" />
-                                <button type="button" class="help-link popover-help" id="siteHelp" data-help="siteID">?</button>
                             </div>
+							<button type="button" class="help-link popover-help" id="siteHelp" data-help="siteID">?</button>
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="huc">HUC:</label>
                             <div>
                                 <input class="form-control" type="text" name="huc" id="huc" />
-                                <button type="button" class="help-link popover-help" id="hucHelp" data-help="huc">?</button>
                             </div>
+							<button type="button" class="help-link popover-help" id="hucHelp" data-help="huc">?</button>
                         </div>
                     </div>
                 </div>
@@ -169,38 +169,38 @@
                         <div class="form-group">
                             <label class="control-label" for="sampleMedia">Sample Media:</label>
                             <div>
-                                <input class="form-control" type="hidden" name="sampleMedia" id="sampleMedia" />
-                                <button type="button" class="help-link popover-help" id="sampleMediaHelp" data-help="sampleMedia">?</button>
+                                <select multiple class="form-control" name="sampleMedia" id="sampleMedia" data-placeholder="All" style="width: 100%"></select>
                             </div>
+							<button type="button" class="help-link popover-help" id="sampleMediaHelp" data-help="sampleMedia">?</button>
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="characteristicType">Characteristic Group:</label>
                             <div>
-                                <input class="form-control" type="hidden" name="characteristicType" id="characteristicType" />
-                                <button type="button" class="help-link popover-help" id="characteristicGroupHelp" data-help="characteristicGroup">?</button>
+                                <select multiple class="form-control" name="characteristicType" id="characteristicType" data-placeholder="All" style="width: 100%"></select>
                             </div>
+							<button type="button" class="help-link popover-help" id="characteristicGroupHelp" data-help="characteristicGroup">?</button>
                         </div>
                         <div class="form-group">
                             <label class="control-label" for="characteristicName">Characteristics:</label>
                             <div>
-                                <input class="form-control" type="hidden" name="characteristicName" id="characteristicName" />
-                                <button type="button" class="help-link popover-help" id="characteristicHelp" data-help="characteristicName">?</button>
+                                <select multiple class="form-control" name="characteristicName" id="characteristicName" data-placeholder="All" style="width: 100%"></select>
                             </div>
+							<button type="button" class="help-link popover-help" id="characteristicHelp" data-help="characteristicName">?</button>
                         </div>
 
                         <div class="form-group">
                         	<label class="control-label" for="project-code">Project ID:</label>
                         	<div>
-                        		<input class="form-control" type="hidden" name="project_code" id="project-code" />
-                        		<button type="button" class="help-link popover-help" id="projectHelp" data-help="project">?</button>
+                        		<select multiple class="form-control" name="project_code" id="project-code" data-placeholder="All" style="width: 100%"></select>
                         	</div>
+							<button type="button" class="help-link popover-help" id="projectHelp" data-help="project">?</button>
                         </div>
                         <div class="form-group" id='pcode-div'>
                             <label class="control-label" for="pCode">Parameter Code: <span style="font-size:x-small;">(NWIS ONLY)</span></label>
                             <div>
                                 <input class="form-control" type="text" name="pCode" id="pCode" />
-                                <button type="button" class="help-link popover-help" id="pCodeHelp" data-help="pcode">?</button>              
                             </div>
+							<button type="button" class="help-link popover-help" id="pCodeHelp" data-help="pcode">?</button>
                         </div>
 	                    <!-- commenting out nawqa project section for the moment
                         <div id="nawqa-project-div">
@@ -243,16 +243,16 @@
                                 <div class="form-group">
                                     <label class="control-label" for="assemblage">Assemblage:</label>
                                     <div>
-                                        <input class="form-control" type="hidden" name="assemblage" id="assemblage" />
-                                        <button type="button" class="help-link popover-help" id="assemblageHelp" data-help="assemblage">?</button>
+                                        <select multiple class="form-control" name="assemblage" id="assemblage" data-placeholder="All" style="width: 100%"></select>
                                     </div>
+									<button type="button" class="help-link popover-help" id="assemblageHelp" data-help="assemblage">?</button>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label" for="subjectTaxonomicName">Taxonomic Name:</label>
                                     <div>
-                                        <input class="form-control" type="hidden" name="subjectTaxonomicName" id="subject-taxonomic-name" />
-                                        <button type="button" class="help-link popover-help" id="taxonomicNameHelp" data-help="taxonomicName">?</button>
+                                        <select multiple class="form-control" name="subjectTaxonomicName" id="subject-taxonomic-name" data-placeholder="All" style="width: 100%"></select>
                                     </div>
+									<button type="button" class="help-link popover-help" id="taxonomicNameHelp" data-help="taxonomicName">?</button>
                                 </div>
                             </div>
                         </div>
@@ -272,7 +272,7 @@
                     <div class="form-group">
                         <label class="control-label" for="providers-select" title="Click in box and select one or more sources, otherwise data will be retrieved from all available providers">Select database:</label>
                         <div>
-                            <select class="form-control" id="providers-select" name="providers" multiple></select>
+                            <select class="form-control modern" id="providers-select" name="providers" multiple></select>
                         </div>
                     </div>
                 </div>
@@ -462,12 +462,11 @@
 {% endblock %}
 
 {% block body_page_script %}
-
-	<script type="text/javascript" src="{{ url_for('static', filename='vendor/select2-3.4.5/select2.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='vendor/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='vendor/jshashtable-3.0.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='vendor/jquery.numberformatter-1.2.4.min.js') }}"></script>    
-    <script type="text/javascript" src="{{ url_for('static', filename='vendor/OpenLayers/OpenLayers.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('bower.static', filename='underscore/underscore.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('bower.static', filename='select2/dist/js/select2.full.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('bower.static', filename='jquery-ui/jquery-ui.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('bower.static', filename='numeral/min/numeral.min.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='vendor/OpenLayers/OpenLayers.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='vendor/LoadingPanel.js') }}"></script>
     {% assets "portal_js" %}
     	<script type="text/javascript" src="{{ ASSET_URL }}"></script>

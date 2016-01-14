@@ -21,7 +21,7 @@ PORTAL.DataSourceUtils = (function() {
 			var countHeader = xhr.getResponseHeader(key);
 		
 			if (countHeader && countHeader !== '0'){
-				return $.formatNumber(countHeader, {format:'#,###', locale: 'us'});
+				return numeral(countHeader).format('0,0');
 			}
 			else {
 				return '0';

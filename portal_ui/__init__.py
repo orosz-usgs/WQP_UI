@@ -1,7 +1,10 @@
 
 from flask import Flask, request
+from flask.ext.bower import Bower
 
 app = Flask(__name__.split()[0], instance_relative_config=True)
+
+Bower(app)
 
 # Loads configuration information from config.py and instance/config.py
 app.config.from_object('config')

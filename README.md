@@ -3,11 +3,12 @@ Water Quality Portal User Interface
 
 To run this application locally, you will need to do the following:
 
-1. Create a virtualenv using python 2.7 and install the requirements in requirements.txt. This can be done as follows while in the project directory:
+1. Install node.js and lessc on your desktop. You can install lessc by executing `npm install -g less`. 
+2. Create a virtualenv using python 2.7 and install the requirements in requirements.txt. This can be done as follows while in the project directory:
   1. Run `virtualenv --python=python2.7 env`
   2. Activate your virtualenv (depends on whether linux or windows)
   3. Run `pip install -r requirements.txt`
-2. Change to the `instance` directory and create config.py. It should contain the following:
+3. Change to the `instance` directory and create config.py. It should contain the following:
 	```python
 	DEBUG = True
 	
@@ -17,7 +18,8 @@ To run this application locally, you will need to do the following:
 	SECRET_KEY = 'local_secret_key'
 	
 	# points to the geoserver endpoint you want to use. 
-	GEOSERVER_ENDPOINT = ''
+	COVERAGE_MAP_GEOSERVER_ENDPOINT = ''
+	SITES_MAP_GEOSERVER_ENDPOINT = ''
 	
 	#points to the sld endpoint you want to use.
 	SLD_ENDPOINT = ''

@@ -1,166 +1,189 @@
+/*jslint browser: true */
+/*global Config */
+/*global $ */
+/*global _ */
+/*global alert */
+
+
 var PORTAL = PORTAL || {};
 PORTAL.MODELS = PORTAL.MODELS || {};
+
 /*
- *
- * @param {Object} spec
- *      spec properties:
- *          codes - String used in the url to retrieve the model's data.
- * @returns {PORTAL.MODELS.codes.that}
- *      properties:
- *          getData - function that returns a promise. If resolved, returns the array of codes data. 
- *              If rejected, returns the error message.
+ * @param {Object} options
+ * 		@prop {String} codes - String used in the url to retrieve the model's data.
+ * @returns {PORTAL.MODELS.cachedCodes}
+ *      @prop {Function} fetch
+ *      @prop {Function} getAll
+  *     @prop {Function} getLookups
  */
-PORTAL.MODELS.cachedCodes = function(spec) {
-    /* spec object has property codes - String */
-    var that = {};
+PORTAL.MODELS.cachedCodes = function(options) {
+	"use strict";
+    var self = {};
 
     var cachedData = [];
 
-    var ajaxCalled = false;
-    var ajaxCompleteDeferred = $.Deferred();
-
     /*
-     * 
-     * @return {$.Deferred.promise}. A resolved promise returns {Array of Object} where each object
-     * has String properties: id, desc, and providers. A rejected promise returns {String} with the error message.
+     * @return {$.Promise}.
+     * 		@resolve {Array of Objects} - Each object has String properties: id, desc, and providers.
+     * 	    @reject {String} - the error message.
      */
-    that.processData = function() {
-        // Make an ajax call to get the data if it has not been previously retrieved.
-        if (!ajaxCalled) {
-            ajaxCalled = true;
-			if (ajaxCompleteDeferred.state() === 'rejected') {
-				// Start a new deferred
-				ajaxCompleteDeferred = $.Deferred();
-			}
-            $.ajax({
-                    url: Config.CODES_ENDPOINT + '/' + spec.codes,
-                    type: 'GET',
-                    data : {
-                        mimeType : 'json'
-                    },
-                    success : function(data, textStatus, jqXHR) {
-						$.each(data.codes, function(index, code) {
-							cachedData.push({
-								id: code.value,
-								desc : (code.hasOwnProperty('desc') && (code.desc)  ? code.desc : code.value),
-								providers : code.providers
-							});
-						});
-						ajaxCompleteDeferred.resolve(cachedData);
-                    },
+    self.fetch = function() {
+		var fetchDeferred = $.Deferred();
+		var URL = Config.CODES_ENDPOINT + '/' + options.codes;
+		$.ajax({
+			url: URL,
+			type: 'GET',
+			data : {
+				mimeType : 'json'
+			},
+			success : function(data, textStatus, jqXHR) {
+				cachedData = _.map(data.codes, function(code) {
+					return {
+						id : code.value,
+						desc : (_.has(code, 'desc') && (code.desc)) ? code.desc : code.value, // defaults to value
+						providers : code.providers
+					};
+				});
 
-                    error : function(jqXHR, textStatus, error) {
-                        alert('Can\'t  get ' + spec.codes + ', Server error: ' + error);
-                        ajaxCompleteDeferred.reject(error);
-                        ajaxCalled = false;
-                    }
-                });
-        }
-        return ajaxCompleteDeferred.promise();
+				fetchDeferred.resolve(cachedData);
+			},
+
+			error : function(jqXHR, textStatus, error) {
+				alert('Can\'t  get ' + options.codes + ', Server error: ' + error);
+				fetchDeferred.reject(error);
+			}
+		});
+        return fetchDeferred.promise();
     };
 
-    return that;
+	/*
+	 * @returns {Array of Objects} - Each object has String properties: id, desc, and providers. This is the
+	 * same object that is returned with the last successfully fetch.
+	 */
+	self.getAll  = function() {
+		return cachedData;
+	};
+
+	/*
+	 * @returns {Object} - The object in the model with the matching id property. Object contains id, desc, and providers
+	 * 		properties. Return undefined if no object exists
+	 */
+	self.getLookup = function(id) {
+		return _.find(cachedData, function(lookup) {
+			return (lookup.id === id);
+		});
+	};
+
+    return self;
 };
 /*
  *
- * @param {Object} spec -
+ * @param {Object} options -
  *          @prop {String} codes - Used in the ajax url to retrieve the data
  *          @prop {String} keyParameter - the parameter name to use to retrieve the appropriate data subset
- *          @prop {Function} parseKey - Takes the id from a data Object and produce it's key
- * @returns {PORTAL.MODELS.codesWithKeys.that}
- *      properties:
- *          @prop {Function} processData - Returns {$.Deferred.promise}. When resolved will contain the data requested.
- *          
- *          function takes a processFnc parameter and keys (Array of strings_). The processFnc function will
- *                        take an an array of objects parameter. Each object will have
- *                        an id, desc, and providers property.
+ *          @prop {Function} parseKey - function takes a lookup item and returns a string for the key it represents.
+ * @returns {PORTAL.MODELS.codesWithKeys}
+ *          @prop {Function} fetch
+ * 			@prop {Function} getAll
+ * 			@prop {Function} getAllKeys
+ *			@prop {Function} getDataForKey
+ *
  */
-PORTAL.MODELS.cachedCodesWithKeys = function(spec) {
-    var that = {};
+PORTAL.MODELS.codesWithKeys = function(options) {
+	"use strict";
+    var self = {};
 
-    var cachedData = {}; /* Will be an object where each value is an array of objects with properties id, desc, and providers */
+    var cachedData = []; /* Each object where each value is an array of objects with properties id, desc, and providers */
 
-    var getData = function(keys /* Array of Strings */) {
-        var results = {};
-        var i = 0;
+	/*
+	 * @param {Array of String} keys - the set of keys to be used when retrieving the lookup codes
+	 * @returns {Jquery.Promise}
+	 * 		@resolve {Array of Objects} - each object is a lookup with id, desc, and providers properties.
+	 * 		@reject {String} descriptive error string
+	 */
+	self.fetch = function(keys) {
+		var fetchDeferred = $.Deferred();
+		var URL = Config.CODES_ENDPOINT + '/' + options.codes;
 
-        for (i = 0; i < keys.length; i++) {
-            results[keys[i]] = cachedData[keys[i]];
-        }
+		$.ajax({
+			url : URL + '?' + options.keyParameter + '=' + keys.join(';'),
+			type: 'GET',
+			data : {
+				mimeType : 'json'
+			},
+			success : function(data, textStatus, jqXHR) {
+				cachedData = _.map(keys, function(key) {
+					return {
+						key : key,
+						data : _.chain(data.codes)
+							.filter(function(lookup) {
+								return (options.parseKey(lookup.value) === key);
+							})
+							.map(function(lookup) {
+								return {
+									id : lookup.value,
+									desc : (_.has(lookup, 'desc') && (lookup.desc)) ? lookup.desc : lookup.value, // defaults to value
+									providers : lookup.providers
+								};
+							})
+							.value()
+					};
+				});
+				fetchDeferred.resolve(self.getAll());
+			},
+			error : function(jqXHR, textStatus, error) {
+				alert("Can't get " + options.codes + ', Server error: ' + error);
+				fetchDeferred.reject(error);
+			}
+		});
 
-        return results;
-    };
+		return fetchDeferred.promise();
+	};
 
-    /*
-     * @param {Array of String} keys - the specific keys' cached data that will be returned in the resolve promise
-     * @return {$.Deferred.promise -  A resolved promise returns {Array of Object} where each object
-     * has String properties: id, desc, and providers. A rejected promise returns {String} with the error message.
-     */
-    that.processData = function(keys) {
+	/*
+	 * @return {Array of Object} - Object has id, desc, and providers string properties
+	 */
+	self.getAll = function() {
+		return _.chain(cachedData).pluck('data').flatten().value();
+	};
 
-        var keysToGet = [];
-        var i;
-        var ajaxData = {};
-        var deferred = $.Deferred();
+	/*
+	 * @return {Array of String}
+	 */
+	self.getAllKeys = function() {
+		return _.pluck(cachedData, 'key');
+	};
 
-        // Determine if we already have the requested data cached
-        for (i = 0; i < keys.length; i++){
-            if (!(keys[i] in cachedData)) {
-                keysToGet.push(keys[i]);
-            }
-        }
+	/*
+	 * @return {Array of Objects} - Each object is a lookup with id, desc, and providers properties. Return undefined if that key
+	 * is not in the model
+	 */
+	self.getDataForKey = function(key) {
+		var isMatch = function(object) {
+			return object.key === key;
+		};
+		var lookup = _.find(cachedData, isMatch);
+		if (lookup) {
+			return lookup.data;
+		}
+		else {
+			return undefined;
+		}
+	}
 
-        if (keysToGet.length === 0) {
-            // Can get all keys from the cache
-            deferred.resolve(getData(keys));
-        }
-        else {
-            // We have to retrieve at least some of the keys //
-            ajaxData[spec.keyParameter] = keysToGet.join(';');
-            ajaxData.mimeType = 'json';
-            $.ajax({
-                url : Config.CODES_ENDPOINT + '/' + spec.codes,
-                type: 'GET',
-                data : ajaxData,
-                success : function(data, textStatus, jqXHR) {
-                    var k;
-                    //Initialize cache for each key
-                    for (k = 0; k < keysToGet.length; k++) {
-                        cachedData[keysToGet[k]] = [];
-                    }
-                    $.each(data.codes, function(index, code) {
-						var thisData = {
-								id : code.value,
-								desc : (code.hasOwnProperty('desc') && (code.desc) ? code.desc : code.value),
-								providers : code.providers
-						};
-						var key = spec.parseKey(thisData.id);
-						cachedData[key].push(thisData);
-                    });
-                    deferred.resolve(getData(keys));
-                },
-                error : function(jqXHR, textStatus, error) {
-                    alert("Can't get " + spec.codes + ', Server error: ' + error);
-                    deferred.reject(error);
-                }
-            });
-        }
-        return deferred.promise();
-    };
-
-    return that;
+    return self;
 };
 
 // Objects that represent the available values for portal selections.
 PORTAL.MODELS.countryCodes = PORTAL.MODELS.cachedCodes({codes : 'countrycode'});
-PORTAL.MODELS.stateCodes = PORTAL.MODELS.cachedCodesWithKeys({
+PORTAL.MODELS.stateCodes = PORTAL.MODELS.codesWithKeys({
     codes : 'statecode',
     keyParameter : 'countrycode',
     parseKey : function(id) {
         return id.split(':')[0];
     }
 });
-PORTAL.MODELS.countyCodes = PORTAL.MODELS.cachedCodesWithKeys({
+PORTAL.MODELS.countyCodes = PORTAL.MODELS.codesWithKeys({
     codes: 'countycode',
     keyParameter : 'statecode',
     parseKey: function(id) {

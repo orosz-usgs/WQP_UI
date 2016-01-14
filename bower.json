@@ -1,0 +1,28 @@
+{
+  "name": "WQP_UI",
+  "homepage": "https://github.com/USGS-CIDA/WQP_UI",
+  "authors": [
+    "Mary Bucknell <mbucknell@usgs.gov>"
+  ],
+  "description": "Water Quality Portal",
+  "main": "wqp_ui/static/js/init.js",
+  "moduleType": [],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "portal_ui/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.6",
+    "jquery": "~2.2.0",
+    "select2": "~4.0.1",
+    "jquery-ui": "~1.11.4",
+    "numeral": "~1.5.3",
+    "select2-bootstrap-theme": "~0.1.0-beta.4",
+    "underscore": "~1.8.3"
+  }
+}
