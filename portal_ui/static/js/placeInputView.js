@@ -17,10 +17,18 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
  * 		@prop {Function} getStates
  *		@prop {Function} getCounties
  */
-PORTAL.VIEWS.placeSelects = function (countryEl, stateEl, countyEl) {
+PORTAL.VIEWS.placeInputView = function () {
 	"use strict";
 
-	var that = {};
+	var self = {};
+	var USA = 'US';
+
+	/*
+	 * @param {Jquery element} $container - div containing the place inputs.
+	 */
+	self.initialize = function($container) {
+
+	}
 
 	/*
 	 * @ returns an array of currently selected countries
