@@ -1,15 +1,21 @@
+/* jslint browser:true */
+/* global $ */
+/* global _ */
+/* global Config */
+
 var PORTAL = PORTAL || {};
 PORTAL.MODELS = PORTAL.MODELS || {};
 
 PORTAL.MODELS.providers = function () {
+	"use strict";
 	var ids = [];
 
 	return {
 		/*
-		 * @return {$.Deferred.promise} which is resolved if the fetch of providers is a success and rejected with the erro
+		 * @return {$.Deferred.promise} which is resolved if the fetch of providers is a success and rejected with the errors
 		 * message if the request fails.
 		 */
-		initialize: function () {
+		fetch: function () {
 			var deferred = $.Deferred();
 			$.ajax({
 				url: Config.CODES_ENDPOINT + '/providers',
@@ -30,30 +36,27 @@ PORTAL.MODELS.providers = function () {
 			return deferred.promise();
 		},
 
+		/*
+		 * @return {Array of String} of provider id strings
+		 */
 		getIds: function () {
 			return ids;
 		},
 
+		/*
+		 * Parses availableProviders, removes providers that are not in the model. If the string contains all of the ids
+		 * in the model, then return 'all' otherwise return a comma separated list of the valid providers.
+		 * @param {String} availableProviders - Space separated list of providers
+		 * @return {String}
+		 */
 		formatAvailableProviders: function (availableProviders /* String containing space separated list of providers */) {
-			/*
-			 * Returns a formatted string describing the availableProviders. The function will remove ids that are not
-			 * in the ids attribute. If all providers are in availableProviders than the word 'all' will be returned.
-			 */
-
+			var isValidId = function(id) {
+				return _.contains(ids, id);
+			};
 			var availableList = availableProviders.split(' ');
-			var resultList = [];
-			var i;
+			var resultList = _.filter(availableList, isValidId);
 
-			for (i = 0; i < ids.length; i++) {
-				if ($.inArray(ids[i], availableList) !== -1) {
-					resultList.push(ids[i]);
-				}
-			}
-
-			if (resultList.length === 0) {
-				return null;
-			}
-			else if (resultList.length === ids.length) {
+			if (resultList.length === ids.length) {
 				return 'all';
 			}
 			else {

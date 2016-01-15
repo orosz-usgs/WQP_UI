@@ -5,7 +5,7 @@
 /* global Handlebars */
 
 var PORTAL = PORTAL || {};
-PORTAL.UTILS = (function() {
+PORTAL.UTILS = function() {
 	"use strict";
 	var self = {};
 
@@ -129,4 +129,4 @@ PORTAL.UTILS = (function() {
 		}
 	};
 	return self;
-}());
+}();

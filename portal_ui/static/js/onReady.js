@@ -1,5 +1,10 @@
 /*jslint browser: true*/
-/*global $*/
+/* global $*/
+/* global alert */
+/* global _gaq */
+/* global Config */
+/* global IdentifyDialog */
+/* global PortalDataMap */
 
 var PORTAL = PORTAL || {};
 
@@ -14,7 +19,7 @@ PORTAL.onReady = function () {
 
 	PORTAL.downloadProgressDialog = PORTAL.VIEWS.downloadProgressDialog($('#download-status-dialog'));
 
-	PORTAL.MODELS.providers.initialize()
+	PORTAL.MODELS.providers.fetch()
 		.done(function () {
 			PORTAL.VIEWS.createStaticSelect2($('#providers-select'),
 				PORTAL.MODELS.providers.getIds());
@@ -251,7 +256,7 @@ PORTAL.onReady = function () {
 		var $biosamplesRadio = $('#download-box #biosamples');
 		var sensitive = !($('#download-box #samples').prop('checked')) && !($biosamplesRadio.prop('checked'));
 
-		setEnabled($('#download-box #kml'), sensitive);
+		PORTAL.UTILS.setEnabled($('#download-box #kml'), sensitive);
 
 		$form.attr('action', PORTAL.queryServices.getFormUrl($(this).val()));
 		$form.find('input[name="resultType"]:hidden').val($(this).val());
