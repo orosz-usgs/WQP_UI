@@ -172,9 +172,12 @@
 						<source>http://cida.usgs.gov/js/openlayers/2.12/release/OpenLayers.js</source>
 					</preloadSources>
 					<sourceIncludes>
-						<include>static/js/angular/**/*.js</include>
 						<include>static/js/*.js</include>
 					</sourceIncludes>
+                    <specIncludes>
+                        <include>vendor/sinon-1.17.2.js</include>
+                        <include>unit/**/*.js</include>
+                    </specIncludes>
 				</configuration>
 			</plugin>
 			<plugin>
