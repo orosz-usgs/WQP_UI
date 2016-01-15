@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -12,39 +13,39 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<cida.maven.url>http://internal.cida.usgs.gov/maven</cida.maven.url>
 	</properties>
-	
+
 	<url>https://www.waterqualitydata.us/</url>
 	<organization>
-	     <name>Center for Integrated Data Analytics</name>
-	     <url>http://cida.usgs.gov</url>
+		<name>Center for Integrated Data Analytics</name>
+		<url>http://cida.usgs.gov</url>
 	</organization>
-	
+
 	<developers>
-	     <developer>
-	         <name>Mary Bucknell</name>
-	         <email>mbucknell@usgs.gov</email>
-	         <organization>Center for Integrated Data Analytics</organization>
-	         <organizationUrl>http://cida.usgs.gov</organizationUrl>
-	         <timezone>-6</timezone>
-	     </developer>
-	 </developers>
-	 
-	 <licenses>
-	     <license>
-	         <name>Public Domain</name>
-	         <url>http://water.usgs.gov/software/help/notice/</url>
-	         <comments>
-	             See the url or the 'LICENSE' file for details
-	         </comments>
-	     </license>
-	 </licenses>
-	 
+		<developer>
+			<name>Mary Bucknell</name>
+			<email>mbucknell@usgs.gov</email>
+			<organization>Center for Integrated Data Analytics</organization>
+			<organizationUrl>http://cida.usgs.gov</organizationUrl>
+			<timezone>-6</timezone>
+		</developer>
+	</developers>
+
+	<licenses>
+		<license>
+			<name>Public Domain</name>
+			<url>http://water.usgs.gov/software/help/notice/</url>
+			<comments>
+				See the url or the 'LICENSE' file for details
+			</comments>
+		</license>
+	</licenses>
+
 	<repositories>
-        <repository>
-            <id>cida-public-releases</id>
-            <name>CIDA Releases</name>
-            <url>{$cida.maven.url}/content/repositories/cida-public-releases/</url>
-        </repository>
+		<repository>
+			<id>cida-public-releases</id>
+			<name>CIDA Releases</name>
+			<url>{$cida.maven.url}/content/repositories/cida-public-releases/</url>
+		</repository>
 		<repository>
 			<id>cida-qw-releases</id>
 			<url>${cida.maven.url}/content/repositories/cida-qw-releases</url>
@@ -65,10 +66,10 @@
 			<id>cida-snapshots</id>
 			<url>${cida.maven.url}/content/repositories/cida-snapshots</url>
 		</repository>
-        <repository>
-            <id>cida-public-snapshots</id>
-            <url>${cida.maven.url}/content/repositories/cida-public-snapshots/</url>
-        </repository>
+		<repository>
+			<id>cida-public-snapshots</id>
+			<url>${cida.maven.url}/content/repositories/cida-public-snapshots/</url>
+		</repository>
 	</repositories>
 
 	<ciManagement>
@@ -78,22 +79,22 @@
 
 	<scm>
 		<connection>scm:git:git@github.com:USGS-CIDA/WQP_UI.git</connection>
-        <developerConnection>scm:git:git@github.com:USGS-CIDA/WQP_UI.git</developerConnection>
-        <url>https://github.com/USGS-CIDA/WQP_UI</url>
-	  <tag>HEAD</tag>
-  </scm>
+		<developerConnection>scm:git:git@github.com:USGS-CIDA/WQP_UI.git</developerConnection>
+		<url>https://github.com/USGS-CIDA/WQP_UI</url>
+		<tag>HEAD</tag>
+	</scm>
 
 	<distributionManagement>
-	    <repository>
-	        <id>cida-python-releases</id>
-	        <name>CIDA Python Releases</name>
-	        <url>http://internal.cida.usgs.gov/maven/content/repositories/cida-python-releases</url>
-	    </repository>
-	    <snapshotRepository>
-	        <id>cida-python-snapshots</id>
-	        <name>CIDA Python Snapshots</name>
-	        <url>http://internal.cida.usgs.gov/maven/content/repositories/cida-python-snapshots</url>
-	    </snapshotRepository>
+		<repository>
+			<id>cida-python-releases</id>
+			<name>CIDA Python Releases</name>
+			<url>http://internal.cida.usgs.gov/maven/content/repositories/cida-python-releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>cida-python-snapshots</id>
+			<name>CIDA Python Snapshots</name>
+			<url>http://internal.cida.usgs.gov/maven/content/repositories/cida-python-snapshots</url>
+		</snapshotRepository>
 	</distributionManagement>
 
 
@@ -101,44 +102,44 @@
 		<system>JIRA</system>
 		<url>https://internal.cida.usgs.gov/jira/browse/WQP</url>
 	</issueManagement>
-	
+
 	<build>
 		<plugins>
 			<plugin>
-	      		<groupId>org.apache.maven.plugins</groupId>
-	      		<artifactId>maven-assembly-plugin</artifactId>
-	      		<version>2.5.3</version>
-	      		<executions>
-	        		<execution>
-		          		<id>create-distribution</id>
-		          		<phase>package</phase>
-		          		<goals>
-		            		<goal>single</goal>
-		          		</goals>
-		          		<configuration>
-			            	<descriptors>
-			              		<descriptor>assembly/zip.xml</descriptor>
-			            	</descriptors>
-		          		</configuration>
-	        		</execution>
-	      		</executions>
-	    	</plugin>		
-            <plugin> 
-                <groupId>com.github.klieber</groupId> 
-                <artifactId>phantomjs-maven-plugin</artifactId>
-               <version>0.5</version> 
-               <executions> 
-                    <execution>
-                        <goals> 
-                            <goal>install</goal> 
-                        </goals> 
-                    </execution> 
-                 </executions>
-                <configuration>
-                    <version>1.9.7</version>
-                </configuration>
-            </plugin>
-  			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.5.3</version>
+				<executions>
+					<execution>
+						<id>create-distribution</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<descriptors>
+								<descriptor>assembly/zip.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.github.klieber</groupId>
+				<artifactId>phantomjs-maven-plugin</artifactId>
+				<version>0.5</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>install</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<version>1.9.7</version>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>com.github.searls</groupId>
 				<artifactId>jasmine-maven-plugin</artifactId>
 				<version>2.1</version>
@@ -163,22 +164,22 @@
 					<jsSrcDir>${project.basedir}/portal_ui</jsSrcDir>
 					<jsTestSrcDir>${project.basedir}/test/js</jsTestSrcDir>
 					<preloadSources>
-                        <source>bower_components/underscore/underscore-min.js</source>
+						<source>bower_components/underscore/underscore-min.js</source>
 						<source>bower_components/jquery/dist/jquery.min.js</source>
 						<source>bower_components/bootstrap/dist/js/bootstrap.min.js</source>
 						<source>bower_components/jquery-ui/jquery-ui.min.js</source>
 						<source>bower_components/numeral/min/numeral.min.js</source>
 						<source>bower_components/select2/dist/js/select2.min.js</source>
-                        <source>bower_components/handlebars/handlebars.min.js</source>
+						<source>bower_components/handlebars/handlebars.min.js</source>
 						<source>http://cida.usgs.gov/js/openlayers/2.12/release/OpenLayers.js</source>
 					</preloadSources>
 					<sourceIncludes>
 						<include>static/js/*.js</include>
 					</sourceIncludes>
-                    <specIncludes>
-                        <include>vendor/sinon-1.17.2.js</include>
-                        <include>unit/**/*.js</include>
-                    </specIncludes>
+					<specIncludes>
+						<include>vendor/sinon-1.17.2.js</include>
+						<include>unit/**/*.js</include>
+					</specIncludes>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -204,23 +205,23 @@
 			</plugin>
 			<plugin>
 				<groupId>com.google.code.maven-replacer-plugin</groupId>
-  				<artifactId>replacer</artifactId>
-  				<version>1.5.3</version>
-		  		<executions>
-		  			<execution>
-		  				<phase>verify</phase>
-		  				<goals>
-		  					<goal>replace</goal>
-		  				</goals>
-		  			</execution>
-		  		</executions>
-		  		<configuration>
-		  			<file>${project.build.directory}/coverage/total-coverage.dat</file>
-		  			<outputFile>${project.build.directory}/jasmine/total-coverage.dat</outputFile>
-		  			<regex>false</regex>
-		  			<token>src</token>
-		  			<value>${project.basedir}/portal_ui/static</value>
-		  		</configuration>
+				<artifactId>replacer</artifactId>
+				<version>1.5.3</version>
+				<executions>
+					<execution>
+						<phase>verify</phase>
+						<goals>
+							<goal>replace</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<file>${project.build.directory}/coverage/total-coverage.dat</file>
+					<outputFile>${project.build.directory}/jasmine/total-coverage.dat</outputFile>
+					<regex>false</regex>
+					<token>src</token>
+					<value>${project.basedir}/portal_ui/static</value>
+				</configuration>
 			</plugin>
 
 		</plugins>
