@@ -1,6 +1,6 @@
 /*jslint browser: true*/
 /*global $*/
-
+/* global Config */
 var PORTAL = PORTAL || {};
 
 PORTAL.queryServices = (function () {
@@ -42,7 +42,7 @@ PORTAL.queryServices = (function () {
 	that.getQueryParams = function () {
 		var IGNORE_PARAM_LIST = ["north", "south", "east", "west", "resultType", "source", "nawqa_project", "project_code"];
 
-		var result = getFormQuery($('#params'), IGNORE_PARAM_LIST);
+		var result = PORTAL.UTILS.getFormQuery($('#params'), IGNORE_PARAM_LIST);
 
 		return result;
 	};

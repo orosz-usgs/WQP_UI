@@ -169,6 +169,7 @@
 						<source>bower_components/jquery-ui/jquery-ui.min.js</source>
 						<source>bower_components/numeral/min/numeral.min.js</source>
 						<source>bower_components/select2/dist/js/select2.min.js</source>
+                        <source>bower_components/handlebars/handlebars.min.js</source>
 						<source>http://cida.usgs.gov/js/openlayers/2.12/release/OpenLayers.js</source>
 					</preloadSources>
 					<sourceIncludes>
