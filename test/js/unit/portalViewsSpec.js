@@ -1,15 +1,9 @@
 /* jslint browser: true */
-/* global describe */
-/* global beforeEach */
-/* global afterEach */
-/* global it */
-/* global spyOn */
+/* global describe, beforeEach, afterEach, it, spyOn, expect, jasmine */
 /* global sinon */
-/* global expect */
 /* global $ */
 /* global Config */
 /* global PORTAL */
-/* global jasmine */
 
 describe('Tests for PORTAL.VIEWS functions and objects', function () {
 	"use strict";
@@ -30,7 +24,7 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
 
 			PORTAL.VIEWS.createStaticSelect2($('#test-select'), ['T1', 'T2', 'T3']);
 			expect($.fn.select2).toHaveBeenCalled();
-			expect($.fn.select2.calls[0].args[0].data).toEqual([
+			expect($.fn.select2.calls.argsFor(0)[0].data).toEqual([
 				{id: 'T1', text: 'T1'}, {id: 'T2', text: 'T2'}, {id: 'T3', text: 'T3'}
 			]);
 
@@ -41,7 +35,7 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
 				placeholder: 'Any'
 			});
 
-			expect($.fn.select2.calls[0].args[0].placeholder).toEqual('Any');
+			expect($.fn.select2.calls.argsFor(0)[0].placeholder).toEqual('Any');
 		});
 	});
 
@@ -70,7 +64,7 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
 			PORTAL.VIEWS.createPagedCodeSelect($('#test-div'), testSpec, {});
 			expect($.fn.select2).toHaveBeenCalled();
 
-			var options = $.fn.select2.calls[0].args[0];
+			var options = $.fn.select2.calls.argsFor(0)[0];
 			expect(options.allowClear).toEqual(true);
 			expect(options.templateSelection).toBeDefined();
 			expect(options.ajax).toBeDefined();
@@ -78,7 +72,7 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
 
 		it('Expects select2 defaults to be overriden and additional parameters used to create the select2', function () {
 			PORTAL.VIEWS.createPagedCodeSelect($('#test-div'), testSpec, {placeholder: 'Pick one'});
-			var options = $.fn.select2.calls[0].args[0];
+			var options = $.fn.select2.calls.argsFor(0)[0];
 			expect(options.allowClear).toEqual(true);
 			expect(options.placeholder).toEqual('Pick one');
 
@@ -86,14 +80,14 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
 
 		it('Expects the select2\'s ajax parameter to be configured to use the specified codes service', function () {
 			PORTAL.VIEWS.createPagedCodeSelect($('#test-div'), testSpec, {});
-			var ajaxOption = $.fn.select2.calls[0].args[0].ajax;
+			var ajaxOption = $.fn.select2.calls.argsFor(0)[0].ajax;
 			expect(ajaxOption.url).toContain(testSpec.codes);
 		});
 
 		it('Expects the select2\'s ajax parameter\'s data function to set query params', function () {
 			testSpec.pagesize = 15;
 			PORTAL.VIEWS.createPagedCodeSelect($('#test-div'), testSpec, {});
-			var dataFnc = $.fn.select2.calls[0].args[0].ajax.data;
+			var dataFnc = $.fn.select2.calls.argsFor(0)[0].ajax.data;
 			var params = dataFnc({term: 'ab', page: 2});
 			expect(params).toEqual({
 				text: 'ab',
@@ -103,17 +97,17 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
 			});
 		});
 		it('Expects the select2\'s ajax parameter\'s results function to format the data into a form that select2 can use', function () {
-			testSpec.formatData = jasmine.createSpy('formatDataSpy').andReturn('formatted data');
+			testSpec.formatData = jasmine.createSpy('formatDataSpy').and.returnValue('formatted data');
 			PORTAL.VIEWS.createPagedCodeSelect($('#test-div'), testSpec, {});
-			var resultsFnc = $.fn.select2.calls[0].args[0].ajax.processResults;
+			var resultsFnc = $.fn.select2.calls.argsFor(0)[0].ajax.processResults;
 
 			var DATA = $.parseJSON('{"codes" : [{"value" : "v1", "desc" : "Text1", "providers" : "P1"},' +
 				'{"value" : "v3", "desc" : "Text3", "providers" :"P1 P2"},' +
 				'{"value" : "v2", "desc" : "", "providers" :"P1"}], "recordCount" : 3}');
 			var results = resultsFnc(DATA, {page: 1});
 			expect(results.results.length).toBe(3);
-			expect(testSpec.formatData.calls.length).toBe(3);
-			expect(testSpec.formatData.calls[0].args[0]).toEqual({value: "v1", desc: "Text1", providers: 'P1'});
+			expect(testSpec.formatData.calls.count()).toBe(3);
+			expect(testSpec.formatData.calls.argsFor(0)[0]).toEqual({value: "v1", desc: "Text1", providers: 'P1'});
 			expect(results.results[0]).toEqual({id: 'v1', text: 'formatted data'});
 			expect(results.more).toBe(false);
 		});
@@ -131,11 +125,11 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
 				'<select multiple id="test-select2" />' +
 				'</div>');
 			testModel = PORTAL.MODELS.cachedCodes({codes: 'testCode'});
-			spyOn(testModel, 'fetch').andCallThrough();
+			spyOn(testModel, 'fetch').and.callThrough();
 			testSpec = {model: testModel};
 
 			spyOn($.fn, 'select2');
-			spyOn(PORTAL.MODELS.providers, 'formatAvailableProviders').andReturn('P1');
+			spyOn(PORTAL.MODELS.providers, 'formatAvailableProviders').and.returnValue('P1');
 
 			RESPONSE_DATA = '{"codes" : [{"value" : "v1", "desc" : "Text1", "providers" : "P1"},' +
 				'{"value" : "v3", "desc" : "Text3", "providers" :"P1 P2"},' +
@@ -158,7 +152,7 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
 
 			server.requests[0].respond(200, {'Content-Type': 'text/json'}, RESPONSE_DATA);
 			expect($.fn.select2).toHaveBeenCalled();
-			var options = $.fn.select2.calls[0].args[0];
+			var options = $.fn.select2.calls.argsFor(0)[0];
 			expect(options.allowClear).toBe(true);
 			expect(options.matcher).toBeDefined();
 			expect(options.templateSelection).toBeDefined();
@@ -178,16 +172,16 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
 				width: '400px'
 			});
 			server.requests[0].respond(200, {'Content-Type': 'text/json'}, RESPONSE_DATA);
-			options = $.fn.select2.calls[0].args[0];
+			options = $.fn.select2.calls.argsFor(0)[0];
 			expect(options.placeholder).toEqual('Any');
 		});
 
 		it('Expects default isMatch to search (case insensitive) the desc property', function () {
 			var matcher;
-			spyOn(testModel, 'getLookup').andReturn({id: 'M1', desc: 'Monday', providers: 'P1'});
+			spyOn(testModel, 'getLookup').and.returnValue({id: 'M1', desc: 'Monday', providers: 'P1'});
 			PORTAL.VIEWS.createCodeSelect($('#test-select2'), testSpec);
 			server.requests[0].respond(200, {'Content-Type': 'text/json'}, RESPONSE_DATA);
-			matcher = $.fn.select2.calls[0].args[0].matcher;
+			matcher = $.fn.select2.calls.argsFor(0)[0].matcher;
 			expect(matcher({term: 'M1'}, {id: 'M1'})).toBeNull();
 			expect(matcher({term: 'mo'}, {id: 'M1'}, 'mo')).toEqual({id: 'M1'});
 			expect(matcher('', {id: 'M1'})).toEqual({id: 'M1'});
@@ -198,7 +192,7 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
 
 			PORTAL.VIEWS.createCodeSelect($('#test-select2'), testSpec);
 			server.requests[0].respond(200, {'Content-Type': 'text/json'}, RESPONSE_DATA);
-			templateSelection = $.fn.select2.calls[0].args[0].templateSelection;
+			templateSelection = $.fn.select2.calls.argsFor(0)[0].templateSelection;
 			expect(templateSelection({id: 'V1', text: 'Verbose 1'})).toEqual('V1');
 		});
 	});
@@ -224,11 +218,11 @@ describe('Tests for PORTAL.VIEWS.createCascadedCodeSelect', function () {
 		$select = $('#test-select');
 
 		fetchDeferred = $.Deferred();
-		testModel = spyOn(PORTAL.MODELS, 'codesWithKeys').andReturn({
-			fetch: jasmine.createSpy('testFetch').andReturn(fetchDeferred),
-			getAll: jasmine.createSpy('testgetAll').andReturn($.parseJSON(RESPONSE_DATA).codes),
-			getAllKeys: jasmine.createSpy('testgetAllKeys').andReturn(['v1', 'v2']),
-			getDataForKey: jasmine.createSpy('testgetDataForKey').andReturn([{
+		testModel = spyOn(PORTAL.MODELS, 'codesWithKeys').and.returnValue({
+			fetch: jasmine.createSpy('testFetch').and.returnValue(fetchDeferred),
+			getAll: jasmine.createSpy('testgetAll').and.returnValue($.parseJSON(RESPONSE_DATA).codes),
+			getAllKeys: jasmine.createSpy('testgetAllKeys').and.returnValue(['v1', 'v2']),
+			getDataForKey: jasmine.createSpy('testgetDataForKey').and.returnValue([{
 				value: 'v2:T4',
 				desc: 'Text4',
 				provider: 'P2'
@@ -257,7 +251,7 @@ describe('Tests for PORTAL.VIEWS.createCascadedCodeSelect', function () {
 		PORTAL.VIEWS.createCascadedCodeSelect($select, testOptions, {});
 
 		expect($.fn.select2).toHaveBeenCalled();
-		opts = $.fn.select2.calls[0].args[0];
+		opts = $.fn.select2.calls.argsFor(0)[0];
 		expect(opts.allowClear).toBe(true);
 		expect(opts.ajax).toBeDefined();
 	});
@@ -266,7 +260,7 @@ describe('Tests for PORTAL.VIEWS.createCascadedCodeSelect', function () {
 		var opts;
 		PORTAL.VIEWS.createCascadedCodeSelect($select, testOptions, {placeholder: 'Any'});
 
-		opts = $.fn.select2.calls[0].args[0];
+		opts = $.fn.select2.calls.argsFor(0)[0];
 		expect(opts.placeholder).toEqual('Any');
 	});
 

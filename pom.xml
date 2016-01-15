@@ -163,7 +163,6 @@
 					<jsSrcDir>${project.basedir}/portal_ui</jsSrcDir>
 					<jsTestSrcDir>${project.basedir}/test/js</jsTestSrcDir>
 					<preloadSources>
-                        <source>bower_components/sinon/lib/sinon.js</source>
                         <source>bower_components/underscore/underscore-min.js</source>
 						<source>bower_components/jquery/dist/jquery.min.js</source>
 						<source>bower_components/bootstrap/dist/js/bootstrap.min.js</source>
@@ -171,8 +170,6 @@
 						<source>bower_components/numeral/min/numeral.min.js</source>
 						<source>bower_components/select2/dist/js/select2.min.js</source>
 						<source>http://cida.usgs.gov/js/openlayers/2.12/release/OpenLayers.js</source>
-						<source>static/vendor/angular.min.js</source>
-						<source>vendor/angular/angular-mocks.js</source>
 					</preloadSources>
 					<sourceIncludes>
 						<include>static/js/angular/**/*.js</include>
