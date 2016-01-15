@@ -1,12 +1,10 @@
 /*global describe */
-/*global it */
+/*global describe, it, beforeEach, afterEach, expect, jasmine, spyOn */
 /*global $ */
 /*global PORTAL */
-/*global beforeEach */
-/*global afterEach */
-/*global expect */
 /*global Config */
 /*global sinon */
+/*global alert */
 
 xdescribe('Test PORTAL.VIEWS.placeSelects', function () {
 	"use strict";

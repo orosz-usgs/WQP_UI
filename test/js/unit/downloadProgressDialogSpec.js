@@ -1,4 +1,10 @@
+/* jslint browser: true */
+/* global describe, beforeEach, afterEach, it, expect, jasmine, spyOn */
+/* global $ */
+/* global PORTAL */
+
 describe('Tests for PORTAl.VIEWS.downloadProgressDialog', function () {
+	"use strict";
 	var thisDialog;
 	var continueSpy;
 
@@ -41,7 +47,7 @@ describe('Tests for PORTAl.VIEWS.downloadProgressDialog', function () {
 	describe('Tests for updateProgress when dialog is for map', function () {
 		var counts;
 		beforeEach(function () {
-			spyOn(PORTAL.MODELS.providers, 'getIds').andReturn(['DS1', 'DS2']);
+			spyOn(PORTAL.MODELS.providers, 'getIds').and.returnValue(['DS1', 'DS2']);
 			thisDialog.show('map');
 
 			counts = {
@@ -97,8 +103,9 @@ describe('Tests for PORTAl.VIEWS.downloadProgressDialog', function () {
 	});
 
 	describe('Tests for updateProgress when dialog is for download', function () {
+		var counts;
 		beforeEach(function () {
-			spyOn(PORTAL.MODELS.providers, 'getIds').andReturn(['DS1', 'DS2']);
+			spyOn(PORTAL.MODELS.providers, 'getIds').and.returnValue(['DS1', 'DS2']);
 			thisDialog.show('download');
 
 			counts = {
@@ -183,7 +190,7 @@ describe('Tests for PORTAl.VIEWS.downloadProgressDialog', function () {
 	});
 
 	it('Expects a call to cancelProgress to show the message and an ok button', function () {
-		thisDialog.show('download')
+		thisDialog.show('download');
 		thisDialog.cancelProgress('Cancel message');
 		expect($('.modal-body').html()).toContain('Cancel message');
 		expect($('#progress-ok-btn').length).toEqual(1);

@@ -1,3 +1,6 @@
+/* jslint browser: true */
+/* global numeral */
+
 var PORTAL = PORTAL || {};
 
 
