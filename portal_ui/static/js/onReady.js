@@ -109,11 +109,11 @@ PORTAL.onReady = function () {
 
 	// Add Click handler for form show/hide/button
 	$('.panel-heading .show-hide-toggle').click(function () {
-		toggleShowHideSections($(this), $(this).parents('.panel').find('.panel-body'));
+		PORTAL.UTILS.toggleShowHideSections($(this), $(this).parents('.panel').find('.panel-body'));
 	});
 
 	$('.subpanel-heading .show-hide-toggle').click(function () {
-		toggleShowHideSections($(this), $(this).parents('.subpanel').find('.subpanel-body'));
+		PORTAL.UTILS.toggleShowHideSections($(this), $(this).parents('.subpanel').find('.subpanel-body'));
 	});
 
 	// Set the height of the map div to match the mapBox. Add a resize
@@ -140,8 +140,10 @@ PORTAL.onReady = function () {
 			_gaq.push(['_trackEvent', 'Portal Map', 'MapCreate', decodeURIComponent(PORTAL.queryServices.getQueryParams()), parseInt(totalCount)]);
 			// Start mapping process by disabling the show site button and then requesting the layer
 			$('#show-on-map-button').attr('disabled', 'disabled').removeClass('query-button').addClass('disable-query-button');
-			var formParams = getFormValues($('#params'),
-				['north', 'south', 'east', 'west', 'resultType', 'source', 'project_code', 'nawqa_project', 'mimeType', 'zip', '__ncforminfo' /*input is injected by barracuda firewall*/]);
+			var formParams = PORTAL.UTILS.getFormValues($('#params'),
+				['north', 'south', 'east', 'west', 'resultType', 'source', 'project_code', 'nawqa_project', 'mimeType', 'zip', '__ncforminfo' /*input is injected by barracuda firewall*/],
+				true
+			);
 			PORTAL.portalDataMap.showDataLayer(formParams, function () {
 				$('#show-on-map-button').removeAttr('disabled').removeClass('disable-query-button').addClass('query-button');
 			});
@@ -235,8 +237,8 @@ PORTAL.onReady = function () {
 	$('#download-box input[name="mimeType"]:radio').click(function () {
 		var sensitive = !($('#download-box #kml').prop('checked'));
 
-		setEnabled($('#download-box #samples'), sensitive);
-		setEnabled($('#download-box #biosamples'), sensitive);
+		PORTAL.UTILS.setEnabled($('#download-box #samples'), sensitive);
+		PORTAL.UTILS.setEnabled($('#download-box #biosamples'), sensitive);
 		$('#params input[name="mimeType"]:hidden').val($(this).val());
 	});
 
@@ -325,11 +327,11 @@ PORTAL.onReady = function () {
 
 	// Add click handler for map show/hide button
 	$('#mapping-div .show-hide-toggle').click(function () {
-		var isVisible = toggleShowHideSections($(this), $('#query-map-box'));
+		var isVisible = PORTAL.UTILS.toggleShowHideSections($(this), $('#query-map-box'));
 		var boxIdToggleEl = $('#map-identify-tool');
 
 		if (isVisible) {
-			setEnabled(boxIdToggleEl, true);
+			PORTAL.UTILS.setEnabled(boxIdToggleEl, true);
 			if (!PORTAL.portalDataMap) {
 				PORTAL.portalDataMap = new PortalDataMap('query-results-map', 'map-loading-div', identifyDialog);
 				$('#cancel-map-button').click(function () {
@@ -339,7 +341,7 @@ PORTAL.onReady = function () {
 
 		}
 		else {
-			setEnabled(boxIdToggleEl, false);
+			PORTAL.UTILS.setEnabled(boxIdToggleEl, false);
 		}
 	});
 

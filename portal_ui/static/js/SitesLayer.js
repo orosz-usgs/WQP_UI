@@ -18,17 +18,9 @@ function SitesLayer(formParams,
 		var result = [];
 		providerValues = [];
 		$.each(formParams, function (index, param) {
-			if (param.name === 'providers') {
-				providerValues.push(param.value);
-			}
-			else {
-				var paramStr = param.name + ':' + param.value.replace(/;/g, '|');
-				result.push(paramStr);
-			}
+			var paramStr = param.name + ':' + param.value.replace(/;/g, '|');
+			result.push(paramStr);
 		});
-		if (providerValues.length > 0) {
-			result.push('providers:' + providerValues.join('|'));
-		}
 		return result.join(';');
 	};
 
