@@ -7,7 +7,7 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
  * Creates a bounding box input view object
  * @param {Object} options
  * 		@prop {Jquery element} $container - element where the bounding box inputs are contained
- * @returns
+ * @returns {Object}
  *  	@func initialize;
  */
 

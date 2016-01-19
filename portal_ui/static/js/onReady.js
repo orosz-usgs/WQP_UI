@@ -65,33 +65,13 @@ PORTAL.onReady = function () {
 		$container : $('#bounding-box')
 	}).initialize();
 
+	var siteParameterInputView = PORTAL.VIEWS.siteParameterInputView({
+		$container : $('#site-params'),
+		siteTypeModel : PORTAL.MODELS.cachedCodes({codes : 'sitetype'}),
+		organizationModel : PORTAL.MODELS.cachedCodes({codes : 'organization'})
+	}).initialize();
+
 	// Initialize the rest of the selects
-	PORTAL.VIEWS.createCodeSelect($('#siteType'), {model: PORTAL.MODELS.siteType}, select2Options);
-	PORTAL.VIEWS.createCodeSelect(
-		$('#organization'),
-		{
-			model: PORTAL.MODELS.organization,
-			formatData: function (data) {
-				return {
-					id: data.id,
-					text: data.id + ' - ' + data.desc
-				};
-			},
-			isMatch: function (searchTerm, data) {
-				var termMatcher;
-				if (searchTerm) {
-					termMatcher = new RegExp(searchTerm, 'i');
-					return (termMatcher.test(data.id) || termMatcher.test(data.desc));
-				}
-				else {
-					return true;
-				}
-			}
-		},
-		$.extend({}, select2Options, {
-			minimumInputLength: 2,
-		})
-	);
 	PORTAL.VIEWS.createCodeSelect($('#sampleMedia'), {model: PORTAL.MODELS.sampleMedia}, select2Options);
 	PORTAL.VIEWS.createCodeSelect($('#characteristicType'), {model: PORTAL.MODELS.characteristicType}, select2Options);
 	PORTAL.VIEWS.createPagedCodeSelect($('#characteristicName'), {codes: 'characteristicname'}, select2Options);
@@ -100,10 +80,6 @@ PORTAL.onReady = function () {
 	PORTAL.VIEWS.createPagedCodeSelect($('#project-code'), {codes: 'project'}, select2Options);
 
 	// Add input validations and reformatting handlers
-	PORTAL.VIEWS.inputValidation({
-		inputEl: $('#siteid'),
-		validationFnc: PORTAL.validators.siteIdValidator
-	});
 	PORTAL.VIEWS.inputValidation({
 		inputEl: $('#startDateLo'),
 		validationFnc: PORTAL.dateValidator.validate,
@@ -117,12 +93,6 @@ PORTAL.onReady = function () {
 		updateFnc: function (value) {
 			return PORTAL.dateValidator.format(value, false);
 		}
-	});
-
-	PORTAL.VIEWS.inputValidation({
-		inputEl: $('#huc'),
-		validationFnc: PORTAL.hucValidator.validate,
-		updateFnc: PORTAL.hucValidator.format
 	});
 
 	// Create help popovers which close when you click anywhere else other than another popover trigger.

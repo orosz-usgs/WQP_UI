@@ -175,26 +175,6 @@ PORTAL.MODELS.codesWithKeys = function (options) {
 	return self;
 };
 
-// Objects that represent the available values for portal selections.
-PORTAL.MODELS.countryCodes = PORTAL.MODELS.cachedCodes({codes: 'countrycode'});
-PORTAL.MODELS.stateCodes = PORTAL.MODELS.codesWithKeys({
-	codes: 'statecode',
-	keyParameter: 'countrycode',
-	parseKey: function (id) {
-		return id.split(':')[0];
-	}
-});
-PORTAL.MODELS.countyCodes = PORTAL.MODELS.codesWithKeys({
-	codes: 'countycode',
-	keyParameter: 'statecode',
-	parseKey: function (id) {
-		var idArray = id.split(':');
-		return idArray[0] + ':' + idArray[1];
-	}
-});
-
-PORTAL.MODELS.siteType = PORTAL.MODELS.cachedCodes({codes: 'sitetype'});
-PORTAL.MODELS.organization = PORTAL.MODELS.cachedCodes({codes: 'organization'});
 PORTAL.MODELS.sampleMedia = PORTAL.MODELS.cachedCodes({codes: 'samplemedia'});
 PORTAL.MODELS.characteristicType = PORTAL.MODELS.cachedCodes({codes: 'characteristictype'});
 PORTAL.MODELS.assemblage = PORTAL.MODELS.cachedCodes({codes: 'assemblage'});
