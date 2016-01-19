@@ -6,242 +6,213 @@
 
 var PORTAL = PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
-/* Initializes the place select2's. Returns an object with property functions,
- * getCountries, getStates, and getCounties which return the current selections.
- *
- * @param {jquery element for select} countryEl
- * @param {jquery element for select} stateEl
- * @param {jquery element for select} countyEl
- * @returns {PORTAL.VIEWS.placeSelects}
- * 		@prop {Function} getCountries
- * 		@prop {Function} getStates
- *		@prop {Function} getCounties
+
+/*
+ * Initializes and manages the Place inputs
+ * @param {Object} options
+ * 		@prop {Jquery element} $container - div containing the place inputs.
+ * 		@prop {PORTAL.MODELS.cachedCodes} countryModel
+ *		@prop {PORTAL.MODELS.codesWithKeys} statesModel
+ *		@prop {PORTAL.MODELS.codesWithKeys} countryModel
+ * @returns {Object}
+ * 		@func initialize
  */
-PORTAL.VIEWS.placeInputView = function () {
+PORTAL.VIEWS.placeInputView = function (options) {
 	"use strict";
 
 	var self = {};
 	var USA = 'US';
 
-	/*
-	 * @param {Jquery element} $container - div containing the place inputs.
-	 */
-	self.initialize = function($container) {
+	var initializeCountrySelect = function($select, model) {
+		var isMatch = function (searchTerm, lookup) {
+			var termMatcher;
 
-	}
-
-	/*
-	 * @ returns an array of currently selected countries
-	 */
-	that.getCountries = function () {
-		var results = countryEl.val();
-		if (!results) {
-			results = ['US'];
-		}
-		return results;
-	};
-
-	/*
-	 * @returns an array of currently selected states
-	 */
-	that.getStates = function () {
-		var results = stateEl.val();
-		if (!results) {
-			results = [];
-		}
-		return results;
-	};
-
-	/*
-	 * @returns an array of currently selected counties
-	 */
-	that.getCounties = function () {
-		var results = countyEl.val();
-		if (!results) {
-			results = [];
-		}
-		return results;
-	};
-
-	/* Putting the isMatch functions in the returned object for ease of testing
-	 * @param {Object with id, desc, and providers properties} data
-	 * @param {String} searchTerm
-	 * @returns boolean
-	 */
-	that.isCountryMatch = function (searchTerm, data) {
-		var termMatcher;
-		var lookup;
-		if (_.has(searchTerm, 'term') && (searchTerm.term)) {
-			termMatcher = new RegExp(searchTerm.term, 'i');
-			lookup = PORTAL.MODELS.countryCodes.getLookup(data.id);
-			if (termMatcher.test(data.id) || (termMatcher.test(lookup.desc))) {
-				return data;
+			if (searchTerm) {
+				termMatcher = new RegExp(searchTerm, 'i');
+				return (termMatcher.test(lookup.id) || (termMatcher.test(lookup.desc)));
+			}
+			else {
+				return true;
+			}
+		};
+		var templateSelection = function(selectData) {
+			if (_.has(selectData, 'id')) {
+				return selectData.id;
 			}
 			else {
 				return null;
 			}
-		}
-		else {
-			return data;
-		}
+		};
+
+		var spec = {
+			model: model,
+			isMatch: isMatch
+		};
+
+		PORTAL.VIEWS.createCodeSelect($select, spec, {
+			templateSelection: templateSelection
+		});
 	};
 
-	/*
-	 * @param {Object with id, desc, and providers properties} data
-	 * @param {String} searchTerm
-	 * @returns boolean
-	 */
-	that.isStateMatch = function (searchTerm, lookup) {
-		var termMatcher;
-		var codes;
-		if (searchTerm) {
-			termMatcher = new RegExp(searchTerm, 'i');
-			codes = lookup.id.split(':');
-			return (termMatcher.test(lookup.id) || (termMatcher.test(lookup.desc)) || termMatcher.test(stateFIPS.getPostalCode(codes[1])));
-		}
-		else {
-			return true;
-		}
-	};
-
-	/*
-	 * @param {Option Object with id, desc, and providers properties} data
-	 * @param {String} searchTerm
-	 * @returns boolean
-	 */
-	that.isCountyMatch = function (searchTerm, lookup) {
-		var termMatcher;
-		var county;
-		if (searchTerm) {
-			termMatcher = new RegExp(searchTerm, 'i');
-			county = _.last(lookup.desc.split(','));
-			return termMatcher.test(county);
-		}
-		else {
-			return true;
-		}
-	};
-
-	/*
-	 * Initialize country select2
-	 */
-	var countrySpec = {
-		model: PORTAL.MODELS.countryCodes,
-		isMatch: that.isCountryMatch
-	};
-
-	PORTAL.VIEWS.createCodeSelect(countryEl, countrySpec, {
-		templateSelection: function (country) {
-			var result;
-			if (_.has(country, 'id')) {
-				result = country.id;
+	var initializeStateSelect = function($select, model, getCountryKeys) {
+		var isMatch = function (searchTerm, lookup) {
+			var termMatcher;
+			var codes;
+			if (searchTerm) {
+				termMatcher = new RegExp(searchTerm, 'i');
+				codes = lookup.id.split(':');
+				return (termMatcher.test(lookup.id) ||
+					termMatcher.test(lookup.desc) ||
+					termMatcher.test(stateFIPS.getPostalCode(codes[1])));
 			}
 			else {
-				result = null;
+				return true;
 			}
-			return result;
-		}
-	});
+		};
+		var spec = {
+			model: model,
+			isMatch: isMatch,
+			getKeys: getCountryKeys
+		};
 
-	countryEl.on('change', function (e) {
-		/* update states */
-		var countries = $(e.target).val();
-		var states = stateEl.val();
-
-		var newStates;
-
-		if (!countries) {
-			countries = ['US'];
-		}
-		newStates = _.filter(states, function (state) {
-			var countryCode = state.split(':')[0];
-			return _.contains(countries, countryCode);
-		});
-		stateEl.val(newStates).trigger('change');
-	});
-
-	/*
-	 * Initialize state select2
-	 */
-	var stateSpec = {
-		model: PORTAL.MODELS.stateCodes,
-		isMatch: that.isStateMatch,
-		getKeys: that.getCountries
-	};
-
-	PORTAL.VIEWS.createCascadedCodeSelect(stateEl, stateSpec, {
-		templateSelection: function (state) {
+		var templateSelection = function(selectData) {
 			var codes;
 			var result;
-			if (_.has(state, 'id')) {
-				codes = state.id.split(':');
+			if (_.has(selectData, 'id')) {
+				codes = selectData.id.split(':');
 
-				if (codes[0] === 'US') {
+				if (codes[0] === USA) {
 					result = codes[0] + ':' + stateFIPS.getPostalCode(codes[1]);
 				}
 				else {
-					result = state.id;
+					result = selectData.id;
 				}
 			}
 			else {
 				result = null;
 			}
 			return result;
-		}
-	});
+		};
 
-	stateEl.on('change', function (ev) {
-		var states = $(ev.target).val();
-		var counties = countyEl.val();
-
-		var newCounties = _.filter(counties, function (county) {
-			var codes = county.split(':');
-			var stateCode = codes[0] + ':' + codes[1];
-			return _.contains(states, stateCode);
+		PORTAL.VIEWS.createCascadedCodeSelect($select, spec, {
+			templateSelection: templateSelection
 		});
-		countyEl.val(newCounties).trigger('change');
-
-	});
-
-	/*
-	 * Initialize count select2
-	 */
-	var countySpec = {
-		model: PORTAL.MODELS.countyCodes,
-		isMatch: that.isCountyMatch,
-		getKeys: that.getStates
 	};
 
-	PORTAL.VIEWS.createCascadedCodeSelect(countyEl, countySpec, {
-		templateSelection: function (county) {
+	var initializeCountySelect = function($select, model, getStateKeys) {
+		var isMatch = function(searchTerm, lookup) {
+			var termMatcher;
+			var county;
+			if (searchTerm) {
+				termMatcher = new RegExp(searchTerm, 'i');
+				county = _.last(lookup.desc.split(','));
+				return termMatcher.test(county);
+			}
+			else {
+				return true;
+			}
+		};
+		var countySpec = {
+			model: model,
+			isMatch: isMatch,
+			getKeys: getStateKeys
+		};
+
+		var templateSelection = function(selectData) {
 			var codes;
 			var result;
-			if (_.has(county, 'id')) {
-				codes = county.id.split(':');
+
+			if (_.has(selectData, 'id')) {
+				codes = selectData.id.split(':');
 
 				if (codes[0] === 'US') {
 					result = codes[0] + ':' + stateFIPS.getPostalCode(codes[1]) + ':' + codes[2];
 				}
 				else {
-					result = county.id;
+					result = selectData.id;
 				}
 			}
 			else {
 				result = null;
 			}
 			return result;
-		}
-	});
+		};
 
-	countyEl.on('select2-opening', function (e) {
-		if (that.getStates().length === 0) {
-			alert('Please select at least one state');
+		PORTAL.VIEWS.createCascadedCodeSelect($select, countySpec, {
+			templateSelection: templateSelection
+		});
+	};
 
-			e.preventDefault();
-		}
-	});
+	/*
+	 * Initialize the select2's and add event handlers
+	 */
+	self.initialize = function() {
+		//Initialize select els
+		var $countrySelect = options.$container.find('#countrycode');
+		var $stateSelect = options.$container.find('#statecode');
+		var $countySelect = options.$container.find('#countycode');
 
-	return that;
+		//Fetch initial model data
+		var fetchCountries = options.countryModel.fetch();
+		options.stateModel.fetch([USA]);
+
+		var getCountryKeys = function () {
+			var results = $countrySelect.val();
+			return (results) ? results : [USA];
+		};
+
+		var getStateKeys = function() {
+			var results = $stateSelect.val();
+			return (results) ? results : [];
+		};
+
+		//Initialize select2s
+		fetchCountries.done(function() {
+			initializeCountrySelect($countrySelect, options.countryModel);
+		});
+		// Don't need to wait for stateModel to finish loading as the model is checked before display to see if
+		// more data needs to be loaded
+		initializeStateSelect($stateSelect, options.stateModel, getCountryKeys);
+
+		initializeCountySelect($countySelect, options.countyModel, getStateKeys);
+
+		//Add event handlers
+		$countrySelect.on('change', function (ev) {
+			/* update states */
+			var countries = $(ev.target).val();
+			var states = $stateSelect.val();
+			var isInCountries = function(state) {
+				var countryCode = state.split(':')[0];
+				return _.contains(countries, countryCode);
+			};
+
+			if (!countries) {
+				countries = [USA];
+			}
+			$stateSelect.val(_.filter(states, isInCountries)).trigger('change');
+		});
+
+		$stateSelect.on('change', function (ev) {
+			var states = $(ev.target).val();
+			var counties = $countySelect.val();
+			var isInStates = function(county) {
+				var codes = county.split(':');
+				var stateCode = codes[0] + ':' + codes[1];
+				return _.contains(states, stateCode);
+			};
+
+			$countySelect.val(_.filter(counties, isInStates)).trigger('change');
+		});
+		$countySelect.on('select2-opening', function (ev) {
+			if (getStateKeys().length === 0) {
+				alert('Please select at least one state');
+
+				ev.preventDefault();
+			}
+		});
+	};
+
+	return self;
 };
 
 

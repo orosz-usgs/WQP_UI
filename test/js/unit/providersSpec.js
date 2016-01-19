@@ -12,7 +12,6 @@ describe('Tests for PORTAL.MODELS.providers', function () {
 	var RESPONSE = '{"codes" : [{"value": "Src1"}, {"value" : "Src2"}, {"value" : "Src3"}]}';
 
 	beforeEach(function () {
-		Config.CODES_ENDPOINT = 'http://fakecodesendpoint';
 		server = sinon.fakeServer.create();
 
 		successSpy = jasmine.createSpy('successSpy');
@@ -21,7 +20,6 @@ describe('Tests for PORTAL.MODELS.providers', function () {
 
 	afterEach(function () {
 		server.restore();
-		Config.CODES_ENDPOINT = '';
 	});
 
 	it('Should return an empty array of ids if initialize has not been called', function () {

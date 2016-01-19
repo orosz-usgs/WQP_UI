@@ -31,7 +31,7 @@ bundles = {
         'js/providers.js',
         'js/portalModels.js',
         'js/DataSourceUtils.js',
-        'js/placeSelects.js',
+        'js/placeInputView.js',
         'js/portalHelp.js',
         'js/stateFIPS.js',
         'js/dateValidator.js',

@@ -27,8 +27,33 @@ PORTAL.onReady = function () {
 		.fail(function (error) {
 			alert('Unable to retrieve provider list with error: ' + error);
 		});
+	var getCountryFromState = function(id) {
+		return (id) ? id.split(':')[0] : '';
+	};
+	var getStateFromCounty = function(id) {
+		var ids = id.split(':');
+		return (ids.length > 1) ? ids[0] + ':' + ids[1] : '';
+	};
 
-	placeSelects = PORTAL.VIEWS.placeSelects($('#countrycode'), $('#statecode'), $('#countycode'));
+	var countryModel = PORTAL.MODELS.cachedCodes({
+		codes : 'countrycode'
+	});
+	var stateModel = PORTAL.MODELS.codesWithKeys({
+		codes : 'statecode',
+		keyParameter : 'countrycode',
+		parseKey : getCountryFromState
+	});
+	var countyModel = PORTAL.MODELS.codesWithKeys({
+		codes : 'countycode',
+		keyParameter : 'statecode',
+		parseKey : getStateFromCounty
+	});
+	var placeInputView = PORTAL.VIEWS.placeInputView({
+		$container : $('#location-parameters'),
+		countryModel : countryModel,
+		stateModel : stateModel,
+		countyModel : countyModel
+	}).initialize();
 
 	// Initialize the rest of the selects
 	PORTAL.VIEWS.createCodeSelect($('#siteType'), {model: PORTAL.MODELS.siteType}, select2Options);

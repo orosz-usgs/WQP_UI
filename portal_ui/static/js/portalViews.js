@@ -82,7 +82,7 @@ PORTAL.VIEWS.createPagedCodeSelect = function (el, spec, select2Options) {
 /*
  @param {jquery element selecting a select input} el
  @param {Object} options
- @prop {Object} model - object which is created by a call to PORTAL.MODELS.cachedCodes
+ @prop {Object} model - object which is created by a call to PORTAL.MODELS.cachedCodes and the data has already been fetched.
  @prop {Function} isMatch - Optional function with two parameters - term {String} which contains the search term and
  lookup {Object} representing an object in model. Should return Boolean
  @prop {Function} formatData - Optional function takes data (object with id, desc, and providers) and produces a select2 result object
@@ -93,6 +93,7 @@ PORTAL.VIEWS.createCodeSelect = function (el, options, select2Options) {
 	"use strict";
 	var isMatch;
 	var formatData;
+	var defaultOptions;
 
 	// Assign defaults for optional parameters
 	if (_.has(options, 'isMatch')) {
@@ -122,36 +123,33 @@ PORTAL.VIEWS.createCodeSelect = function (el, options, select2Options) {
 		};
 	}
 
-	// Fetch the options
-	options.model.fetch().done(function (data) {
-		//Initialize the select2
-		var defaultOptions = {
-			allowClear: true,
-			theme: 'bootstrap',
-			matcher: function (term, data) {
-				var searchTerm = (_.has(term, 'term')) ? term.term : '';
-				if (isMatch(searchTerm, options.model.getLookup(data.id))) {
-					return data;
-				}
-				else {
-					return null;
-				}
-			},
-			templateSelection: function (data) {
-				var result;
-				if (_.has(data, 'id')) {
-					result = data.id;
-				}
-				else {
-					result = null;
-				}
-				return result;
-			},
-			data: _.map(data, formatData)
-		};
+	//Initialize the select2
+	defaultOptions = {
+		allowClear: true,
+		theme: 'bootstrap',
+		matcher: function (term, data) {
+			var searchTerm = (_.has(term, 'term')) ? term.term : '';
+			if (isMatch(searchTerm, options.model.getLookup(data.id))) {
+				return data;
+			}
+			else {
+				return null;
+			}
+		},
+		templateSelection: function (data) {
+			var result;
+			if (_.has(data, 'id')) {
+				result = data.id;
+			}
+			else {
+				result = null;
+			}
+			return result;
+		},
+		data: _.map(options.model.getAll(), formatData)
+	};
 
-		el.select2($.extend(defaultOptions, select2Options));
-	});
+	el.select2($.extend(defaultOptions, select2Options));
 };
 /*
  * @param {jquery element selecting a select input} el
