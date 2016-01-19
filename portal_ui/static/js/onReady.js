@@ -1,5 +1,10 @@
 /*jslint browser: true*/
-/*global $*/
+/* global $*/
+/* global alert */
+/* global _gaq */
+/* global Config */
+/* global IdentifyDialog */
+/* global PortalDataMap */
 
 var PORTAL = PORTAL || {};
 
@@ -14,7 +19,7 @@ PORTAL.onReady = function () {
 
 	PORTAL.downloadProgressDialog = PORTAL.VIEWS.downloadProgressDialog($('#download-status-dialog'));
 
-	PORTAL.MODELS.providers.initialize()
+	PORTAL.MODELS.providers.fetch()
 		.done(function () {
 			PORTAL.VIEWS.createStaticSelect2($('#providers-select'),
 				PORTAL.MODELS.providers.getIds());
@@ -23,7 +28,42 @@ PORTAL.onReady = function () {
 			alert('Unable to retrieve provider list with error: ' + error);
 		});
 
-	placeSelects = PORTAL.VIEWS.placeSelects($('#countrycode'), $('#statecode'), $('#countycode'));
+	// Initialize Place inputs
+	var getCountryFromState = function(id) {
+		return (id) ? id.split(':')[0] : '';
+	};
+	var getStateFromCounty = function(id) {
+		var ids = id.split(':');
+		return (ids.length > 1) ? ids[0] + ':' + ids[1] : '';
+	};
+
+	var countryModel = PORTAL.MODELS.cachedCodes({
+		codes : 'countrycode'
+	});
+	var stateModel = PORTAL.MODELS.codesWithKeys({
+		codes : 'statecode',
+		keyParameter : 'countrycode',
+		parseKey : getCountryFromState
+	});
+	var countyModel = PORTAL.MODELS.codesWithKeys({
+		codes : 'countycode',
+		keyParameter : 'statecode',
+		parseKey : getStateFromCounty
+	});
+	var placeView = PORTAL.VIEWS.placeInputView({
+		$container : $('#place'),
+		countryModel : countryModel,
+		stateModel : stateModel,
+		countyModel : countyModel
+	}).initialize();
+
+	var pointLocationView = PORTAL.VIEWS.pointLocationInputView({
+		$container : $('#point-location')
+	}).initialize();
+
+	var boundingBoxInputView = PORTAL.VIEWS.boundingBoxInputView({
+		$container : $('#bounding-box')
+	}).initialize();
 
 	// Initialize the rest of the selects
 	PORTAL.VIEWS.createCodeSelect($('#siteType'), {model: PORTAL.MODELS.siteType}, select2Options);
@@ -78,14 +118,7 @@ PORTAL.onReady = function () {
 			return PORTAL.dateValidator.format(value, false);
 		}
 	});
-	PORTAL.VIEWS.inputValidation({
-		inputEl: $('#bounding-box input[type="text"]'),
-		validationFnc: PORTAL.validators.realNumberValidator
-	});
-	PORTAL.VIEWS.inputValidation({
-		inputEl: $('#point-location input[type="text"]'),
-		validationFnc: PORTAL.validators.realNumberValidator
-	});
+
 	PORTAL.VIEWS.inputValidation({
 		inputEl: $('#huc'),
 		validationFnc: PORTAL.hucValidator.validate,
@@ -193,46 +226,6 @@ PORTAL.onReady = function () {
 		});
 	});
 
-	// GeoLocation easter egg. Most of code copied from Head First HTML5
-	function updateMyLocation() {
-		if (navigator.geolocation && navigator.geolocation.getCurrentPosition) {
-			navigator.geolocation.getCurrentPosition(updateFormLocation, displayError, {
-				timeout: 8000,
-				maximumAge: 60000
-			});
-		} else {
-			alert("Sorry! your browser does not support geolocation.");
-		}
-		return false;
-	}
-
-	function updateFormLocation(position) {
-		$('#lat').val(position.coords.latitude);
-		$('#long').val(position.coords.longitude);
-	}
-
-	function displayError(error) {
-		var errorTypes = {
-			0: "Unknown error",
-			1: "Permission denied by user",
-			2: "Position is not available",
-			3: "Request timed out"
-		};
-		var errorMessage = errorTypes[error.code];
-		if (error.code === 0 || error.code === 2) {
-			errorMessage = errorMessage + " " + error.message;
-		}
-		alert(errorMessage);
-	}
-
-	// only give user the option if their browser supports geolocation
-	if (navigator.geolocation && navigator.geolocation.getCurrentPosition) {
-		$('#useMyLocation').html('<button class="btn btn-info" type="button">Use my location</button>');
-		$('#useMyLocation button').click(function () {
-			updateMyLocation();
-		});
-	}
-
 	// Toggle the sensitivity of the Samples buttons if KML check button is clicked and update the hidden form input
 	$('#download-box input[name="mimeType"]:radio').click(function () {
 		var sensitive = !($('#download-box #kml').prop('checked'));
@@ -251,7 +244,7 @@ PORTAL.onReady = function () {
 		var $biosamplesRadio = $('#download-box #biosamples');
 		var sensitive = !($('#download-box #samples').prop('checked')) && !($biosamplesRadio.prop('checked'));
 
-		setEnabled($('#download-box #kml'), sensitive);
+		PORTAL.UTILS.setEnabled($('#download-box #kml'), sensitive);
 
 		$form.attr('action', PORTAL.queryServices.getFormUrl($(this).val()));
 		$form.find('input[name="resultType"]:hidden').val($(this).val());
@@ -275,19 +268,6 @@ PORTAL.onReady = function () {
 		else {
 			$hidden.val('no');
 		}
-	});
-
-	//Update bBox hidden input if any of the bounding box text fields are updated
-	$('#bounding-box input').change(function () {
-		var north = $('#north').val();
-		var south = $('#south').val();
-		var east = $('#east').val();
-		var west = $('#west').val();
-		var bboxVal = '';
-		if ((north) && (south) && (east) && (west)) {
-			bboxVal = west + ',' + south + ',' + east + ',' + north;
-		}
-		$('#params input[name="bBox"]').val(bboxVal);
 	});
 
 	//Update the project hidden input if the project-code input  or nawqa-project input changes

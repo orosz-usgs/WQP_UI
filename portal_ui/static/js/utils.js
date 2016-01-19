@@ -5,13 +5,16 @@
 /* global Handlebars */
 
 var PORTAL = PORTAL || {};
-PORTAL.UTILS = (function() {
+PORTAL.UTILS = function() {
 	"use strict";
 	var self = {};
 
 	var CHECKBOX_SOURCE = '<input type="checkbox" id="{{id}}" class="{{className}}" value="{{value}}" />' +
 		'<label for="{{id}}">{{value}}</label>';
 	var checkboxTemplate = Handlebars.compile(CHECKBOX_SOURCE);
+
+	var COLLAPSE_IMG = Config.STATIC_ENDPOINT + 'img/collapse.png';
+	var EXPAND_IMG = Config.STATIC_ENDPOINT + 'img/expand.png';
 
 	/*
 	 * Set the state of the checkboxes in elements to state
@@ -58,7 +61,7 @@ PORTAL.UTILS = (function() {
 	 */
 	self.getFormValues = function($form, ignoreList, multiSelectDelimited) {
 		var isValidParam = function (param) {
-			return ((param.value) && (!_.contains(ignoreList, param.name)))
+			return ((param.value) && (!_.contains(ignoreList, param.name)));
 		};
 		var results = [];
 
@@ -117,16 +120,16 @@ PORTAL.UTILS = (function() {
 		var $buttonImg = $button.find('img');
 		if ($buttonImg.attr('alt') === 'show') {
 			$button.attr('title', $button.attr('title').replace('Show', 'Hide'));
-			$buttonImg.attr('alt', 'hide').attr('src', Config.STATIC_ENDPOINT + 'img/collapse.png');
+			$buttonImg.attr('alt', 'hide').attr('src', COLLAPSE_IMG);
 			$contentDiv.slideDown();
 			return true;
 		}
 		else {
 			$button.attr('title', $button.attr('title').replace('Hide', 'Show'));
-			$buttonImg.attr('alt', 'show').attr('src', Config.STATIC_ENDPOINT + 'img/expand.png');
+			$buttonImg.attr('alt', 'show').attr('src', EXPAND_IMG);
 			$contentDiv.slideUp();
 			return false;
 		}
 	};
 	return self;
-}());
+}();

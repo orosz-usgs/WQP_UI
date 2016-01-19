@@ -117,7 +117,9 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
 		var testModel;
 		var testSpec;
 		var server;
-		var RESPONSE_DATA;
+		var RESPONSE_DATA = '{"codes" : [{"value" : "v1", "desc" : "Text1", "providers" : "P1"},' +
+				'{"value" : "v3", "desc" : "Text3", "providers" :"P1 P2"},' +
+				'{"value" : "v2", "desc" : "", "providers" :"P1"}], "recordCount" : 3}';;
 
 		beforeEach(function () {
 			server = sinon.fakeServer.create();
@@ -125,15 +127,12 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
 				'<select multiple id="test-select2" />' +
 				'</div>');
 			testModel = PORTAL.MODELS.cachedCodes({codes: 'testCode'});
-			spyOn(testModel, 'fetch').and.callThrough();
+			testModel.fetch();
+			server.requests[0].respond(200, {'Content-Type': 'text/json'}, RESPONSE_DATA);
 			testSpec = {model: testModel};
 
 			spyOn($.fn, 'select2');
 			spyOn(PORTAL.MODELS.providers, 'formatAvailableProviders').and.returnValue('P1');
-
-			RESPONSE_DATA = '{"codes" : [{"value" : "v1", "desc" : "Text1", "providers" : "P1"},' +
-				'{"value" : "v3", "desc" : "Text3", "providers" :"P1 P2"},' +
-				'{"value" : "v2", "desc" : "", "providers" :"P1"}], "recordCount" : 3}';
 		});
 
 		afterEach(function () {
@@ -141,16 +140,8 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
 			$('#test-div').remove();
 		});
 
-		it('Expect the testModel data to be fetched when the call to createCodeSelect is made', function () {
+		it('Expects that the select2 is not initialized', function () {
 			PORTAL.VIEWS.createCodeSelect($('#test-select2'), testSpec);
-			expect(testModel.fetch).toHaveBeenCalled();
-		});
-
-		it('Expects that the select2 is not initialized until the fetch succeeds', function () {
-			PORTAL.VIEWS.createCodeSelect($('#test-select2'), testSpec);
-			expect($.fn.select2).not.toHaveBeenCalled();
-
-			server.requests[0].respond(200, {'Content-Type': 'text/json'}, RESPONSE_DATA);
 			expect($.fn.select2).toHaveBeenCalled();
 			var options = $.fn.select2.calls.argsFor(0)[0];
 			expect(options.allowClear).toBe(true);
@@ -171,7 +162,6 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
 				placeholder: 'Any',
 				width: '400px'
 			});
-			server.requests[0].respond(200, {'Content-Type': 'text/json'}, RESPONSE_DATA);
 			options = $.fn.select2.calls.argsFor(0)[0];
 			expect(options.placeholder).toEqual('Any');
 		});
@@ -180,7 +170,6 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
 			var matcher;
 			spyOn(testModel, 'getLookup').and.returnValue({id: 'M1', desc: 'Monday', providers: 'P1'});
 			PORTAL.VIEWS.createCodeSelect($('#test-select2'), testSpec);
-			server.requests[0].respond(200, {'Content-Type': 'text/json'}, RESPONSE_DATA);
 			matcher = $.fn.select2.calls.argsFor(0)[0].matcher;
 			expect(matcher({term: 'M1'}, {id: 'M1'})).toBeNull();
 			expect(matcher({term: 'mo'}, {id: 'M1'}, 'mo')).toEqual({id: 'M1'});
@@ -191,7 +180,6 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
 			var templateSelection;
 
 			PORTAL.VIEWS.createCodeSelect($('#test-select2'), testSpec);
-			server.requests[0].respond(200, {'Content-Type': 'text/json'}, RESPONSE_DATA);
 			templateSelection = $.fn.select2.calls.argsFor(0)[0].templateSelection;
 			expect(templateSelection({id: 'V1', text: 'Verbose 1'})).toEqual('V1');
 		});
