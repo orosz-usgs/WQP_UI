@@ -200,7 +200,9 @@
 					<noInstrumentPatterns>
 						<pattern>.+/.+Spec\.js</pattern>
 						<pattern>.+/OpenLayers\.js</pattern>
+						<pattern>.+/bower_components/.+\.js</pattern>
 						<pattern>.+/vendor/.+\.js</pattern>
+						<pattern>.+/webjars/.+\.js</pattern>
 					</noInstrumentPatterns>
 				</configuration>
 			</plugin>
