@@ -168,71 +168,64 @@
                         </button>
                     </div>
                     <div class="panel-body">
-                        <div class="form-group">
-                            <label class="control-label" for="sampleMedia">Sample Media:</label>
-                            <div>
-                                <select multiple class="form-control" name="sampleMedia" id="sampleMedia" data-placeholder="All" style="width: 100%"></select>
-                            </div>
-							<button type="button" class="help-link popover-help" id="sampleMediaHelp" data-help="sampleMedia">?</button>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label" for="characteristicType">Characteristic Group:</label>
-                            <div>
-                                <select multiple class="form-control" name="characteristicType" id="characteristicType" data-placeholder="All" style="width: 100%"></select>
-                            </div>
-							<button type="button" class="help-link popover-help" id="characteristicGroupHelp" data-help="characteristicGroup">?</button>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label" for="characteristicName">Characteristics:</label>
-                            <div>
-                                <select multiple class="form-control" name="characteristicName" id="characteristicName" data-placeholder="All" style="width: 100%"></select>
-                            </div>
-							<button type="button" class="help-link popover-help" id="characteristicHelp" data-help="characteristicName">?</button>
-                        </div>
+						<div id="sampling" class="subpanel">
+							<div class="subpanel-body">
+								<div class="form-group">
+									<label class="control-label" for="sampleMedia">Sample Media:</label>
+									<div>
+										<select multiple class="form-control" name="sampleMedia" id="sampleMedia" data-placeholder="All" style="width: 100%"></select>
+									</div>
+									<button type="button" class="help-link popover-help" id="sampleMediaHelp" data-help="sampleMedia">?</button>
+								</div>
+								<div class="form-group">
+									<label class="control-label" for="characteristicType">Characteristic Group:</label>
+									<div>
+										<select multiple class="form-control" name="characteristicType" id="characteristicType" data-placeholder="All" style="width: 100%"></select>
+									</div>
+									<button type="button" class="help-link popover-help" id="characteristicGroupHelp" data-help="characteristicGroup">?</button>
+								</div>
+								<div class="form-group">
+									<label class="control-label" for="characteristicName">Characteristics:</label>
+									<div>
+										<select multiple class="form-control" name="characteristicName" id="characteristicName" data-placeholder="All" style="width: 100%"></select>
+									</div>
+									<button type="button" class="help-link popover-help" id="characteristicHelp" data-help="characteristicName">?</button>
+								</div>
 
-                        <div class="form-group">
-                        	<label class="control-label" for="project-code">Project ID:</label>
-                        	<div>
-                        		<select multiple class="form-control" name="project_code" id="project-code" data-placeholder="All" style="width: 100%"></select>
-                        	</div>
-							<button type="button" class="help-link popover-help" id="projectHelp" data-help="project">?</button>
-                        </div>
-                        <div class="form-group" id='pcode-div'>
-                            <label class="control-label" for="pCode">Parameter Code: <span style="font-size:x-small;">(NWIS ONLY)</span></label>
-                            <div>
-                                <input class="form-control" type="text" name="pCode" id="pCode" />
-                            </div>
-							<button type="button" class="help-link popover-help" id="pCodeHelp" data-help="pcode">?</button>
-                        </div>
-	                    <!-- commenting out nawqa project section for the moment
-                        <div id="nawqa-project-div">
-	                    	<label class="control-label" for="nawqa-project">
-	                    		NAWQA Program (NAWQA, NASQAN, and NMN):&nbsp;
-	                    	</label>
-	                    	<div>
-	                    		<input type="checkbox" name="nawqa_project" id="nawqa-project"/>
-                                <button type="button" class="help-link popover-help" id="nawqaHelp" data-help="nawqa">?</button>              
-                            </div>
-	                    </div>
-	                    -->
-                        <div id="date-row">
-                            <div id="start-date-select" class="form-group">
-                                <label class="control-label" for="startDateLo">Date range - from:</label>
-                                <div>
-                                    <div>
-                                        <input class="form-control" type="text" id="startDateLo" name="startDateLo" placeholder="mm-dd-yyyy"/>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="end-date-select" class="form-group">
-                                <label class="control-label" for="startDateHi">to:</label>
-                                <div>
-                                    <div>
-                                        <input class="form-control" type="text" id="startDateHi" name="startDateHi" placeholder="mm-dd-yyyy" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+								<div class="form-group">
+									<label class="control-label" for="project-code">Project ID:</label>
+									<div>
+										<select multiple class="form-control" name="project_code" id="project-code" data-placeholder="All" style="width: 100%"></select>
+									</div>
+									<button type="button" class="help-link popover-help" id="projectHelp" data-help="project">?</button>
+								</div>
+								<div class="form-group" id='pcode-div'>
+									<label class="control-label" for="pCode">Parameter Code: <span style="font-size:x-small;">(NWIS ONLY)</span></label>
+									<div>
+										<input class="form-control" type="text" name="pCode" id="pCode" />
+									</div>
+									<button type="button" class="help-link popover-help" id="pCodeHelp" data-help="pcode">?</button>
+								</div>
+								<div id="date-row">
+									<div id="start-date-select" class="form-group">
+										<label class="control-label" for="startDateLo">Date range - from:</label>
+										<div>
+											<div>
+												<input class="form-control" type="text" id="startDateLo" name="startDateLo" placeholder="mm-dd-yyyy"/>
+											</div>
+										</div>
+									</div>
+									<div id="end-date-select" class="form-group">
+										<label class="control-label" for="startDateHi">to:</label>
+										<div>
+											<div>
+												<input class="form-control" type="text" id="startDateHi" name="startDateHi" placeholder="mm-dd-yyyy" />
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
                         <div id="biological" class="subpanel">
                             <div class="subpanel-heading">
                             Biological sampling parameters:
@@ -284,7 +277,6 @@
             <input type="hidden" name="zip" checked="checked" id="zip" value="yes" />
             <input type="hidden" name="resultType" value="Station" />
             <input type="hidden" name="sorted" value="no" />
-            <input type="hidden" name="project" />
         </form>
         <div id="map-and-query-div" class="panel">
             <div id="mapping-div" class="panel-body">

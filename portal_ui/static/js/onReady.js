@@ -71,29 +71,15 @@ PORTAL.onReady = function () {
 		organizationModel : PORTAL.MODELS.cachedCodes({codes : 'organization'})
 	}).initialize();
 
+	var samplingParameterInputView = PORTAL.VIEWS.samplingParameterInputView({
+		$container : $('#sampling'),
+		sampleMediaModel : PORTAL.MODELS.cachedCodes({codes: 'samplemedia'}),
+		characteristicTypeModel : PORTAL.MODELS.cachedCodes({codes: 'characteristictype'})
+	}).initialize();
+
 	// Initialize the rest of the selects
-	PORTAL.VIEWS.createCodeSelect($('#sampleMedia'), {model: PORTAL.MODELS.sampleMedia}, select2Options);
-	PORTAL.VIEWS.createCodeSelect($('#characteristicType'), {model: PORTAL.MODELS.characteristicType}, select2Options);
-	PORTAL.VIEWS.createPagedCodeSelect($('#characteristicName'), {codes: 'characteristicname'}, select2Options);
 	PORTAL.VIEWS.createPagedCodeSelect($('#subject-taxonomic-name'), {codes: 'subjecttaxonomicname'}, select2Options);
 	PORTAL.VIEWS.createCodeSelect($('#assemblage'), {model: PORTAL.MODELS.assemblage}, select2Options);
-	PORTAL.VIEWS.createPagedCodeSelect($('#project-code'), {codes: 'project'}, select2Options);
-
-	// Add input validations and reformatting handlers
-	PORTAL.VIEWS.inputValidation({
-		inputEl: $('#startDateLo'),
-		validationFnc: PORTAL.dateValidator.validate,
-		updateFnc: function (value) {
-			return PORTAL.dateValidator.format(value, true);
-		}
-	});
-	PORTAL.VIEWS.inputValidation({
-		inputEl: $('#startDateHi'),
-		validationFnc: PORTAL.dateValidator.validate,
-		updateFnc: function (value) {
-			return PORTAL.dateValidator.format(value, false);
-		}
-	});
 
 	// Create help popovers which close when you click anywhere else other than another popover trigger.
 	$('html').click(function (e) {
@@ -238,29 +224,6 @@ PORTAL.onReady = function () {
 		else {
 			$hidden.val('no');
 		}
-	});
-
-	//Update the project hidden input if the project-code input  or nawqa-project input changes
-	$('#project-code, #nawqa-project').change(function () {
-		var nawqaValues = '';
-		var projectCodes = [];
-		var projectCodeValues;
-
-		var d = $('#project-code').select2('data');
-		$.each($('#project-code').select2('data'), function (index, el) {
-			projectCodes.push(el.id);
-		});
-		projectCodeValues = projectCodes.join(';');
-
-		if ($('#nawqa-project').is(':checked')) {
-			nawqaValues += Config.NAWQA_ONLY_PROJECTS;
-		}
-
-		if (nawqaValues !== '' && projectCodeValues !== '') {
-			nawqaValues += ';';
-		}
-
-		$('#params input[name="project"]').val(nawqaValues + projectCodeValues);
 	});
 
 	// Add click handler for the Show queries button
