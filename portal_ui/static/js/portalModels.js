@@ -174,5 +174,3 @@ PORTAL.MODELS.codesWithKeys = function (options) {
 
 	return self;
 };
-
-PORTAL.MODELS.assemblage = PORTAL.MODELS.cachedCodes({codes: 'assemblage'});

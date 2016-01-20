@@ -6,7 +6,7 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
 /*
  * Creates a sampling parameter input view
  * @param {Object} options
- * 		@prop {Jquery element $container - element where the sampling parameter inputs are contained
+ * 		@prop {Jquery element} $container - element where the sampling parameter inputs are contained
  * 		@prop {PORTAL.MODELS.cachedCodes} sampleMediaModel
  * 		@prop {PORTAL.MODELS.cachedCodes} characteristicTypeModel
  * @return {Object}

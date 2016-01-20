@@ -77,9 +77,10 @@ PORTAL.onReady = function () {
 		characteristicTypeModel : PORTAL.MODELS.cachedCodes({codes: 'characteristictype'})
 	}).initialize();
 
-	// Initialize the rest of the selects
-	PORTAL.VIEWS.createPagedCodeSelect($('#subject-taxonomic-name'), {codes: 'subjecttaxonomicname'}, select2Options);
-	PORTAL.VIEWS.createCodeSelect($('#assemblage'), {model: PORTAL.MODELS.assemblage}, select2Options);
+	var biologicalSamplingParameterInputView = PORTAL.VIEWS.biologicalSamplingInputView({
+		$container : $('#biological'),
+		assemblageModel : PORTAL.MODELS.cachedCodes({codes: 'assemblage'})
+	}).initialize();
 
 	// Create help popovers which close when you click anywhere else other than another popover trigger.
 	$('html').click(function (e) {

@@ -36,6 +36,7 @@ bundles = {
         'js/boundingBoxInputView.js',
         'js/siteParameterInputView.js',
         'js/samplingParameterInputView.js',
+        'js/biologicalSamplingInputView.js',
         'js/portalHelp.js',
         'js/stateFIPS.js',
         'js/dateValidator.js',
