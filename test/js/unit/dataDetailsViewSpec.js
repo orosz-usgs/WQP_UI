@@ -104,4 +104,20 @@ describe('Tests for PORTAL.VIEWS.dataDetailsView', function() {
 		$sorted.prop('checked', false).trigger('change');
 		expect($hiddenSorted.val()).toEqual('no');
 	});
+
+	it('Expects that getResultType returns the currently selected result type', function() {
+		$samples.prop('checked', true).trigger('change');
+		expect(testView.getResultType()).toEqual('Result');
+
+		$sites.prop('checked', true).trigger('change');
+		expect(testView.getResultType()).toEqual('Station');
+	});
+
+	it('Expects that getMimeType returns the currently selected mime type', function() {
+		$('#xlsx').prop('checked', true).trigger('change');
+		expect(testView.getMimeType()).toEqual('xlsx');
+
+		$('#tsv').prop('checked', true).trigger('change');
+		expect(testView.getMimeType()).toEqual('tsv');
+	});
 });
