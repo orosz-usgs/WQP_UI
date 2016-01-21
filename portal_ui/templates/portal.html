@@ -272,159 +272,92 @@
                     </div>
                 </div>
             </div>
-            <!--  hidden inputs -->
-            <input type="hidden" name="mimeType" value="csv" />
-            <input type="hidden" name="zip" checked="checked" id="zip" value="yes" />
-            <input type="hidden" name="resultType" value="Station" />
-            <input type="hidden" name="sorted" value="no" />
-        </form>
-        <div id="map-and-query-div" class="panel">
-            <div id="mapping-div" class="panel-body">
-                <div id="map-ops-button-div">
-                    <div id="show-on-map-button-div">
-                        <button type="button" class="show-hide-toggle" title="Show subsection">
-                            <img src="{{ url_for('static', filename='img/expand.png') }}" alt="show" />
-                        </button>
-                        <button type="button" class="btn" id="show-on-map-button">Show sites on map</button>
-                    </div>
-                    <div id="query-map-legend-div">
-                    	<div id="nwis-site-legend"><span style="background-color:#336600;" >&nbsp;&nbsp;&nbsp;</span>&nbsp;NWIS</div>
-                    	<div id="storet-site-legend"><span style="background-color:#00ccff;" >&nbsp;&nbsp;&nbsp;</span>&nbsp;STORET</div>
-                    	<div id="stewards-site-legend"><span style="background-color:#ff9933;"> &nbsp;&nbsp;&nbsp;</span>&nbsp;STEWARDS</div>
-                        <div id="biodata-site-legend"><span style="background-color:#000000;"> &nbsp;&nbsp;&nbsp;</span>&nbsp;BIODATA</div>
-                    </div>
-                </div>
-                <div id="query-map-box" style="display: none;">
-                    <div id="map-info-dialog" style="display: none;">
-                        <form method="get" style="vertical-align: top; display: inline-block;">
-                            <input type="hidden" name="zip" checked="checked" id="zip" value="yes" />
-                            <div id="map-info-data-type-div" style="vertical-align: top; display: inline-block;">
-                                Select data:
-                                <ul class="download-lists">
-                                    <li>
-                                        <input checked="checked" type="radio" name="resultType" id="dialog-sites" value="Station" />
-                                        <label for="dialog-sites">Sites only</label>
-                                    </li>
-                                    <li>
-                                        <input type="radio" name="resultType" id="dialog-samples" value="Result" />
-                                        <label for="dialog-samples">Sample results only</label>
-                                    </li>
-                                    <li>
-                                        <input type="radio" name="resultType" id="dialog-biosamples" value="Result" />
-                                        <label for="dialog-biosamples">Sample results with biological metadata</label>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div style="display: inline-block;" id="map-info-file-format-div">
-                                Select file format: 
-                                <ul class="download-lists">
-                                    <li>
-                                        <input type="radio" checked="checked" name="mimeType" id="dialog-csv" value="csv">
-                                        <label for="dialog-csv">Comma-separated</label>
-                                    </li>
-                                    <li>
-                                        <input type="radio" name="mimeType" id="dialog-tsv" value="tsv">
-                                        <label for="dialog-tsv">Tab-separated</label>
-                                    </li>
-                                    <li>
-                                        <input type="radio" name="mimeType" id="dialog-xlsx" value="xlsx">
-                                        <label for="dialog-xlsx">MS Excel</label>
-                                    </li>
-                               </ul>
-                            </div>
-                            <div id="map-id-hidden-input-div"></div>
-                        </form>
-                        <div id="map-info-download-button-div" style="text-align: center;">
-                            <button class="btn" id="download-map-info-button">Download Data</button>
-                        </div>
-                        <hr />
-                        <div id="map-info-details-div"></div>
-                    </div>
-
-                    <div id="query-results-map"></div>
-                    <div id="map-loading-div" style="display: none;">
-                        <div class="outer-div" >
-                            <div class="inner-div">
-                                <button id="cancel-map-button" class="btn" type="button">Cancel mapping</button>
-                            </div>
-                        </div>
-                        <span style="text-align: center; vertical-align: middle">Generating map for query results</span>
-                    </div>
-                </div>
-            </div>
-            <div id="download-box" class="panel-body">
-                <div id="download-box-input-div">
-                    <div id="download-data-kind-box">
-                        <b>Select data to download:</b>
-                        <ul>
-                            <li>
-                                <input checked="checked" type="radio" name="resultType" id="sites" value="Station">
-                                <label for="sites">Site data only</label>
-                            </li>
-                            <li>
-                                <input type="radio" name="resultType" id="samples" value="Result">
-                                <label for="samples">Sample results (physical/chemical metadata)</label>
-                            </li>
-                            <li>
-                                <input type="radio" name="resultType" id="biosamples" value="Result">
-                                <label for="biosamples">Sample results (biological metadata)</label>
-                            </li>
-                        </ul>
-                    </div>
-                    <div id="download-tabular-data">
-                        <b>File format:</b><br />
-                        <ul>
-                            <li>
-                                <input type="radio" checked="checked" name="mimeType" id="csv" value="csv" />
-                                <label for="csv">Comma-separated</label>
-                            </li>
-                            <li>
-                                <input type="radio" name="mimeType" id="tsv" value="tsv" />
-                                <label for="tsv">Tab-separated</label>
-                            </li>
-                            <li>
-                                <input type="radio" name="mimeType" id="xlsx" value="xlsx" />
-                                <label for="xlsx">MS Excel 2007+<span style="font-size: x-small;"></span></label>
-                            </li>
-                            <li>
-                                <input type="radio" name="mimeType" id="kml" value="kml" />
-                                <label for="kml">KML&nbsp;<span style="font-size: x-small;">(Keyhole Markup Language - for Sites only)</span></label>
-                            </li>
-                       </ul>
-                    </div>
-                    <div id="download-sorted-data-div">
-                    	<input type="checkbox" name="sorted" id="sorted" />
-                    	<label for="sorted">Sort data</label>
-                    </div>
-                    <div></div>
-                </div>
-                <div id="form-action">
-                    <button id="main-button" class="btn" type="submit">DOWNLOAD</button>
-                </div>
-            </div>
-            <div id="show-queries-div" class="panel-body">
-                <button class="btn" id="show-queries-button" type="button">Show RESTlike queries</button>
-                &nbsp;<button type="button" id="WQXSchemaHelp" class="popover-help" data-help="xmlSchema">?</button>
-                <div id="WSFeedback"></div>
-            </div>
-        </div>
-        <div id="org-id-dialog" style="display:none;">
-            <div id="org-id-loading-div">Loading list ... please wait</div>
-            <div id="org-id-toggles-div">
-                <p>For help, go to the <a href="{{ url_for('portal_userguide-canonical') }}#Organization">User Guide</a></p>
-                <div id="org-id-current-selections-div">
-                    <label><b>Current Selections:</b></label>
-                    <br />
-                    <textarea id="org-id-current-selections" readonly="readonly" disabled="disabled" rows=5></textarea>
-                    <br />
-                </div>
-                <div id="org-name-div">
-                    <p>Select organization IDs by org name</p>
-                    <div id="select-by-org-name">
-                    </div>
-                </div>
-            </div>
-        </div>
+			<div id="map-and-query-div" class="panel">
+				<div id="mapping-div" class="panel-body">
+					<div id="map-ops-button-div">
+						<div id="show-on-map-button-div">
+							<button type="button" class="show-hide-toggle" title="Show subsection">
+								<img src="{{ url_for('static', filename='img/expand.png') }}" alt="show" />
+							</button>
+							<button type="button" class="btn" id="show-on-map-button">Show sites on map</button>
+						</div>
+						<div id="query-map-legend-div">
+							<div id="nwis-site-legend"><span style="background-color:#336600;" >&nbsp;&nbsp;&nbsp;</span>&nbsp;NWIS</div>
+							<div id="storet-site-legend"><span style="background-color:#00ccff;" >&nbsp;&nbsp;&nbsp;</span>&nbsp;STORET</div>
+							<div id="stewards-site-legend"><span style="background-color:#ff9933;"> &nbsp;&nbsp;&nbsp;</span>&nbsp;STEWARDS</div>
+							<div id="biodata-site-legend"><span style="background-color:#000000;"> &nbsp;&nbsp;&nbsp;</span>&nbsp;BIODATA</div>
+						</div>
+					</div>
+					<div id="query-map-box" style="display: none;">
+						<div id="query-results-map"></div>
+						<div id="map-loading-div" style="display: none;">
+							<div class="outer-div" >
+								<div class="inner-div">
+									<button id="cancel-map-button" class="btn" type="button">Cancel mapping</button>
+								</div>
+							</div>
+							<span style="text-align: center; vertical-align: middle">Generating map for query results</span>
+						</div>
+					</div>
+				</div>
+				<div id="download-box" class="panel-body">
+					<div id="download-box-input-div">
+						<div id="download-data-kind-box">
+							<b>Select data to download:</b>
+							<ul>
+								<li>
+									<input checked="checked" type="radio" class="result-type" id="sites" value="Station">
+									<label for="sites">Site data only</label>
+								</li>
+								<li>
+									<input type="radio" class="result-type" id="samples" value="Result">
+									<label for="samples">Sample results (physical/chemical metadata)</label>
+								</li>
+								<li>
+									<input type="radio" class="result-type" id="biosamples" value="Result">
+									<label for="biosamples">Sample results (biological metadata)</label>
+								</li>
+							</ul>
+						</div>
+						<div id="download-tabular-data">
+							<b>File format:</b><br />
+							<ul>
+								<li>
+									<input type="radio" checked="checked" name="mimeType" id="csv" value="csv" />
+									<label for="csv">Comma-separated</label>
+								</li>
+								<li>
+									<input type="radio" name="mimeType" id="tsv" value="tsv" />
+									<label for="tsv">Tab-separated</label>
+								</li>
+								<li>
+									<input type="radio" name="mimeType" id="xlsx" value="xlsx" />
+									<label for="xlsx">MS Excel 2007+<span style="font-size: x-small;"></span></label>
+								</li>
+								<li>
+									<input type="radio" name="mimeType" id="kml" value="kml" />
+									<label for="kml">KML&nbsp;<span style="font-size: x-small;">(Keyhole Markup Language - for Sites only)</span></label>
+								</li>
+						   </ul>
+						</div>
+						<div id="download-sorted-data-div">
+							<input type="checkbox" id="sorted" />
+							<label for="sorted">Sort data</label>
+						</div>
+            			<input type="hidden" name="zip" id="zip" value="yes" />
+						<input type="hidden" name="sorted" id="hidden-sorted" value="no" />
+					</div>
+					<div id="form-action">
+						<button id="main-button" class="btn" type="submit">DOWNLOAD</button>
+					</div>
+				</div>
+				<div id="show-queries-div" class="panel-body">
+					<button class="btn" id="show-queries-button" type="button">Show RESTlike queries</button>
+					&nbsp;<button type="button" id="WQXSchemaHelp" class="popover-help" data-help="xmlSchema">?</button>
+					<div id="WSFeedback"></div>
+				</div>
+			</div>
+		</form>
 	</div>
 	<div id="download-status-dialog" class="modal fade">
         <div class="modal-dialog modal-sm">
@@ -438,6 +371,51 @@
             </div>
         </div>
     </div>
+	<div id="map-info-dialog" style="display: none;">
+		<form method="get" style="vertical-align: top; display: inline-block;">
+			<input type="hidden" name="zip" checked="checked" id="zip" value="yes" />
+			<div id="map-info-data-type-div" style="vertical-align: top; display: inline-block;">
+				Select data:
+				<ul class="download-lists">
+					<li>
+						<input checked="checked" type="radio" name="resultType" id="dialog-sites" value="Station" />
+						<label for="dialog-sites">Sites only</label>
+					</li>
+					<li>
+						<input type="radio" name="resultType" id="dialog-samples" value="Result" />
+						<label for="dialog-samples">Sample results only</label>
+					</li>
+					<li>
+						<input type="radio" name="resultType" id="dialog-biosamples" value="Result" />
+						<label for="dialog-biosamples">Sample results with biological metadata</label>
+					</li>
+				</ul>
+			</div>
+			<div style="display: inline-block;" id="map-info-file-format-div">
+				Select file format:
+				<ul class="download-lists">
+					<li>
+						<input type="radio" checked="checked" name="mimeType" id="dialog-csv" value="csv">
+						<label for="dialog-csv">Comma-separated</label>
+					</li>
+					<li>
+						<input type="radio" name="mimeType" id="dialog-tsv" value="tsv">
+						<label for="dialog-tsv">Tab-separated</label>
+					</li>
+					<li>
+						<input type="radio" name="mimeType" id="dialog-xlsx" value="xlsx">
+						<label for="dialog-xlsx">MS Excel</label>
+					</li>
+			   </ul>
+			</div>
+			<div id="map-id-hidden-input-div"></div>
+		</form>
+		<div id="map-info-download-button-div" style="text-align: center;">
+			<button class="btn" id="download-map-info-button">Download Data</button>
+		</div>
+		<hr />
+		<div id="map-info-details-div"></div>
+	</div>
     <div id="validate-download-dialog" class="modal fade">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
@@ -465,10 +443,4 @@
     {% assets "portal_js" %}
     	<script type="text/javascript" src="{{ ASSET_URL }}"></script>
     {% endassets %}
-    
-	<script type="text/javascript">
-        $(document).ready(function(){
-            PORTAL.onReady();
-        });
-    </script>    
 {% endblock %}
