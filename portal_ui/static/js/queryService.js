@@ -1,21 +1,22 @@
 /*jslint browser: true*/
-/*global $*/
+/* global $ */
 /* global Config */
 var PORTAL = PORTAL || {};
 
 PORTAL.queryServices = (function () {
 	"use strict";
-	var that = {};
+	var self = {};
 
 	/*
 	 * Make a head request for the current set of query parameters and the resultType.
 	 * @param {String} resultType - The type of result for which the query should be made.
+	 * @param {String} queryParams - a query string
 	 * @returns Jquery promise - The promise is resolved if the head request succeeds and the received xhr object is returned.
 	 * If the request is not made due to url length or it fails, the promise is rejects and a string message is returned
 	 */
-	that.getHeadRequest = function (resultType) {
+	self.fetchHeadRequest = function (resultType, queryParams) {
 		var deferred = $.Deferred();
-		var url = that.getFormUrl(resultType);
+		var url = self.getFormUrl(resultType, queryParams);
 
 		if (url.length > 2000) {
 			deferred.resolve('Too many query criteria selected.  <br>Please reduce your selections <br>' +
@@ -37,25 +38,15 @@ PORTAL.queryServices = (function () {
 	};
 
 	/*
-	 * @returns {String} -the serialized uery params for the current #params form.
-	 */
-	that.getQueryParams = function () {
-		var IGNORE_PARAM_LIST = ["north", "south", "east", "west", "resultType", "source", "nawqa_project", "project_code"];
-
-		var result = PORTAL.UTILS.getFormQuery($('#params'), IGNORE_PARAM_LIST);
-
-		return result;
-	};
-
-	/*
 	 * @param {String} resultType
+	 * @param {String} queryParams - a query string
 	 * @returns {String} - the url and query params to download data
 	 */
-	that.getFormUrl = function (resultType /* string */) {
-		return Config.QUERY_URLS[resultType] + "?" + that.getQueryParams();
+	self.getFormUrl = function (resultType, queryParams) {
+		return Config.QUERY_URLS[resultType] + "?" + queryParams;
 	};
 
-	return that;
+	return self;
 
 }());
 

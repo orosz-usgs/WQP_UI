@@ -175,9 +175,10 @@
 						<source>../test/resources/testConfig.js</source>
 					</preloadSources>
 					<sourceIncludes>
-						<include>static/js/*.js</include>
+						<include>static/js/**/*.js</include>
 					</sourceIncludes>
 					<sourceExcludes>
+						<include>static/js/angular/**/*.js</include>
 						<include>static/js/onReady.js</include>
 					</sourceExcludes>
 					<specIncludes>
