@@ -8,12 +8,8 @@
 
 var PORTAL = PORTAL || {};
 
-PORTAL.onReady = function () {
+$(document).ready(function () {
 	"use strict";
-
-	var placeSelects;
-	var select2Options = {};
-
 
 	PORTAL.portalDataMap = undefined;  // Don't initialize portalDataMap until it has been shown.
 
@@ -50,37 +46,45 @@ PORTAL.onReady = function () {
 		keyParameter : 'statecode',
 		parseKey : getStateFromCounty
 	});
-	var placeView = PORTAL.VIEWS.placeInputView({
+	PORTAL.VIEWS.placeInputView({
 		$container : $('#place'),
 		countryModel : countryModel,
 		stateModel : stateModel,
 		countyModel : countyModel
 	}).initialize();
 
-	var pointLocationView = PORTAL.VIEWS.pointLocationInputView({
+	PORTAL.VIEWS.pointLocationInputView({
 		$container : $('#point-location')
 	}).initialize();
 
-	var boundingBoxInputView = PORTAL.VIEWS.boundingBoxInputView({
+	PORTAL.VIEWS.boundingBoxInputView({
 		$container : $('#bounding-box')
 	}).initialize();
 
-	var siteParameterInputView = PORTAL.VIEWS.siteParameterInputView({
+	PORTAL.VIEWS.siteParameterInputView({
 		$container : $('#site-params'),
 		siteTypeModel : PORTAL.MODELS.cachedCodes({codes : 'sitetype'}),
 		organizationModel : PORTAL.MODELS.cachedCodes({codes : 'organization'})
 	}).initialize();
 
-	var samplingParameterInputView = PORTAL.VIEWS.samplingParameterInputView({
+	PORTAL.VIEWS.samplingParameterInputView({
 		$container : $('#sampling'),
 		sampleMediaModel : PORTAL.MODELS.cachedCodes({codes: 'samplemedia'}),
 		characteristicTypeModel : PORTAL.MODELS.cachedCodes({codes: 'characteristictype'})
 	}).initialize();
 
-	var biologicalSamplingParameterInputView = PORTAL.VIEWS.biologicalSamplingInputView({
+	PORTAL.VIEWS.biologicalSamplingInputView({
 		$container : $('#biological'),
 		assemblageModel : PORTAL.MODELS.cachedCodes({codes: 'assemblage'})
 	}).initialize();
+
+	var dataDetailsView = PORTAL.VIEWS.dataDetailsView({
+		$container : $('#download-box-input-div'),
+		updateResultTypeAction : function(resultType) {
+			$('#params').attr('action', PORTAL.queryServices.getFormUrl(resultType));
+		}
+	});
+	dataDetailsView.initialize();
 
 	// Create help popovers which close when you click anywhere else other than another popover trigger.
 	$('html').click(function (e) {
@@ -162,8 +166,8 @@ PORTAL.onReady = function () {
 			_gaq.push(['_trackEvent', 'Portal Page', $('#params input[name="resultType"]').val() + 'Download', decodeURIComponent(PORTAL.queryServices.getQueryParams()), parseInt(totalCount)]);
 			$('#params').submit();
 		};
-		var fileFormat = $('input[name="mimeType"]').val();
-		var resultType = $('#params input[name="resultType"]').val();
+		var fileFormat = dataDetailsView.getMimeType();
+		var resultType = dataDetailsView.getResultType();
 
 		if (!PORTAL.CONTROLLERS.validateDownloadForm()) {
 			return;
@@ -181,50 +185,6 @@ PORTAL.onReady = function () {
 		}).fail(function (message) {
 			PORTAL.downloadProgressDialog.cancelProgress(message);
 		});
-	});
-
-	// Toggle the sensitivity of the Samples buttons if KML check button is clicked and update the hidden form input
-	$('#download-box input[name="mimeType"]:radio').click(function () {
-		var sensitive = !($('#download-box #kml').prop('checked'));
-
-		PORTAL.UTILS.setEnabled($('#download-box #samples'), sensitive);
-		PORTAL.UTILS.setEnabled($('#download-box #biosamples'), sensitive);
-		$('#params input[name="mimeType"]:hidden').val($(this).val());
-	});
-
-	// Toggle the sensitivity of the KML button if Samples buttons clicked.
-	// Update the form's action url.
-	// Toggle the sensitivity of the Show Sites on map button
-
-	$('#download-box input[name=resultType]').click(function () {
-		var $form = $('#params');
-		var $biosamplesRadio = $('#download-box #biosamples');
-		var sensitive = !($('#download-box #samples').prop('checked')) && !($biosamplesRadio.prop('checked'));
-
-		PORTAL.UTILS.setEnabled($('#download-box #kml'), sensitive);
-
-		$form.attr('action', PORTAL.queryServices.getFormUrl($(this).val()));
-		$form.find('input[name="resultType"]:hidden').val($(this).val());
-
-		// If biological results desired add a hidden input, otherwise remove it.
-		if ($biosamplesRadio.prop('checked')) {
-			if ($form.find('input[name="dataProfile"]').length === 0) {
-				$form.append('<input type="hidden" name="dataProfile" value="biological" />');
-			}
-		} else {
-			$form.find('input[name="dataProfile"]').remove();
-		}
-	});
-
-	//Update the sorted checkbox hidden input when changed
-	$('#sorted').change(function () {
-		var $hidden = $('#params input[name="sorted"]');
-		if ($(this).is(':checked')) {
-			$hidden.val('yes');
-		}
-		else {
-			$hidden.val('no');
-		}
 	});
 
 	// Add click handler for the Show queries button
@@ -263,5 +223,5 @@ PORTAL.onReady = function () {
 	$('#map-identify-tool').click(function () {
 		PORTAL.portalDataMap.toggleBoxId();
 	});
-};
+});
 

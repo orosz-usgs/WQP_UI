@@ -177,6 +177,9 @@
 					<sourceIncludes>
 						<include>static/js/*.js</include>
 					</sourceIncludes>
+					<sourceExcludes>
+						<include>static/js/onReady.js</include>
+					</sourceExcludes>
 					<specIncludes>
 						<include>vendor/sinon-1.17.2.js</include>
 						<include>unit/**/*.js</include>
