@@ -97,7 +97,7 @@ PORTAL.CONTROLLERS.validateDateRange = function (spec) {
 	}
 };
 
-PORTAL.CONTROLLERS.validateDownloadForm = function () {
+PORTAL.CONTROLLERS.validateDownloadForm = function ($form) {
 	// Validate download form. If invalid show validate dialog with error message and return false.
 	// Otherwise return true
 
@@ -108,16 +108,16 @@ PORTAL.CONTROLLERS.validateDownloadForm = function () {
 	};
 
 	// Check to see if any input validation error messages exist
-	if ($('#params .error-message').length > 0) {
+	if ($form.find('.error-message').length > 0) {
 		showModal('Need to correct input validation errors on form');
 		return false;
 	}
 
 	var result;
 	result = PORTAL.CONTROLLERS.validatePointLocation({
-		withinEl: $('#within'),
-		latEl: $('#lat'),
-		lonEl: $('#long')
+		withinEl: $form.find('#within'),
+		latEl: $form.find('#lat'),
+		lonEl: $form.find('#long')
 	});
 	if (!result.isValid) {
 		showModal(result.errorMessage);
@@ -125,10 +125,10 @@ PORTAL.CONTROLLERS.validateDownloadForm = function () {
 	}
 
 	result = PORTAL.CONTROLLERS.validateBoundingBox({
-		northEl: $('#north'),
-		southEl: $('#south'),
-		eastEl: $('#east'),
-		westEl: $('#west')
+		northEl: $form.find('#north'),
+		southEl: $form.find('#south'),
+		eastEl: $form.find('#east'),
+		westEl: $form.find('#west')
 	});
 	if (!result.isValid) {
 		showModal(result.errorMessage);
@@ -136,8 +136,8 @@ PORTAL.CONTROLLERS.validateDownloadForm = function () {
 	}
 
 	result = PORTAL.CONTROLLERS.validateDateRange({
-		fromDateEl: $('#startDateLo'),
-		toDateEl: $('#startDateHi')
+		fromDateEl: $form.find('#startDateLo'),
+		toDateEl: $form.find('#startDateHi')
 	});
 	if (!result.isValid) {
 		showModal(result.errorMessage);

@@ -9,9 +9,11 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
  * @param {Object} options
  * 		@prop {Jquery element} $container - The div where the data detail inputs are contained
  * 		@func updateResultTypeAction - called whenever the result-type radio buttons are changed
- * 		@param {String} resultType - the checked radio button's value
+ * 			@param {String} resultType - the checked radio button's value
  * @return {Object}
- 	* 	@func initialize
+ * 		@func initialize
+ *  	@func getResultType
+ *		@func getMimeType
  */
 PORTAL.VIEWS.dataDetailsView = function(options) {
 	"use strict";

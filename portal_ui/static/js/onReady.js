@@ -10,105 +10,18 @@ var PORTAL = PORTAL || {};
 
 $(document).ready(function () {
 	"use strict";
-
+	//TODO: Remove this globals
 	PORTAL.portalDataMap = undefined;  // Don't initialize portalDataMap until it has been shown.
 
-	PORTAL.downloadProgressDialog = PORTAL.VIEWS.downloadProgressDialog($('#download-status-dialog'));
+	var $form = $('#params');
 
-	PORTAL.MODELS.providers.fetch()
-		.done(function () {
-			PORTAL.VIEWS.createStaticSelect2($('#providers-select'),
-				PORTAL.MODELS.providers.getIds());
-		})
-		.fail(function (error) {
-			alert('Unable to retrieve provider list with error: ' + error);
-		});
-
-	// Initialize Place inputs
-	var getCountryFromState = function(id) {
-		return (id) ? id.split(':')[0] : '';
-	};
-	var getStateFromCounty = function(id) {
-		var ids = id.split(':');
-		return (ids.length > 1) ? ids[0] + ':' + ids[1] : '';
-	};
-
-	var countryModel = PORTAL.MODELS.cachedCodes({
-		codes : 'countrycode'
-	});
-	var stateModel = PORTAL.MODELS.codesWithKeys({
-		codes : 'statecode',
-		keyParameter : 'countrycode',
-		parseKey : getCountryFromState
-	});
-	var countyModel = PORTAL.MODELS.codesWithKeys({
-		codes : 'countycode',
-		keyParameter : 'statecode',
-		parseKey : getStateFromCounty
-	});
-	PORTAL.VIEWS.placeInputView({
-		$container : $('#place'),
-		countryModel : countryModel,
-		stateModel : stateModel,
-		countyModel : countyModel
-	}).initialize();
-
-	PORTAL.VIEWS.pointLocationInputView({
-		$container : $('#point-location')
-	}).initialize();
-
-	PORTAL.VIEWS.boundingBoxInputView({
-		$container : $('#bounding-box')
-	}).initialize();
-
-	PORTAL.VIEWS.siteParameterInputView({
-		$container : $('#site-params'),
-		siteTypeModel : PORTAL.MODELS.cachedCodes({codes : 'sitetype'}),
-		organizationModel : PORTAL.MODELS.cachedCodes({codes : 'organization'})
-	}).initialize();
-
-	PORTAL.VIEWS.samplingParameterInputView({
-		$container : $('#sampling'),
-		sampleMediaModel : PORTAL.MODELS.cachedCodes({codes: 'samplemedia'}),
-		characteristicTypeModel : PORTAL.MODELS.cachedCodes({codes: 'characteristictype'})
-	}).initialize();
-
-	PORTAL.VIEWS.biologicalSamplingInputView({
-		$container : $('#biological'),
-		assemblageModel : PORTAL.MODELS.cachedCodes({codes: 'assemblage'})
-	}).initialize();
-
-	var dataDetailsView = PORTAL.VIEWS.dataDetailsView({
-		$container : $('#download-box-input-div'),
-		updateResultTypeAction : function(resultType) {
-			$('#params').attr('action', PORTAL.queryServices.getFormUrl(resultType));
-		}
-	});
-	dataDetailsView.initialize();
-
-	// Create help popovers which close when you click anywhere else other than another popover trigger.
-	$('html').click(function (e) {
-		$('.popover-help').popover('hide');
-	});
-	$('.popover-help').each(function () {
-		var options = $.extend({}, PORTAL.MODELS.help[($(this).data('help'))], {
-			html: true,
-			trigger: 'manual'
-		});
-		$(this).popover(options).click(function (e) {
-			$(this).popover('toggle');
-			e.stopPropagation();
-		});
+	var downloadProgressDialog = PORTAL.VIEWS.downloadProgressDialog($('#download-status-dialog'));
+	var downloadFormView = PORTAL.VIEWS.downloadFormView({
+		$form : $form,
+		downloadProgressDialog : downloadProgressDialog
 	});
 
-	// Add Click handler for form show/hide/button
-	$('.panel-heading .show-hide-toggle').click(function () {
-		PORTAL.UTILS.toggleShowHideSections($(this), $(this).parents('.panel').find('.panel-body'));
-	});
-
-	$('.subpanel-heading .show-hide-toggle').click(function () {
-		PORTAL.UTILS.toggleShowHideSections($(this), $(this).parents('.subpanel').find('.subpanel-body'));
-	});
+	downloadFormView.initialize();
 
 	// Set the height of the map div to match the mapBox. Add a resize
 	// handler so that the height stays in sync. OpenLayers does not want to draw
@@ -124,18 +37,24 @@ $(document).ready(function () {
 
 	// Set up Show Sites button
 	$('#show-on-map-button').click(function () {
-		var fileFormat = 'xml';
 		var showMap = function (totalCount) {
 			// Show the map if it is currently hidden
 			if ($('#query-map-box').is(':hidden')) {
 				$('#mapping-div .show-hide-toggle').click();
 			}
 
-			_gaq.push(['_trackEvent', 'Portal Map', 'MapCreate', decodeURIComponent(PORTAL.queryServices.getQueryParams()), parseInt(totalCount)]);
+			_gaq.push([
+				'_trackEvent',
+				'Portal Map',
+				'MapCreate',
+				decodeURIComponent(downloadFormView.getQueryParams()),
+				parseInt(totalCount)
+			]);
 			// Start mapping process by disabling the show site button and then requesting the layer
 			$('#show-on-map-button').attr('disabled', 'disabled').removeClass('query-button').addClass('disable-query-button');
-			var formParams = PORTAL.UTILS.getFormValues($('#params'),
-				['north', 'south', 'east', 'west', 'resultType', 'source', 'project_code', 'nawqa_project', 'mimeType', 'zip', '__ncforminfo' /*input is injected by barracuda firewall*/],
+			var formParams = PORTAL.UTILS.getFormValues(
+				$form,
+				['mimeType', 'zip', '__ncforminfo' /*input is injected by barracuda firewall*/],
 				true
 			);
 			PORTAL.portalDataMap.showDataLayer(formParams, function () {
@@ -143,47 +62,26 @@ $(document).ready(function () {
 			});
 		};
 
-		if (!PORTAL.CONTROLLERS.validateDownloadForm()) {
+		if (!PORTAL.CONTROLLERS.validateDownloadForm($form)) {
 			return;
 		}
 
-		_gaq.push(['_trackEvent', 'Portal Map', 'MapCount', decodeURIComponent(PORTAL.queryServices.getQueryParams())]);
+		_gaq.push([
+			'_trackEvent',
+			'Portal Map',
+			'MapCount',
+			decodeURIComponent(downloadFormView.getQueryParams())
+		]);
 
-		PORTAL.downloadProgressDialog.show('map');
-		PORTAL.queryServices.getHeadRequest('Station').done(function (response) {
+		downloadProgressDialog.show('map');
+		PORTAL.queryServices.fetchHeadRequest('Station', downloadFormView.getQueryParams()).done(function (response) {
+			var fileFormat = 'xml';
 			var counts = PORTAL.DataSourceUtils.getCountsFromHeader(response, PORTAL.MODELS.providers.getIds());
 
-			PORTAL.downloadProgressDialog.updateProgress(counts, 'Station', fileFormat, showMap);
+			downloadProgressDialog.updateProgress(counts, 'Station', fileFormat, showMap);
 
 		}).fail(function (message) {
-			PORTAL.downloadProgressDialog.cancelProgress(message);
-		});
-	});
-
-	// Set up the Download button
-	$('#main-button').click(function (event) {
-		var startDownload = function (totalCount) {
-			_gaq.push(['_trackEvent', 'Portal Page', $('#params input[name="resultType"]').val() + 'Download', decodeURIComponent(PORTAL.queryServices.getQueryParams()), parseInt(totalCount)]);
-			$('#params').submit();
-		};
-		var fileFormat = dataDetailsView.getMimeType();
-		var resultType = dataDetailsView.getResultType();
-
-		if (!PORTAL.CONTROLLERS.validateDownloadForm()) {
-			return;
-		}
-
-		event.preventDefault();
-		_gaq.push(['_trackEvent', 'Portal Page', resultType + 'Count', decodeURIComponent(PORTAL.queryServices.getQueryParams())]);
-
-		PORTAL.downloadProgressDialog.show('download');
-		PORTAL.queryServices.getHeadRequest(resultType).done(function (response) {
-			var counts = PORTAL.DataSourceUtils.getCountsFromHeader(response, PORTAL.MODELS.providers.getIds());
-
-			PORTAL.downloadProgressDialog.updateProgress(counts, resultType, fileFormat, startDownload);
-
-		}).fail(function (message) {
-			PORTAL.downloadProgressDialog.cancelProgress(message);
+			downloadProgressDialog.cancelProgress(message);
 		});
 	});
 
