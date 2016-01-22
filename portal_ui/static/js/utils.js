@@ -52,45 +52,31 @@ PORTAL.UTILS = function() {
 	};
 
 	/*
-	 * Returns an array of objects representing the query in $form with the parameters in ignoreList and empty
-	 * parameters removed.
-	 * @param {Jquery form element} $form
-	 * @param {Array of String} ignoreList - parameter names that should be removed from the returned array.
-	 * @param {Boolean} multiSelectDelimited - if true multi selects are represented by a single key with ';' separated values
-	 * @return {Array of Object} - each object has name and value properties.
+	 * Returns a query string suitable for use as a URL query string with parameters on the ignoreList
+	 * removed.
+	 * @param {Array of Object} paramArray - Each object has a name property and a value property both with string values
+	 * @param {Array of String} ignoreList - Names to be removed from paramArray before serializing
+	 * @param {Boolean} multiSelectDelimited - if true param names that appear more than once are serialized as a single param with ';' separated values
+	 * @return {String} - String suitable for use as a URL query string.
 	 */
-	self.getFormValues = function($form, ignoreList, multiSelectDelimited) {
-		var isValidParam = function (param) {
-			return ((param.value) && (!_.contains(ignoreList, param.name)));
-		};
-		var results = [];
+	self.getQueryString = function(paramArray, ignoreList, multiSelectDelimited) {
+		var thisIgnoreList = (ignoreList) ? ignoreList : [];
+		var resultArray = _.reject(paramArray, function (param) {
+			return _.contains(thisIgnoreList, param.name);
+		});
 
 		if (multiSelectDelimited) {
-			var $nonMultiSelects = $form.find('input[name], textarea[name], select[name]:not([multiple])');
-			var $multiSelects = $form.find('select[name][multiple]');
-			var multiSelectResults = _.map($multiSelects, function (el) {
-				var val = $(el).val();
-				return {
-					name: el.name,
-					value: (val) ? val.join(';') : ''
-				};
-			});
-			results = $nonMultiSelects.serializeArray().concat(multiSelectResults);
+			resultArray = _.chain(resultArray)
+				.groupBy('name')
+				.map(function(groupedParam, name) {
+					return {
+						name : name,
+						value : _.pluck(groupedParam, 'value').join(';')
+					};
+				})
+				.value();
 		}
-		else {
-			results = $form.serializeArray();
-		}
-		return _.filter(results, isValidParam);
-	};
-
-	/*
-	 * @param {Jquery form element $form
-	 * @param {Array of String} ignoreList - parameter names that should be removed from the returned string
-	 * @param {Boolean} multiSelectDelimited - if true multi selects are represented by a single key with ';' separated values
-	 * @return {String} - represents the query in $form with parameters on ignoreList and that are empty removed.
-	 */
-	self.getFormQuery = function($form, ignoreList, multiSelectDelimited) {
-		return $.param(self.getFormValues($form, ignoreList, multiSelectDelimited));
+		return $.param(resultArray);
 	};
 
 	/*

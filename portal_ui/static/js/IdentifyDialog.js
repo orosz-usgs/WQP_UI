@@ -48,7 +48,7 @@ function IdentifyDialog(dialogDivId, downloadUrlFunc /* function returns url str
 
 	this.updateAndShowDialog = function (siteIds /* array of site ids*/,
 										 bbox /* OpenLayers.Bounds in degree */,
-										 formParams) {
+										 queryString) {
 		var that = this;
 		var updateFnc = function (html) {
 			that._detailDivEl.html(html);
