@@ -188,7 +188,7 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 	 */
 	self.getQueryParamArray = function () {
 		// Need to eliminate form parameters within the mapping-div
-		var $formInputs = options.$form.find(':input').not(options.$form.find('#mapping-div:input'));
+		var $formInputs = options.$form.find(':input').not('#mapping-div :input');
 		return _.filter($formInputs.serializeArray(), function(param) {
 			return (param.value);
 		});
