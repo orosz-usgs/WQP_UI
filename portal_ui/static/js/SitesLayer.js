@@ -16,7 +16,7 @@ function SitesLayer(queryParamArray,
 
 	var getSearchParams = function (queryParamArray) {
 		var queryString = PORTAL.UTILS.getQueryString(queryParamArray, ['mimeType', 'zip'], true);
-		var result = decodeURIComponent(queryString);
+		var result = decodeURIComponent(queryString.replace(/\+/g, ' '))
 		return result.replace(/=/g, ':').replace(/;/g, '|').replace(/&/g, ';');
 	};
 
