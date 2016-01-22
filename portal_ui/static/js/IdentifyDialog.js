@@ -48,7 +48,7 @@ function IdentifyDialog(dialogDivId, downloadUrlFunc /* function returns url str
 
 	this.updateAndShowDialog = function (siteIds /* array of site ids*/,
 										 bbox /* OpenLayers.Bounds in degree */,
-										 queryString) {
+										 queryParamArray) {
 		var that = this;
 		var updateFnc = function (html) {
 			that._detailDivEl.html(html);
@@ -61,9 +61,9 @@ function IdentifyDialog(dialogDivId, downloadUrlFunc /* function returns url str
 			if (siteIds.length > 50) {
 				// Download data using bbox and formParams
 				formHtml += '<input type="hidden" name="bBox" value="' + bbox.toBBOX() + '" />';
-				for (i = 0; i < formParams.length; i++) {
-					if (formParams[i].name !== 'bBox') {
-						formHtml += '<input type="hidden" name="' + formParams[i].name + '" value="' + formParams[i].value + '" />';
+				for (i = 0; i < queryParamArray.length; i++) {
+					if (queryParamArray[i].name !== 'bBox') {
+						formHtml += '<input type="hidden" name="' + queryParamArray[i].name + '" value="' + queryParamArray[i].value + '" />';
 					}
 				}
 			}
