@@ -2,54 +2,14 @@
 /* global $ */
 /* global _ */
 /* global Config */
-/* global Handlebars */
 
 var PORTAL = PORTAL || {};
 PORTAL.UTILS = function() {
 	"use strict";
 	var self = {};
 
-	var CHECKBOX_SOURCE = '<input type="checkbox" id="{{id}}" class="{{className}}" value="{{value}}" />' +
-		'<label for="{{id}}">{{value}}</label>';
-	var checkboxTemplate = Handlebars.compile(CHECKBOX_SOURCE);
-
 	var COLLAPSE_IMG = Config.STATIC_ENDPOINT + 'img/collapse.png';
 	var EXPAND_IMG = Config.STATIC_ENDPOINT + 'img/expand.png';
-
-	/*
-	 * Set the state of the checkboxes in elements to state
-	 * @param {Array of jquery elements} $els
-	 * @param {Boolean} state
-	 */
-	self.setCheckboxState = function($els, state ) {
-		$els.prop('checked', state);
-	};
-
-	/*
-	 * Set the state of the tri-state checkbox elements to indeterminate or if that is false to state
-	 * @param {Array of jquery elements} $els
-	 * @param {Boolean} indeterminate
-	 * @param {Boolean} state
-	 */
-	self.setCheckboxTriState = function($els, indeterminate, state) {
-		if (indeterminate) {
-			$els.prop('indeterminate', true);
-		}
-		else {
-			$els.prop('indeterminate', false);
-			self.setCheckboxState($els, state);
-		}
-	};
-
-	/*
-	 * Generate the html to represent a checkbox
-	 * @param {String} id
-	 * @param {String} className
-	 * @param {String} value
-	 */
-	self.getCheckBoxHtml = function(id, className, value) {
-		return checkboxTemplate({id : id, className: className, value: value});
-	};
 
 	/*
 	 * Returns a query string suitable for use as a URL query string with parameters on the ignoreList
