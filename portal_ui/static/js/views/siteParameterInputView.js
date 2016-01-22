@@ -39,7 +39,8 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 			formatData : formatData,
 			isMatch : isMatch
 		}, {
-			minimumInputLength: 2
+			minimumInputLength: 2,
+			closeOnSelect : false
 		});
 	};
 

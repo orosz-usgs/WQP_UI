@@ -25,7 +25,9 @@ PORTAL.VIEWS.biologicalSamplingInputView = function(options) {
 		options.assemblageModel.fetch().done(function() {
 			PORTAL.VIEWS.createCodeSelect($assemblage, {model : options.assemblageModel});
 		});
-		PORTAL.VIEWS.createPagedCodeSelect($taxonomicName, {codes: 'subjecttaxonomicname'});
+		PORTAL.VIEWS.createPagedCodeSelect($taxonomicName, {codes: 'subjecttaxonomicname'},
+			{closeOnSelect : false}
+		);
 	};
 
 	return self;
