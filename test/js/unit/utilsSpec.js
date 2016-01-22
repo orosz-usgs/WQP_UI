@@ -7,129 +7,57 @@
 /* global PORTAL */
 /* global $ */
 
-describe('Test utils package', function () {
+describe('Test PORTAl.UTILS package', function () {
 	"use strict";
 
-	describe('Test getFormValues', function () {
-		beforeEach(function () {
-			$('body').append('<form></form>');
+	describe('Test getQueryString', function() {
+
+		var testParamArray = [
+			{name : 'P1', value : 'Value1'},
+			{name : 'P2', value : 'Value2_1'},
+			{name : 'P2', value : 'Value2_2'},
+			{name : 'P2', value : 'Value2_3'},
+			{name : 'P3', value : 'Value3'},
+			{name : 'P4', value : 'Value4_1'},
+			{name : 'P4', value : 'Value4_2'}
+		];
+
+		it('Expects that if ignoreList and mulitSelectDelimited are not specified that the array is serialized', function() {
+			var result = PORTAL.UTILS.getQueryString(testParamArray);
+			expect(result).toContain('P1=Value1');
+			expect(result).toContain('P2=Value2_1');
+			expect(result).toContain('P2=Value2_2');
+			expect(result).toContain('P2=Value2_3');
+			expect(result).toContain('P3=Value3');
+			expect(result).toContain('P4=Value4_1');
+			expect(result).toContain('P4=Value4_2');
 		});
 
-		afterEach(function () {
-			$('form').remove();
+		it('Expects that if ignoreList contains names that are in the parameters array that the result string does not contain those parameters', function() {
+			var result = PORTAL.UTILS.getQueryString(testParamArray, ['P2', 'P3']);
+			expect(result).toContain('P1=Value1');
+			expect(result).not.toContain('P2=Value2_1');
+			expect(result).not.toContain('P2=Value2_2');
+			expect(result).not.toContain('P2=Value2_3');
+			expect(result).not.toContain('P3=Value3');
+			expect(result).toContain('P4=Value4_1');
+			expect(result).toContain('P4=Value4_2');
 		});
 
-		it('Expects an empty array if the form is empty', function () {
-			expect(PORTAL.UTILS.getFormValues($('form'))).toEqual([]);
+		it('Expects that if multiSelectDelimited is set to true, duplicate param names are serialized into a single param', function() {
+			var result = PORTAL.UTILS.getQueryString(testParamArray, [], true);
+			expect(result).toContain('P1=Value1');
+			expect(result).toContain('P2=Value2_1%3BValue2_2%3BValue2_3');
+			expect(result).toContain('P3=Value3');
+			expect(result).toContain('P4=Value4_1%3BValue4_2');
 		});
 
-		it('Expects all form inputs to be returned if they have no empty values', function () {
-			var input1 = '<input type="hidden" name="P1" value="one">';
-			var input2 = '<select name="P2"><option selected value="two">P2_1</option></select>';
-			var input3 = '<select class="modern" multiple name="P3">' +
-				'<option selected value="three">P3_1</option>' +
-				'<option selected value="second_three">P3_2</option></select>';
-			var input4 = '<select name="P4" multiple>' +
-				'<option value="four" selected>P4</option>' +
-				'<option value="second_four" selected>P5</select>';
-			$('form').append(input1 + input2 + input3 + input4);
-
-			expect(PORTAL.UTILS.getFormValues($('form'), [], false)).toEqual([
-				{'name': 'P1', 'value': 'one'},
-				{'name': 'P2', 'value': 'two'},
-				{'name': 'P3', 'value': 'three'},
-				{'name': 'P3', 'value': 'second_three'},
-				{'name': 'P4', 'value': 'four'},
-				{'name': 'P4', 'value' : 'second_four'}
-			]);
-			expect(PORTAL.UTILS.getFormValues($('form'), [], true)).toEqual([
-				{'name': 'P1', 'value': 'one'},
-				{'name': 'P2', 'value': 'two'},
-				{'name': 'P3', 'value': 'three;second_three'},
-				{'name': 'P4', 'value': 'four;second_four'}
-			]);
-		});
-		it('Expects only non-empty form inputs to be returned', function () {
-			var input1 = '<input type="hidden" name="P1" value="one">';
-			var input2 = '<select name="P2"><option selected value="two">P2_1</option></select>';
-			var input3 = '<select multiple name="P3">' +
-				'<option value="three">P3_1</option>' +
-				'<option value="second_three">P3_2</option></select>';
-			var input4 = '<select name="P4" multiple>' +
-				'<option value="four">P4</option>' +
-				'<option value="second_four">P5</select>';
-			$('form').append(input1 + input2 + input3 + input4);
-
-			expect(PORTAL.UTILS.getFormValues($('form'))).toEqual([{'name': 'P1', 'value': 'one'},
-				{'name': 'P2', 'value': 'two'}]);
-		});
-		it('Expects ignored values to be excluded from returned list', function () {
-			var input1 = '<input type="hidden" name="P1" value="one">';
-			var input2 = '<select name="P2"><option selected value="two">P2_1</option></select>';
-			var input3 = '<select  multiple name="P3">' +
-				'<option value="three" selected>P3_1</option>' +
-				'<option value="second_three">P3_2</option></select>';
-			var input4 = '<select name="P4" multiple>' +
-				'<option value="four" selected>P4</option>' +
-				'<option value="second_four">P5</select>';
-			$('form').append(input1 + input2 + input3 + input4);
-
-			expect(PORTAL.UTILS.getFormValues($('form'), ['P1', 'P2', 'P4'])).toEqual([{'name': 'P3', 'value': 'three'}]);
-		});
-
-	});
-
-	describe('Test getFormQuery', function () {
-		beforeEach(function () {
-			$('body').append('<form></form>');
-		});
-
-		afterEach(function () {
-			$('form').remove();
-		});
-
-		it('Expects an empty string if the form is empty', function () {
-			expect(PORTAL.UTILS.getFormQuery($('form'))).toEqual('');
-		});
-
-		it('Expects all form inputs to be returned if they have no empty values', function () {
-			var input1 = '<input type="hidden" name="P1" value="one">';
-			var input2 = '<select name="P2"><option selected value="two">P2_1</option></select>';
-			var input3 = '<select  multiple name="P3">' +
-				'<option selected value="three">P3_1</option>' +
-				'<option selected value="second_three">P3_2</option></select>';
-			var input4 = '<select name="P4" multiple>' +
-				'<option value="four" selected>P4</option>' +
-				'<option value="second_four" selected>P5</select>';
-			$('form').append(input1 + input2 + input3 + input4);
-
-			expect(PORTAL.UTILS.getFormQuery($('form'))).toEqual('P1=one&P2=two&P3=three&P3=second_three&P4=four&P4=second_four');
-		});
-		it('Expects only non-empty form inputs to be returned', function () {
-			var input1 = '<input type="hidden" name="P1" value="one">';
-			var input2 = '<select name="P2"><option selected value="two">P2_1</option></select>';
-			var input3 = '<select multiple name="P3">' +
-				'<option value="three">P3_1</option>' +
-				'<option value="second_three">P3_2</option></select>';
-			var input4 = '<select name="P4" multiple>' +
-				'<option value="four">P4</option>' +
-				'<option value="second_four">P5</select>';
-			$('form').append(input1 + input2 + input3 + input4);
-
-			expect(PORTAL.UTILS.getFormQuery($('form'))).toEqual('P1=one&P2=two');
-		});
-		it('Expects ignored values to be excluded from returned list', function () {
-			var input1 = '<input type="hidden" name="P1" value="one">';
-			var input2 = '<select name="P2"><option selected value="two">P2_1</option></select>';
-			var input3 = '<select multiple name="P3">' +
-				'<option value="three" selected>P3_1</option>' +
-				'<option value="second_three">P3_2</option></select>';
-			var input4 = '<select name="P4" multiple>' +
-				'<option value="four" selected>P4</option>' +
-				'<option value="second_four">P5</select>';
-			$('form').append(input1 + input2 + input3 + input4);
-
-			expect(PORTAL.UTILS.getFormQuery($('form'), ['P1', 'P2', 'P4'])).toEqual('P3=three');
+		it('Expects that ignoreList is respected when multiSelectDelimited is set to true', function() {
+			var result = PORTAL.UTILS.getQueryString(testParamArray, ['P2', 'P3'], true);
+			expect(result).toContain('P1=Value1');
+			expect(result).not.toContain('P2=Value2_1%3BValue2_2%3BValue2_3');
+			expect(result).not.toContain('P3=Value3');
+			expect(result).toContain('P4=Value4_1%3BValue4_2');
 		});
 	});
 

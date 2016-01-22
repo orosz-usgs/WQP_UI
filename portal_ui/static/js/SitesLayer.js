@@ -1,30 +1,26 @@
 /*
  * Provides methods to create a site layer and to add an id control
- * @param {Array of {Object - with name and value properties} formParams
+ * @param {Array of Objects with name and value properties} queryParamArray
  * @param {Function} loadendCallback - to be called when loadend event is triggered.
  * @param {Boolean} enableBoxId
  * @param {Function} selectFeatureFnc - function to execute when selecting features on the layer
  * @returns {Object}
  */
 
-function SitesLayer(formParams,
+function SitesLayer(queryParamArray,
 					loadendCallback,
 					enableBoxId,
 					selectFeatureFnc) {
 	this._isBoxIDEnabled = enableBoxId;
 	this._selectFeatureFnc = selectFeatureFnc;
 
-	var getSearchParams = function (formParams) {
-		var result = [];
-		providerValues = [];
-		$.each(formParams, function (index, param) {
-			var paramStr = param.name + ':' + param.value.replace(/;/g, '|');
-			result.push(paramStr);
-		});
-		return result.join(';');
+	var getSearchParams = function (queryParamArray) {
+		var queryString = PORTAL.UTILS.getQueryString(queryParamArray, ['mimeType', 'zip'], true);
+		var result = decodeURIComponent(queryString);
+		return result.replace(/=/g, ':').replace(/;/g, '|').replace(/&/g, ';');
 	};
 
-	this.searchParams = getSearchParams(formParams);
+	this.searchParams = getSearchParams(queryParamArray);
 
 	this.dataLayer = new OpenLayers.Layer.WMS(
 		'Sites',

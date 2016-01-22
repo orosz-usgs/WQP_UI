@@ -25,6 +25,8 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
 				'<div id="biological"></div>' +
 				'<div id="download-box-input-div"></div>' +
 				'<select id="providers-select" multiple></select>' +
+				'<input type="hidden" name="fake-param" value="Fake1" />' +
+				'<div id="mapping-div"><input type="hidden" name="map-param" value="Value1" /></div>' +
 				'<button id="main-button" type="submit">Download</button>' +
 				'</form></div>'
 		);
@@ -118,6 +120,10 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
 		expect(PORTAL.VIEWS.createStaticSelect2).not.toHaveBeenCalled();
 	});
 
+	it('Expects getQueryParams to return the form parameters, omitting those within the mapping-div', function() {
+		expect(testView.getQueryParamArray()).toEqual([{name : 'fake-param', value: 'Fake1'}]);
+	});
+
 	describe('Tests for clicking the download button', function() {
 
 		var success;
@@ -137,7 +143,7 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
 			success = true;
 			$('#main-button').trigger('click');
 			expect(mockDownloadDialog.show).toHaveBeenCalled();
-			expect(PORTAL.queryServices.fetchHeadRequest).toHaveBeenCalledWith('Result', '');
+			expect(PORTAL.queryServices.fetchHeadRequest).toHaveBeenCalledWith('Result', 'fake-param=Fake1');
 		});
 
 		it('Expects that if the head request is successful, the dialog is updated', function() {

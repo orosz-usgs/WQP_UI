@@ -32,6 +32,7 @@ bundles = {
         'js/portalModels.js',
         'js/DataSourceUtils.js',
         'js/views/downloadFormView.js',
+        'js/views/siteMapView.js',
         'js/views/placeInputView.js',
         'js/views/pointLocationInputView.js',
         'js/views/boundingBoxInputView.js',

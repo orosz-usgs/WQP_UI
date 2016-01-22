@@ -1,4 +1,4 @@
-function PortalDataMap(mapDivId, updateDivId, identifyDialog /* IdentifyDialog object */) {
+function PortalDataMap(mapDivId, identifyDialog /* IdentifyDialog object */) {
 	var WPS_URL = Config.GEOSERVER_ENDPOINT + '/ows?service=WPS&version=1.0.0&request=Execute';
 	var BASE_LAYERS = ['world_topo', 'world_street', 'world_relief', 'world_imagery'];
 
@@ -32,7 +32,6 @@ function PortalDataMap(mapDivId, updateDivId, identifyDialog /* IdentifyDialog o
 	this.dataLayer = null; // The displayed dataLayer. This will be a SitesLayer object.
 
 	this._boxIdentifyOn = false;
-	this._updateDivEl = $('#' + updateDivId);
 	this._identifyDialog = identifyDialog;
 	this._popupIdentify;
 
@@ -48,11 +47,6 @@ function PortalDataMap(mapDivId, updateDivId, identifyDialog /* IdentifyDialog o
 	};
 
 	this._identifyDialog.create(this);
-
-
-	this.timerId = {};
-	this.completeFnc = null; // Function to call when mapping process completes
-
 
 	/* Initialize the portal data map */
 	OpenLayers.ProxyHost = ""
@@ -93,22 +87,13 @@ function PortalDataMap(mapDivId, updateDivId, identifyDialog /* IdentifyDialog o
 		this._selectBoxLayer.destroyFeatures();
 	};
 
-	this.cancelMapping = function () {
-		window.clearInterval(this.timerId);
-		this.timerId = {};
-		this._updateDivEl.hide();
-		if (this.completeFnc) {
-			this.completeFnc();
-			this.completeFnc = null;
-		}
-	};
 
 	/*
 	 * Removes the previous data layer if any and any identification dialogs. Retrieves
 	 * and displays the new data layer
-	 * @param {Array of {Object with name and value properties}} formParams
+	 * @param {Array of Objects with name and value properties} queryParamArray to retrieve data layer
 	 */
-	this.showDataLayer = function (formParams, loadendCallback) {
+	this.showDataLayer = function (queryParamArray, loadendCallback) {
 		var self = this;
 		// Clean up previous data Layer
 		if (this.dataLayer) {
@@ -123,7 +108,7 @@ function PortalDataMap(mapDivId, updateDivId, identifyDialog /* IdentifyDialog o
 			this.map.removePopup(this._popupIdentify);
 		}
 		this.dataLayer = new SitesLayer(
-			formParams,
+			queryParamArray,
 			loadendCallback,
 			this._boxIdentifyOn,
 			function (ev, selectBoundingBox) {
@@ -157,7 +142,7 @@ function PortalDataMap(mapDivId, updateDivId, identifyDialog /* IdentifyDialog o
 				}
 				else {
 					degreeBBox = selectBoundingBox.transform(MapUtils.MERCATOR_PROJECTION, MapUtils.WGS84_PROJECTION);
-					self._identifyDialog.updateAndShowDialog(siteIds, degreeBBox, formParams);
+					self._identifyDialog.updateAndShowDialog(siteIds, degreeBBox, queryParamArray);
 				}
 			}
 		);

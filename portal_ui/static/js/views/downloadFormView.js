@@ -1,5 +1,6 @@
 /* jslint browser: true */
 /* global $ */
+/* global _ */
 /* global _gaq */
 /* global alert */
 
@@ -134,13 +135,14 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 		options.$form.find('#main-button').click(function (event) {
 			var fileFormat = dataDetailsView.getMimeType();
 			var resultType = dataDetailsView.getResultType();
+			var queryString = PORTAL.UTILS.getQueryString(self.getQueryParamArray());
 
 			var startDownload = function (totalCount) {
 				_gaq.push([
 					'_trackEvent',
 					'Portal Page',
 					dataDetailsView.getResultType() + 'Download',
-					decodeURIComponent(self.getQueryParams()),
+					decodeURIComponent(queryString),
 					parseInt(totalCount)]);
 				options.$form.submit();
 			};
@@ -155,11 +157,11 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 				'_trackEvent',
 				'Portal Page',
 				resultType + 'Count',
-				decodeURIComponent(self.getQueryParams())
+				decodeURIComponent(queryString)
 			]);
 
 			options.downloadProgressDialog.show('download');
-			PORTAL.queryServices.fetchHeadRequest(resultType, self.getQueryParams())
+			PORTAL.queryServices.fetchHeadRequest(resultType, queryString)
 				.done(function (response) {
 					var counts = PORTAL.DataSourceUtils.getCountsFromHeader(response, PORTAL.MODELS.providers.getIds());
 					options.downloadProgressDialog.updateProgress(counts, resultType, fileFormat, startDownload);
@@ -171,8 +173,25 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 		});
 	};
 
-	self.getQueryParams = function () {
-		return PORTAL.UTILS.getFormQuery(options.$form);
+	/*
+	 * Validate the form and return true if it is valid, false otherwise
+	 * @return {Boolean}
+	 */
+	self.validateDownloadForm = function() {
+		return PORTAL.CONTROLLERS.validateDownloadForm(options.$form);
+	};
+
+	/*
+	 * Return an array of Objects with name and value properties representing the current state of the form. Empty
+	 * values are removed from the array
+	 * @return {Array of Objects with name and value properties}
+	 */
+	self.getQueryParamArray = function () {
+		// Need to eliminate form parameters within the mapping-div
+		var $formInputs = options.$form.find(':input').not('#mapping-div :input');
+		return _.filter($formInputs.serializeArray(), function(param) {
+			return (param.value);
+		});
 	};
 
 	return self;
