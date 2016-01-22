@@ -35,8 +35,10 @@ PORTAL.VIEWS.samplingParameterInputView = function(options) {
 			PORTAL.VIEWS.createCodeSelect($characteristicType, {model : options.characteristicTypeModel});
 		});
 
-		PORTAL.VIEWS.createPagedCodeSelect($characteristicName, {codes: 'characteristicname'});
-		PORTAL.VIEWS.createPagedCodeSelect($projectCode, {codes: 'project'});
+		PORTAL.VIEWS.createPagedCodeSelect($characteristicName, {codes: 'characteristicname'}, {closeOnSelect : false});
+		PORTAL.VIEWS.createPagedCodeSelect($projectCode, {codes: 'project'},
+			{closeOnSelect : false}
+		);
 
 		// Add input validations and reformatting handlers
 		PORTAL.VIEWS.inputValidation({
