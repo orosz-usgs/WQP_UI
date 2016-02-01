@@ -1,12 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>gov.usgs.cida.wqp</groupId>
 	<artifactId>wqp_ui</artifactId>
 	<packaging>pom</packaging>
-	<version>3.8-SNAPSHOT</version>
+	<version>3.8</version>
 	<name>WQP UI</name>
 
 	<properties>
@@ -81,7 +80,7 @@
 		<connection>scm:git:git@github.com:USGS-CIDA/WQP_UI.git</connection>
 		<developerConnection>scm:git:git@github.com:USGS-CIDA/WQP_UI.git</developerConnection>
 		<url>https://github.com/USGS-CIDA/WQP_UI</url>
-		<tag>HEAD</tag>
+		<tag>wqp_ui-3.8</tag>
 	</scm>
 
 	<distributionManagement>
