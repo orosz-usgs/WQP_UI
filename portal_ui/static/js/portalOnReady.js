@@ -5,11 +5,24 @@
 /* global Config */
 /* global IdentifyDialog */
 /* global PortalDataMap */
+/* global log */
 
 var PORTAL = PORTAL || {};
 
 $(document).ready(function () {
 	"use strict";
+	// Set the loglevel
+	if (Config.DEBUG) {
+		log.setLevel('debug', false);
+	}
+	else {
+		log.setLevel('warn', false);
+	}
+
+	log.debug('Debug log message');
+	log.info('Info log message');
+	log.warn('Warn log message');
+	log.error('Error log message');
 
 	var $form = $('#params');
 
