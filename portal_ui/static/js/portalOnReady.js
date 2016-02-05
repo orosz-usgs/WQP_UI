@@ -11,6 +11,7 @@ var PORTAL = PORTAL || {};
 
 $(document).ready(function () {
 	"use strict";
+
 	// Set the loglevel
 	if (Config.DEBUG) {
 		log.setLevel('debug', false);
@@ -19,13 +20,9 @@ $(document).ready(function () {
 		log.setLevel('warn', false);
 	}
 
-	log.debug('Debug log message');
-	log.info('Info log message');
-	log.warn('Warn log message');
-	log.error('Error log message');
-
 	var $form = $('#params');
 
+	// Create sub views
 	var downloadProgressDialog = PORTAL.VIEWS.downloadProgressDialog($('#download-status-dialog'));
 	var downloadFormView = PORTAL.VIEWS.downloadFormView({
 		$form : $form,
@@ -39,6 +36,7 @@ $(document).ready(function () {
 		downloadFormView : downloadFormView
 	});
 
+	//Initialize subviews
 	downloadFormView.initialize();
 	siteMapView.initialize();
 
@@ -51,7 +49,6 @@ $(document).ready(function () {
 
 		$('#WSFeedback').html(stationSection + resultSection);
 	});
-	// Initialize portal data map and identify dialog
 
 });
 
