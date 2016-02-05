@@ -13,6 +13,7 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
 	var placeMock, boundingBoxMock, pointLocationMock, siteParameterMock, samplingParametersMock, biologicalSamplingMock,
 		dataDetailsMock;
 	var fetchProvidersDeferred, fetchHeadDeferred;
+	var placeInitDeferred, siteParameterInitDeferred, samplingInitDeferred, bioSamplingInitDeferred;
 	var mockDownloadDialog;
 
 	beforeEach(function() {
@@ -32,8 +33,13 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
 		);
 		$testDiv = $('#test-div');
 
+		placeInitDeferred = $.Deferred();
+		siteParameterInitDeferred = $.Deferred();
+		samplingInitDeferred = $.Deferred();
+		bioSamplingInitDeferred = $.Deferred();
+
 		placeMock  = {
-			initialize : jasmine.createSpy('placeInitialize')
+			initialize : jasmine.createSpy('placeInitialize').and.returnValue(placeInitDeferred)
 		};
 		boundingBoxMock  = {
 			initialize : jasmine.createSpy('boundingBoxInitialize')
@@ -42,13 +48,13 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
 			initialize : jasmine.createSpy('pointLocationInitialize')
 		};
 		siteParameterMock  = {
-			initialize : jasmine.createSpy('siteParameterInitialize')
+			initialize : jasmine.createSpy('siteParameterInitialize').and.returnValue(siteParameterInitDeferred)
 		};
 		samplingParametersMock  = {
-			initialize : jasmine.createSpy('samplingParametersInitialize')
+			initialize : jasmine.createSpy('samplingParametersInitialize').and.returnValue(samplingInitDeferred)
 		};
 		biologicalSamplingMock  = {
-			initialize : jasmine.createSpy('biologicalSamplingInitialize')
+			initialize : jasmine.createSpy('biologicalSamplingInitialize').and.returnValue(bioSamplingInitDeferred)
 		};
 		dataDetailsMock  = {
 			initialize : jasmine.createSpy('dataDetailsInitialize'),
@@ -124,8 +130,72 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
 		expect(testView.getQueryParamArray()).toEqual([{name : 'fake-param', value: 'Fake1'}]);
 	});
 
-	describe('Tests for clicking the download button', function() {
+	describe('Tests for promise returned from initialize', function() {
+		var initSuccessSpy, initFailSpy;
 
+		beforeEach(function() {
+			initSuccessSpy = jasmine.createSpy('initSuccessSpy');
+			initFailSpy = jasmine.createSpy('initFailSpy');
+			testView.initialize().done(initSuccessSpy).fail(initFailSpy);
+		});
+
+		it('Expects the promise to be resolved when all child views have been initialized as well as the providers', function() {
+			expect(initSuccessSpy).not.toHaveBeenCalled();
+			expect(initFailSpy).not.toHaveBeenCalled();
+
+			fetchProvidersDeferred.resolve();
+			expect(initSuccessSpy).not.toHaveBeenCalled();
+			expect(initFailSpy).not.toHaveBeenCalled();
+
+			placeInitDeferred.resolve();
+			expect(initSuccessSpy).not.toHaveBeenCalled();
+			expect(initFailSpy).not.toHaveBeenCalled();
+
+			siteParameterInitDeferred.resolve();
+			expect(initSuccessSpy).not.toHaveBeenCalled();
+			expect(initFailSpy).not.toHaveBeenCalled();
+
+			samplingInitDeferred.resolve();
+			expect(initSuccessSpy).not.toHaveBeenCalled();
+			expect(initFailSpy).not.toHaveBeenCalled();
+
+			bioSamplingInitDeferred.resolve();
+			expect(initSuccessSpy).toHaveBeenCalled();
+			expect(initFailSpy).not.toHaveBeenCalled();
+		});
+
+		it('Expects the promise to be rejected if the provider view is not successfully initialized', function() {
+			fetchProvidersDeferred.reject();
+			expect(initSuccessSpy).not.toHaveBeenCalled();
+			expect(initFailSpy).toHaveBeenCalled();
+		});
+
+		it('Expects the promise to be rejected if the placeInput views is not successfully initialized', function() {
+			placeInitDeferred.reject();
+			expect(initSuccessSpy).not.toHaveBeenCalled();
+			expect(initFailSpy).toHaveBeenCalled();
+		});
+
+		it('Expects the promise to be rejected if the site parameter view is not successfully initialized', function() {
+			siteParameterInitDeferred.reject();
+			expect(initSuccessSpy).not.toHaveBeenCalled();
+			expect(initFailSpy).toHaveBeenCalled();
+		});
+
+		it('Expects the promise to be rejected if the sampling view is not successfully initialized', function() {
+			samplingInitDeferred.reject();
+			expect(initSuccessSpy).not.toHaveBeenCalled();
+			expect(initFailSpy).toHaveBeenCalled();
+		});
+
+		it('Expects the promise to be rejected if the bioSampling view is not successfully initialized', function() {
+			bioSamplingInitDeferred.reject();
+			expect(initSuccessSpy).not.toHaveBeenCalled();
+			expect(initFailSpy).toHaveBeenCalled();
+		});
+	});
+
+	describe('Tests for clicking the download button', function() {
 		var success;
 		beforeEach(function() {
 			spyOn(PORTAL.CONTROLLERS, 'validateDownloadForm').and.callFake(function() { return success;});
