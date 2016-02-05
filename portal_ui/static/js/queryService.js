@@ -1,6 +1,7 @@
 /*jslint browser: true*/
 /* global $ */
 /* global Config */
+/* global log */
 var PORTAL = PORTAL || {};
 
 PORTAL.queryServices = (function () {
@@ -31,6 +32,7 @@ PORTAL.queryServices = (function () {
 				deferred.resolve(jqXHR);
 			},
 			error: function (jqXHR, textStatus) {
+				log.error('Unable to contact the WQP services: ' + textStatus);
 				deferred.resolve('Unable to contact the WQP services: ' + textStatus);
 			}
 		});
