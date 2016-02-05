@@ -37,7 +37,7 @@ $(document).ready(function () {
 	});
 
 	//Initialize subviews
-	downloadFormView.initialize();
+	var initDownloadForm = downloadFormView.initialize();
 	siteMapView.initialize();
 
 	// Add click handler for the Show queries button
@@ -48,6 +48,10 @@ $(document).ready(function () {
 		var resultSection = "<div class=\"show-query-text\"><b>Results</b><br><textarea readonly=\"readonly\" rows='6'>" + PORTAL.queryServices.getFormUrl('Result', queryString) + "</textarea></div>";
 
 		$('#WSFeedback').html(stationSection + resultSection);
+	});
+
+	initDownloadForm.fail(function() {
+		$('#service-error-dialog').modal('show');
 	});
 
 });
