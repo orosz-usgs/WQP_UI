@@ -1,4 +1,5 @@
 /* jslint browser: true */
+/* global $ */
 
 var PORTAL = PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
@@ -19,6 +20,9 @@ PORTAL.VIEWS.samplingParameterInputView = function(options) {
 
 	/*
 	 * Initializes and sets up the DOM event handlers for the inputs
+	 * @return Jquery.promise
+	 * 		@resolve - all models have been successfully fetched
+	 * 		@reject - one or models have not been successfully fetched
 	 */
 	self.initialize = function() {
 		var $sampleMedia = options.$container.find('#sampleMedia');
@@ -28,10 +32,14 @@ PORTAL.VIEWS.samplingParameterInputView = function(options) {
 		var $startDate = options.$container.find('#startDateLo');
 		var $endDate = options.$container.find('#startDateHi');
 
-		options.sampleMediaModel.fetch().done(function() {
+		var fetchSampleMedia = options.sampleMediaModel.fetch();
+		var fetchCharacteristicType = options.characteristicTypeModel.fetch();
+		var fetchComplete = $.when(fetchSampleMedia, fetchCharacteristicType);
+
+		fetchSampleMedia.done(function() {
 			PORTAL.VIEWS.createCodeSelect($sampleMedia, {model : options.sampleMediaModel});
 		});
-		options.characteristicTypeModel.fetch().done(function() {
+		fetchCharacteristicType.done(function() {
 			PORTAL.VIEWS.createCodeSelect($characteristicType, {model : options.characteristicTypeModel});
 		});
 
@@ -55,6 +63,8 @@ PORTAL.VIEWS.samplingParameterInputView = function(options) {
 				return PORTAL.dateValidator.format(value, false);
 			}
 		});
+
+		return fetchComplete;
 	};
 
 	return self;

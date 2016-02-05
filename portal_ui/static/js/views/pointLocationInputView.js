@@ -1,5 +1,5 @@
 /* jslint browser: true */
-/* global alert */
+/* global log */
 
 var PORTAL = PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
@@ -24,7 +24,8 @@ PORTAL.VIEWS.pointLocationInputView = function(options) {
 		};
 
 		var displayError = function(err) {
-			alert ('ERROR(' + err.code + '): ' + err.message);
+			log.error('ERROR(' + err.code + '): ' + err.message);
+			//TODO: Add call to show alert
 		};
 
 		navigator.geolocation.getCurrentPosition(updateInputs, displayError, {

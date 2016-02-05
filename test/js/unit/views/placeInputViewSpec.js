@@ -12,6 +12,8 @@ describe('Test PORTAL.VIEWS.placeInputView', function () {
 	var fetchCountrySpy, fetchStateSpy, fetchCountySpy;
 	var $countrySelect, $stateSelect, $countySelect;
 
+	var initializeComplete, initializeSuccessSpy, initializeFailSpy;
+
 
 	beforeEach(function () {
 		var countryHtml = '<select name="countrycode" id="countrycode" multiple></select>';
@@ -58,13 +60,18 @@ describe('Test PORTAL.VIEWS.placeInputView', function () {
 
 		spyOn(PORTAL.VIEWS, 'createCodeSelect');
 		spyOn(PORTAL.VIEWS, 'createCascadedCodeSelect');
+
+		initializeSuccessSpy = jasmine.createSpy('initializeSuccessSpy');
+		initializeFailSpy = jasmine.createSpy('initializeFailSpy');
+
 		testView = PORTAL.VIEWS.placeInputView({
 			$container : $('#test-div'),
 			countryModel : countryModel,
 			stateModel : stateModel,
 			countyModel : countyModel
 		});
-		testView.initialize();
+
+		initializeComplete = testView.initialize();
 	});
 
 	afterEach(function () {
@@ -82,6 +89,38 @@ describe('Test PORTAL.VIEWS.placeInputView', function () {
 		expect(PORTAL.VIEWS.createCodeSelect).not.toHaveBeenCalled();
 		fetchCountrySpy.resolve();
 		expect(PORTAL.VIEWS.createCodeSelect).toHaveBeenCalled();
+	});
+
+	it('Expects that the returned promise is not resolved until both the countries and the US states have been successfully retrieved', function() {
+		initializeComplete.done(initializeSuccessSpy).fail(initializeFailSpy);
+		expect(initializeSuccessSpy).not.toHaveBeenCalled();
+		expect(initializeFailSpy).not.toHaveBeenCalled();
+
+		fetchCountrySpy.resolve();
+		expect(initializeSuccessSpy).not.toHaveBeenCalled();
+		expect(initializeFailSpy).not.toHaveBeenCalled();
+
+		fetchStateSpy.resolve();
+		expect(initializeSuccessSpy).toHaveBeenCalled();
+		expect(initializeFailSpy).not.toHaveBeenCalled();
+	});
+
+	it('Expects the returned promise to be rejected if countries are fetches successfully but states are not', function() {
+		initializeComplete.done(initializeSuccessSpy).fail(initializeFailSpy);
+
+		fetchCountrySpy.resolve();
+		fetchStateSpy.reject();
+		expect(initializeSuccessSpy).not.toHaveBeenCalled();
+		expect(initializeFailSpy).toHaveBeenCalled();
+	});
+
+	it('Expects the returned promise to be rejected is states are fetched successfully but not countries', function() {
+		initializeComplete.done(initializeSuccessSpy).fail(initializeFailSpy);
+
+		fetchCountrySpy.reject();
+		fetchStateSpy.resolve();
+		expect(initializeSuccessSpy).not.toHaveBeenCalled();
+		expect(initializeFailSpy).toHaveBeenCalled();
 	});
 
 	it('Expects that the isMatch function for the country select creation matches the string in the id or the description', function() {

@@ -145,6 +145,9 @@ PORTAL.VIEWS.placeInputView = function (options) {
 
 	/*
 	 * Initialize the select2's and add event handlers
+	 * @return Jquery promise
+	 * 		@resolve - When all models have been fetched successfully
+	 * 		@reject - If any of the fetches failed.
 	 */
 	self.initialize = function() {
 		//Initialize select els
@@ -154,6 +157,9 @@ PORTAL.VIEWS.placeInputView = function (options) {
 
 		//Fetch initial model data
 		var fetchCountries = options.countryModel.fetch();
+		var fetchUSStates = options.stateModel.fetch([USA]);
+		var fetchComplete = $.when(fetchCountries, fetchUSStates);
+
 		options.stateModel.fetch([USA]);
 
 		var getCountryKeys = function () {
@@ -203,7 +209,7 @@ PORTAL.VIEWS.placeInputView = function (options) {
 
 			$countySelect.val(_.filter(counties, isInStates)).trigger('change');
 		});
-		var countyValidation = PORTAL.VIEWS.inputValidation({
+		PORTAL.VIEWS.inputValidation({
 			inputEl : $countySelect,
 			validationFnc : function(val, ev) {
 				var result;
@@ -223,6 +229,8 @@ PORTAL.VIEWS.placeInputView = function (options) {
 			},
 			event : 'select2:opening'
 		});
+
+		return fetchComplete;
 	};
 
 	return self;
