@@ -203,12 +203,25 @@ PORTAL.VIEWS.placeInputView = function (options) {
 
 			$countySelect.val(_.filter(counties, isInStates)).trigger('change');
 		});
-		$countySelect.on('select2-opening', function (ev) {
-			if (getStateKeys().length === 0) {
-				alert('Please select at least one state');
-
-				ev.preventDefault();
-			}
+		var countyValidation = PORTAL.VIEWS.inputValidation({
+			inputEl : $countySelect,
+			validationFnc : function(val, ev) {
+				var result;
+				if (getStateKeys().length === 0) {
+					ev.preventDefault();
+					result  = {
+						isValid : false,
+						errorMessage : 'Please select at least one state'
+					};
+				}
+				else {
+					result = {
+						isValid : true
+					};
+				}
+				return result;
+			},
+			event : 'select2:opening'
 		});
 	};
 

@@ -1,8 +1,9 @@
 /* jslint browser:true */
-/* global describe, beforeEach, afterEach, it, expect, jasmine */
+/* global describe, beforeEach, afterEach, it, expect, jasmine, spyOn */
 /* global sinon */
 /* global Config */
 /* global PORTAL */
+/* global log */
 
 describe('Tests for PORTAL.MODELS.providers', function () {
 	"use strict";
@@ -16,6 +17,7 @@ describe('Tests for PORTAL.MODELS.providers', function () {
 
 		successSpy = jasmine.createSpy('successSpy');
 		failureSpy = jasmine.createSpy('failureSpy');
+		spyOn(log, 'error');
 	});
 
 	afterEach(function () {

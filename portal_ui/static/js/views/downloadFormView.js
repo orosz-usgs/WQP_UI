@@ -95,7 +95,7 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 					PORTAL.MODELS.providers.getIds());
 			})
 			.fail(function (error) {
-				alert('Unable to retrieve provider list with error: ' + error);
+				//TODO: add alert handling
 			});
 
 		// Initialize form sub views

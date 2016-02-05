@@ -3,7 +3,6 @@
 /*global $ */
 /*global PORTAL */
 /*global Config */
-/*global alert */
 
 describe('Test PORTAL.VIEWS.placeInputView', function () {
 	"use strict";
@@ -147,9 +146,8 @@ describe('Test PORTAL.VIEWS.placeInputView', function () {
 		expect($countySelect.val()).toEqual(['US:02:01']);
 	});
 
-	it('Expects that the alert will be shown if a user tries to open the county select if no states are selected', function() {
-		spyOn(window, 'alert');
-		$countySelect.trigger('select2-opening');
-		expect(window.alert).toHaveBeenCalled();
+	it('Expects that an error will be shown if a user tries to open the county select if no states are selected', function() {
+		$countySelect.trigger('select2:opening');
+		expect($countySelect.parent().find('.error-message').length).toBe(1);
 	});
 });

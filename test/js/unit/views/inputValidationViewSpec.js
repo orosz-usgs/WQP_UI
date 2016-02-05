@@ -67,6 +67,26 @@ describe('Tests for PORTAL.VIEWS.inputValidation', function () {
 		});
 	});
 
+	describe('Tests for PORTAL.VIEWS.inputValidation that specified an event other than change', function() {
+		beforeEach(function () {
+			PORTAL.VIEWS.inputValidation({
+				inputEl: $('input[type="text"]'),
+				validationFnc: validationFnc,
+				event: 'dummy-event'
+			});
+		});
+
+		it('Expects a failed validation to show the error message when the dummy-event is triggered, not when change is triggered', function() {
+			$('#test-input1').val('Val2').change();
+			expect($('#input-parent1').attr('class')).not.toContain('alert alert-danger');
+			expect($('#input-parent1').find('.error-message').length).toBe(0);
+
+			$('#test-input1').trigger('dummy-event');
+			expect($('#input-parent1').attr('class')).toEqual('alert alert-danger');
+			expect($('#input-parent1').find('.error-message').html()).toEqual('Value must be Val1');
+		});
+	});
+
 	describe('Tests for PORTAL.VIEWS.inputValidation with an updateFnc', function () {
 		var fnc;
 
