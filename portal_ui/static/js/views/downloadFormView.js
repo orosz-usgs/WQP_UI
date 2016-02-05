@@ -72,7 +72,7 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 		});
 		var siteParameterInputView = PORTAL.VIEWS.siteParameterInputView({
 			$container : options.$form.find('#site-params'),
-			siteTypeModel : PORTAL.MODELS.cachedCodes({codes : 'sitetypee'}),
+			siteTypeModel : PORTAL.MODELS.cachedCodes({codes : 'sitetype'}),
 			organizationModel : PORTAL.MODELS.cachedCodes({codes : 'organization'})
 		});
 		var samplingParametersInputView = PORTAL.VIEWS.samplingParameterInputView({
