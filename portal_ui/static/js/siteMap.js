@@ -1,6 +1,5 @@
 /* jslint browser: true */
 /* global ol */
-/* global MapUtils */
 /* global WQP */
 
 var PORTAL = PORTAL || {};
@@ -21,12 +20,19 @@ PORTAL.siteMap = function(options) {
 	var map;
 
 	self.initialize = function()  {
-		var layers = [
-			WQP.ol3.mapUtils.createXYZBaseLayer(WQP.MapConfig.BASE_LAYER_URL.world_topo, true),
-			WQP.ol3.mapUtils.createXYZBaseLayer(WQP.MapConfig.BASE_LAYER_URL.world_street, false),
-			WQP.ol3.mapUtils.createXYZBaseLayer(WQP.MapConfig.BASE_LAYER_URL.world_relief, false),
-			WQP.ol3.mapUtils.createXYZBaseLayer(WQP.MapConfig.BASE_LAYER_URL.world_imagery, false)
-		];
+		var baseLayerGroup = new ol.layer.Group({
+			title: 'Base maps',
+			layers: [
+				WQP.ol3.mapUtils.createXYZBaseLayer(WQP.MapConfig.BASE_LAYER_URL.world_topo, true),
+				WQP.ol3.mapUtils.createXYZBaseLayer(WQP.MapConfig.BASE_LAYER_URL.world_street, false),
+				WQP.ol3.mapUtils.createXYZBaseLayer(WQP.MapConfig.BASE_LAYER_URL.world_relief, false),
+				WQP.ol3.mapUtils.createXYZBaseLayer(WQP.MapConfig.BASE_LAYER_URL.world_imagery, false)
+			]
+		});
+		var overlayLayerGroup = new ol.layer.Group({
+			title: 'Overlays',
+			layers : []
+		});
 		var controls = ol.control.defaults().extend([
 			new ol.control.LayerSwitcher({
 				tipLabel: 'Switch base layers'
@@ -38,8 +44,15 @@ PORTAL.siteMap = function(options) {
 				center : ol.proj.fromLonLat([WQP.MapConfig.DEFAULT_CENTER.lon, WQP.MapConfig.DEFAULT_CENTER.lat]),
 				zoom : 3
 			}),
-			layers : layers,
+			layers : [overlayLayerGroup, baseLayerGroup],
 			controls : controls
+		});
+
+		WQP.ol3.mapUtils.getNWISSitesLayer({}, {
+			visible : false,
+			map : map
+		}).done(function(layer) {
+			overlayLayerGroup.getLayers().push(layer);
 		});
 	};
 
