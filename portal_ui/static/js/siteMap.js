@@ -36,6 +36,13 @@ PORTAL.siteMap = function(options) {
 		var controls = ol.control.defaults().extend([
 			new ol.control.LayerSwitcher({
 				tipLabel: 'Switch base layers'
+			}),
+			new ol.control.ScaleLine(),
+			new ol.control.MousePosition({
+				coordinateFormat : function(coordinate) {
+					var lonLat = ol.proj.toLonLat(coordinate);
+					return lonLat[0] + ', ' + lonLat[1];
+				}
 			})
 		]);
 
