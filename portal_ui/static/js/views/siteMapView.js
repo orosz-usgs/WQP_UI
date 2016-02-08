@@ -22,7 +22,9 @@ PORTAL.VIEWS.siteMapView = function(options) {
 
 	var mapId = 'query-results-map';
 
-	var portalDataMap; // Don't initialize until the map is shown
+	var portalDataMap = PORTAL.siteMap({
+		mapDivId : mapId
+	});
 
 	self.initialize = function() {
 		var $mapContainer = options.$container.find('#query-map-container');
@@ -40,12 +42,13 @@ PORTAL.VIEWS.siteMapView = function(options) {
 			}
 		});
 
+		portalDataMap.initialize();
+
 		// Add click handler for map show/hide button
 		$showHideBtn.click(function() {
 			var isVisible = PORTAL.UTILS.toggleShowHideSections($(this), $mapContainer);
-
-			if (isVisible && (!portalDataMap)) {
-				portalDataMap = new PortalDataMap(mapId, options.identifyDialog);
+			if (isVisible) {
+				portalDataMap.render();
 			}
 		});
 
@@ -68,10 +71,10 @@ PORTAL.VIEWS.siteMapView = function(options) {
 					parseInt(totalCount)
 				]);
 				// Start mapping process by disabling the show site button and then requesting the layer
-				$(this).attr('disabled', 'disabled').removeClass('query-button').addClass('disable-query-button');
-				portalDataMap.showDataLayer(queryParamArray, function () {
-					$(this).removeAttr('disabled').removeClass('disable-query-button').addClass('query-button');
-				});
+				//$(this).attr('disabled', 'disabled').removeClass('query-button').addClass('disable-query-button');
+				//portalDataMap.showDataLayer(queryParamArray, function () {
+				//	$(this).removeAttr('disabled').removeClass('disable-query-button').addClass('query-button');
+				//});
 			};
 
 			if (!options.downloadFormView.validateDownloadForm()) {

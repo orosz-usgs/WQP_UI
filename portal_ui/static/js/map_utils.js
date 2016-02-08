@@ -1,14 +1,16 @@
+/* jslint browser: true */
+/* global WQP */
+/* global OpenLayers */
+
 var MapUtils = {};
 
-MapUtils.XYZ_URL_POSTFIX = '${z}/${y}/${x}';
+MapUtils.XYZ_URL_POSTFIX = '${z}/${y}/${x}'
 
 MapUtils.MERCATOR_PROJECTION = new OpenLayers.Projection("EPSG:900913");
 MapUtils.WGS84_PROJECTION = new OpenLayers.Projection("EPSG:4326");
 
-MapUtils.DEFAULT_CENTER = {
-	lon: -82.5,
-	lat: 48.2
-};
+MapUtils.DEFAULT_CENTER = WQP.MapConfig.DEFAULT_CENTER;
+
 
 // Set the maxResolutions and maxExtent as indicated in http://docs.openlayers.org/library/spherical_mercator.html
 MapUtils.MAP_OPTIONS = {
@@ -33,44 +35,12 @@ MapUtils.MAP_OPTIONS = {
 	]
 };
 
-MapUtils.BASE_LAYERS = {
-	light_grey_base: {
-		type: OpenLayers.Layer.XYZ,
-		name: 'World Light Gray',
-		url: 'http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/' + MapUtils.XYZ_URL_POSTFIX
-	},
-	world_street: {
-		type: OpenLayers.Layer.XYZ,
-		name: 'World Street',
-		url: 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/' + MapUtils.XYZ_URL_POSTFIX
-	},
-	world_imagery: {
-		type: OpenLayers.Layer.XYZ,
-		name: 'World Imagery',
-		url: 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/' + MapUtils.XYZ_URL_POSTFIX
-	},
-	world_topo: {
-		type: OpenLayers.Layer.XYZ,
-		name: 'World Topo',
-		url: 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/' + MapUtils.XYZ_URL_POSTFIX
-	},
-	world_relief: {
-		type: OpenLayers.Layer.XYZ,
-		name: 'World Relief',
-		url: 'http://services.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/' + MapUtils.XYZ_URL_POSTFIX
-	}
-};
 
 // Returns an OpenLayers layer described by layer which has at least type and name properties. A url property
 // should be defined if necessary. The layer is created with the options.
 MapUtils.getLayer = function (layer, options) {
-	if (layer.type == OpenLayers.Layer.Stamen) {
-		return new OpenLayers.Layer.Stamen(layer.name, options);
-	}
-	else {
-		return new layer.type(layer.name, layer.url, options);
-	}
-}
+	return new OpenLayers.Layer.XYZ(layer.name, layer.url + MapUtils.XYZ_URL_POSTFIX, options);
+};
 
 /*
  * @ returns a promise which is resolved when the layer has been created. The

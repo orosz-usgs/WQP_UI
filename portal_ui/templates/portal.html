@@ -9,6 +9,8 @@
 		  href="{{ url_for('bower.static', filename='select2/dist/css/select2.min.css') }}"/>
 	<link rel="stylesheet" type="text/css"
 		  href="{{ url_for('bower.static', filename='select2-bootstrap-theme/dist/select2-bootstrap.min.css') }}"/>
+	<link rel="stylesheet" type="text/css"
+		  href="{{  url_for('bower.static', filename='openlayers/ol.css') }}" />
 {% endblock %}
 
 {% block page_header_title %}Water Quality Data{% endblock %}
@@ -25,7 +27,7 @@
 					</button>
 				</div>
 				<div class="panel-body">
-					<div id="place" class="subpanel">
+					<div id="place" class="subpanel col-sm-6 col-md-8">
 						<div class="subpanel-heading">
 							Place:
 							<button type="button" class="show-hide-toggle" title="Show subsection">
@@ -347,7 +349,7 @@
 							</div>
 						</div>
 					</div>
-					<div id="query-map-container" style="display: none;">
+					<div id="query-map-container" style="display:none;">
 						<div id="query-results-map"></div>
 					</div>
 				</div>
@@ -507,8 +509,7 @@
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='jquery-ui/jquery-ui.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='numeral/min/numeral.min.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='handlebars/handlebars.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('static', filename='vendor/OpenLayers/OpenLayers.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('static', filename='vendor/LoadingPanel.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('bower.static', filename='openlayers/ol-debug.js') }}"></script>
 	{% assets "portal_js" %}
 		<script type="text/javascript" src="{{ ASSET_URL }}"></script>
 	{% endassets %}
