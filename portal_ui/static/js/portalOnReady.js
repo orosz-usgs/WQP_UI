@@ -5,14 +5,24 @@
 /* global Config */
 /* global IdentifyDialog */
 /* global PortalDataMap */
+/* global log */
 
 var PORTAL = PORTAL || {};
 
 $(document).ready(function () {
 	"use strict";
 
+	// Set the loglevel
+	if (Config.DEBUG) {
+		log.setLevel('debug', false);
+	}
+	else {
+		log.setLevel('warn', false);
+	}
+
 	var $form = $('#params');
 
+	// Create sub views
 	var downloadProgressDialog = PORTAL.VIEWS.downloadProgressDialog($('#download-status-dialog'));
 	var downloadFormView = PORTAL.VIEWS.downloadFormView({
 		$form : $form,
@@ -26,7 +36,8 @@ $(document).ready(function () {
 		downloadFormView : downloadFormView
 	});
 
-	downloadFormView.initialize();
+	//Initialize subviews
+	var initDownloadForm = downloadFormView.initialize();
 	siteMapView.initialize();
 
 	// Add click handler for the Show queries button
@@ -38,7 +49,10 @@ $(document).ready(function () {
 
 		$('#WSFeedback').html(stationSection + resultSection);
 	});
-	// Initialize portal data map and identify dialog
+
+	initDownloadForm.fail(function() {
+		$('#service-error-dialog').modal('show');
+	});
 
 });
 

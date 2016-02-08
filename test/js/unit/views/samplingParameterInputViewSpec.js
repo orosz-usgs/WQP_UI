@@ -80,6 +80,44 @@ describe('Tests for PORTAL.VIEWS.samplingParameterInputView', function() {
 		expect(PORTAL.VIEWS.createCodeSelect.calls.argsFor(1)[0].attr('id')).toEqual($characteristicType.attr('id'));
 	});
 
+	describe('Tests for promise returned from initialize', function() {
+		var initializeSuccessSpy, initializeFailSpy;
+
+		beforeEach(function () {
+			initializeSuccessSpy = jasmine.createSpy('initializeSuccessSpy');
+			initializeFailSpy = jasmine.createSpy('initializeFailSpy');
+
+			testView.initialize().done(initializeSuccessSpy).fail(initializeFailSpy);
+		});
+
+		it('Expects that initialize returned promise is not resolved until both the sample media and characteristic type have been successfully fetched', function () {
+			expect(initializeSuccessSpy).not.toHaveBeenCalled();
+			expect(initializeFailSpy).not.toHaveBeenCalled();
+
+			fetchSampleMediaDeferred.resolve();
+			expect(initializeSuccessSpy).not.toHaveBeenCalled();
+			expect(initializeFailSpy).not.toHaveBeenCalled();
+
+			fetchCharacteristicTypeDeferred.resolve();
+			expect(initializeSuccessSpy).toHaveBeenCalled();
+			expect(initializeFailSpy).not.toHaveBeenCalled();
+		});
+
+		it('Expects that initialize returned promise is rejected if sample media is fetched but characteristic types are not successfully fetched', function() {
+			fetchSampleMediaDeferred.resolve();
+			fetchCharacteristicTypeDeferred.reject();
+			expect(initializeSuccessSpy).not.toHaveBeenCalled();
+			expect(initializeFailSpy).toHaveBeenCalled();
+		});
+
+		it('Expects that initialize returned promise is rejected if characteristic type is fetched but sample media are not successfully fetched', function() {
+			fetchSampleMediaDeferred.reject();
+			fetchCharacteristicTypeDeferred.reject();
+			expect(initializeSuccessSpy).not.toHaveBeenCalled();
+			expect(initializeFailSpy).toHaveBeenCalled();
+		});
+	});
+
 	it('Expects that date fields only allow dates as input, otherwise they are tagged with an error message', function() {
 		testView.initialize();
 		$startDate.val('AAA').trigger('change');

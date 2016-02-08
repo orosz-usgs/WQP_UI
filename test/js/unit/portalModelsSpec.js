@@ -9,8 +9,7 @@
 /*global sinon */
 /*global jasmine */
 /*global spyOn */
-/*global alert */
-
+/*global log */
 
 describe('Tests for PORTAL.MODELS.cachedCodes', function () {
 	"use strict";
@@ -57,13 +56,13 @@ describe('Tests for PORTAL.MODELS.cachedCodes', function () {
 		expect(failedSpy).not.toHaveBeenCalled();
 	});
 
-	it('Expects unsucessful ajax call to show an alert and to be rejected', function () {
-		spyOn(window, 'alert');
+	it('Expects unsucessful ajax call to show an error message and to be rejected', function () {
+		spyOn(log, 'error');
 		testCodesModel.fetch().done(successSpy).fail(failedSpy);
 
 		server.requests[0].respond(500, 'Bad data');
 
-		expect(alert).toHaveBeenCalled();
+		expect(log.error).toHaveBeenCalled();
 		expect(successSpy).not.toHaveBeenCalled();
 		expect(failedSpy).toHaveBeenCalled();
 	});
@@ -124,11 +123,11 @@ describe('Tests for PORTAL.MODELS.cachedCodesWithKeys', function () {
 		expect(server.requests[0].url).toContain(Config.CODES_ENDPOINT + '/test?parentParm=v1;v2');
 	});
 
-	it('Expects unsuccessful ajax call to show alert window and to reject the promise', function () {
+	it('Expects unsuccessful ajax call to log an error message and to reject the promise', function () {
 		testCodesWithKeysModel.fetch(['v1', 'v2']).done(successSpy).fail(failedSpy);
-		spyOn(window, 'alert');
+		spyOn(log, 'error');
 		server.requests[0].respond(500, 'Bad data');
-		expect(alert).toHaveBeenCalled();
+		expect(log.error).toHaveBeenCalled();
 		expect(successSpy).not.toHaveBeenCalled();
 		expect(failedSpy).toHaveBeenCalled();
 	});

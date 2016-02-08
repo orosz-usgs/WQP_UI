@@ -27,7 +27,7 @@ bundles = {
         'js/SiteImportWPSUtils.js',
         'js/PortalDataMap.js',
         'js/views/portalViews.js',
-        'js/onReady.js',
+        'js/portalOnReady.js',
         'js/providers.js',
         'js/portalModels.js',
         'js/DataSourceUtils.js',

@@ -2,6 +2,7 @@
 /* global $ */
 /* global _ */
 /* global Config */
+/* global log */
 
 var PORTAL = PORTAL || {};
 PORTAL.MODELS = PORTAL.MODELS || {};
@@ -30,6 +31,7 @@ PORTAL.MODELS.providers = function () {
 				},
 				error: function (jqXHR, textStatus, error) {
 					ids = [];
+					log.error('Unable to retrieve provider list with error: ' + error);
 					deferred.reject(error);
 				}
 			});

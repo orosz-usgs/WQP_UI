@@ -2,7 +2,7 @@
 /*global Config */
 /*global $ */
 /*global _ */
-/*global alert */
+/*global log */
 
 
 var PORTAL = PORTAL || {};
@@ -49,7 +49,7 @@ PORTAL.MODELS.cachedCodes = function (options) {
 			},
 
 			error: function (jqXHR, textStatus, error) {
-				alert('Can\'t  get ' + options.codes + ', Server error: ' + error);
+				log.error('Can\'t  get ' + options.codes + ', Server error: ' + error);
 				fetchDeferred.reject(error);
 			}
 		});
@@ -133,7 +133,7 @@ PORTAL.MODELS.codesWithKeys = function (options) {
 				fetchDeferred.resolve(self.getAll());
 			},
 			error: function (jqXHR, textStatus, error) {
-				alert("Can't get " + options.codes + ', Server error: ' + error);
+				log.error('Can\'t get ' + options.codes + ', Server error: ' + error);
 				fetchDeferred.reject(error);
 			}
 		});
@@ -170,7 +170,7 @@ PORTAL.MODELS.codesWithKeys = function (options) {
 		else {
 			return undefined;
 		}
-	}
+	};
 
 	return self;
 };

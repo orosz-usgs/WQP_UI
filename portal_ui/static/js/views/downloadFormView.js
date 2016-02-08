@@ -58,6 +58,9 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 
 	/*
 	 * Initializes the form and sets up the DOM event handlers
+	 * @return jquery promise
+	 * 		@resolve - if all initialization including successful fetches are complete
+	 * 		@reject - if any fetches failed.
 	 */
 	self.initialize = function() {
 		var placeInputView = getPlaceInputView();
@@ -89,23 +92,27 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 		});
 
 		// fetch the providers and initialize the providers select
-		PORTAL.MODELS.providers.fetch()
+		var initializeProviders = PORTAL.MODELS.providers.fetch()
 			.done(function () {
 				PORTAL.VIEWS.createStaticSelect2(options.$form.find('#providers-select'),
 					PORTAL.MODELS.providers.getIds());
-			})
-			.fail(function (error) {
-				alert('Unable to retrieve provider list with error: ' + error);
 			});
 
 		// Initialize form sub views
-		placeInputView.initialize();
+		var initPlaceInputView = placeInputView.initialize();
+		var initSiteParameterInputView = siteParameterInputView.initialize();
+		var initSamplingParametersInputView = samplingParametersInputView.initialize();
+		var initBiologicalSamplingInputInputView = biologicalSamplingInputView.initialize();
+		var initComplete = $.when(
+			initBiologicalSamplingInputInputView,
+			initializeProviders,
+			initPlaceInputView,
+			initSamplingParametersInputView,
+			initSiteParameterInputView);
+
+		dataDetailsView.initialize();
 		pointLocationInputView.initialize();
 		boundingBoxInputView.initialize();
-		siteParameterInputView.initialize();
-		samplingParametersInputView.initialize();
-		biologicalSamplingInputView.initialize();
-		dataDetailsView.initialize();
 
 		// Create help popovers which close when you click anywhere else other than another popover trigger.
 		$('html').click(function (e) {
@@ -171,6 +178,8 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 					options.downloadProgressDialog.cancelProgress(message);
 				});
 		});
+
+		return initComplete;
 	};
 
 	/*

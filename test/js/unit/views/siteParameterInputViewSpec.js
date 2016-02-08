@@ -73,6 +73,44 @@ describe('Tests for PORTAL.VIEWS.siteParameterInputView', function() {
 		expect(PORTAL.VIEWS.createCodeSelect.calls.argsFor(1)[0].attr('id')).toEqual($organization.attr('id'));
 	});
 
+	describe('Tests for promise returned from initialize', function() {
+		var initializeSuccessSpy, initializeFailSpy;
+
+		beforeEach(function () {
+			initializeSuccessSpy = jasmine.createSpy('initializeSuccessSpy');
+			initializeFailSpy = jasmine.createSpy('initializeFailSpy');
+
+			testView.initialize().done(initializeSuccessSpy).fail(initializeFailSpy);
+		});
+
+		it('Expects that initialize returned promise is not resolved until both the siteType and organizations have been successfully fetched', function () {
+			expect(initializeSuccessSpy).not.toHaveBeenCalled();
+			expect(initializeFailSpy).not.toHaveBeenCalled();
+
+			fetchSiteTypeDeferred.resolve();
+			expect(initializeSuccessSpy).not.toHaveBeenCalled();
+			expect(initializeFailSpy).not.toHaveBeenCalled();
+
+			fetchOrgDeferred.resolve();
+			expect(initializeSuccessSpy).toHaveBeenCalled();
+			expect(initializeFailSpy).not.toHaveBeenCalled();
+		});
+
+		it('Expects that initialize returned promise is rejected if siteType is fetched but organizations are not successfully fetched', function() {
+			fetchSiteTypeDeferred.resolve();
+			fetchOrgDeferred.reject();
+			expect(initializeSuccessSpy).not.toHaveBeenCalled();
+			expect(initializeFailSpy).toHaveBeenCalled();
+		});
+
+		it('Expects that initialize returned promise is rejected if organization is fetched but siteTypes are not successfully fetched', function() {
+			fetchSiteTypeDeferred.reject();
+			fetchOrgDeferred.reject();
+			expect(initializeSuccessSpy).not.toHaveBeenCalled();
+			expect(initializeFailSpy).toHaveBeenCalled();
+		});
+	});
+
 	it('Expects that invalid site ids are flagged with an error message', function() {
 		testView.initialize();
 		$siteId.val('abc').trigger('change');

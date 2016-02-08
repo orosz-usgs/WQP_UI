@@ -60,4 +60,30 @@ describe('Tests for PORTAL.VIEWS.biologicalSamplingInputView', function() {
 		expect(PORTAL.VIEWS.createCodeSelect).toHaveBeenCalled();
 		expect(PORTAL.VIEWS.createCodeSelect.calls.argsFor(0)[0].attr('id')).toEqual($assemblage.attr('id'));
 	});
+
+	describe('Tests for promise returned from initialize', function() {
+		var initializeSuccessSpy, initializeFailSpy;
+
+		beforeEach(function () {
+			initializeSuccessSpy = jasmine.createSpy('initializeSuccessSpy');
+			initializeFailSpy = jasmine.createSpy('initializeFailSpy');
+
+			testView.initialize().done(initializeSuccessSpy).fail(initializeFailSpy);
+		});
+
+		it('Expects that initialize returned promise is not resolved until assemblage have been successfully fetched', function () {
+			expect(initializeSuccessSpy).not.toHaveBeenCalled();
+			expect(initializeFailSpy).not.toHaveBeenCalled();
+
+			fetchAssemblageDeferred.resolve();
+			expect(initializeSuccessSpy).toHaveBeenCalled();
+			expect(initializeFailSpy).not.toHaveBeenCalled();
+		});
+
+		it('Expects that initialize returned promise is rejected if assemblage is not successfully fetched', function() {
+			fetchAssemblageDeferred.reject();
+			expect(initializeSuccessSpy).not.toHaveBeenCalled();
+			expect(initializeFailSpy).toHaveBeenCalled();
+		});
+	});
 });

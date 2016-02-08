@@ -1,3 +1,6 @@
+/* jslint browser: true */
+/* global $ */
+
 var PORTAL = PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 //
@@ -8,23 +11,28 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
 //          contains the errorMessage is the validation did not pass.
 //      updateFnc - optional function takes value and returns the formated value. This function
 //          can assume that isValid has already been called and value is a valid entry.
+//      event - optional. The event that this validation should be triggered on. Defaults to 'change'
 PORTAL.VIEWS.inputValidation = function (spec) {
-    spec.inputEl.change(function () {
-        var inputValue = $(this).val();
-        var result = spec.validationFnc(inputValue);
-        var parent = $(this).parent();
+	"use strict";
 
-        parent.find('.error-message').remove();
-        if (result.isValid) {
-            parent.removeClass('alert alert-danger');
-            if (spec.updateFnc) {
-                $(this).val(spec.updateFnc(inputValue));
-            }
-        }
-        else {
-            parent.addClass('alert alert-danger');
-            parent.append('<div class="error-message">' + result.errorMessage + '</div>');
-        }
-    });
+	var event = spec.event || 'change';
+
+	spec.inputEl.on(event, function (ev) {
+		var inputValue = $(this).val();
+		var result = spec.validationFnc(inputValue, ev);
+		var parent = $(this).parent();
+
+		parent.find('.error-message').remove();
+		if (result.isValid) {
+			parent.removeClass('alert alert-danger');
+			if (spec.updateFnc) {
+				$(this).val(spec.updateFnc(inputValue));
+			}
+		}
+		else {
+			parent.addClass('alert alert-danger');
+			parent.append('<div class="error-message">' + result.errorMessage + '</div>');
+		}
+	});
 };
 

@@ -26,6 +26,7 @@
 		    Config.CODES_ENDPOINT = "{{ config.CODES_ENDPOINT }}";
 		    Config.SEARCH_QUERY_ENDPOINT = "{{ config.SEARCH_QUERY_ENDPOINT }}";
 		    Config.PUBLIC_SRSNAMES_ENDPOINT = "{{ config.PUBLIC_SRSNAMES_ENDPOINT }}";
+			Config.DEBUG = "{{ config.DEBUG }}" === 'True';
 
 		    Config.QUERY_URLS = {
 		    	Station : Config.SEARCH_QUERY_ENDPOINT + 'Station/search',
@@ -149,7 +150,7 @@
 
 		<script type="text/javascript" src="{{ url_for('bower.static', filename='jquery/dist/jquery.js') }}"></script>
 		<script type="text/javascript" src="{{ url_for('bower.static', filename='bootstrap/dist/js/bootstrap.js') }}"></script>
-
+		<script type="text/javascript" src="{{ url_for('bower.static', filename='loglevel/dist/loglevel.js') }}"></script>
 
 		<script type="text/javascript">
 		    $(document).ready(function() {

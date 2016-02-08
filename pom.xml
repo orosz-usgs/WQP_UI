@@ -170,6 +170,7 @@
 						<source>bower_components/numeral/min/numeral.min.js</source>
 						<source>bower_components/select2/dist/js/select2.min.js</source>
 						<source>bower_components/handlebars/handlebars.min.js</source>
+						<source>bower_components/loglevel/dist/loglevel.min.js</source>
 						<source>static/vendor/OpenLayers/OpenLayers.js</source>
 						<source>../test/resources/testConfig.js</source>
 					</preloadSources>
@@ -178,7 +179,7 @@
 					</sourceIncludes>
 					<sourceExcludes>
 						<include>static/js/angular/**/*.js</include>
-						<include>static/js/onReady.js</include>
+						<include>static/js/portalOnReady.js</include>
 					</sourceExcludes>
 					<specIncludes>
 						<include>vendor/sinon-1.17.2.js</include>

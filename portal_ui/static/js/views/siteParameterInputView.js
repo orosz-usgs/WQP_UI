@@ -1,4 +1,5 @@
 /* jslint browser: true */
+/* global $ */
 
 var PORTAL = PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
@@ -44,17 +45,26 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 		});
 	};
 
-	// Initialize the widgets and DOM event handlers
+	/*
+	 * Initialize the widgets and DOM event handlers
+	 * @return Jquery promise
+	 * 		@resolve - when all models have been fetched successfully
+	 * 	    @reject - if any model's fetch failed.
+	 */
 	self.initialize = function() {
 		var $siteTypeSelect = options.$container.find('#siteType');
 		var $organizationSelect = options.$container.find('#organization');
 		var $siteIdInput = options.$container.find('#siteid');
 		var $hucInput = options.$container.find('#huc');
 
-		options.siteTypeModel.fetch().done(function() {
+		var fetchSiteType = options.siteTypeModel.fetch()
+		var fetchOrganization = options.organizationModel.fetch()
+		var fetchComplete = $.when(fetchSiteType, fetchOrganization);
+
+		fetchSiteType.done(function() {
 			PORTAL.VIEWS.createCodeSelect($siteTypeSelect, {model : options.siteTypeModel});
 		});
-		options.organizationModel.fetch().done(function() {
+		fetchOrganization.done(function() {
 			initializeOrganizationSelect($organizationSelect, options.organizationModel);
 		});
 
@@ -68,6 +78,8 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 			validationFnc: PORTAL.hucValidator.validate,
 			updateFnc: PORTAL.hucValidator.format
 		});
+
+		return fetchComplete;
 	};
 
 	return self;
