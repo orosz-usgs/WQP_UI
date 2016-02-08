@@ -19,7 +19,6 @@ bundles = {
         output='gen/custom.css'),
     'portal_js' : Bundle(
         'js/queryService.js',
-        #'js/map_utils.js',
         'js/utils.js',
         'js/IdentifyDialog.js',
         #'js/WQPGetFeature.js',
