@@ -57,8 +57,8 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 		var $siteIdInput = options.$container.find('#siteid');
 		var $hucInput = options.$container.find('#huc');
 
-		var fetchSiteType = options.siteTypeModel.fetch()
-		var fetchOrganization = options.organizationModel.fetch()
+		var fetchSiteType = options.siteTypeModel.fetch();
+		var fetchOrganization = options.organizationModel.fetch();
 		var fetchComplete = $.when(fetchSiteType, fetchOrganization);
 
 		fetchSiteType.done(function() {

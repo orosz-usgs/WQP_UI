@@ -46,7 +46,6 @@ bundles = {
         'js/stateFIPS.js',
         'js/dateValidator.js',
         'js/downloadProgressDialog.js',
-        'js/siteIdController.js',
         'js/views/inputValidationView.js',
         'js/portalValidators.js',
         'js/downloadFormController.js',

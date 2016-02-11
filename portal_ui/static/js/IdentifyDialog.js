@@ -1,85 +1,100 @@
-function IdentifyDialog(dialogDivId, downloadUrlFunc /* function returns url string for resultType parameter */) {
-	// Object attributes
-	this.dialogEl = $('#' + dialogDivId);
-	this._downloadButtonEl = this.dialogEl.find('#download-map-info-button');
-	this._detailDivEl = this.dialogEl.find('#map-info-details-div');
+/* jslint browser: true */
+/* global Handlebars */
+/* global Config */
+/* global _gaq */
 
-	this.portalDataMap = null;
-	/* Will be assigned when create is called */
+var PORTAL = PORTAL || {};
+PORTAL.VIEWS = PORTAL.VIEWS || {};
 
-	// Set up click handler for the download
-	this._downloadButtonEl.click($.proxy(function () {
-		var dialogFormEl = this.dialogEl.find('form');
-		var resultType = this.dialogEl.find('input[name="resultType"]:checked').val();
-		var url = downloadUrlFunc(resultType);
-		var $biosamplesRadio = this.dialogEl.find('#dialog-biosamples');
 
-		dialogFormEl.attr('action', url);
+(function() {
+	"use strict";
 
-		// Add/remove the dataProfile input based in the dialog-biosamples radio
-		if ($biosamplesRadio.prop('checked')) {
-			if (dialogFormEl.find('input[name="dataProfile"]').length === 0) {
-				dialogFormEl.append('<input type="hidden" name="dataProfile" value="biological" />');
-			}
-		} else {
-			this.dialogEl.find('input[name="dataProfile"]').remove();
-		}
+	var FEATURE_LIMIT = 50;
+	var FEATURE_INFO_TEMPLATE = Handlebars.compile(
+		'{{#if exceedsFeatureLimit}}' +
+		'Retrieved {{features.length}} sites, only showing ' + FEATURE_LIMIT + '<br />' +
+		'{{/if}}' +
+		'{{#each features}}' +
+			'<br /><table>' +
+			'<tr><th>Station ID: </th><td class="details-site-id">{{values_.name}}</td></tr>' +
+			'<tr><th>Name: </th><td>{{values_.locName}}</td></tr>' +
+			'<tr><th>Type: </th><td>{{values_.type}}</td></tr>' +
+			'<tr><th>HUC 8: </th><td>{{values_.huc8}}</td></tr>' +
+			'<tr><th>Org ID: </th><td>{{values_.orgId}}</td></tr>' +
+			'<tr><th>Org Name: </th><td>{{values_.orgName}}</td></tr>' +
+			'</table>' +
+		'{{/each}}'
+	);
 
-		_gaq.push(['_trackEvent', 'Portal Page', 'IdentifyDownload' + resultType, url + '?' + dialogFormEl.serialize()]);
-		dialogFormEl.submit();
-	}, this));
+	var HIDDEN_FORM_TEMPLATE = Handlebars.compile(
+		'{{#if exceedsFeatureLimit}}' +
+		'<input type="hidden" name="bBox" value="{{boundingBox}}" />' +
+		'{{#each queryParamArray}}' +
+		'<input type="hidden" name="{{name}}" value="{{value}}" />' +
+		'{{/each}}' +
+		'{{else}}' +
+		'{{#each features}}' +
+		'<input type="hidden" name="siteid" value="{{values_.name}}" />' +
+		'{{/each}}' +
+		'{{/if}}'
+	);
 
-	this.create = function (portalDataMap) {
-		/* This method should be called once and must be called before the remaining
-		 * methods for this object
+	/*
+	 * @param {Object} options
+	 * 		@prop {Jquery element} $dialog - Contains the identify dialog
+	 * 		@prop {Function} closeActionFnc - optional
+	 */
+	PORTAL.VIEWS.identifyDialog = function(options) {
+
+		var self = {};
+
+		self.initialize = function() {
+			var closeFunc = (options.closeActionFnc) ? options.closeActionFnc : undefined;
+			options.$dialog.find('#download-map-info-button').click(function() {
+				var resultType = options.$dialog.find('input[name="resultType"]:checked').val();
+				var $form = options.$dialog.find('form');
+				var url = Config.QUERY_URLS[resultType];
+
+				$form.attr('action', url);
+				_gaq.push(['_trackEvent', 'Portal Page', 'IdentifyDownload' + resultType, url + '?' + $form.serialize()]);
+				$form.submit();
+			});
+
+			options.$dialog.dialog({
+				autoOpen: false,
+				modal: false,
+				title: 'Detailed site information',
+				width: 450,
+				height: 400,
+				close: closeFunc
+			});
+		};
+
+		/*
+		 * @param {Array of Object} features - json object representing the features from a WFS GetFeature call.
+		 * @param {Array of Object} with name and value properties} queryParamArray
+		 * @param {String} boundingBox - string which is suitable to send as the WQP service bbox parameter value.
 		 */
-		this.portalDataMap = portalDataMap;
-		this.dialogEl.dialog({
-			autoOpen: false,
-			modal: false,
-			title: 'Detailed site information',
-			width: 450,
-			height: 400,
-			close: $.proxy(function (event, ui) {
-				this.portalDataMap.cancelIdentifyOp();
-			}, this)
-		});
-	};
+		self.showDialog = function(features, queryParamArray, boundingBox) {
+			var exceedsFeatureLimit = features.length > FEATURE_LIMIT;
+			var $detailDiv = options.$dialog.find('#map-info-details-div');
+			var $hiddenFormInputDiv = options.$dialog.find('#map-id-hidden-input-div');
 
-	this.updateAndShowDialog = function (siteIds /* array of site ids*/,
-										 bbox /* OpenLayers.Bounds in degree */,
-										 queryParamArray) {
-		var that = this;
-		var updateFnc = function (html) {
-			that._detailDivEl.html(html);
-		};
-		var successFnc = function () {
-			var formHtml = '';
-			var i;
-			that.dialogEl.find('#map-id-hidden-input-div input[type="hidden"]').remove();
+			var context = {
+				features : features,
+				exceedsFeatureLimit : exceedsFeatureLimit,
+				boundingBox : boundingBox,
+				queryParamArray : queryParamArray
+			};
 
-			if (siteIds.length > 50) {
-				// Download data using bbox and formParams
-				formHtml += '<input type="hidden" name="bBox" value="' + bbox.toBBOX() + '" />';
-				for (i = 0; i < queryParamArray.length; i++) {
-					if (queryParamArray[i].name !== 'bBox') {
-						formHtml += '<input type="hidden" name="' + queryParamArray[i].name + '" value="' + queryParamArray[i].value + '" />';
-					}
-				}
-			}
-			else {
-				formHtml += '<input type="hidden" name="siteid" value="' + siteIds.join(';') + '" />';
-			}
-			that.dialogEl.find('#map-id-hidden-input-div').append(formHtml);
+			$detailDiv.html(FEATURE_INFO_TEMPLATE(context));
+			$hiddenFormInputDiv.html(HIDDEN_FORM_TEMPLATE(context));
 
-			that._downloadButtonEl.removeAttr('disabled');
+			options.$dialog.dialog('open');
 		};
 
-		// Disable the download button. It is only enabled once valid data has been retrieved.
-		this._downloadButtonEl.attr('disabled', 'disabled');
-		this.dialogEl.dialog('open');
-
-		PORTAL.CONTROLLER.retrieveSiteIdInfo(siteIds, updateFnc, successFnc);
+		return self;
 	};
-}
+})();
 

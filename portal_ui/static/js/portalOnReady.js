@@ -28,11 +28,9 @@ $(document).ready(function () {
 		$form : $form,
 		downloadProgressDialog : downloadProgressDialog
 	});
-	var identifyDialog = new IdentifyDialog('map-info-dialog', PORTAL.queryServices.getFormUrl);
 	var siteMapView = PORTAL.VIEWS.siteMapView({
 		$container : $('#mapping-div'),
 		downloadProgressDialog : downloadProgressDialog,
-		identifyDialog : identifyDialog,
 		downloadFormView : downloadFormView
 	});
 

@@ -34,7 +34,7 @@
 		    	biologicalresult : Config.SEARCH_QUERY_ENDPOINT + 'biologicalresult/search'
 		    };
 
-		    Config.SITES_GEOSERVER_ENDPOINT = "{{ url_for('sites_geoserverproxy', op='') }}";
+		    Config.SITES_GEOSERVER_ENDPOINT = "{{ config. SITES_MAP_GEOSERVER_ENDPOINT }}/";//"{{ url_for('sites_geoserverproxy', op='') }}";
 		    Config.COVERAGE_MAP_GEOSERVER_ENDPOINT = "{{ url_for('coverage_geoserverproxy', op='') }}";
 		    Config.STATIC_ENDPOINT = "{{ url_for('static', filename='') }}";
 		    Config.NWIS_SITE_SLD_URL = "{{ url_for('nwis_site_sld') }}";

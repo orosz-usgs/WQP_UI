@@ -10,7 +10,6 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
  * @param {Object} options
  * 		@param {Jquery element} $container - contains the map and its controls
  * 		@param {PORTAL.VIEWS.downloadProgressDialog} downloadProgressDialog
- * 		@param {IdentifyDialog} identifyDialog
  * 		@param {PORTAL.VIEWS.downloadFormView} downloadFormView
  * @return {Object}
  	* 	@func initialize
@@ -22,9 +21,14 @@ PORTAL.VIEWS.siteMapView = function(options) {
 
 	var mapId = 'query-results-map';
 
-	var portalDataMap = PORTAL.siteMap({
-		mapDivId : mapId
+	var identifyDialog = PORTAL.VIEWS.identifyDialog({
+		$dialog : $('#map-info-dialog')
 	});
+	var portalDataMap = PORTAL.siteMap({
+		mapDivId : mapId,
+		identifyDialog : identifyDialog
+	});
+
 
 	self.initialize = function() {
 		var $mapContainer = options.$container.find('#query-map-container');
@@ -42,6 +46,7 @@ PORTAL.VIEWS.siteMapView = function(options) {
 			}
 		});
 
+		identifyDialog.initialize();
 		portalDataMap.initialize();
 
 		// Add click handler for map show/hide button
@@ -70,6 +75,8 @@ PORTAL.VIEWS.siteMapView = function(options) {
 					decodeURIComponent(queryString),
 					parseInt(totalCount)
 				]);
+
+				portalDataMap.addSitesLayer(queryParamArray);
 				// Start mapping process by disabling the show site button and then requesting the layer
 				//$(this).attr('disabled', 'disabled').removeClass('query-button').addClass('disable-query-button');
 				//portalDataMap.showDataLayer(queryParamArray, function () {
