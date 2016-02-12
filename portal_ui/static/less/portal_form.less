@@ -306,22 +306,28 @@
         }
     }
 }
-
-#query-results-map .identify-buttonItemActive {
+#query-results-map .box-identify {
+  position:absolute;
+  top: 70px;
+  left: 10px;
+}
+#query-results-map .box-identify-on {
   border-radius: 4px;
   margin: 0px;
   padding: 0px;
   height: 22px;
   width: 22px;
-  background-image: url('../img/box_selected.png');;
+  outline: none;
+  background-image: url('../img/box_selected.png');
 }
 
-#query-results-map .identify-buttonItemInactive {
+#query-results-map .box-identify-off {
   border-radius: 4px;
   margin: 0px;
   padding: 0px;
   height: 22px;
   width: 22px;
+  outline: none;
   background-image: url('../img/box_select2.png');
   color: #444444;
 }

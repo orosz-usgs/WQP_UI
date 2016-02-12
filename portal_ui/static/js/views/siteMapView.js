@@ -46,8 +46,9 @@ PORTAL.VIEWS.siteMapView = function(options) {
 			}
 		});
 
-		identifyDialog.initialize();
+		identifyDialog.initialize(portalDataMap.clearBoxIdFeature);
 		portalDataMap.initialize();
+
 
 		// Add click handler for map show/hide button
 		$showHideBtn.click(function() {

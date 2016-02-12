@@ -2,6 +2,7 @@
 /* global Handlebars */
 /* global Config */
 /* global _gaq */
+/* global _*/
 
 var PORTAL = PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
@@ -37,20 +38,20 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
 		'{{#each features}}' +
 		'<input type="hidden" name="siteid" value="{{values_.name}}" />' +
 		'{{/each}}' +
+		'<input type="hidden" name="zip" checked="checked" id="zip" value="yes"/>' +
 		'{{/if}}'
 	);
 
 	/*
 	 * @param {Object} options
 	 * 		@prop {Jquery element} $dialog - Contains the identify dialog
-	 * 		@prop {Function} closeActionFnc - optional
 	 */
 	PORTAL.VIEWS.identifyDialog = function(options) {
 
 		var self = {};
 
-		self.initialize = function() {
-			var closeFunc = (options.closeActionFnc) ? options.closeActionFnc : undefined;
+		self.initialize = function(closeActionFnc) {
+			var closeFunc = (closeActionFnc) ? closeActionFnc : undefined;
 			options.$dialog.find('#download-map-info-button').click(function() {
 				var resultType = options.$dialog.find('input[name="resultType"]:checked').val();
 				var $form = options.$dialog.find('form');
@@ -85,7 +86,9 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
 				features : features,
 				exceedsFeatureLimit : exceedsFeatureLimit,
 				boundingBox : boundingBox,
-				queryParamArray : queryParamArray
+				queryParamArray : _.reject(queryParamArray, function(param) {
+					return (param.name === 'bBox') || (param.name === 'mimeType');
+				})
 			};
 
 			$detailDiv.html(FEATURE_INFO_TEMPLATE(context));

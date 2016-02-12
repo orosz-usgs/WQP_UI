@@ -141,6 +141,7 @@ WQP.ol3.mapUtils = (function() {
 			data : getFeatureDoc,
 			method : 'POST',
 			contentType : 'application/xml',
+
 			success : function(response) {
 				if ($(response).find('ExceptionReport, ows\\:ExceptionReport').length > 0) {
 					log.error('WFS received an error response');

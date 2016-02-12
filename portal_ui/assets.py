@@ -21,6 +21,7 @@ bundles = {
         'js/queryService.js',
         'js/utils.js',
         'js/IdentifyDialog.js',
+        'js/BoxIdentifyControl.js',
         #'js/WQPGetFeature.js',
         #'js/SitesLayer.js',
         #'js/SiteImportWPSUtils.js',
