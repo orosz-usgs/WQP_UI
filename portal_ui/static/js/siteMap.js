@@ -116,7 +116,7 @@ PORTAL.siteMap = function(options) {
 			if (wqpSitesLayer) {
 				var sitesSource = wqpSitesLayer.getSource();
 				var boundingBox = this.getExtent();
-				var queryParamArray = wqpSitesLayer.getProperties().getParamArray;
+				var queryParamArray = wqpSitesLayer.getProperties().queryParamArray;
 
 				WQP.ol3.mapUtils.getWQPSitesFeature(sitesSource.getParams().SEARCHPARAMS, boundingBox)
 					.done(function(resp) {

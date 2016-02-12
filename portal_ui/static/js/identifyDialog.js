@@ -2,7 +2,8 @@
 /* global Handlebars */
 /* global Config */
 /* global _gaq */
-/* global _*/
+/* global _ */
+/* global $ */
 
 var PORTAL = PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
@@ -45,6 +46,7 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
 	/*
 	 * @param {Object} options
 	 * 		@prop {Jquery element} $dialog - Contains the identify dialog
+	 * 	    @prop {Jquery element} $popover - Contains the div where the popover identifier will be rendered.
 	 */
 	PORTAL.VIEWS.identifyDialog = function(options) {
 
@@ -52,6 +54,8 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
 
 		self.initialize = function(closeActionFnc) {
 			var closeFunc = (closeActionFnc) ? closeActionFnc : undefined;
+
+			// Initialize UI dialog
 			options.$dialog.find('#download-map-info-button').click(function() {
 				var resultType = options.$dialog.find('input[name="resultType"]:checked').val();
 				var $form = options.$dialog.find('form');
@@ -70,6 +74,9 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
 				height: 400,
 				close: closeFunc
 			});
+
+			//Initialize popover
+			options.$popover.on('hide.bs.popover', closeFunc);
 		};
 
 		/*
@@ -81,20 +88,40 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
 			var exceedsFeatureLimit = features.length > FEATURE_LIMIT;
 			var $detailDiv = options.$dialog.find('#map-info-details-div');
 			var $hiddenFormInputDiv = options.$dialog.find('#map-id-hidden-input-div');
+			var $popover = $('#map-popover');
 
 			var context = {
-				features : features,
-				exceedsFeatureLimit : exceedsFeatureLimit,
-				boundingBox : boundingBox,
-				queryParamArray : _.reject(queryParamArray, function(param) {
+				features: features,
+				exceedsFeatureLimit: exceedsFeatureLimit,
+				boundingBox: boundingBox,
+				queryParamArray: _.reject(queryParamArray, function (param) {
 					return (param.name === 'bBox') || (param.name === 'mimeType');
 				})
 			};
 
-			$detailDiv.html(FEATURE_INFO_TEMPLATE(context));
-			$hiddenFormInputDiv.html(HIDDEN_FORM_TEMPLATE(context));
+			if ($('body').width() < 750) {
+				options.$popover.popover('destroy');
+				if (features.length > 0) {
+					options.$popover.popover({
+						placement: 'top',
+						animation: false,
+						content: FEATURE_INFO_TEMPLATE(context),
+						html: true
+					});
+					options.$popover.popover('show');
+				}
+			}
+			else {
+				if (features.length > 0) {
+					$detailDiv.html(FEATURE_INFO_TEMPLATE(context));
+					$hiddenFormInputDiv.html(HIDDEN_FORM_TEMPLATE(context));
 
-			options.$dialog.dialog('open');
+					options.$dialog.dialog('open');
+				}
+				else {
+					options.$dialog.dialog('close');
+				}
+			}
 		};
 
 		return self;

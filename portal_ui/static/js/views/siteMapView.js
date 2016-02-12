@@ -22,7 +22,8 @@ PORTAL.VIEWS.siteMapView = function(options) {
 	var mapId = 'query-results-map';
 
 	var identifyDialog = PORTAL.VIEWS.identifyDialog({
-		$dialog : $('#map-info-dialog')
+		$dialog : $('#map-info-dialog'),
+		$popover : $('#map-popover')
 	});
 	var portalDataMap = PORTAL.siteMap({
 		mapDivId : mapId,

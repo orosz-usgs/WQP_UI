@@ -332,6 +332,19 @@
   color: #444444;
 }
 
+#query-map-container .popover-content {
+  height: 250px;
+  overflow-y: scroll;
+  font-size : x-small;
+
+  table {
+    th {
+      width: 60px;
+      margin-left: 5px;
+    }
+  }
+}
+
 #download-box {
   background-color: @download-panel-color;
   ul {
@@ -397,29 +410,6 @@
 .ui-button-text {
   background: #e9e3d5;
   color: black;
-}
-
-#org-id-dialog {
-  #org-id-current-selections {
-    width: 100%;
-  }
-  #org-name-div > p {
-    font-weight: bold;
-    margin-top: 10px;
-  }
-  .org-name-div {
-    label {
-      font-weight: normal;
-      margin-left: 5px;
-      display: inline;
-    }
-    input {
-      margin-left: 5px;
-    }
-    .by-name-org-id-div {
-      margin-left: 50px;
-    }
-  }
 }
 
 #map-info-dialog {
