@@ -92,15 +92,47 @@ WQP.ol3.mapUtils = (function() {
 			SEARCHPARAMS : getSearchParams(queryParamArray),
 			VERSION: '1.1.0'
 		};
+		var source = new ol.source.TileWMS({
+			params : _.extend({}, wmsParams, sourceWMSParams),
+			url : URL,
+		});
 		var siteLayerOptions = {
 			title : 'WQP Sites',
 			queryParamArray : queryParamArray,
 			visible : true,
-			source : new ol.source.TileWMS({
-				params : _.extend({}, wmsParams, sourceWMSParams),
-				url : URL
-			})
+			source : source,
 		};
+
+		source.setProperties({
+			loadingCount : 0,
+			loadedCount : 0
+		});
+		source.on('tileloadstart', function() {
+			this.setProperties({
+				loadingCount : this.getProperties().loadingCount + 1
+			});
+		});
+		source.on('tileloadend', function() {
+			var props = this.getProperties();
+			props.loadedCount = props.loadedCount + 1;
+			this.setProperties({
+				loadedCount : props.loadedCount
+			});
+			if (props.loadedCount === props.loadingCount) {
+				source.dispatchEvent('sourceloaded');
+			}
+		});
+		source.on('tileloaderror', function() {
+			var props = this.getProperties();
+			props.loadedCount = props.loadedCount + 1;
+			this.setProperties({
+				loadedCount : props.loadedCount
+			});
+			if (props.loadedCount === props.loadingCount) {
+				source.dispatchEvent('sourceloaded');
+			}
+		});
+
 
 		return new ol.layer.Tile(_.extend({}, layerOptions, siteLayerOptions));
 	};

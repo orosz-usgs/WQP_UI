@@ -28,5 +28,8 @@
     "loglevel": "^1.4.0",
     "openlayers": "https://github.com/openlayers/ol3/releases/download/v3.13.1/v3.13.1-dist.zip",
     "ol3-layerswitcher": "^1.1.0"
+  },
+  "devDependencies": {
+    "font-awesome": "^4.5.0"
   }
 }

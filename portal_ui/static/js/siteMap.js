@@ -9,6 +9,7 @@ var PORTAL = PORTAL || {};
  * Manages the site map and its controls
  * @param {Object} options
  * 		@prop {String} - mapDivId
+ * 		@prop {Jquery element} - $loadingIndicator
  * 		@prop {Object instance of PORTAL.VIEWS.identifyDialog} identifyDialog
  * @return {Object}
  * 		@func initialize
@@ -155,6 +156,7 @@ PORTAL.siteMap = function(options) {
 		if (wqpSitesLayer) {
 			map.removeLayer(wqpSitesLayer);
 		}
+		options.$loadingIndicator.show();
 		wqpSitesLayer = WQP.ol3.mapUtils.createWQPSitesLayer(
 			queryParamArray,
 			{},
@@ -163,6 +165,9 @@ PORTAL.siteMap = function(options) {
 				map: map
 			}
 		);
+		wqpSitesLayer.getSource().on('sourceloaded', function() {
+			options.$loadingIndicator.hide();
+		});
 	};
 
 	self.clearBoxIdFeature = function() {

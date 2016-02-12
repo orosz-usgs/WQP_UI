@@ -27,6 +27,7 @@ PORTAL.VIEWS.siteMapView = function(options) {
 	});
 	var portalDataMap = PORTAL.siteMap({
 		mapDivId : mapId,
+		$loadingIndicator : $('#map-loading-indicator'),
 		identifyDialog : identifyDialog
 	});
 
