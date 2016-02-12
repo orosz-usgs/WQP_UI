@@ -20,12 +20,8 @@ bundles = {
     'portal_js' : Bundle(
         'js/queryService.js',
         'js/utils.js',
-        'js/IdentifyDialog.js',
         'js/BoxIdentifyControl.js',
-        #'js/WQPGetFeature.js',
-        #'js/SitesLayer.js',
-        #'js/SiteImportWPSUtils.js',
-        #'js/PortalDataMap.js',
+        'js/identifyDialog.js',
         'js/MapConfig.js',
         'js/ol3Utils/mapUtils.js',
         'js/siteMap.js',
