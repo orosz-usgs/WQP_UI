@@ -85,9 +85,14 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
 		/*
 		 * @param {Array of Object} features - json object representing the features from a WFS GetFeature call.
 		 * @param {Array of Object} with name and value properties} queryParamArray
-		 * @param {String} boundingBox - string which is suitable to send as the WQP service bbox parameter value.
+		 * @param {String or Array} boundingBox - string which is suitable to send as the WQP service bBox parameter value or an
+		 * 		extent [minX, minY, maxX, maxY]. In both cases the service expects the parameters to be in degrees (geographic
+		 * 	 	coordinates)
+		 * @param {Function} usePopover - function returns true if the popover dialog should be used rather than
+		 * 		the UI dialog. The UI dialog includes the download features. The popover dialog will only show
+		 * 		the site information
 		 */
-		self.showDialog = function(features, queryParamArray, boundingBox) {
+		self.showDialog = function(features, queryParamArray, boundingBox, usePopover) {
 			var exceedsFeatureLimit = features.length > FEATURE_LIMIT;
 			var $detailDiv = options.$dialog.find('#map-info-details-div');
 			var $hiddenFormInputDiv = options.$dialog.find('#map-id-hidden-input-div');
@@ -102,7 +107,7 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
 				})
 			};
 
-			if ($('body').width() < 750) {
+			if (usePopover()) {
 				options.$popover.popover('destroy');
 				if (features.length > 0) {
 					options.$popover.popover({
