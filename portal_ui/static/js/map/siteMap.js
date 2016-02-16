@@ -171,23 +171,25 @@ PORTAL.MAP.siteMap = function(options) {
 	 * on the map. The loading indicator should be removed once the layer has been completely loaded.
 	 * @param {Array of Object with name and value properties} queryParamArray - query parameters to be used to retrieve the sites
 	 */
-	self.addSitesLayer = function(queryParamArray) {
+	self.updateSitesLayer = function(queryParamArray) {
 		if (map) {
-			if (wqpSitesLayer) {
-				map.removeLayer(wqpSitesLayer);
-			}
 			options.$loadingIndicator.show();
-			wqpSitesLayer = PORTAL.MAP.siteLayer.createWQPSitesLayer(
-				queryParamArray,
-				{},
-				{
-					visible: true,
-					map: map
-				}
-			);
-			wqpSitesLayer.getSource().on('sourceloaded', function () {
-				options.$loadingIndicator.hide();
-			});
+			if (wqpSitesLayer) {
+				PORTAL.MAP.siteLayer.updateWQPSitesLayer(wqpSitesLayer, queryParamArray);
+			}
+			else {
+				wqpSitesLayer = PORTAL.MAP.siteLayer.createWQPSitesLayer(
+					queryParamArray,
+					{},
+					{
+						visible: true,
+						map: map
+					}
+				);
+				wqpSitesLayer.getSource().on('sourceloaded', function () {
+					options.$loadingIndicator.hide();
+				});
+			}
 		}
 	};
 

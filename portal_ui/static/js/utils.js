@@ -14,14 +14,14 @@ PORTAL.UTILS = function() {
 	/*
 	 * Returns a query string suitable for use as a URL query string with parameters on the ignoreList
 	 * removed.
-	 * @param {Array of Object} paramArray - Each object has a name property and a value property both with string values
+	 * @param {Array of Object} queryParamArray - Each object has a name property and a value property both with string values
 	 * @param {Array of String} ignoreList - Names to be removed from paramArray before serializing
 	 * @param {Boolean} multiSelectDelimited - if true param names that appear more than once are serialized as a single param with ';' separated values
 	 * @return {String} - String suitable for use as a URL query string.
 	 */
-	self.getQueryString = function(paramArray, ignoreList, multiSelectDelimited) {
+	self.getQueryString = function(queryParamArray, ignoreList, multiSelectDelimited) {
 		var thisIgnoreList = (ignoreList) ? ignoreList : [];
-		var resultArray = _.reject(paramArray, function (param) {
+		var resultArray = _.reject(queryParamArray, function (param) {
 			return _.contains(thisIgnoreList, param.name);
 		});
 

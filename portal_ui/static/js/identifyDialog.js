@@ -12,7 +12,10 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
 (function() {
 	"use strict";
 
+	// Only show this many features in the dialog. Also use alternative download based on the bounding box of the
+	// features that are shown.
 	var FEATURE_LIMIT = 50;
+
 	var FEATURE_INFO_TEMPLATE = Handlebars.compile(
 		'{{#if exceedsFeatureLimit}}' +
 		'Retrieved {{features.length}} sites, only showing ' + FEATURE_LIMIT + '<br />' +

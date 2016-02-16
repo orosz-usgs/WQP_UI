@@ -86,6 +86,17 @@ PORTAL.MAP.siteLayer = (function() {
 		return new ol.layer.Tile(_.extend({}, layerOptions, siteLayerOptions));
 	};
 
+	self.updateWQPSitesLayer = function(layer, queryParamArray) {
+		var source = layer.getSource();
+		layer.setProperties({
+			queryParamArray : queryParamArray
+		});
+		source.updateParams({
+			SEARCHPARAMS : getSearchParams(queryParamArray),
+			cacheId : Date.now() // Needed to prevent a cached layer from being used.
+		});
+	}
+
 	/*
 	 * @param {Array of Object with name and value properties} queryParamArray - query parameters to be used to retrieve the sites
 	 * @param {ol.Extent} boundingBox - limit the request to look for features in this boundingBox

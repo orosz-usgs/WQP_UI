@@ -82,7 +82,7 @@ PORTAL.VIEWS.siteMapView = function(options) {
 					parseInt(totalCount)
 				]);
 
-				portalDataMap.addSitesLayer(queryParamArray);
+				portalDataMap.updateSitesLayer(queryParamArray);
 				// Start mapping process by disabling the show site button and then requesting the layer
 				//$(this).attr('disabled', 'disabled').removeClass('query-button').addClass('disable-query-button');
 				//portalDataMap.showDataLayer(queryParamArray, function () {
