@@ -2,8 +2,9 @@
 /* global ol */
 
 var PORTAL = PORTAL || {};
+PORTAL.MAP = PORTAL.MAP || {};
 
-PORTAL.BoxIdentifyControl = function(opt_options) {
+PORTAL.MAP.BoxIdentifyControl = function(opt_options) {
 	"use strict";
 	var self = this;
 	var options = opt_options || {};
@@ -33,4 +34,4 @@ PORTAL.BoxIdentifyControl = function(opt_options) {
 	});
 };
 
-ol.inherits(PORTAL.BoxIdentifyControl, ol.control.Control);
+ol.inherits(PORTAL.MAP.BoxIdentifyControl, ol.control.Control);

@@ -23,15 +23,18 @@ PORTAL.VIEWS.siteMapView = function(options) {
 
 	var identifyDialog = PORTAL.VIEWS.identifyDialog({
 		$dialog : $('#map-info-dialog'),
-		$popover : $('#map-popover')
+		$popover : options.$container.find('#map-popover')
 	});
-	var portalDataMap = PORTAL.siteMap({
+	var portalDataMap = PORTAL.MAP.siteMap({
 		mapDivId : mapId,
-		$loadingIndicator : $('#map-loading-indicator'),
+		$loadingIndicator : options.$container.find('#map-loading-indicator'),
 		identifyDialog : identifyDialog
 	});
 
 
+	/*
+	 * Initialize the site map and all of it's controls
+	 */
 	self.initialize = function() {
 		var $mapContainer = options.$container.find('#query-map-container');
 		var $map = options.$container.find('#' + mapId);
