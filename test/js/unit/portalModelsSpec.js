@@ -23,8 +23,6 @@ describe('Tests for PORTAL.MODELS.cachedCodes', function () {
 
 
 	beforeEach(function () {
-		Config.CODES_ENDPOINT = 'http:fakecodesservice/codes';
-
 		server = sinon.fakeServer.create();
 
 		testCodesModel = PORTAL.MODELS.cachedCodes({codes: 'test'});

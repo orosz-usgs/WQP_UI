@@ -14,6 +14,8 @@ PORTAL.MAP.siteLayer = (function() {
 
 	var self = {};
 
+	var WQP_SITE_LAYER_NAME = 'wqp_sites';
+
 	var getSearchParams = function (queryParamArray) {
 		var queryString = PORTAL.UTILS.getQueryString(queryParamArray, ['mimeType', 'zip'], true);
 		var result = decodeURIComponent(queryString.replace(/\+/g, '%20'));
@@ -31,7 +33,7 @@ PORTAL.MAP.siteLayer = (function() {
 	self.createWQPSitesLayer = function(queryParamArray, wmsParams, layerOptions) {
 		var URL = Config.SITES_GEOSERVER_ENDPOINT + 'wms';
 		var sourceWMSParams = {
-			LAYERS: 'wqp_sites',
+			LAYERS: WQP_SITE_LAYER_NAME,
 			STYLES : 'wqp_sources',
 			FORMAT : 'image/png',
 			TRANSPARENT : true,
@@ -86,6 +88,10 @@ PORTAL.MAP.siteLayer = (function() {
 		return new ol.layer.Tile(_.extend({}, layerOptions, siteLayerOptions));
 	};
 
+	/*
+	 * @param {WQP Sites Layer} layer
+	 * @param {Array of Object with name and value properties} queryParamArray - query to be used to retrieve site layer
+	 */
 	self.updateWQPSitesLayer = function(layer, queryParamArray) {
 		var source = layer.getSource();
 		layer.setProperties({
@@ -95,7 +101,7 @@ PORTAL.MAP.siteLayer = (function() {
 			SEARCHPARAMS : getSearchParams(queryParamArray),
 			cacheId : Date.now() // Needed to prevent a cached layer from being used.
 		});
-	}
+	};
 
 	/*
 	 * @param {Array of Object with name and value properties} queryParamArray - query parameters to be used to retrieve the sites
@@ -117,7 +123,7 @@ PORTAL.MAP.siteLayer = (function() {
 		var getFeatureQueryDoc = wfsFormat.writeGetFeature({
 			featureNS: '',
 			featurePrefix : '',
-			featureTypes : ['wqp_sites'],
+			featureTypes : [WQP_SITE_LAYER_NAME],
 			outputFormat : 'application/json',
 			maxFeatures : 20,
 			srsName : 'EPSG:900913',

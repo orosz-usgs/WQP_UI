@@ -23,7 +23,7 @@ bundles = {
         'js/identifyDialog.js',
         'js/MapConfig.js',
         'js/ol3Utils/mapUtils.js',
-        'js/map/BoxIdentifyControl.js',
+        'js/map/ToggleControl.js',
         'js/map/siteLayer.js',
         'js/map/siteMap.js',
         'js/views/portalViews.js',

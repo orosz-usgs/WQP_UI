@@ -151,9 +151,10 @@ PORTAL.MAP.siteMap = function(options) {
 		});
 
 		// Create the control which will turn on/off the box identify interaction.
-		boxIdControl = new PORTAL.MAP.BoxIdentifyControl({
-			boxDrawInteraction : boxDrawInteraction
+		boxIdControl = new PORTAL.MAP.ToggleControl({
+			interaction : boxDrawInteraction
 		});
+		map.addInteraction(boxDrawInteraction);
 		map.addControl(boxIdControl);
 	};
 
