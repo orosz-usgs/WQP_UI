@@ -64,11 +64,14 @@ PORTAL.MAP.siteMap = function(options) {
 			})
 		]);
 		var boxIdLayer;
+		var worldExtent = ol.extent.applyTransform([-179,-89,179,89], ol.proj.getTransform("EPSG:4326", "EPSG:3857"));
 
 		map = new ol.Map({
 			view : new ol.View({
 				center : ol.proj.fromLonLat([WQP.MapConfig.DEFAULT_CENTER.lon, WQP.MapConfig.DEFAULT_CENTER.lat]),
-				zoom : 3
+				zoom : 3,
+				minZoom : 2,
+				extent : worldExtent
 			}),
 			layers : [overlayLayerGroup, baseLayerGroup],
 			controls : controls
