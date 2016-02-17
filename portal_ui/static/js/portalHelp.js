@@ -193,12 +193,6 @@ PORTAL.MODELS.help = {
                 </ul>\
                 </div>'
 	},
-	nawqa: {
-		placement: 'auto',
-		title: 'NAWQA Program Only Help',
-		content: '\
-        	<div>National Water Quality Assessment Program Samples Only (NAWQA, NASQAN, and NMN)</div>'
-	},
 	biologicalparams: {
 		placement: 'auto',
 		title: 'Biological Sampling Parameters Help',
