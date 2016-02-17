@@ -82,7 +82,7 @@ PORTAL.MAP.siteMap = function(options) {
 
 		// Set up event handler for single click identify
 		map.on('singleclick', function(ev) {
-			if (wqpSitesLayer && !boxDrawInteraction.getMap()) {
+			if (wqpSitesLayer && !boxDrawInteraction.getActive()) {
 				var sitesSource = wqpSitesLayer.getSource();
 				var lowerLeft = map.getCoordinateFromPixel([ev.pixel[0] - 5, ev.pixel[1] + 5]);
 				var upperRight = map.getCoordinateFromPixel([ev.pixel[0] + 5, ev.pixel[1] - 5]);

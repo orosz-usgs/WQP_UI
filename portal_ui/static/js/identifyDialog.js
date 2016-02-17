@@ -24,7 +24,7 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
 			'<br /><table>' +
 			'<tr><th>Station ID: </th><td class="details-site-id">{{values_.name}}</td></tr>' +
 			'<tr><th>Name: </th><td>{{values_.locName}}</td></tr>' +
-			'<tr><th>Type: </th><td>{{values_.type}}</td></tr>' +
+			'<tr><th>Type: </th><td>{{values_.searchType}}</td></tr>' +
 			'<tr><th>HUC 8: </th><td>{{values_.huc8}}</td></tr>' +
 			'<tr><th>Org ID: </th><td>{{values_.orgId}}</td></tr>' +
 			'<tr><th>Org Name: </th><td>{{values_.orgName}}</td></tr>' +
