@@ -1,10 +1,12 @@
 /* jslint browser: true */
 /* global WQP */
 /* global OpenLayers */
+/* global $ */
+/* global Config */
 
 var MapUtils = {};
 
-MapUtils.XYZ_URL_POSTFIX = '${z}/${y}/${x}'
+MapUtils.XYZ_URL_POSTFIX = '${z}/${y}/${x}';
 
 MapUtils.MERCATOR_PROJECTION = new OpenLayers.Projection("EPSG:900913");
 MapUtils.WGS84_PROJECTION = new OpenLayers.Projection("EPSG:4326");
@@ -61,7 +63,7 @@ MapUtils.getNWISSitesLayer = function (options, params) {
 		displayInLayerSwitcher: true,
 		visibility: false,
 		singleTile: true // If sending an SLD_BODY parameter it must be a single tile.
-	}
+	};
 
 	var finalParams = $.extend({}, defaultParams, params);
 	var finalOptions = $.extend({}, defaultOptions, options);
@@ -87,9 +89,9 @@ MapUtils.getNWISSitesLayer = function (options, params) {
 				finalOptions,
 				finalParams
 				)
-			)
+			);
 		}
 	});
 	return sldDeferred;
-}
+};
 
