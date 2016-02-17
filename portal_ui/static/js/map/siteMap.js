@@ -91,8 +91,12 @@ PORTAL.MAP.siteMap = function(options) {
 
 				PORTAL.MAP.siteLayer.getWQPSitesFeature(queryParamArray, boundingBox)
 					.done(function(resp) {
-						options.identifyDialog.showDialog(resp, queryParamArray,
-							ol.proj.transformExtent(boundingBox, 'EPSG:900913', 'EPSG:4326'));
+						options.identifyDialog.showDialog({
+							features : resp,
+							queryParamArray : queryParamArray,
+							boundingBox : ol.proj.transformExtent(boundingBox, 'EPSG:900913', 'EPSG:4326'),
+							usePopover : PORTAL.UTILS.isExtraSmallBrowser()
+						});
 					});
 			}
 		});
@@ -109,8 +113,12 @@ PORTAL.MAP.siteMap = function(options) {
 
 				PORTAL.MAP.siteLayer.getWQPSitesFeature(queryParamArray, boundingBox)
 					.done(function(resp) {
-						options.identifyDialog.showDialog(resp, queryParamArray,
-							ol.proj.transformExtent(boundingBox, 'EPSG:900913', 'EPSG:4326'));
+						options.identifyDialog.showDialog({
+							features : resp,
+							queryParamArray : queryParamArray,
+							boundingBox : ol.proj.transformExtent(boundingBox, 'EPSG:900913', 'EPSG:4326'),
+							usePopover : PORTAL.UTILS.isExtraSmallBrowser()
+						});
 					});
 			}
 		});

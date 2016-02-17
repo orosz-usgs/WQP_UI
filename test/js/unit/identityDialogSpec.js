@@ -85,7 +85,12 @@ describe('Test identifyDialog', function () {
 
 		it('Expects that if usePopover is true, the popover shows site information, but the ui dialog is not shown', function() {
 			var siteContent;
-			identifyDialog.showDialog(features, queryParamArray, boundingBox, function() { return true; });
+			identifyDialog.showDialog({
+				features: features,
+				queryParamArray: queryParamArray,
+				boundingBox: boundingBox,
+				usePopover: true
+			});
 			expect($dialog.dialog.calls.count()).toBe(1);
 			expect($popover.popover.calls.count()).toBe(3);
 			expect($popover.popover.calls.argsFor(2)).toEqual(['show']);
@@ -96,7 +101,12 @@ describe('Test identifyDialog', function () {
 		});
 
 		it('Expects that is the popover is shown and then closed, that the close function is executed', function() {
-			identifyDialog.showDialog(features, queryParamArray, boundingBox, function() { return true; });
+			identifyDialog.showDialog({
+				features: features,
+				queryParamArray: queryParamArray,
+				boundingBox: boundingBox,
+				usePopover : true
+			});
 			expect(closeSpy).not.toHaveBeenCalled();
 			$popover.trigger('hide.bs.popover');
 			expect(closeSpy).toHaveBeenCalled();
@@ -106,7 +116,12 @@ describe('Test identifyDialog', function () {
 			var siteContent;
 			var query;
 
-			identifyDialog.showDialog(features, queryParamArray, boundingBox, function() { return false; });
+			identifyDialog.showDialog({
+				features: features,
+				queryParamArray: queryParamArray,
+				boundingBox: boundingBox,
+				usePopover : false
+			});
 			expect($dialog.dialog.calls.count()).toBe(2);
 			expect($popover.popover.calls.count()).toBe(0);
 

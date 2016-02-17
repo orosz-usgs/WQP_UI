@@ -83,33 +83,34 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
 		};
 
 		/*
-		 * @param {Array of Object} features - json object representing the features from a WFS GetFeature call.
-		 * @param {Array of Object} with name and value properties} queryParamArray
-		 * @param {String or Array} boundingBox - string which is suitable to send as the WQP service bBox parameter value or an
-		 * 		extent [minX, minY, maxX, maxY]. In both cases the service expects the parameters to be in degrees (geographic
-		 * 	 	coordinates)
-		 * @param {Function} usePopover - function returns true if the popover dialog should be used rather than
-		 * 		the UI dialog. The UI dialog includes the download features. The popover dialog will only show
-		 * 		the site information
+		 * @param {Object} showOptions
+		 * 		@prop {Array of Object} features - json object representing the features from a WFS GetFeature call.
+		 * 		@prop {Array of Object} with name and value properties} queryParamArray
+		 * 		@prop {String or Array} boundingBox - string which is suitable to send as the WQP service bBox parameter value or an
+		 * 			extent [minX, minY, maxX, maxY]. In both cases the service expects the parameters to be in degrees (geographic
+		 * 	 		coordinates)
+		 * 		@prop {Boolean} usePopover - function returns true if the popover dialog should be used rather than
+		 * 			the UI dialog. The UI dialog includes the download features. The popover dialog will only show
+		 * 			the site information
 		 */
-		self.showDialog = function(features, queryParamArray, boundingBox, usePopover) {
-			var exceedsFeatureLimit = features.length > FEATURE_LIMIT;
+		self.showDialog = function(showOptions) {
+			var exceedsFeatureLimit = showOptions.features.length > FEATURE_LIMIT;
 			var $detailDiv = options.$dialog.find('#map-info-details-div');
 			var $hiddenFormInputDiv = options.$dialog.find('#map-id-hidden-input-div');
 			var $popover = $('#map-popover');
 
 			var context = {
-				features: features,
+				features: showOptions.features,
 				exceedsFeatureLimit: exceedsFeatureLimit,
-				boundingBox: boundingBox,
-				queryParamArray: _.reject(queryParamArray, function (param) {
+				boundingBox: showOptions.boundingBox,
+				queryParamArray: _.reject(showOptions.queryParamArray, function (param) {
 					return (param.name === 'bBox') || (param.name === 'mimeType');
 				})
 			};
 
-			if (usePopover()) {
+			if (showOptions.usePopover) {
 				options.$popover.popover('destroy');
-				if (features.length > 0) {
+				if (showOptions.features.length > 0) {
 					options.$popover.popover({
 						placement: 'top',
 						animation: false,
@@ -120,7 +121,7 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
 				}
 			}
 			else {
-				if (features.length > 0) {
+				if (showOptions.features.length > 0) {
 					$detailDiv.html(FEATURE_INFO_TEMPLATE(context));
 					$hiddenFormInputDiv.html(HIDDEN_FORM_TEMPLATE(context));
 

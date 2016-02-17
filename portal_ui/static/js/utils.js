@@ -39,6 +39,10 @@ PORTAL.UTILS = function() {
 		return $.param(resultArray);
 	};
 
+	self.isExtraSmallBrowser = function() {
+		return $('body').width() < 750;
+	};
+
 	/*
 	 * Add/Remove the disabled attribute for $els and make the element appear enabled/disabled.
 	 * @param {Array of jquery input elements} $els
