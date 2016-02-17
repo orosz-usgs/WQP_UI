@@ -65,6 +65,7 @@ PORTAL.VIEWS.siteMapView = function(options) {
 
 		// Add click handler for Show Sites button
 		options.$container.find('#show-on-map-button').click(function () {
+			var self = this;
 			var queryParamArray = options.downloadFormView.getQueryParamArray();
 			var queryString = PORTAL.UTILS.getQueryString(queryParamArray);
 
@@ -83,11 +84,6 @@ PORTAL.VIEWS.siteMapView = function(options) {
 				]);
 
 				portalDataMap.updateSitesLayer(queryParamArray);
-				// Start mapping process by disabling the show site button and then requesting the layer
-				//$(this).attr('disabled', 'disabled').removeClass('query-button').addClass('disable-query-button');
-				//portalDataMap.showDataLayer(queryParamArray, function () {
-				//	$(this).removeAttr('disabled').removeClass('disable-query-button').addClass('query-button');
-				//});
 			};
 
 			if (!options.downloadFormView.validateDownloadForm()) {

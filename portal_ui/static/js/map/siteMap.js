@@ -2,6 +2,7 @@
 /* global ol */
 /* global WQP */
 /* global log */
+/* global $ */
 
 var PORTAL = PORTAL || {};
 PORTAL.MAP = PORTAL.MAP || {};
@@ -199,7 +200,9 @@ PORTAL.MAP.siteMap = function(options) {
 					options.$loadingIndicator.hide();
 				});
 			}
+
 		}
+		return layerLoaded.promise();
 	};
 
 	/*
