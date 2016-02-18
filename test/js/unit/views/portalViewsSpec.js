@@ -51,7 +51,6 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
 			testSpec = {codes: 'codeitems'};
 
 			spyOn($.fn, 'select2');
-			Config.CODES_ENDPOINT = 'http:fakecodesservice';
 		});
 
 		afterEach(function () {

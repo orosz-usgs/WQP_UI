@@ -4,10 +4,6 @@ xdescribe('Unit Test: Controllers', function () {
 	describe('srsnames controller', function () {
 		var scope, ctrl, $httpBackend, rootScope;
 
-		Config = {
-			PUBLIC_SRSNAMES_ENDPOINT: 'http://fakeendpoint.com/names'
-		};
-
 		beforeEach(inject(function (_$httpBackend_, $rootScope, $controller) {
 
 			$httpBackend = _$httpBackend_;

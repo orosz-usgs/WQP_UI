@@ -99,7 +99,7 @@ CoverageMap.init = function (divId) {
 
 	var baseLayers = [];
 	for (i = 0; i < CoverageMap.BASE_LAYERS.length; i++) {
-		baseLayers[i] = MapUtils.getLayer(MapUtils.BASE_LAYERS[CoverageMap.BASE_LAYERS[i]], {
+		baseLayers[i] = MapUtils.getLayer(WQP.MapConfig.BASE_LAYER_URL[CoverageMap.BASE_LAYERS[i]], {
 			isBaseLayer: true,
 			transitionEffect: 'resize'
 		});

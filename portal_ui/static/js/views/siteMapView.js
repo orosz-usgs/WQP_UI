@@ -10,7 +10,6 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
  * @param {Object} options
  * 		@param {Jquery element} $container - contains the map and its controls
  * 		@param {PORTAL.VIEWS.downloadProgressDialog} downloadProgressDialog
- * 		@param {IdentifyDialog} identifyDialog
  * 		@param {PORTAL.VIEWS.downloadFormView} downloadFormView
  * @return {Object}
  	* 	@func initialize
@@ -22,8 +21,20 @@ PORTAL.VIEWS.siteMapView = function(options) {
 
 	var mapId = 'query-results-map';
 
-	var portalDataMap; // Don't initialize until the map is shown
+	var identifyDialog = PORTAL.VIEWS.identifyDialog({
+		$dialog : $('#map-info-dialog'),
+		$popover : options.$container.find('#map-popover')
+	});
+	var portalDataMap = PORTAL.MAP.siteMap({
+		mapDivId : mapId,
+		$loadingIndicator : options.$container.find('#map-loading-indicator'),
+		identifyDialog : identifyDialog
+	});
 
+
+	/*
+	 * Initialize the site map and all of it's controls
+	 */
 	self.initialize = function() {
 		var $mapContainer = options.$container.find('#query-map-container');
 		var $map = options.$container.find('#' + mapId);
@@ -40,17 +51,21 @@ PORTAL.VIEWS.siteMapView = function(options) {
 			}
 		});
 
+		identifyDialog.initialize(portalDataMap.clearBoxIdFeature);
+		portalDataMap.initialize();
+
+
 		// Add click handler for map show/hide button
 		$showHideBtn.click(function() {
 			var isVisible = PORTAL.UTILS.toggleShowHideSections($(this), $mapContainer);
-
-			if (isVisible && (!portalDataMap)) {
-				portalDataMap = new PortalDataMap(mapId, options.identifyDialog);
+			if (isVisible) {
+				portalDataMap.render();
 			}
 		});
 
 		// Add click handler for Show Sites button
 		options.$container.find('#show-on-map-button').click(function () {
+			var self = this;
 			var queryParamArray = options.downloadFormView.getQueryParamArray();
 			var queryString = PORTAL.UTILS.getQueryString(queryParamArray);
 
@@ -67,11 +82,8 @@ PORTAL.VIEWS.siteMapView = function(options) {
 					decodeURIComponent(queryString),
 					parseInt(totalCount)
 				]);
-				// Start mapping process by disabling the show site button and then requesting the layer
-				$(this).attr('disabled', 'disabled').removeClass('query-button').addClass('disable-query-button');
-				portalDataMap.showDataLayer(queryParamArray, function () {
-					$(this).removeAttr('disabled').removeClass('disable-query-button').addClass('query-button');
-				});
+
+				portalDataMap.updateSitesLayer(queryParamArray);
 			};
 
 			if (!options.downloadFormView.validateDownloadForm()) {

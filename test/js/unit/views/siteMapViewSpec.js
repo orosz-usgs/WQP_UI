@@ -10,6 +10,8 @@ describe ('Tests for PORTAL.VIEWS.siteMapView', function() {
 	var testView;
 	var $testDiv;
 
+	var siteMapInitializeSpy, siteMapRenderSpy, siteMapUpdateSitesLayerSpy, siteMapClearBoxIdSpy;
+	var identifyInitializeSpy;
 	var mockDownloadDialog, mockIdentifyDialog, mockDownloadView;
 	var fetchHeadDeferred;
 	var validateSuccess;
@@ -28,16 +30,27 @@ describe ('Tests for PORTAL.VIEWS.siteMapView', function() {
 		$mapContainer = $('#query-map-container');
 		$showMapBtn = $('#show-on-map-button');
 
-		spyOn(window, 'PortalDataMap');
+		siteMapInitializeSpy = jasmine.createSpy('siteMapInitialize');
+		siteMapRenderSpy = jasmine.createSpy('siteMapRender');
+		siteMapUpdateSitesLayerSpy = jasmine.createSpy('siteMapUpdateSitesLayer');
+		siteMapClearBoxIdSpy = jasmine.createSpy('siteMapClearBoxId');
+
+		identifyInitializeSpy = jasmine.createSpy('dialogInitialize');
+		spyOn(PORTAL.VIEWS, 'identifyDialog').and.returnValue({
+			initialize : identifyInitializeSpy
+		})
+
+		spyOn(PORTAL.MAP, 'siteMap').and.returnValue({
+			initialize : siteMapInitializeSpy,
+			render : siteMapRenderSpy,
+			updateSitesLayer : siteMapUpdateSitesLayerSpy,
+			clearBoxIdFeature : siteMapClearBoxIdSpy
+		});
 		spyOn(_gaq, 'push');
 		mockDownloadDialog = {
 			show : jasmine.createSpy('mockShow'),
 			updateProgress : jasmine.createSpy('mockUpdateProgress'),
 			cancelProgress : jasmine.createSpy('mockDownloadProgress')
-		};
-
-		mockIdentifyDialog = {
-			dummmy : ''
 		};
 
 		mockDownloadView = {
@@ -56,7 +69,6 @@ describe ('Tests for PORTAL.VIEWS.siteMapView', function() {
 		testView = PORTAL.VIEWS.siteMapView({
 			$container : $testDiv,
 			downloadProgressDialog : mockDownloadDialog,
-			identifyDialog : mockIdentifyDialog,
 			downloadFormView : mockDownloadView
 		});
 
@@ -67,16 +79,14 @@ describe ('Tests for PORTAL.VIEWS.siteMapView', function() {
 		$testDiv.remove();
 	});
 
-	it('Expects that when the show-hide-toggle button is clicked the portal map initialized', function() {
-		$showHideBtn.trigger('click');
-		expect(window.PortalDataMap).toHaveBeenCalledWith('query-results-map', mockIdentifyDialog);
+	it('Expects that the identify dialog and the site map are initialized', function() {
+		expect(siteMapInitializeSpy).toHaveBeenCalled();
+		expect(identifyInitializeSpy).toHaveBeenCalledWith(siteMapClearBoxIdSpy);
 	});
 
-	it('Expects the the third click should show without reinitializing the map', function() {
+	it('Expects that when the show-hide-toggle button is clicked the portal map rendered', function() {
 		$showHideBtn.trigger('click');
-		$showHideBtn.trigger('click');
-		$showHideBtn.trigger('click');
-		expect(window.PortalDataMap.calls.count()).toBe(1);
+		expect(siteMapRenderSpy);
 	});
 
 	it('Expects that clicking on the show on map button should validate the form and if not valid the progress dialog is not shown', function() {

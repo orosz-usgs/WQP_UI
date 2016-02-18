@@ -9,6 +9,10 @@
 		  href="{{ url_for('bower.static', filename='select2/dist/css/select2.min.css') }}"/>
 	<link rel="stylesheet" type="text/css"
 		  href="{{ url_for('bower.static', filename='select2-bootstrap-theme/dist/select2-bootstrap.min.css') }}"/>
+	<link rel="stylesheet" type="text/css"
+		  href="{{  url_for('bower.static', filename='openlayers/ol.css') }}" />
+	<link rel="stylesheet" type="text/css"
+		  href="{{ url_for('bower.static', filename='ol3-layerswitcher/src/ol3-layerswitcher.css') }}" />
 {% endblock %}
 
 {% block page_header_title %}Water Quality Data{% endblock %}
@@ -347,8 +351,10 @@
 							</div>
 						</div>
 					</div>
-					<div id="query-map-container" style="display: none;">
+					<div id="query-map-container" style="display:none;">
 						<div id="query-results-map"></div>
+						<div id="map-loading-indicator"><i class="fa fa-spin fa-spinner fa-5x"></i></div>
+						<div id="map-popover" title="Detailed site information" data-trigger="focus"></div>
 					</div>
 				</div>
 				<div id="download-box" class="panel-body">
@@ -426,7 +432,6 @@
 	</div>
 	<div id="map-info-dialog" style="display: none;">
 		<form method="get" style="vertical-align: top; display: inline-block;">
-			<input type="hidden" name="zip" checked="checked" id="zip" value="yes"/>
 			<div id="map-info-data-type-div" style="vertical-align: top; display: inline-block;">
 				Select data:
 				<ul class="download-lists">
@@ -507,8 +512,8 @@
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='jquery-ui/jquery-ui.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='numeral/min/numeral.min.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='handlebars/handlebars.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('static', filename='vendor/OpenLayers/OpenLayers.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('static', filename='vendor/LoadingPanel.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('bower.static', filename='openlayers/ol.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('bower.static', filename='ol3-layerswitcher/src/ol3-layerswitcher.js') }}"></script>
 	{% assets "portal_js" %}
 		<script type="text/javascript" src="{{ ASSET_URL }}"></script>
 	{% endassets %}
