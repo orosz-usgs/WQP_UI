@@ -4,7 +4,7 @@
 /* global PORTAL */
 /* global ol */
 
-describe('Tests for BoxIdentifyControl', function() {
+describe('Tests for ToggleControl', function() {
 	"use strict";
 
 	var map;

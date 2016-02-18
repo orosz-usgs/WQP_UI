@@ -1,0 +1,30 @@
+{
+  "name": "wqp_ui",
+  "version": "1.0.0",
+  "description": "Water Quality Portal",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node/node node_modules/karma/bin/karma start test/js/karma.conf.js --single-run --browsers Firefox --reporters dots,coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/USGS-CIDA/WQP_UI"
+  },
+  "author": "USGS - OWI",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/USGS-CIDA/WQP_UI/issues"
+  },
+  "homepage": "https://github.com/USGS-CIDA/WQP_UI",
+  "devDependencies": {
+    "bower": "^1.7.7",
+    "jasmine-core": "^2.4.1",
+    "karma": "^0.13.21",
+    "karma-firefox-launcher": "^0.1.7",
+    "karma-jasmine": "^0.3.7",
+    "karma-js-coverage": "^0.4.0"
+  }
+}
