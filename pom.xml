@@ -124,115 +124,50 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>com.github.klieber</groupId>
-				<artifactId>phantomjs-maven-plugin</artifactId>
-				<version>0.5</version>
+				<groupId>com.github.eirslett</groupId>
+				<artifactId>frontend-maven-plugin</artifactId>
+				<version>0.0.27</version>
 				<executions>
 					<execution>
+						<id>install node and npm</id>
 						<goals>
-							<goal>install</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<version>1.9.7</version>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>com.github.searls</groupId>
-				<artifactId>jasmine-maven-plugin</artifactId>
-				<version>2.1</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>test</goal>
+							<goal>install-node-and-npm</goal>
 						</goals>
 						<configuration>
-							<webDriverClassName>org.openqa.selenium.phantomjs.PhantomJSDriver</webDriverClassName>
-							<webDriverCapabilities>
-								<capability>
-									<name>phantomjs.binary.path</name>
-									<value>${phantomjs.binary}</value>
-								</capability>
-							</webDriverCapabilities>
+							<nodeVersion>v4.2.4</nodeVersion>
+							<npmVersion>2.14.12</npmVersion>
+						</configuration>
+					</execution>
+					<execution>
+						<id>npm install</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<configuration>
+							<arguments>install</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>bower install</id>
+						<goals>
+							<goal>bower</goal>
+						</goals>
+						<configuration>
+							<arguments>install</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>javascript tests</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<phase>test</phase>
+						<configuration>
+							<arguments>test</arguments>
 						</configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<keepServerAlive>true</keepServerAlive>
-					<jsSrcDir>${project.basedir}/portal_ui</jsSrcDir>
-					<jsTestSrcDir>${project.basedir}/test/js</jsTestSrcDir>
-					<preloadSources>
-						<source>bower_components/underscore/underscore-min.js</source>
-						<source>bower_components/jquery/dist/jquery.min.js</source>
-						<source>bower_components/bootstrap/dist/js/bootstrap.min.js</source>
-						<source>bower_components/jquery-ui/jquery-ui.min.js</source>
-						<source>bower_components/numeral/min/numeral.min.js</source>
-						<source>bower_components/select2/dist/js/select2.min.js</source>
-						<source>bower_components/handlebars/handlebars.min.js</source>
-						<source>bower_components/loglevel/dist/loglevel.min.js</source>
-						<source>bower_components/openlayers/ol.js</source>
-						<source>bower_components/ol3-layerswitcher/src/ol3-layerswitcher.js</source>
-						<source>static/vendor/OpenLayers/OpenLayers.js</source>
-						<source>../test/resources/testConfig.js</source>
-					</preloadSources>
-					<sourceIncludes>
-						<include>static/js/**/*.js</include>
-					</sourceIncludes>
-					<sourceExcludes>
-						<include>static/js/angular/**/*.js</include>
-						<include>static/js/portalOnReady.js</include>
-					</sourceExcludes>
-					<specIncludes>
-						<include>vendor/sinon-1.17.2.js</include>
-						<include>unit/**/*.js</include>
-					</specIncludes>
-				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>com.github.timurstrekalov</groupId>
-				<artifactId>saga-maven-plugin</artifactId>
-				<version>1.5.2</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>coverage</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<baseDir>http://localhost:${jasmine.serverPort}</baseDir>
-					<outputDir>${project.build.directory}/coverage</outputDir>
-					<noInstrumentPatterns>
-						<pattern>.+/.+Spec\.js</pattern>
-						<pattern>.+/OpenLayers\.js</pattern>
-						<pattern>.+/bower_components/.+\.js</pattern>
-						<pattern>.+/vendor/.+\.js</pattern>
-						<pattern>.+/webjars/.+\.js</pattern>
-					</noInstrumentPatterns>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>com.google.code.maven-replacer-plugin</groupId>
-				<artifactId>replacer</artifactId>
-				<version>1.5.3</version>
-				<executions>
-					<execution>
-						<phase>verify</phase>
-						<goals>
-							<goal>replace</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<file>${project.build.directory}/coverage/total-coverage.dat</file>
-					<outputFile>${project.build.directory}/jasmine/total-coverage.dat</outputFile>
-					<regex>false</regex>
-					<token>src</token>
-					<value>${project.basedir}/portal_ui/static</value>
-				</configuration>
-			</plugin>
-
 		</plugins>
 	</build>
 

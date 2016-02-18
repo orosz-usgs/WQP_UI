@@ -86,7 +86,7 @@ describe ('Tests for PORTAL.VIEWS.siteMapView', function() {
 
 	it('Expects that when the show-hide-toggle button is clicked the portal map rendered', function() {
 		$showHideBtn.trigger('click');
-		expect(siteMapRenderSpy);
+		expect(siteMapRenderSpy).toHaveBeenCalled();
 	});
 
 	it('Expects that clicking on the show on map button should validate the form and if not valid the progress dialog is not shown', function() {
