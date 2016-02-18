@@ -113,9 +113,7 @@ PORTAL.MAP.siteLayer = (function() {
 	self.getWQPSitesFeature = function(queryParamArray, boundingBox) {
 		var deferred = $.Deferred();
 		var wfsFormat = new ol.format.WFS();
-		var gmlFormat = new ol.format.GML({
-			srsName : 'EPSG:900913'
-		});
+
 		var searchParams = getSearchParams(queryParamArray);
 
 		// Create the post feature document
@@ -157,7 +155,10 @@ PORTAL.MAP.siteLayer = (function() {
 					deferred.reject('WFS request failed');
 				}
 				else {
-					deferred.resolve(gmlFormat.readFeatures(response));
+					var features = _.map(wfsFormat.readFeatures(response), function(f) {
+						return f.getProperties();
+					});
+					deferred.resolve(features);
 					log.debug('Got response');
 				}
 			},

@@ -205,7 +205,6 @@ PORTAL.MAP.siteMap = function(options) {
 			}
 
 		}
-		return layerLoaded.promise();
 	};
 
 	/*
