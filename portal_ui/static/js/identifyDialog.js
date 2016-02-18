@@ -22,12 +22,12 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
 		'{{/if}}' +
 		'{{#each features}}' +
 			'<br /><table>' +
-			'<tr><th>Station ID: </th><td class="details-site-id">{{values_.name}}</td></tr>' +
-			'<tr><th>Name: </th><td>{{values_.locName}}</td></tr>' +
-			'<tr><th>Type: </th><td>{{values_.type}}</td></tr>' +
-			'<tr><th>HUC 8: </th><td>{{values_.huc8}}</td></tr>' +
-			'<tr><th>Org ID: </th><td>{{values_.orgId}}</td></tr>' +
-			'<tr><th>Org Name: </th><td>{{values_.orgName}}</td></tr>' +
+			'<tr><th>Station ID: </th><td class="details-site-id">{{name}}</td></tr>' +
+			'<tr><th>Name: </th><td>{{locName}}</td></tr>' +
+			'<tr><th>Type: </th><td>{{type}}</td></tr>' +
+			'<tr><th>HUC 8: </th><td>{{huc8}}</td></tr>' +
+			'<tr><th>Org ID: </th><td>{{orgId}}</td></tr>' +
+			'<tr><th>Org Name: </th><td>{{orgName}}</td></tr>' +
 			'</table>' +
 		'{{/each}}'
 	);
@@ -40,7 +40,7 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
 		'{{/each}}' +
 		'{{else}}' +
 		'{{#each features}}' +
-		'<input type="hidden" name="siteid" value="{{values_.name}}" />' +
+		'<input type="hidden" name="siteid" value="{{name}}" />' +
 		'{{/each}}' +
 		'<input type="hidden" name="zip" checked="checked" id="zip" value="yes"/>' +
 		'{{/if}}'
