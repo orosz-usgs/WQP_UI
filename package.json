@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "node/node node_modules/karma/bin/karma start test/js/karma.conf.js --single-run --browsers Firefox --reporters dots,coverage"
+    "test": "node_modules/karma/bin/karma start test/js/karma.conf.js --no-single-run --browsers \"\" --reporters progress"
   },
   "repository": {
     "type": "git",

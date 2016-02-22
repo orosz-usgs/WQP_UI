@@ -159,11 +159,11 @@
 					<execution>
 						<id>javascript tests</id>
 						<goals>
-							<goal>npm</goal>
+							<goal>karma</goal>
 						</goals>
 						<phase>test</phase>
 						<configuration>
-							<arguments>test</arguments>
+							<karmaConfPath>test/js/karma.conf.js</karmaConfPath>
 						</configuration>
 					</execution>
 				</executions>

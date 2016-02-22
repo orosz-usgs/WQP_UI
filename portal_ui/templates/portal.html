@@ -410,10 +410,26 @@
 					</div>
 				</div>
 				<div id="show-queries-div" class="panel-body">
-					<button class="btn" id="show-queries-button" type="button">Show RESTlike queries</button>
+					<button class="btn" id="show-queries-button" type="button">Show API queries</button>
 					&nbsp;
 					<button type="button" id="WQXSchemaHelp" class="popover-help" data-help="xmlSchema">?</button>
-					<div id="WSFeedback"></div>
+					<div id="api-queries-div">
+						<div class="show-query-text" id="sites-query-div">
+							<b>Sites</b>
+							<br/>
+							<textarea readonly="readonly" rows="6"></textarea>
+						</div>
+						<div class="show-query-text" id="results-query-div">
+							<b>Results</b>
+							<br/>
+							<textarea readonly="readonly" rows="6"></textarea>
+						</div>
+						<div class="show-query-text" id="getfeature-query-div">
+							<b>WFS GetFeature</b>
+							<br/>
+							<textarea readonly="readonly" rows="6"></textarea>
+						</div>
+					</div>
 				</div>
 			</div>
 		</form>

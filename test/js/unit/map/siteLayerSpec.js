@@ -89,6 +89,15 @@ describe('PORTAL.MAP.siteLayer tests', function() {
 		});
 	});
 
+	describe('Tests for getWfsGetFeatureUrl', function() {
+		var queryParamArray = [{name: 'statecode', value: 'US:55'}, {name: 'countycode', value: 'US:55:025'}];
+
+		it('Expects the queryParamArray to be formatted into a semicolon separated value', function() {
+			var urlString = PORTAL.MAP.siteLayer.getWfsGetFeatureUrl(queryParamArray);
+			expect(urlString).toContain('searchParams=' + encodeURIComponent('statecode:US:55;countycode:US:55:025'));
+		});
+	});
+
 	describe('Tests for getWQPSitesFeature', function() {
 		var queryParamArray = [{name: 'statecode', value: 'US:55'}, {name: 'countycode', value: 'US:55:025'}];
 		var boundingBox = [-9955464,  5315278, -9949960, 5319405];

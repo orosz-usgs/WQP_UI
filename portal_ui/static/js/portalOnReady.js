@@ -33,20 +33,15 @@ $(document).ready(function () {
 		downloadProgressDialog : downloadProgressDialog,
 		downloadFormView : downloadFormView
 	});
+	var showAPIView = PORTAL.VIEWS.showAPIView({
+		$container : $('#show-queries-div'),
+		getQueryParamArray : downloadFormView.getQueryParamArray
+	});
 
 	//Initialize subviews
 	var initDownloadForm = downloadFormView.initialize();
 	siteMapView.initialize();
-
-	// Add click handler for the Show queries button
-	$('#show-queries-button').click(function () {
-		// Generate the request from the form
-		var queryString = PORTAL.UTILS.getQueryString(downloadFormView.getQueryParamArray());
-		var stationSection = "<div class=\"show-query-text\"><b>Sites</b><br><textarea readonly=\"readonly\" rows='6'>" + PORTAL.queryServices.getFormUrl('Station', queryString) + "</textarea></div>";
-		var resultSection = "<div class=\"show-query-text\"><b>Results</b><br><textarea readonly=\"readonly\" rows='6'>" + PORTAL.queryServices.getFormUrl('Result', queryString) + "</textarea></div>";
-
-		$('#WSFeedback').html(stationSection + resultSection);
-	});
+	showAPIView.initialize();
 
 	initDownloadForm.fail(function() {
 		$('#service-error-dialog').modal('show');
