@@ -15,6 +15,7 @@ PORTAL.MAP.siteLayer = (function() {
 	var self = {};
 
 	var WQP_SITE_LAYER_NAME = 'wqp_sites';
+	var WFS_VERSION = '1.1.0';
 
 	var getSearchParams = function (queryParamArray) {
 		var queryString = PORTAL.UTILS.getQueryString(queryParamArray, ['mimeType', 'zip'], true);
@@ -103,6 +104,18 @@ PORTAL.MAP.siteLayer = (function() {
 		});
 	};
 
+	self.getWfsGetFeatureUrl = function(queryParamArray) {
+		var queryData = {
+			request : 'GetFeature',
+			service : 'wfs',
+			version : WFS_VERSION,
+			typeName : WQP_SITE_LAYER_NAME,
+			searchParams : getSearchParams(queryParamArray),
+			outputFormat : 'application/json'
+		};
+		return Config.SITES_GEOSERVER_ENDPOINT + 'wfs/?' + $.param(queryData);
+	};
+
 	/*
 	 * @param {Array of Object with name and value properties} queryParamArray - query parameters to be used to retrieve the sites
 	 * @param {ol.Extent} boundingBox - limit the request to look for features in this boundingBox
@@ -122,8 +135,6 @@ PORTAL.MAP.siteLayer = (function() {
 			featureNS: '',
 			featurePrefix : '',
 			featureTypes : [WQP_SITE_LAYER_NAME],
-			outputFormat : 'application/json',
-			maxFeatures : 20,
 			srsName : 'EPSG:900913',
 			geometryName : 'the_geom',
 			bbox :	boundingBox
@@ -138,7 +149,7 @@ PORTAL.MAP.siteLayer = (function() {
 			'</PropertyIsEqualTo>' + $filter.html() + '</And>'
 		);
 		getFeatureDoc = '<GetFeature xmlns="http://www.opengis.net/wfs" ' +
-			'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" service="WFS" version="1.1.0" ' +
+			'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" service="WFS" version="' + WFS_VERSION + '" ' +
 			'xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">' +
 			$(getFeatureQueryDoc).html() +
 			'</GetFeature>';

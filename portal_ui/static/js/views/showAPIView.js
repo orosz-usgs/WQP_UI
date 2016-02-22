@@ -20,15 +20,18 @@ PORTAL.VIEWS.showAPIView = function(options) {
 		var $apiQueryDiv = options.$container.find('#api-queries-div');
 		var $sitesText = options.$container.find('#sites-query-div textarea');
 		var $resultsText = options.$container.find('#results-query-div textarea');
+		var $wfsText = options.$container.find('#getfeature-query-div textarea');
 
 		options.$container.find('#show-queries-button').click(function() {
-			var queryString = PORTAL.UTILS.getQueryString(options.getQueryParamArray());
+			var queryParamArray = options.getQueryParamArray();
+			var queryString = PORTAL.UTILS.getQueryString(queryParamArray);
 
 			$apiQueryDiv.show();
 			$sitesText.html(PORTAL.queryServices.getFormUrl('Station', queryString));
 			$resultsText.html(PORTAL.queryServices.getFormUrl('Result', queryString));
+			$wfsText.html(PORTAL.MAP.siteLayer.getWfsGetFeatureUrl(queryParamArray));
 		});
-	}
+	};
 
 	return self;
 
