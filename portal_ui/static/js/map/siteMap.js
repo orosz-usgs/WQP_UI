@@ -164,7 +164,8 @@ PORTAL.MAP.siteMap = function(options) {
 
 		// Create the control which will turn on/off the box identify interaction.
 		boxIdControl = new PORTAL.MAP.ToggleControl({
-			interaction : boxDrawInteraction
+			interaction : boxDrawInteraction,
+			tooltip : 'Toggle to enable box identify. Click on a point and then move the mouse to the opposite corner of desired area of interest.'
 		});
 		map.addInteraction(boxDrawInteraction);
 		map.addControl(boxIdControl);

@@ -10,6 +10,7 @@ PORTAL.MAP = PORTAL.MAP || {};
  * @param {Object} opt_options
  * 		Additional properties:
  * 		@prop {ol.interaction} interaction - interaction to enable/disable
+ * 		@prop {String} tooltip - String to show as tool tip on control
  */
 PORTAL.MAP.ToggleControl = function(opt_options) {
 	"use strict";
@@ -31,6 +32,7 @@ PORTAL.MAP.ToggleControl = function(opt_options) {
 	element.className = 'map-toggle';
 	button.type = 'button';
 	button.className = 'map-toggle-off';
+	button.title = (options.tooltip) ? options.tooltip : '';
 	element.appendChild(button);
 
 	options.interaction.setActive(false);

@@ -26,7 +26,8 @@ describe('Tests for ToggleControl', function() {
 		testInteraction = new ol.interaction.Pointer({
 		});
 		testControl = new PORTAL.MAP.ToggleControl({
-			interaction : testInteraction
+			interaction : testInteraction,
+			tooltip : 'Control tooltip'
 		});
 
 		map.addInteraction(testInteraction);
@@ -37,9 +38,10 @@ describe('Tests for ToggleControl', function() {
 		$mapDiv.remove();
 	});
 
-	it('Expects the map div to contain the toggle control and that the interaction will be off', function() {
+	it('Expects the map div to contain the toggle control, it will contain a tooltip, and that the interaction will be off', function() {
 		var $control = $mapDiv.find('.map-toggle');
 		expect($control.length).toBe(1);
+		expect($control.find('button').attr('title')).toEqual('Control tooltip');
 		expect($control.find('button.map-toggle-off').length).toBe(1);
 		expect(testInteraction.getActive()).toBe(false);
 	});
