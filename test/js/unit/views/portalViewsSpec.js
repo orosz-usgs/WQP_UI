@@ -97,18 +97,19 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
 		});
 		it('Expects the select2\'s ajax parameter\'s results function to format the data into a form that select2 can use', function () {
 			testSpec.formatData = jasmine.createSpy('formatDataSpy').and.returnValue('formatted data');
+			testSpec.pagesize = 15;
 			PORTAL.VIEWS.createPagedCodeSelect($('#test-div'), testSpec, {});
 			var resultsFnc = $.fn.select2.calls.argsFor(0)[0].ajax.processResults;
 
 			var DATA = $.parseJSON('{"codes" : [{"value" : "v1", "desc" : "Text1", "providers" : "P1"},' +
 				'{"value" : "v3", "desc" : "Text3", "providers" :"P1 P2"},' +
-				'{"value" : "v2", "desc" : "", "providers" :"P1"}], "recordCount" : 3}');
+				'{"value" : "v2", "desc" : "", "providers" :"P1"}], "recordCount" : 17}');
 			var results = resultsFnc(DATA, {page: 1});
 			expect(results.results.length).toBe(3);
 			expect(testSpec.formatData.calls.count()).toBe(3);
 			expect(testSpec.formatData.calls.argsFor(0)[0]).toEqual({value: "v1", desc: "Text1", providers: 'P1'});
 			expect(results.results[0]).toEqual({id: 'v1', text: 'formatted data'});
-			expect(results.more).toBe(false);
+			expect(results.pagination.more).toBe(true);
 		});
 	});
 

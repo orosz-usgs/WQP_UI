@@ -69,10 +69,13 @@ PORTAL.VIEWS.createPagedCodeSelect = function (el, spec, select2Options) {
 						text: spec.formatData(code)
 					};
 				});
+				var page = params.page || 1;
 
 				return {
 					results: results,
-					more: ((spec.pagesize * params.page) < data.recordCount)
+					pagination: {
+						more : ((spec.pagesize * page) < data.recordCount)
+					}
 				};
 			}
 		}
