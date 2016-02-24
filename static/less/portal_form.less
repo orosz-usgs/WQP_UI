@@ -1,0 +1,448 @@
+// Styling specific to the portal form
+#params .panel {
+  .panel-heading {
+    button {
+      display: inline;
+    }
+    @media (min-device-width: 768px) {
+      button {
+        display: none
+      }
+    }
+  }
+  .panel-body {
+    @media (max-device-width: 767px) {
+      display: none;
+    }
+  }
+}
+
+#params .panel .panel-body .subpanel {
+  padding-left: 0px;
+  padding-right: 0px;
+
+  .subpanel-heading {
+    margin-bottom: 15px;
+    font-weight: bold;
+    color: #034e91;
+    .show-hide-toggle {
+      display: inline;
+    }
+    @media (min-device-width: 480px) {
+      .show-hide-toggle {
+        display: none;
+      }
+    }
+  }
+
+  .subpanel-body {
+    @media (max-device-width: 480px) {
+      display: none;
+    }
+  }
+}
+
+// General form-group styles
+#params .form-group, #params .checkbox {
+  margin-bottom: 5px;
+  .make-row();
+
+  .control-label {
+    text-align: right;
+    margin-top: 6px;
+    font-weight: bold;
+  }
+
+  .help-link {
+    margin-top: 5px;
+    .make-xs-column(1);
+    text-align: left;
+  }
+}
+
+#params .popover-help, #show-queries-div .popover-help {
+  border-width: 0px;
+  background-color: inherit;
+}
+
+// Column specific styles
+#place {
+  .make-sm-column(6);
+  .make-md-column(8);
+  .form-group {
+    label {
+      .make-sm-column(3);
+      .make-md-column(2);
+    }
+    > div {
+      .make-xs-column(11);
+      .make-sm-column(8);
+      .make-md-column(9);
+    }
+  }
+}
+
+#point-location {
+  .make-sm-column(3);
+  .make-md-column(2);
+  .form-group {
+    label {
+      .make-sm-column(4);
+    }
+    > div {
+      .make-sm-column(8);
+    }
+  }
+  @media (max-width: @screen-xs-max) {
+    .subpanel-heading {
+      margin-top: 40px;
+    }
+  }
+  #miles-label {
+    .make-sm-column-offset(4);
+    .make-sm-column(8);
+    @media (min-width: @screen-sm-min) {
+      margin-bottom: 4px;
+    }
+  }
+}
+
+#bounding-box {
+  .make-sm-column(3);
+  .make-md-column(2);
+  .form-group {
+    label {
+      .make-sm-column(4);
+    }
+    > div {
+      .make-sm-column(8);
+    }
+  }
+  @media (max-width: @screen-xs-max) {
+    .subpanel-heading {
+      margin-top: 40px;
+    }
+  }
+}
+
+#site-params {
+  .make-sm-column(6);
+  .make-lg-column(5);
+  padding-left: 0px;
+  padding-right: 0px;
+  .form-group {
+    label {
+      .make-sm-column(5);
+      .make-md-column(4);
+    }
+    > div {
+      .make-xs-column(11);
+      .make-sm-column(6);
+      .make-md-column(7);
+    }
+  }
+  #orgSelect {
+    .btn-info;
+  }
+}
+
+#sampling-params {
+  .make-sm-column(6);
+  .make-lg-column(7);
+  padding-left: 0px;
+  padding-right: 0px;
+  .subpanel-body > .form-group {
+    label {
+      .make-sm-column(5);
+      .make-md-column(4);
+    }
+    > div {
+      .make-xs-column(11);
+      .make-sm-column(6);
+      .make-md-column(7);
+    }
+  }
+
+  // The date row has some special formatting so that on larger screens, the dates are on a single row.
+  #date-row {
+    .make-row();
+
+    #start-date-select {
+      .make-sm-column(12);
+      .make-md-column(7);
+      .make-row();
+      label {
+        .make-sm-column(5);
+        .make-md-column(5);
+      }
+      > div {
+        .make-sm-column(7);
+        .make-md-column(7);
+      }
+    }
+    #end-date-select {
+      .make-sm-column(12);
+      .make-md-column(5);
+      .make-row();
+      label {
+        .make-sm-column(5);
+        .make-md-column(2);
+      }
+      > div {
+        .make-sm-column(7);
+        .make-md-column(10);
+      }
+    }
+  }
+}
+
+// This is needed since the site-parameters and sampling-parameter divs are not the same height.
+.dummy-row {
+  .clearfix();
+  @media (min-width: @screen-sm-min) {
+    .responsive-visibility();
+  }
+}
+
+#data-type-parameters-div {
+  .form-group {
+    .make-row();
+    > label {
+      .make-sm-column(3);
+      .make-md-column(2);
+    }
+    > div {
+      .make-sm-column(9);
+      .make-md-column(10);
+      label {
+        margin-right: 10px;
+        padding-left: 5px;
+        font-weight: normal;
+      }
+    }
+  }
+}
+
+// Styles for map and query section
+#map-ops-button-div {
+  .make-row();
+  > div {
+    padding-bottom: 10px;
+  }
+  #show-on-map-button-div {
+    .make-sm-column(4);
+    .make-md-column(3);
+  }
+  label {
+    font-weight: normal;
+  }
+  #query-map-legend-div {
+    .make-row();
+    .make-sm-column(8);
+    .make-md-column(9);
+
+    div {
+      display: inline-block;
+      padding-left: 10px;
+    }
+
+  }
+}
+
+#query-map-container {
+  .make-row();
+  position: relative;
+  height: 320px;
+  @media (min-width: @screen-sm-min) {
+    height: 650px;
+  }
+  @media (min-width: @screen-md-min) {
+    height: 750px;
+  }
+}
+
+#show-on-map-button {
+  .btn-default;
+}
+
+#query-results-map, #map-loading-indicator {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  top: 0px;
+}
+#map-loading-indicator {
+  display: none;
+  text-align: center;
+}
+
+#query-results-map .layer-switcher {
+  .panel {
+        margin-bottom: 0px;
+        box-shadow: none;
+        ul {
+          padding-top : .5em;
+          input {
+            display: inline;
+          }
+
+          label {
+            display: inline;
+            margin-left: 4px;
+          }
+        }
+    }
+}
+#query-results-map .map-toggle {
+  position:absolute;
+  top: 70px;
+  left: 10px;
+}
+#query-results-map .map-toggle-on {
+  border-radius: 4px;
+  margin: 0px;
+  padding: 0px;
+  height: 22px;
+  width: 22px;
+  outline: none;
+  background-image: url('../img/box_selected.png');
+}
+
+#query-results-map .map-toggle-off {
+  border-radius: 4px;
+  margin: 0px;
+  padding: 0px;
+  height: 22px;
+  width: 22px;
+  outline: none;
+  background-image: url('../img/box_select2.png');
+  color: #444444;
+}
+
+#query-map-container .popover-content {
+  height: 250px;
+  overflow-y: scroll;
+  font-size : x-small;
+
+  table {
+    th {
+      width: 60px;
+      margin-left: 5px;
+    }
+  }
+}
+
+#download-box {
+  background-color: @download-panel-color;
+  ul {
+    list-style: none;
+    label {
+      font-weight: normal;
+    }
+    input {
+      margin-right: 5px;
+    }
+  }
+  #download-box-input_div {
+    .make-row();
+  }
+  #download-data-kind-box {
+    .make-sm-column(6);
+    .make-md-column(5);
+    .make-lg-column(4);
+  }
+  #download-tabular-data {
+    .make-sm-column(6);
+    .make-md-column(5);
+    .make-lg-column(4);
+  }
+  #download-sorted-data-div {
+    .make-md-column(2);
+    .make-lg-column(4);
+  }
+  #form-action {
+    .make-sm-column(12);
+  }
+
+}
+
+#main-button {
+  .btn-primary;
+}
+
+#show-queries-button {
+  .btn-default;
+}
+
+#show-queries-div {
+  background-color: @secondary-panel-color;
+  #api-queries-div {
+    display: none;
+    .show-query-text {
+      margin-top: 10px;
+
+      textarea {
+        width: 100%;
+      }
+    }
+  }
+}
+
+/* Styles for the ui dialogs */
+.ui-dialog-content {
+  font-size: small;
+  text-align: left;
+}
+
+.ui-widget-header {
+  background: #e9e3d5;
+}
+
+.ui-button-text {
+  background: #e9e3d5;
+  color: black;
+}
+
+#map-info-dialog {
+  button {
+    .btn-default;
+  }
+  ul {
+    margin-left: 0px;
+    list-style: none;
+  }
+  label {
+    font-weight: normal;
+    margin-left: 5px;
+  }
+  input {
+    margin-right: 5px;
+  }
+  table {
+    th {
+      width: 100px;
+      margin-left: 10px;
+    }
+  }
+}
+
+// Styles for map popup extra small devices
+#idPopup {
+  font-size: 75%;
+  th {
+    white-space: nowrap;
+  }
+  td {
+    padding-left: 8px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    line-height: 1.1;
+  }
+}
+
+
+
+    
+
+
+
