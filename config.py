@@ -1,4 +1,7 @@
 
+import os
+
+PROJECT_HOME = os.path.dirname(__file__)
 #Config for Flask-Collect
 COLLECT_STATIC_ROOT = 'static/'
 
@@ -17,3 +20,5 @@ NWIS_SITES_OGC_ENDPOINT = 'http://cida.usgs.gov/nwc/proxygeoserver/NWC/wms'
 NWIS_SITES_LAYER_NAME = 'NWC:gagesII'
 
 GA_TRACKING_CODE = ''
+
+LESS_BIN = os.path.join(PROJECT_HOME, 'node_modules', 'less', 'bin', 'lessc')
