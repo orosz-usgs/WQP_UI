@@ -1,14 +1,31 @@
 # WQP_UI
 Water Quality Portal User Interface
 
-To run this application locally, you will need to do the following:
+This application should be built using python 2.7.x
 
-1. Install node.js and lessc on your desktop. You can install lessc by executing `npm install -g less`. 
-2. Create a virtualenv using python 2.7 and install the requirements in requirements.txt. This can be done as follows while in the project directory:
-  1. Run `virtualenv --python=python2.7 env`
-  2. Activate your virtualenv (depends on whether linux or windows)
-  3. Run `pip install -r requirements.txt`
-3. Change to the `instance` directory and create config.py. It should contain the following:
+To build this application on a linux or Mac OS you can use the dev_install.sh script. If you want a fresh install type in:
+`source dev_install.sh --clean`
+This will remove the previous javascript and python dependencies. If you don't want to install from scratch, type in:
+`source dev_install.sh`
+This will update your javascript and python dependencies. Both commands will run the jasmine tests.
+
+To build on a windows machine (or you want to build by hand), you will need to run the follow commands at a command prompt.
+1. Run `mvn clean test` or `mvn test` (Use the former if you want dependencies to be freshly installed rather than just updated)
+2. Run `virtualenv --python=python2.7`
+3. Activate your virtualenv
+4. Run `pip install -r requirements.txt`
+
+If you don't have maven installed, you can do the following steps:
+1. If you want to clean, remove the env, node, node_modules, portal_ui/bower_components, portal_ui/static/gen, and portal_ui/static/.webassets-cache directories
+2. Install node (if you don't already have it installed.
+3. Run `npm install`
+4. Run `bower install`
+5. Run `karma start test/js/karma.conf.js` (optional this runs the tests)
+6. Run `virtualenv --python=python2.7`
+7. Activate your virtualenv
+8. Run `pip install -r requirements.txt`
+
+Once the project is built you will need to create a config.py file in the `instance` directory. It should contain the following:
 	```python
 	DEBUG = True
 	
@@ -39,6 +56,6 @@ Now you can run the application within the virtualenv by executing:
 
 The application can be accessed at 127.0.0.1:5050/index.
 
-The jasmine tests can be run by executing `mvn jasmine:bdd` and accessing `localhost:8234`
+For developer level testing, you can use the npm test script to run in no-single-step mode. Note that this
+script will have to modified for Windows users.
 
-The packaging, jasmine tests, and coverage report generation can be run by executing `mvn clean package`
