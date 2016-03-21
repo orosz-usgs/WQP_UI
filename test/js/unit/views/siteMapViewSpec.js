@@ -20,9 +20,10 @@ describe ('Tests for PORTAL.VIEWS.siteMapView', function() {
 
 	beforeEach(function() {
 		$('body').append('<div id="test-div">' +
-				'<div style="display:none"><button class="show-hide-toggle" title="Show subsection"><img alt="show" /></button>' +
+				'<div><button class="show-hide-toggle" title="Show subsection"><img alt="show" /></button>' +
 				'<button id="show-on-map-button"></button></div>' +
-				'<div id="query-map-container"><div id="query-results-map"></div></div>' +
+				'<div style="display:none" id="query-map-container"><div id="query-results-map"></div></div>' +
+				'<div style="display:none" id="query-map-legend-div"></div>' +
 				'</div>'
 		);
 		$testDiv = $('#test-div');
@@ -87,6 +88,17 @@ describe ('Tests for PORTAL.VIEWS.siteMapView', function() {
 	it('Expects that when the show-hide-toggle button is clicked the portal map rendered', function() {
 		$showHideBtn.trigger('click');
 		expect(siteMapRenderSpy).toHaveBeenCalled();
+	});
+
+	it('Expects that the legend container visibility is toggled whent the show-hide-toggle is clicked', function() {
+		var $legendContainer = $testDiv.find('#query-map-legend-div');
+		expect($legendContainer.is(':visible')).toBe(false);
+
+		$showHideBtn.trigger('click');
+		expect($legendContainer.is(':visible')).toBe(true);
+
+		$showHideBtn.trigger('click');
+		expect($legendContainer.is(':visible')).toBe(false);
 	});
 
 	it('Expects that clicking on the show on map button should validate the form and if not valid the progress dialog is not shown', function() {
