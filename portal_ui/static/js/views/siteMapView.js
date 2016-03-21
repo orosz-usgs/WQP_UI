@@ -40,6 +40,7 @@ PORTAL.VIEWS.siteMapView = function(options) {
 		});
 
 		var $mapContainer = options.$container.find('#query-map-container');
+		var $legendContainer = options.$container.find('#query-map-legend-div');
 		var $map = options.$container.find('#' + mapId);
 		var $showHideBtn = options.$container.find('.show-hide-toggle');
 
@@ -62,6 +63,10 @@ PORTAL.VIEWS.siteMapView = function(options) {
 			var isVisible = PORTAL.UTILS.toggleShowHideSections($(this), $mapContainer);
 			if (isVisible) {
 				portalDataMap.render();
+				$legendContainer.show();
+			}
+			else {
+				$legendContainer.hide();
 			}
 		});
 

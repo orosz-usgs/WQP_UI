@@ -226,122 +226,116 @@
 }
 
 // Styles for map and query section
-#map-ops-button-div {
-  .make-row();
-  > div {
-    padding-bottom: 10px;
-  }
-  #show-on-map-button-div {
-    .make-row();
-    .make-sm-column(4);
-    .make-md-column(3);
-  }
-  label {
-    font-weight: normal;
-  }
-  #query-map-legend-div {
-    .make-row();
-    .make-sm-column(8);
-    .make-md-column(9);
+#mapping-div {
+  position: relative;
 
-    div {
-      display: inline-block;
-      padding-left: 10px;
+  #map-ops-button-div {
+    .make-row();
+    > div {
+      padding-bottom: 10px;
     }
 
+    #show-on-map-button-div {
+      .make-row();
+      .make-sm-column(4);
+      .make-md-column(3);
+      #show-on-map-button {
+        .btn-default;
+      }
+    }
   }
-}
+  #query-map-container {
+    .make-row();
+    position: relative;
+    height: 320px;
+    display: none;
+    @media (min-width: @screen-sm-min) {
+      height: 650px;
+    }
+    @media (min-width: @screen-md-min) {
+      height: 750px;
+    }
 
-#query-map-container {
-  .make-row();
-  position: relative;
-  height: 320px;
-  @media (min-width: @screen-sm-min) {
-    height: 650px;
-  }
-  @media (min-width: @screen-md-min) {
-    height: 750px;
-  }
-}
+    #query-results-map, #map-loading-indicator {
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      top: 0px;
+    }
+    #map-loading-indicator {
+      display: none;
+      text-align: center;
+    }
 
-#show-on-map-button {
-  .btn-default;
-}
+    #query-results-map .layer-switcher {
+      .panel {
+            margin-bottom: 0px;
+            box-shadow: none;
+            ul {
+              padding-top : .5em;
+              input {
+                display: inline;
+              }
 
-#query-results-map, #map-loading-indicator {
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  top: 0px;
-}
-#map-loading-indicator {
-  display: none;
-  text-align: center;
-}
-#query-map-legend-div {
-  position: absolute;
-  top: 150px;
-  right : 10px;
-  background-color : white;
-
-  .legend-header {
-    text-align: center;
-    font-weight : bold;
-  }
-}
-
-#query-results-map .layer-switcher {
-  .panel {
-        margin-bottom: 0px;
-        box-shadow: none;
-        ul {
-          padding-top : .5em;
-          input {
-            display: inline;
-          }
-
-          label {
-            display: inline;
-            margin-left: 4px;
-          }
+              label {
+                display: inline;
+                margin-left: 4px;
+              }
+            }
         }
     }
-}
-#query-results-map .map-toggle {
-  position:absolute;
-  top: 70px;
-  left: 10px;
-}
-#query-results-map .map-toggle-on {
-  border-radius: 4px;
-  margin: 0px;
-  padding: 0px;
-  height: 22px;
-  width: 22px;
-  outline: none;
-  background-image: url('../img/box_selected.png');
-}
+    #query-results-map .map-toggle {
+      position:absolute;
+      top: 70px;
+      left: 10px;
+    }
+    #query-results-map .map-toggle-on {
+      border-radius: 4px;
+      margin: 0px;
+      padding: 0px;
+      height: 22px;
+      width: 22px;
+      outline: none;
+      background-image: url('../img/box_selected.png');
+    }
 
-#query-results-map .map-toggle-off {
-  border-radius: 4px;
-  margin: 0px;
-  padding: 0px;
-  height: 22px;
-  width: 22px;
-  outline: none;
-  background-image: url('../img/box_select2.png');
-  color: #444444;
-}
+    #query-results-map .map-toggle-off {
+      border-radius: 4px;
+      margin: 0px;
+      padding: 0px;
+      height: 22px;
+      width: 22px;
+      outline: none;
+      background-image: url('../img/box_select2.png');
+      color: #444444;
+    }
 
-#query-map-container .popover-content {
-  height: 250px;
-  overflow-y: scroll;
-  font-size : x-small;
+    .popover-content {
+      height: 250px;
+      overflow-y: scroll;
+      font-size: x-small;
 
-  table {
-    th {
-      width: 60px;
-      margin-left: 5px;
+      table {
+        th {
+          width: 60px;
+          margin-left: 5px;
+        }
+      }
+    }
+  }
+
+  #query-map-legend-div {
+    display: none;
+    @media (min-width: @screen-sm-min) {
+      position: absolute;
+      top: 170px;
+      right: 10px;
+    }
+    background-color : white;
+
+    .legend-header {
+      text-align: center;
+      font-weight : bold;
     }
   }
 }
