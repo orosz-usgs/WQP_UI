@@ -1,4 +1,9 @@
+/* jslint browser : true */
+/* global describe, it, expect */
+/* global PORTAL */
+
 describe('Tests for portalValidators', function () {
+	'use strict';
 
 	describe('Tests for PORTAL.validators.siteIdValidator', function () {
 		it('Expects null value to return isValid true', function () {
@@ -51,4 +56,31 @@ describe('Tests for portalValidators', function () {
 			expect(valid.errorMessage).toBeDefined();
 		});
 	});
+
+	describe('Tests for PORTAL.validators.nonNegativeValidator', function() {
+		it('Expects a null value to be valid', function() {
+			expect(PORTAL.validators.nonNegativeValidator('').isValid).toBe(true);
+		});
+
+		it('Expects a zero value to be invalid', function() {
+			expect(PORTAL.validators.nonNegativeValidator('0').isValid).toBe(false);
+		});
+
+		it('Expects a negative value to be invalid', function() {
+			expect(PORTAL.validators.nonNegativeValidator('-12').isValid).toBe(false);
+		});
+
+		it('Expects real numbers to be invalid', function() {
+			expect(PORTAL.validators.nonNegativeValidator('23.3').isValid).toBe(false);
+		});
+
+		it('Expects that strings containing anything other the numbers is invalid', function() {
+			expect(PORTAL.validators.nonNegativeValidator('A123').isValid).toBe(false);
+		});
+
+		it('Expects positive integers to be valid', function() {
+			expect(PORTAL.validators.nonNegativeValidator('435681690').isValid).toBe(true);
+		});
+	});
+
 });

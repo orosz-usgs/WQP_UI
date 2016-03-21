@@ -8,7 +8,7 @@ describe('Tests for PORTAL.VIEWS.samplingParameterInputView', function() {
 
 	var testView;
 	var $testDiv;
-	var $sampleMedia, $characteristicType, $characteristicName, $projectCode, $startDate, $endDate;
+	var $sampleMedia, $characteristicType, $characteristicName, $projectCode, $minresults, $startDate, $endDate;
 	var sampleMediaModel, characteristicTypeModel;
 	var fetchSampleMediaDeferred, fetchCharacteristicTypeDeferred;
 
@@ -19,6 +19,7 @@ describe('Tests for PORTAL.VIEWS.samplingParameterInputView', function() {
 				'<select multiple id="characteristicName"></select>' +
 				'<select multiple id="project-code"></select>' +
 				'<input type="text" id="pCode" \>' +
+				'<input type="number" id="minresults" \>' +
 				'<input type="text" id="startDateLo" \>' +
 				'<input type="text" id="startDateHi" \>' +
 				'</div>'
@@ -28,6 +29,7 @@ describe('Tests for PORTAL.VIEWS.samplingParameterInputView', function() {
 		$characteristicType = $('#characteristicType');
 		$characteristicName = $('#characteristicName');
 		$projectCode  = $('#project-code');
+		$minresults = $('#minresults');
 		$startDate = $('#startDateLo');
 		$endDate = $('#startDateHi');
 
@@ -116,6 +118,14 @@ describe('Tests for PORTAL.VIEWS.samplingParameterInputView', function() {
 			expect(initializeSuccessSpy).not.toHaveBeenCalled();
 			expect(initializeFailSpy).toHaveBeenCalled();
 		});
+	});
+
+	it('Expects that the minresults field only allows positive integers', function() {
+		testView.initialize();
+		$minresults.val(-12).trigger('change');
+		expect($testDiv.has('.error-message').length).toBe(1);
+		$minresults.val(12).trigger('change');
+		expect($testDiv.has('.error-message').length).toBe(0);
 	});
 
 	it('Expects that date fields only allow dates as input, otherwise they are tagged with an error message', function() {

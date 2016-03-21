@@ -193,6 +193,11 @@ PORTAL.MODELS.help = {
                 </ul>\
                 </div>'
 	},
+	minresults : {
+		placement : 'auto',
+		title : 'Minimum results per site Help',
+		content: 'To be determined'
+	},
 	biologicalparams: {
 		placement: 'auto',
 		title: 'Biological Sampling Parameters Help',
