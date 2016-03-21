@@ -1,7 +1,34 @@
 # WQP_UI
 Water Quality Portal User Interface
 
-This application should be built using python 2.7.x
+This application should be built using python 2.7.x. You also should have node installed on your development machine.
+
+You will need to create a config.py file in the `instance` directory. It should contain the following:
+	```python
+	
+	DEBUG = True
+	
+	ASSETS_DEBUG = True # This will disable minimizing js and css assets but less files will still compile.
+	
+	# Do not use the same key as any of the deployment servers
+	SECRET_KEY = 'local_secret_key'
+	
+	# points to the geoserver endpoint you want to use. 
+	COVERAGE_MAP_GEOSERVER_ENDPOINT = ''
+	SITES_MAP_GEOSERVER_ENDPOINT = ''
+	
+	#points to the sld endpoint you want to use.
+	SLD_ENDPOINT = ''
+	
+	#points to the codes endpoint
+	CODES_ENDPOINT = ''
+	
+	#points to the query endpoint. Does not include the type of data or 'search' part of the endpoint
+	SEARCH_QUERY_ENDPOINT = ''
+	
+	#points to the public srsnames endpoint you want to use.
+	PUBLIC_SRSNAMES_ENDPOINT = ''
+
 
 To build this application on a linux or Mac OS you can use the dev_install.sh script. If you want a fresh install type in:
 `source dev_install.sh --clean`
@@ -25,31 +52,6 @@ If you don't have maven installed, you can do the following steps:
 7. Activate your virtualenv
 8. Run `pip install -r requirements.txt`
 
-Once the project is built you will need to create a config.py file in the `instance` directory. It should contain the following:
-	```python
-	DEBUG = True
-	
-	ASSETS_DEBUG = True # This will disable minimizing js and css assets but less files will still compile.
-	
-	# Do not use the same key as any of the deployment servers
-	SECRET_KEY = 'local_secret_key'
-	
-	# points to the geoserver endpoint you want to use. 
-	COVERAGE_MAP_GEOSERVER_ENDPOINT = ''
-	SITES_MAP_GEOSERVER_ENDPOINT = ''
-	
-	#points to the sld endpoint you want to use.
-	SLD_ENDPOINT = ''
-	
-	#points to the codes endpoint
-	CODES_ENDPOINT = ''
-	
-	#points to the query endpoint. Does not include the type of data or 'search' part of the endpoint
-	SEARCH_QUERY_ENDPOINT = ''
-	
-	#points to the public srsnames endpoint you want to use.
-	PUBLIC_SRSNAMES_ENDPOINT = ''
-	```
 
 Now you can run the application within the virtualenv by executing:
 `python run.py`

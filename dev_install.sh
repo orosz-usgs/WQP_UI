@@ -3,7 +3,7 @@
 echo "You must have python 2.7 and virtualenv installed"
 if [ ! -s instance/config.py ]; then
    echo "Please create a instance/config.py file before proceeding. See the README.md for what's required"
-   exit
+   return
 fi
 if [ "$1" == "--clean" ]; then
    echo "Cleaning the project, installing the javascript dependencies and running the javascript tests"
