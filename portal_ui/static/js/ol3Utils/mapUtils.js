@@ -74,6 +74,10 @@ WQP.ol3.mapUtils = (function() {
 		return getLayerDeferred.promise();
 	};
 
+	self.getLegend = function(wmsSource, options) {
+
+	};
+
 	return self;
 
 })();

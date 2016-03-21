@@ -11,6 +11,7 @@ PORTAL.MAP = PORTAL.MAP || {};
  * @param {Object} options
  * 		@prop {String} - mapDivId
  * 		@prop {Jquery element} - $loadingIndicator
+ * 		@prop {Jquery element - $legendDiv
  * 		@prop {Object instance of PORTAL.VIEWS.identifyDialog} identifyDialog
  * @return {Object}
  * 		@func initialize
@@ -202,6 +203,8 @@ PORTAL.MAP.siteMap = function(options) {
 				);
 				wqpSitesLayer.getSource().on('sourceloaded', function () {
 					options.$loadingIndicator.hide();
+					options.$legendDiv.html('<img  src="' + PORTAL.MAP.siteLayer.getLegendGraphicURL(wqpSitesLayer.getSource()) + '" />');
+
 				});
 			}
 

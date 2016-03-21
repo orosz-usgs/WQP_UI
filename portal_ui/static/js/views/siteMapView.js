@@ -21,21 +21,24 @@ PORTAL.VIEWS.siteMapView = function(options) {
 
 	var mapId = 'query-results-map';
 
-	var identifyDialog = PORTAL.VIEWS.identifyDialog({
-		$dialog : $('#map-info-dialog'),
-		$popover : options.$container.find('#map-popover')
-	});
-	var portalDataMap = PORTAL.MAP.siteMap({
-		mapDivId : mapId,
-		$loadingIndicator : options.$container.find('#map-loading-indicator'),
-		identifyDialog : identifyDialog
-	});
-
+	var identifyDialog;
+	var portalDataMap;
 
 	/*
 	 * Initialize the site map and all of it's controls
 	 */
 	self.initialize = function() {
+		identifyDialog = PORTAL.VIEWS.identifyDialog({
+			$dialog : $('#map-info-dialog'),
+			$popover : options.$container.find('#map-popover')
+		});
+		portalDataMap = PORTAL.MAP.siteMap({
+			mapDivId : mapId,
+			$loadingIndicator : options.$container.find('#map-loading-indicator'),
+			$legendDiv : options.$container.find('#query-map-legend-div .legend-container'),
+			identifyDialog : identifyDialog
+		});
+
 		var $mapContainer = options.$container.find('#query-map-container');
 		var $map = options.$container.find('#' + mapId);
 		var $showHideBtn = options.$container.find('.show-hide-toggle');
@@ -53,7 +56,6 @@ PORTAL.VIEWS.siteMapView = function(options) {
 
 		identifyDialog.initialize(portalDataMap.clearBoxIdFeature);
 		portalDataMap.initialize();
-
 
 		// Add click handler for map show/hide button
 		$showHideBtn.click(function() {

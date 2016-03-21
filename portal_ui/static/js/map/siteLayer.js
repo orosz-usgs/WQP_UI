@@ -183,5 +183,18 @@ PORTAL.MAP.siteLayer = (function() {
 
 	};
 
+	self.getLegendGraphicURL = function(wmsSource) {
+		var layerParams = wmsSource.getParams();
+		var defaultOptions = {
+			REQUEST : 'GetLegendGraphic',
+			FORMAT : 'image/png',
+			LAYER : layerParams.LAYERS,
+			STYLE : layerParams.STYLES,
+			SEARCHPARAMS : layerParams.SEARCHPARAMS,
+			LEGEND_OPTIONS : 'fontStyle:bold;'
+		};
+		return Config.SITES_GEOSERVER_ENDPOINT + 'wms?' + $.param(defaultOptions);
+	};
+
 	return self;
 })();
