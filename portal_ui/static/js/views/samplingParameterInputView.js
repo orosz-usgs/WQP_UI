@@ -29,6 +29,7 @@ PORTAL.VIEWS.samplingParameterInputView = function(options) {
 		var $characteristicType = options.$container.find('#characteristicType');
 		var $characteristicName = options.$container.find('#characteristicName');
 		var $projectCode = options.$container.find('#project-code');
+		var $minresults = options.$container.find('#minresults');
 		var $startDate = options.$container.find('#startDateLo');
 		var $endDate = options.$container.find('#startDateHi');
 
@@ -49,6 +50,10 @@ PORTAL.VIEWS.samplingParameterInputView = function(options) {
 		);
 
 		// Add input validations and reformatting handlers
+		PORTAL.VIEWS.inputValidation({
+			inputEl : $minresults,
+			validationFnc : PORTAL.validators.nonNegativeValidator,
+		})
 		PORTAL.VIEWS.inputValidation({
 			inputEl: $startDate,
 			validationFnc: PORTAL.dateValidator.validate,

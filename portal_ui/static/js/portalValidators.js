@@ -1,6 +1,7 @@
 var PORTAL = PORTAL || {};
 
 PORTAL.validators = function () {
+    "use strict";
     var that = {};
 
     that.siteIdValidator = function (value) {
@@ -37,6 +38,28 @@ PORTAL.validators = function () {
         else {
             return {isValid: true};
         }
+    };
+
+    that.nonNegativeValidator = function(value) {
+        var result;
+        var MSG = "Enter a positive number";
+        if (!value) {
+            result = {
+                isValid : true,
+            };
+        }
+        else if (value.match(/^[1-9]\d+$/g)) {
+            result = {
+                isValid : true
+            };
+        }
+        else {
+            result = {
+                isValid : false,
+                errorMessage : MSG
+            };
+        }
+        return result;
     };
 
     return that;
