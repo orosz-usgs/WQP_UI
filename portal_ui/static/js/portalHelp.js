@@ -118,7 +118,7 @@ PORTAL.MODELS.help = {
                         <li><i>For multiple sites:</i><br/> IN002-413354086221001;USSCS-311257091521312;USEPA-414007085591501</li>\
                 </ul>\
         </div>\
-        <p>For further information about NWIS versus STORET site ids, go to the <a href="faqs.jsp#WQPFAQs-SiteIDs" target="FAQWin">FAQs</a> page</p>'
+        <p>For further information about NWIS versus STORET site ids, go to the <a href="../faqs#WQPFAQs-SiteIDs" target="FAQWin">FAQs</a> page</p>'
 	},
 	huc: {
 		placement: 'auto',
@@ -196,13 +196,17 @@ PORTAL.MODELS.help = {
 	minresults : {
 		placement : 'auto',
 		title : 'Minimum results per site Help',
-		content: 'To be determined'
+		content: '\
+        	<div>This limits the data returned to data from sites where at least a minimum number of samples have been \
+        	taken that conform to the rest of the query parameters.  For example, if you are looking for stream sites in \
+        	Wisconsin that have nutrient samples taken beween 2010 and 2015, entering 10 in this box would return only results \
+        	from sites where at least 10 nutrient result values have been reported</div>'
 	},
 	biologicalparams: {
 		placement: 'auto',
 		title: 'Biological Sampling Parameters Help',
 		content: '\
-        	<div>These parameters are related to samples of biological organisms, such as species name or the assemblage that a group of organisms belongs to</div'
+        	<div>These parameters are related to samples of biological organisms, such as species name or the assemblage that a group of organisms belongs to</div>'
 	},
 	taxonomicName: {
 		placement: 'auto',
