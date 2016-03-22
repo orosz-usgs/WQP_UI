@@ -61,7 +61,6 @@ bundles = {
 }
     
 assets = Environment(app)
-#app.config['ASSETS_DEBUG'] = app.config['DEBUG']
 assets.versions = 'hash'
 assets.register(bundles)
 
