@@ -61,4 +61,6 @@ bundles = {
 }
     
 assets = Environment(app)
+assets.versions = 'hash'
 assets.register(bundles)
+
