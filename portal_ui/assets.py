@@ -41,6 +41,7 @@ bundles = {
         'js/views/biologicalSamplingInputView.js',
         'js/views/dataDetailsView.js',
         'js/views/showAPIView.js',
+        'js/views/nhldMapView.js',
         'js/portalHelp.js',
         'js/stateFIPS.js',
         'js/dateValidator.js',

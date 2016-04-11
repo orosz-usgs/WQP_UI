@@ -13,6 +13,8 @@
 		  href="{{  url_for('bower.static', filename='openlayers/ol.css') }}" />
 	<link rel="stylesheet" type="text/css"
 		  href="{{ url_for('bower.static', filename='ol3-layerswitcher/src/ol3-layerswitcher.css') }}" />
+	<link rel="stylesheet" type="text/css"
+		  href="{{ url_for('bower.static', filename='leaflet/dist/leaflet.css') }} />"
 {% endblock %}
 
 {% block page_header_title %}Water Quality Data{% endblock %}
@@ -183,6 +185,22 @@
 							</div>
 							<button type="button" class="help-link popover-help" id="hucHelp" data-help="huc">?</button>
 						</div>
+						<div class="form-group">
+							<label class="control-label" for="nhld-picker">NHLD:</label>
+							<div>
+								<select class="form-control" id="nhld-picker" data-placeholder="Select nav type">
+									<option></option>
+									<option value="UM">Upstream main</option>
+									<option value="DM">Downstream main</option>
+									<option value="DD">Downstream with diversions</option>
+									<option value="UT">Upstream with tributaries</option>
+								</select>
+							</div>
+							<button type="button" class="show-map-toggle" title="Expand map">
+								<img src="{{ url_for('static', filename='img/expand.png') }}" alt="show"/>
+							</button>
+						</div>
+						<div id="nhld-inset-map"></div>
 					</div>
 				</div>
 				<div id="sampling-params" class="panel">
@@ -315,6 +333,7 @@
 			</div>
 			<div class="dummy-row"></div>
 			<div class="clearfix"></div>
+			<div id="nhld-map"></div>
 			<div id="data-type-parameters-div" class="panel">
 				<div class="panel-heading">
 					DATA SOURCE
@@ -521,13 +540,14 @@
 
 {% block body_page_script %}
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='underscore/underscore.js') }}"></script>
-	<script type="text/javascript"
-			src="{{ url_for('bower.static', filename='select2/dist/js/select2.full.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('bower.static', filename='select2/dist/js/select2.full.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='jquery-ui/jquery-ui.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='numeral/min/numeral.min.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='handlebars/handlebars.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='openlayers/ol.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='ol3-layerswitcher/src/ol3-layerswitcher.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet/dist/leaflet.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet-providers/leaflet-providers.js') }}"></script>
 	{% assets "portal_js" %}
 		<script type="text/javascript" src="{{ ASSET_URL }}"></script>
 	{% endassets %}

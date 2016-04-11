@@ -63,6 +63,11 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 	 * 		@reject - if any fetches failed.
 	 */
 	self.initialize = function() {
+		var nhldMapView = PORTAL.VIEWS.nhldMapView({
+			insetMapDivId : 'nhld-inset-map',
+			mapDivId : 'nhld-map'
+		});
+
 		var placeInputView = getPlaceInputView();
 		var pointLocationInputView = PORTAL.VIEWS.pointLocationInputView({
 			$container : options.$form.find('#point-location')
@@ -73,7 +78,8 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 		var siteParameterInputView = PORTAL.VIEWS.siteParameterInputView({
 			$container : options.$form.find('#site-params'),
 			siteTypeModel : PORTAL.MODELS.cachedCodes({codes : 'sitetype'}),
-			organizationModel : PORTAL.MODELS.cachedCodes({codes : 'organization'})
+			organizationModel : PORTAL.MODELS.cachedCodes({codes : 'organization'}),
+			nhdlMapView : nhldMapView
 		});
 		var samplingParametersInputView = PORTAL.VIEWS.samplingParameterInputView({
 			$container : options.$form.find('#sampling'),
@@ -98,7 +104,7 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 					PORTAL.MODELS.providers.getIds());
 			});
 
-		// Initialize form sub views
+		// Initialize form sub view
 		var initPlaceInputView = placeInputView.initialize();
 		var initSiteParameterInputView = siteParameterInputView.initialize();
 		var initSamplingParametersInputView = samplingParametersInputView.initialize();
@@ -113,6 +119,7 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 		dataDetailsView.initialize();
 		pointLocationInputView.initialize();
 		boundingBoxInputView.initialize();
+		nhldMapView.initialize();
 
 		// Create help popovers which close when you click anywhere else other than another popover trigger.
 		$('html').click(function (e) {
