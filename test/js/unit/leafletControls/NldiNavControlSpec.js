@@ -3,7 +3,7 @@
 /* global L */
 /* global $ */
 
-fdescribe('leafletControl/NldiNavControl', function() {
+describe('leafletControl/NldiNavControl', function() {
 	"use strict";
 
 	var $testDiv;
