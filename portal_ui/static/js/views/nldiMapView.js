@@ -6,7 +6,9 @@ var PORTAL = PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 
 /*
- * Creates the NHLD maps, an inset map and a larger map
+ * Creates the NHLD maps, an inset map and a larger map. Only one of the maps is shown.
+ * The map shown is changed by clicking the expand/collapse control in the upper right of each map.
+ * Each map also contains the Navigation selector.
  * @param {Object} options
  * 		@prop {String} insetMapDivId
  * 		@prop {String} mapDivId
@@ -20,6 +22,10 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 
 	var insetMap, map;
 
+	/*
+	 * @function
+	 * Show the full size map and set it's navigation select value. Hide the inset map
+	 */
 	var showMap = function () {
 		$('#' + options.insetMapDivId).hide();
 		$('#' + options.mapDivId).show();
@@ -27,13 +33,22 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 		map.invalidateSize();
 	};
 
+	/*
+	 * @function
+	 * Show the inset map and set it's navigation select value. Hide the full size map
+	 */
 	var showInsetMap = function () {
 		$('#' + options.insetMapDivId).show();
 		$('#' + options.mapDivId).hide();
 		insetNavControl.setNavValue(navValue);
 		insetMap.invalidateSize();
-	}
+	};
 
+	/*
+	 * @function
+	 * @param {DOM event object} ev
+	 * Handle the change event for the nav selection control.
+	 */
 	var navChangeHandler = function(ev) {
 		var value = $(ev.target).val();
 		navValue = value;
@@ -62,10 +77,10 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 	var hydroLayer = L.esri.tiledMapLayer({
 		url : "http://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer"
 	});
-
 	var layerSwitcher = L.control.layers(baseLayers, {
 		'Hydro Reference' : hydroLayer
 	});
+
 	var insetNavControl = L.control.nldiNavControl({
 		changeHandler : navChangeHandler
 	});
@@ -80,7 +95,9 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 		position: 'topright'
 	});
 
-
+	/*
+	 * Initialize the inset and full size maps.
+	 */
 	self.initialize = function() {
 		insetMap = L.map(options.insetMapDivId, {
 			center: [37.0, -100.0],
@@ -103,20 +120,6 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 		map.addControl(layerSwitcher);
 		map.addControl(navControl);
 		map.addControl(L.control.zoom());
-	};
-
-	self.showMap = function() {
-		$('#' + options.insetMapDivId).hide();
-		$('#' + options.mapDivId).show();
-		navControl.setNavValue(navValue);
-		map.invalidateSize();
-	};
-
-	self.showInsetMap = function() {
-		$('#'+ options.insetMapDivId).show();
-		$('#' + options.mapDivId).hide();
-		insetNavControl.setNavValue(navValue);
-		insetMap.invalidateSize();
 	};
 
 	return self;

@@ -20,9 +20,6 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 
 	var self = {};
 
-	var COLLAPSE_ICON = 'fa-compress';
-	var EXPAND_ICON = 'fa-expand';
-	
 	var initializeOrganizationSelect = function($select, model) {
 		var formatData = function(data) {
 			return {
@@ -50,21 +47,6 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 		});
 	};
 
-	var togglenldiMaps = function($button) {
-		var $icon = $button.find('i');
-
-		if ($icon.hasClass(EXPAND_ICON)) {
-			$button.attr('title', $button.attr('title').replace('Expand', 'Collapse'));
-			$icon.removeClass(EXPAND_ICON).addClass(COLLAPSE_ICON);
-			options.nldiMapView.showMap();
-		}
-		else {
-			$button.attr('title', $button.attr('title').replace('Collapse', 'Expand'));
-			$icon.removeClass(COLLAPSE_ICON).addClass(EXPAND_ICON);
-			options.nldiMapView.showInsetMap();
-		}
-	};
-
 	/*
 	 * Initialize the widgets and DOM event handlers
 	 * @return Jquery promise
@@ -76,7 +58,6 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 		var $organizationSelect = options.$container.find('#organization');
 		var $siteIdInput = options.$container.find('#siteid');
 		var $hucInput = options.$container.find('#huc');
-		var $expandMapToggle = options.$container.find('.show-map-toggle');
 
 		var fetchSiteType = options.siteTypeModel.fetch();
 		var fetchOrganization = options.organizationModel.fetch();
@@ -98,10 +79,6 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 			inputEl: $hucInput,
 			validationFnc: PORTAL.hucValidator.validate,
 			updateFnc: PORTAL.hucValidator.format
-		});
-
-		$expandMapToggle.click(function() {
-			togglenldiMaps($(this));
 		});
 
 		return fetchComplete;
