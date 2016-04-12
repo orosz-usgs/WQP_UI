@@ -9,7 +9,7 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
  * Creates a site parameter input view object
  * @param {Object} options
  * 		@prop {Jquery element} $container - element where the site parameter inputs are contained
- * 		@prop {PORTAL.VIEWS.nhdlMapView} nhdlMapView
+ * 		@prop {PORTAL.VIEWS.nldiMapView} nhdlMapView
  * 		@prop {PORTAL.MODELS.cachedCodes} siteTypeModel
  * 		@prop {PORTAL.MODELS.cachedCodes} organizationModel
  * @returns {Object}
@@ -20,8 +20,8 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 
 	var self = {};
 
-	var COLLAPSE_IMG = Config.STATIC_ENDPOINT + 'img/collapse.png';
-	var EXPAND_IMG = Config.STATIC_ENDPOINT + 'img/expand.png';
+	var COLLAPSE_ICON = 'fa-compress';
+	var EXPAND_ICON = 'fa-expand';
 	
 	var initializeOrganizationSelect = function($select, model) {
 		var formatData = function(data) {
@@ -50,6 +50,21 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 		});
 	};
 
+	var togglenldiMaps = function($button) {
+		var $icon = $button.find('i');
+
+		if ($icon.hasClass(EXPAND_ICON)) {
+			$button.attr('title', $button.attr('title').replace('Expand', 'Collapse'));
+			$icon.removeClass(EXPAND_ICON).addClass(COLLAPSE_ICON);
+			options.nldiMapView.showMap();
+		}
+		else {
+			$button.attr('title', $button.attr('title').replace('Collapse', 'Expand'));
+			$icon.removeClass(COLLAPSE_ICON).addClass(EXPAND_ICON);
+			options.nldiMapView.showInsetMap();
+		}
+	};
+
 	/*
 	 * Initialize the widgets and DOM event handlers
 	 * @return Jquery promise
@@ -61,7 +76,6 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 		var $organizationSelect = options.$container.find('#organization');
 		var $siteIdInput = options.$container.find('#siteid');
 		var $hucInput = options.$container.find('#huc');
-		var $nhldSelect = options.$container.find('#nhld-picker');
 		var $expandMapToggle = options.$container.find('.show-map-toggle');
 
 		var fetchSiteType = options.siteTypeModel.fetch();
@@ -75,11 +89,6 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 			initializeOrganizationSelect($organizationSelect, options.organizationModel);
 		});
 
-		$nhldSelect.select2({
-			allowClear : true,
-			theme : 'bootstrap'
-		});
-
 		// Add event handlers
 		PORTAL.VIEWS.inputValidation({
 			inputEl: $siteIdInput,
@@ -90,20 +99,9 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 			validationFnc: PORTAL.hucValidator.validate,
 			updateFnc: PORTAL.hucValidator.format
 		});
-		$expandMapToggle.click(function() {
-			var $button = $(this);
-			var $buttonImg = $button.find('img');
 
-			if ($buttonImg.attr('alt') === 'show') {
-				$button.attr('title', $button.attr('title').replace('Expand', 'Collapse'));
-				$buttonImg.attr('alt', 'hide').attr('src', COLLAPSE_IMG);
-				options.nhdlMapView.showMap();
-			}
-			else {
-				$button.attr('title', $button.attr('title').replace('Collapse', 'Expand'));
-				$buttonImg.attr('alt', 'show').attr('src', EXPAND_IMG);
-				options.nhdlMapView.showInsetMap();
-			}
+		$expandMapToggle.click(function() {
+			togglenldiMaps($(this));
 		});
 
 		return fetchComplete;

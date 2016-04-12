@@ -2,7 +2,7 @@
 /* global $ */
 /* global _ */
 /* global _gaq */
-/* global alert */
+
 
 var PORTAL = PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
@@ -63,9 +63,9 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 	 * 		@reject - if any fetches failed.
 	 */
 	self.initialize = function() {
-		var nhldMapView = PORTAL.VIEWS.nhldMapView({
-			insetMapDivId : 'nhld-inset-map',
-			mapDivId : 'nhld-map'
+		var nldiMapView = PORTAL.VIEWS.nldiMapView({
+			insetMapDivId : 'nldi-inset-map',
+			mapDivId : 'nldi-map'
 		});
 
 		var placeInputView = getPlaceInputView();
@@ -79,7 +79,7 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 			$container : options.$form.find('#site-params'),
 			siteTypeModel : PORTAL.MODELS.cachedCodes({codes : 'sitetype'}),
 			organizationModel : PORTAL.MODELS.cachedCodes({codes : 'organization'}),
-			nhdlMapView : nhldMapView
+			nldiMapView : nldiMapView
 		});
 		var samplingParametersInputView = PORTAL.VIEWS.samplingParameterInputView({
 			$container : options.$form.find('#sampling'),
@@ -119,7 +119,7 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 		dataDetailsView.initialize();
 		pointLocationInputView.initialize();
 		boundingBoxInputView.initialize();
-		nhldMapView.initialize();
+		nldiMapView.initialize();
 
 		// Create help popovers which close when you click anywhere else other than another popover trigger.
 		$('html').click(function (e) {

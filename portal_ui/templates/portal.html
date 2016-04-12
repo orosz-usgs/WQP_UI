@@ -14,7 +14,9 @@
 	<link rel="stylesheet" type="text/css"
 		  href="{{ url_for('bower.static', filename='ol3-layerswitcher/src/ol3-layerswitcher.css') }}" />
 	<link rel="stylesheet" type="text/css"
-		  href="{{ url_for('bower.static', filename='leaflet/dist/leaflet.css') }} />"
+		  href="{{ url_for('bower.static', filename='leaflet/dist/leaflet.css') }}" />
+	<link rel="stylesheet" type="text/css"
+		  href="{{ url_for('bower.static', filename='Leaflet.EasyButton/src/easy-button.css') }}" />
 {% endblock %}
 
 {% block page_header_title %}Water Quality Data{% endblock %}
@@ -185,22 +187,11 @@
 							</div>
 							<button type="button" class="help-link popover-help" id="hucHelp" data-help="huc">?</button>
 						</div>
-						<div class="form-group">
-							<label class="control-label" for="nhld-picker">NHLD:</label>
-							<div>
-								<select class="form-control" id="nhld-picker" data-placeholder="Select nav type">
-									<option></option>
-									<option value="UM">Upstream main</option>
-									<option value="DM">Downstream main</option>
-									<option value="DD">Downstream with diversions</option>
-									<option value="UT">Upstream with tributaries</option>
-								</select>
-							</div>
-							<button type="button" class="show-map-toggle" title="Expand map">
-								<img src="{{ url_for('static', filename='img/expand.png') }}" alt="show"/>
-							</button>
+						<div class="form-group" id="nldi-container">
+							<label class="control-label" for="nldi-picker">NLDI:</label>
+							<button type="button" class="help-link popover-help" id="nldiHelp" data-help="nldi">?</button>
 						</div>
-						<div id="nhld-inset-map"></div>
+						<div id="nldi-inset-map"></div>
 					</div>
 				</div>
 				<div id="sampling-params" class="panel">
@@ -333,7 +324,7 @@
 			</div>
 			<div class="dummy-row"></div>
 			<div class="clearfix"></div>
-			<div id="nhld-map"></div>
+			<div id="nldi-map"></div>
 			<div id="data-type-parameters-div" class="panel">
 				<div class="panel-heading">
 					DATA SOURCE
@@ -548,6 +539,8 @@
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='ol3-layerswitcher/src/ol3-layerswitcher.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet/dist/leaflet.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet-providers/leaflet-providers.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('bower.static', filename='esri-leaflet/dist/esri-leaflet.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('bower.static', filename='Leaflet.EasyButton/src/easy-button.js') }}"></script>
 	{% assets "portal_js" %}
 		<script type="text/javascript" src="{{ ASSET_URL }}"></script>
 	{% endassets %}

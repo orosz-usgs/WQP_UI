@@ -139,6 +139,13 @@ PORTAL.MODELS.help = {
                 </ul>\
                 </div>'
 	},
+	nldi: {
+		placement: 'auto',
+		title: 'NLDI Help',
+		content: '\
+			<div>Select a navigation direction and click on a location on the map to select sites in a watershed\
+			</div>'
+	},
 	sampleMedia: {
 		placement: 'auto',
 		title: 'Sample Media Help',
