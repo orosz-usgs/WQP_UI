@@ -32,13 +32,14 @@ L.control.NldiNavControl = L.Control.extend({
 				'<option value="DD">Downstream with diversions</option>' +
 				'<option value="DD">Downstream with diversions</option>';
 		L.DomEvent.addListener(this._selectEl, 'change', this.options.changeHandler, this);
+		L.DomEvent.disableClickPropagation(this._selectEl);
 
 		return container;
 	},
 
 	onRemove : function(map) {
 		"use strict";
-		L.DomEvent.removeListener(this.selectEl, 'change', this.options.changeHanlder);
+		L.DomEvent.removeListener(this._selectEl, 'change', this.options.changeHandler);
 	}
 });
 
