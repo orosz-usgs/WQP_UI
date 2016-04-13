@@ -11,7 +11,7 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
 	var $testDiv;
 
 	var placeMock, boundingBoxMock, pointLocationMock, siteParameterMock, samplingParametersMock, biologicalSamplingMock,
-		dataDetailsMock;
+		dataDetailsMock, nldiMock;
 	var fetchProvidersDeferred, fetchHeadDeferred;
 	var placeInitDeferred, siteParameterInitDeferred, samplingInitDeferred, bioSamplingInitDeferred;
 	var mockDownloadDialog;
@@ -61,6 +61,9 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
 			getMimeType : function() { return 'csv'; },
 			getResultType : function() { return 'Result'; }
 		};
+		nldiMock = {
+			initialize : jasmine.createSpy('nldiInitialize')
+		};
 		spyOn(PORTAL.VIEWS, 'placeInputView').and.returnValue(placeMock);
 		spyOn(PORTAL.VIEWS, 'pointLocationInputView').and.returnValue(pointLocationMock);
 		spyOn(PORTAL.VIEWS, 'boundingBoxInputView').and.returnValue(boundingBoxMock);
@@ -68,6 +71,7 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
 		spyOn(PORTAL.VIEWS, 'samplingParameterInputView').and.returnValue(samplingParametersMock);
 		spyOn(PORTAL.VIEWS, 'biologicalSamplingInputView').and.returnValue(biologicalSamplingMock);
 		spyOn(PORTAL.VIEWS, 'dataDetailsView').and.returnValue(dataDetailsMock);
+		spyOn(PORTAL.VIEWS, 'nldiMapView').and.returnValue(nldiMock);
 
 		fetchProvidersDeferred = $.Deferred();
 		spyOn(PORTAL.MODELS.providers, 'fetch').and.returnValue(fetchProvidersDeferred);
@@ -104,6 +108,7 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
 		expect(samplingParametersMock.initialize).toHaveBeenCalled();
 		expect(biologicalSamplingMock.initialize).toHaveBeenCalled();
 		expect(dataDetailsMock.initialize).toHaveBeenCalled();
+		expect(nldiMock.initialize).toHaveBeenCalled();
 	});
 
 	it('Expects that the providers are fetched', function() {

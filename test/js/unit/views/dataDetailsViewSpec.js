@@ -1,6 +1,5 @@
 /* jslint browser : true */
 /* global describe, beforeEach, afterEach, it, expect, jasmine */
-/* global xit */
 /* global $ */
 /* global PORTAL */
 
@@ -114,8 +113,7 @@ describe('Tests for PORTAL.VIEWS.dataDetailsView', function() {
 		expect(testView.getResultType()).toEqual('Station');
 	});
 
-	//Disabling test because it does not work on phantomjs
-	xit('Expects that getMimeType returns the currently selected mime type', function() {
+	it('Expects that getMimeType returns the currently selected mime type', function() {
 		$('#xlsx').trigger('click');
 		expect(testView.getMimeType()).toEqual('xlsx');
 
