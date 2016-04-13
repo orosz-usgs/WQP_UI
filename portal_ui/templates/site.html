@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Water Quality Data Site Info{% endblock %}
+
+
+{% block page_content %}
+    <h1>Water Quality Portal Site Data for {{ site['MonitoringLocationName'] }} </h1>
+
+<p>{{ site['OrganizationIdentifier'] }}</p>
+<p>{{ site['OrganizationFormalName'] }}</p>
+<p>{{ site['MonitoringLocationIdentifier'] }}</p>
+<p>{{ site['MonitoringLocationName'] }}</p>
+<p>{{ site['MonitoringLocationTypeName'] }}</p>
+<p>{{ site['MonitoringLocationDescriptionText'] }}</p>
+<p>Eight Digit Hydrologic Unit Code(HUC): {{ site['HUCEightDigitCode'] }}</p>
+<p>Drainage Area: {{ site['DrainageAreaMeasure/MeasureValue'] }} {{ site['DrainageAreaMeasure/MeasureUnitCode'] }}</p>
+<p>Contributing Drainage Area: {{ site['ContributingDrainageAreaMeasure/MeasureValue'] }} {{ site['ContributingDrainageAreaMeasure/MeasureUnitCode'] }}</p>
+<p>{{ site['LatitudeMeasure'] }}</p>
+<p>{{ site['LongitudeMeasure'] }}</p>
+<p>{{ site['SourceMapScaleNumeric'] }}</p>
+<p>{{ site['HorizontalAccuracyMeasure/MeasureValue'] }}</p>
+<p>{{ site['HorizontalAccuracyMeasure/MeasureUnitCode'] }}</p>
+<p>{{ site['HorizontalCollectionMethodName'] }}</p>
+<p>{{ site['HorizontalCoordinateReferenceSystemDatumName'] }}</p>
+<p>{{ site['VerticalMeasure/MeasureValue'] }}</p>
+<p>{{ site['VerticalMeasure/MeasureUnitCode'] }}</p>
+<p>{{ site['VerticalAccuracyMeasure/MeasureValue'] }}</p>
+<p>{{ site['VerticalAccuracyMeasure/MeasureUnitCode'] }}</p>
+<p>{{ site['VerticalCollectionMethodName'] }}</p>
+<p>{{ site['VerticalCoordinateReferenceSystemDatumName'] }}</p>
+<p>{{ site['CountryCode'] }}</p>
+<p>{{ site['StateCode'] }}</p>
+<p>{{ site['CountyCode'] }}</p>
+<p>{{ site['AquiferName'] }}</p>
+<p>{{ site['FormationTypeText'] }}</p>
+<p>{{ site['AquiferTypeName'] }}</p>
+<p>{{ site['ConstructionDateText'] }}</p>
+<p>{{ site['WellDepthMeasure/MeasureValue'] }}</p>
+<p>{{ site['WellDepthMeasure/MeasureUnitCode'] }}</p>
+<p>{{ site['WellHoleDepthMeasure/MeasureValue'] }}</p>
+<p>{{ site['WellHoleDepthMeasure/MeasureUnitCode'] }}</p>
+<p>{{ site['ProviderName'] }}</p>
+
+
+
+{% endblock %}
+
+{% block body_page_script %}{% endblock %}

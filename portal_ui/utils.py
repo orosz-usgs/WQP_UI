@@ -4,6 +4,7 @@ import requests
 
 from bs4 import BeautifulSoup
 from flask import request, make_response
+import tablib
 
 def pull_feed(feed_url):
     """
@@ -36,6 +37,11 @@ def pull_feed(feed_url):
     return post
 
 def geoserver_proxy_request(target_url):
+    """
+
+    :param target_url:
+    :return:
+    """
     if request.method == 'GET':
         resp = requests.get(target_url + '?' + request.query_string)
         # This fixed an an ERR_INVALID_CHUNKED_ENCODING when the app was run on the deployment server.
@@ -49,3 +55,75 @@ def geoserver_proxy_request(target_url):
         
     return make_response(resp.content, resp.status_code, resp.headers.items())    
 
+def generate_provider_list(endpoint):
+    """
+
+    :param endpoint: the base codes endpoint
+    :return: a list of provider names
+    """
+    provider_endpoint = endpoint+'/providers'
+    r = requests.get(provider_endpoint, {"mimeType": "json"}).json()
+    codes = r.get('codes')
+    provider_list = []
+    for code in codes:
+        provider_list.append(code['value'])
+    return provider_list
+
+
+def generate_organization_list(endpoint, provider):
+    """
+
+    :param endpoint: the base codes endpoint
+    :param provider: which provider we are looking for
+    :return: a list of dicts of organizations and organization IDs for a specific provider
+    """
+    provider_endpoint = endpoint+'/organizations'
+    r = requests.get(provider_endpoint, {"mimeType": "json"}).json()
+    codes = r.get('codes')
+    organization_list = []
+    for organization in codes:
+        org_dict = {}
+        org_providers = organization['providers'].split(' ')
+        if provider in org_providers:
+            org_dict['id'] = organization['value']
+            org_dict['name'] = organization['desc']
+        if org_dict:
+            organization_list.append(org_dict)
+    return organization_list
+
+
+def generate_site_list(base_url, provider_id, organization_id):
+    """
+
+    :param base_url: the base url we are using for the generating the search URL
+    :param organization_id:
+    :param provider_id:
+    :return: a list of dicts that describe sites that are associated with a provider
+    """
+    search_endpoint = base_url+"Station/search/"
+    site_geojson = requests.get(search_endpoint, {"organization": organization_id, "providers": provider_id,
+                                      "mimeType": "geojson", "sorted": "no"}).json()
+    site_list = []
+    sites = site_geojson.get('features')
+    if sites:
+        for site in sites:
+            site['id'] = site['properties'].get('MonitoringLocationIdentifier')
+            site['name'] = site['properties'].get('MonitoringLocationName')
+            site['type'] = site['properties'].get('ResolvedMonitoringLocationTypeName')
+            site_list.append(site)
+    return [site_list, site_geojson]
+
+
+def get_site_info(base_url, provider_id, site_id):
+    """
+
+    :param base_url:
+    :param provider_id:
+    :param site_id:
+    :return:
+    """
+    search_endpoint = base_url + "Station/search/"
+    site_data_raw = requests.get(search_endpoint, {"providers": provider_id, "siteid": site_id,
+                                                  "mimeType": "csv", "sorted": "no"}).text
+    site_data = tablib.Dataset().load(site_data_raw).dict[0]
+    return site_data

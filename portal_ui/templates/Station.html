@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Water Quality Data Station Endpoint{% endblock %}
+
+
+{% block page_content %}
+    <h1>Water Quality Portal Data Providers</h1>
+    {% for provider in providers %}
+        <a href="{{ url_for('uri_provider', provider_id = provider) }}">{{ provider }}</a></br>
+    {% endfor %}
+{% endblock %}
+
+{% block body_page_script %}{% endblock %}

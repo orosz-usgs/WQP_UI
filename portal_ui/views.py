@@ -1,10 +1,8 @@
-
-import requests
-
 from flask import render_template, request, make_response, redirect, url_for
-
 from . import app
 from .utils import pull_feed, geoserver_proxy_request
+from utils import generate_provider_list, generate_organization_list, generate_site_list, get_site_info
+
 
 @app.route('/index.jsp')
 @app.route('/index/')
@@ -155,3 +153,22 @@ def kml():
 def images(image_file):
     return app.send_static_file('img/'+image_file)
 
+@app.route('/Station/', endpoint='uri_base')
+@app.route('/Station/<provider_id>', endpoint='uri_provider')
+@app.route('/Station/<provider_id>/<organization_id>/', endpoint='uri_organization')
+@app.route('/Station/<provider_id>/<organization_id>/<site_id>', endpoint='uri_site')
+def uris(provider_id = None, organization_id = None, site_id = None):
+    code_endpoint = app.config['CODES_ENDPOINT']
+    base_url = app.config['SEARCH_QUERY_ENDPOINT']
+    if not provider_id and not organization_id and not site_id:
+        provider_list = generate_provider_list(code_endpoint)
+        return render_template('Station.html', providers=provider_list)
+    elif provider_id and not organization_id and not site_id:
+        organizations = generate_organization_list(code_endpoint, provider_id)
+        return render_template('Provider.html', provider=provider_id, organizations=organizations)
+    elif provider_id and organization_id and not site_id:
+        sites = generate_site_list(base_url, provider_id, organization_id)
+        return render_template('sites.html', provider=provider_id, organization=organization_id, site_list=sites[0], sites_geo=sites[1] )
+    elif provider_id and organization_id and site_id:
+        site_data = get_site_info(base_url, provider_id, site_id)
+        return render_template('site.html', site=site_data, provider=provider_id, organization=organization_id)
