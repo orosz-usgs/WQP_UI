@@ -29,7 +29,7 @@ L.control.NldiNavControl = L.Control.extend({
 		this._selectEl.innerHTML = '<option></option>' +
 				'<option value="UM">Upstream main</option>' +
 				'<option value="DM">Downstream main</option>' +
-				'<option value="DD">Downstream with diversions</option>' +
+				'<option value="UT">Upstream with tributaries</option>' +
 				'<option value="DD">Downstream with diversions</option>';
 		L.DomEvent.addListener(this._selectEl, 'change', this.options.changeHandler, this);
 		L.DomEvent.disableClickPropagation(this._selectEl);
