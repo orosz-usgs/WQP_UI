@@ -45,9 +45,7 @@ L.SingleClickEventMixin = {
 			this._addClickEventHandlers();
 			this._hasAddedClickHandler = true;
 		}
-		if (this._singleClickHandlers.length === 0) {
-			this._container.style.cursor = 'pointer';
-		}
+
 		this._singleClickHandlers.push({
 			handler : handler,
 			boundHandler : _.bind(handler, context)
@@ -59,9 +57,6 @@ L.SingleClickEventMixin = {
 		this._singleClickHandlers = _.reject(this._singleClickHandlers, function(thisHandler) {
 			return (thisHandler.handler === handler);
 		});
-		if (this._singleClickHandlers.length === 0) {
-			this._container.style.cursor = '';
-		}
 	},
 
 	_singleClickHandlers : []

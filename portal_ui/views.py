@@ -1,3 +1,4 @@
+import requests
 
 from flask import render_template, request, make_response, redirect, url_for
 
@@ -125,12 +126,24 @@ def sites_geoserverproxy(op):
     target_url = app.config['SITES_MAP_GEOSERVER_ENDPOINT'] + '/' + op
     return geoserver_proxy_request(target_url)
 
+
 @app.route('/nldi_geoserver/<op>', methods=['GET'])
 def nldi_geoserverproxy(op):
     target_url = app.config['NLDI_COMID_OGC_ENDPOINT']  + op
     return geoserver_proxy_request(target_url)
-   
- 
+
+
+@app.route('/nldi_services/<op1>/<op2>/<op3>/<op4>', methods=['GET'])
+@app.route('/nldi_services/<op1>/<op2>/<op3>/<op4>/<op5>', methods = ['GET'])
+def nldi_services_proxy(op1, op2, op3, op4, op5=None):
+    url = '%s/%s/%s/%s/%s' %(app.config['NLDI_SERVICES_ENDPOINT'], op1, op2, op3, op4)
+    if op5 != None:
+        url = url + '/' + op5
+
+    resp = requests.get(url)
+    return make_response(resp.content, resp.status_code, resp.headers.items())
+
+
 @app.route('/nwis_site_sld/')
 def nwis_site_sld():
     resp = app.make_response(render_template('style_sheets/nwis_sites.sld')) 

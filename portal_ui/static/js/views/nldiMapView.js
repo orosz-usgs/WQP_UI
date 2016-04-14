@@ -24,20 +24,10 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 
 	var insetMap, map;
 
-	var findComIdHandler = function(ev) {
-		var point = ev.layerPoint;
-		var bounds = L.latLngBounds(map.layerPointToLatLng([point.x - 5, point.y + 5 ]),
-			map.layerPointToLatLng([point.x + 5, point.y - 5]));
-		var fetchComid = $.Deferred();
+	var nldiSiteLayers, nldiFlowlineLayers;
 
-		var openPopup = function(content) {
-			var popup = L.popup()
-				.setContent(content)
-				.setLatLng(ev.latlng);
-			map.openPopup(popup);
-		};
-
-		log.debug('Clicked at location: ' + ev.latlng.toString());
+	var fetchComid = function(bounds) {
+		var deferred  = $.Deferred();
 		$.ajax({
 			url : Config.NLDI_COMID_OGC_ENDPOINT + 'ows',
 			method : 'GET',
@@ -51,30 +41,92 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 				outputFormat : 'application/json'
 			},
 			success : function(response) {
-				log.debug('Got COMID response');
-
-				if (response.totalFeatures === 0) {
-					openPopup('<p>No watershed selected. Please try at a different location.</p>');
-					fetchComid.reject();
-				}
-				else if (response.totalFeatures > 1) {
-					openPopup('<p>More than one watershed has been selected. Please zoom in and try again.</p>');
-					fetchComid.reject();
-				}
-				else {
-					fetchComid.resolve(response.features[0].properties.comid);
-				}
+				deferred.resolve({
+					totalFeatures : response.totalFeatures,
+					comid : (response.features.length > 0) ? response.features[0].properties.comid : ''
+				});
 			},
-			error : function() {
-				openPopup('<p>Unable to retrieve comids, service call failed</p>');
-				fetchComid.reject();
+			error : function(jqXHR) {
+				deferred.reject(jqXHR);
 			}
 		});
-		fetchComid.done(function() {
-			log.debug('Fetch sites using NLDI service');
+
+		return deferred.promise();
+	};
+
+	var fetchNldiSites = function(comid, navigate) {
+		return $.ajax({
+			url : Config.NLDI_SERVICES_ENDPOINT + 'comid/' + comid + '/navigate/' + navigate + '/wqp',
+			method : 'GET'
+		});
+
+	};
+	var fetchNldiFlowlines = function(comid, navigate) {
+		return $.ajax({
+			url : Config.NLDI_SERVICES_ENDPOINT + 'comid/' + comid + '/navigate/' + navigate,
+			method : 'GET'
 		});
 	};
 
+	var findSitesHandler = function(ev) {
+		var $mapDiv = $('#' + options.mapDivId);
+		var point = ev.layerPoint;
+		var bounds = L.latLngBounds(map.layerPointToLatLng([point.x - 5, point.y + 5 ]),
+			map.layerPointToLatLng([point.x + 5, point.y - 5]));
+
+		var openPopup = function(content) {
+			var popup = L.popup()
+				.setContent(content)
+				.setLatLng(ev.latlng);
+			map.openPopup(popup);
+		};
+
+		log.debug('Clicked at location: ' + ev.latlng.toString());
+		$mapDiv.css('cursor', 'progress');
+		fetchComid(bounds)
+			.done(function(result) {
+				log.debug('Got COMID response');
+
+				if (result.totalFeatures === 0) {
+					openPopup('<p>No watershed selected. Please try at a different location.</p>');
+					$mapDiv.css('cursor', '');
+
+				}
+				else if (result.totalFeatures > 1) {
+					openPopup('<p>More than one watershed has been selected. Please zoom in and try again.</p>');
+					$mapDiv.css('cursor', '');
+				}
+				else {
+					var getNldiSites = fetchNldiSites(result.comid, navValue);
+					var getNldiFlowlines = fetchNldiFlowlines(result.comid, navValue);
+
+					if (nldiSiteLayers) {
+						map.removeLayer(nldiSiteLayers);
+					}
+					if (nldiFlowlineLayers) {
+						map.removeLayer(nldiSiteLayers);
+					}
+					$.when(getNldiSites, getNldiFlowlines)
+						.done(function(sitesGeojson, flowlinesGeojson) {
+							nldiSiteLayers = L.geoJson(sitesGeojson);
+							map.addLayer(nldiSiteLayers);
+							nldiFlowlineLayers = L.geoJson(flowlinesGeojson);
+							map.addLayer(nldiFlowlineLayers);
+						})
+						.fail(function() {
+							openPopup('Unable to retrieve NLDI information');
+						})
+						.always(function() {
+							$mapDiv.css('cursor', '');
+						});
+				}
+			})
+			.fail(function() {
+				openPopup('<p>Unable to retrieve comids, service call failed</p>');
+				fetchComid.reject();
+				$mapDiv.css('cursor', '');
+			});
+	};
 
 	/*
 	 * @function
@@ -179,7 +231,7 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 		map.addControl(navControl);
 		map.addControl(L.control.zoom());
 
-		map.addSingleClickHandler(findComIdHandler);
+		map.addSingleClickHandler(findSitesHandler);
 	};
 
 	return self;
