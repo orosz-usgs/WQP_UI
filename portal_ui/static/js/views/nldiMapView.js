@@ -1,6 +1,8 @@
 /* jslint browser: true */
 /* global L */
 /* global $ */
+/* global log */
+/* global Config */
 
 var PORTAL = PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
@@ -21,6 +23,58 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 	var navValue = '';
 
 	var insetMap, map;
+
+	var findComIdHandler = function(ev) {
+		var point = ev.layerPoint;
+		var bounds = L.latLngBounds(map.layerPointToLatLng([point.x - 5, point.y + 5 ]),
+			map.layerPointToLatLng([point.x + 5, point.y - 5]));
+		var fetchComid = $.Deferred();
+
+		var openPopup = function(content) {
+			var popup = L.popup()
+				.setContent(content)
+				.setLatLng(ev.latlng);
+			map.openPopup(popup);
+		};
+
+		log.debug('Clicked at location: ' + ev.latlng.toString());
+		$.ajax({
+			url : Config.NLDI_COMID_OGC_ENDPOINT + 'ows',
+			method : 'GET',
+			data : {
+				service : 'wfs',
+				version : '1.0.0',
+				request : 'GetFeature',
+				typeName : 'nhdPlus:nhdflowline_network',
+				maxFeatures : 1,
+				bbox : bounds.toBBoxString(),
+				outputFormat : 'application/json'
+			},
+			success : function(response) {
+				log.debug('Got COMID response');
+
+				if (response.totalFeatures === 0) {
+					openPopup('<p>No watershed selected. Please try at a different location.</p>');
+					fetchComid.reject();
+				}
+				else if (response.totalFeatures > 1) {
+					openPopup('<p>More than one watershed has been selected. Please zoom in and try again.</p>');
+					fetchComid.reject();
+				}
+				else {
+					fetchComid.resolve(response.features[0].properties.comid);
+				}
+			},
+			error : function() {
+				openPopup('<p>Unable to retrieve comids, service call failed</p>');
+				fetchComid.reject();
+			}
+		});
+		fetchComid.done(function() {
+			log.debug('Fetch sites using NLDI service');
+		});
+	};
+
 
 	/*
 	 * @function
@@ -95,6 +149,10 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 		position: 'topright'
 	});
 
+	var MapWithSingleClickHandler = L.Map.extend({
+		includes : L.SingleClickEventMixin
+	});
+
 	/*
 	 * Initialize the inset and full size maps.
 	 */
@@ -110,7 +168,7 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 		insetMap.addControl(insetNavControl);
 		insetMap.addControl(L.control.zoom());
 
-		map = L.map(options.mapDivId, {
+		map = new MapWithSingleClickHandler(options.mapDivId, {
 			center: [38.5, -100.0],
 			zoom : 4,
 			layers : [baseLayers['World Gray'], hydroLayer],
@@ -120,6 +178,8 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 		map.addControl(layerSwitcher);
 		map.addControl(navControl);
 		map.addControl(L.control.zoom());
+
+		map.addSingleClickHandler(findComIdHandler);
 	};
 
 	return self;

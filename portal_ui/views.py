@@ -1,6 +1,4 @@
 
-import requests
-
 from flask import render_template, request, make_response, redirect, url_for
 
 from . import app
@@ -119,13 +117,18 @@ def public_srsnames():
 @app.route('/coverage_geoserver/<op>', methods=['GET', 'POST'])
 def coverage_geoserverproxy(op):
     target_url = app.config['COVERAGE_MAP_GEOSERVER_ENDPOINT'] + '/' + op
-    return geoserver_proxy_request(target_url);
+    return geoserver_proxy_request(target_url)
     
 
 @app.route('/sites_geoserver/<op>', methods=['GET', 'POST'])
 def sites_geoserverproxy(op):
     target_url = app.config['SITES_MAP_GEOSERVER_ENDPOINT'] + '/' + op
-    return geoserver_proxy_request(target_url);
+    return geoserver_proxy_request(target_url)
+
+@app.route('/nldi_geoserver/<op>', methods=['GET'])
+def nldi_geoserverproxy(op):
+    target_url = app.config['NLDI_COMID_OGC_ENDPOINT']  + op
+    return geoserver_proxy_request(target_url)
    
  
 @app.route('/nwis_site_sld/')
