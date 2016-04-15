@@ -28,6 +28,13 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 	var nldiSiteLayers, nldiFlowlineLayers;
 	var insetNldiSiteLayers, insetNldiFlowlineLayers;
 
+	/*
+	 * @param {L.LatLngBounds} bounds - Looking for a com id within bounds
+	 * @returns $Deferred.promise
+	 * 		@resolve - Returns {Object} with {Number} totalFeatures property and {String} comid property. The comId will be the first one returned or the
+	 * 			empty string if no features were found.
+	 * 		@reject	- If unable to fetch the comid
+	 */
 	var fetchComid = function(bounds) {
 		var deferred  = $.Deferred();
 
@@ -37,9 +44,10 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 			.intersects(bounds)
 			.layer(1)
 			.fields(['COMID'])
-			.run(function(error, featureCollection, response) {
+			.run(function(error, featureCollection) {
 				if (error) {
 					deferred.reject();
+					log.error('Unable to retrieve comids from service ' + Config.NLDI_COMID_ENDPOINT);
 				}
 				else {
 					deferred.resolve({
@@ -52,6 +60,11 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 		return deferred.promise();
 	};
 
+	/*
+	 * @param {String} comId
+	 * @param {String navigate
+	 * @returns $.jqXHR object
+	 */
 	var fetchNldiSites = function(comid, navigate) {
 		return $.ajax({
 			url : Config.NLDI_SERVICES_ENDPOINT + 'comid/' + comid + '/navigate/' + navigate + '/wqp',
@@ -59,6 +72,12 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 		});
 
 	};
+
+	/*
+	 * @param {String} comId
+	 * @param {String navigate
+	 * @returns $.jqXHR object
+	 */
 	var fetchNldiFlowlines = function(comid, navigate) {
 		return $.ajax({
 			url : Config.NLDI_SERVICES_ENDPOINT + 'comid/' + comid + '/navigate/' + navigate,
@@ -66,6 +85,12 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 		});
 	};
 
+	/*
+	 * Leaflet mouse event handler to find the sites associated with the COMID at the location in the event and displays
+	 * the sites and flowlines on the nldi map. Popups are used to tell the user if an error occurred in the process.
+	 *
+	 * @param {L.MouseEvent} ev
+	 */
 	var findSitesHandler = function(ev) {
 		var $mapDiv = $('#' + options.mapDivId);
 		var point = ev.layerPoint;
@@ -155,7 +180,6 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 	};
 
 	/*
-	 * @function
 	 * Show the full size map and set it's navigation select value. Hide the inset map
 	 */
 	var showMap = function () {
@@ -163,11 +187,10 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 		$('#' + options.mapDivId).show();
 		navControl.setNavValue(navValue);
 		map.invalidateSize();
-		map.fitBounds(insetMap.getBounds());
+		map.setView(insetMap.getCenter(), insetMap.getZoom());
 	};
 
 	/*
-	 * @function
 	 * Show the inset map and set it's navigation select value. Hide the full size map
 	 */
 	var showInsetMap = function () {
@@ -175,11 +198,10 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 		$('#' + options.mapDivId).hide();
 		insetNavControl.setNavValue(navValue);
 		insetMap.invalidateSize();
-		insetMap.fitBounds(map.getBounds());
+		insetMap.setView(map.getCenter(), map.getZoom());
 	};
 
 	/*
-	 * @function
 	 * @param {DOM event object} ev
 	 * Handle the change event for the nav selection control.
 	 */
