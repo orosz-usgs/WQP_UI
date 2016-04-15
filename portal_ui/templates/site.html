@@ -1,45 +1,53 @@
 {% extends "base.html" %}
 
-{% block title %}Water Quality Data Site Info{% endblock %}
+{% block title %}{{ site['MonitoringLocationName'] }} ({{ site['MonitoringLocationIdentifier'] }}) site data in the Water Quality Portal{% endblock %}
 
 
 {% block page_content %}
-    <h1>Water Quality Portal Site Data for {{ site['MonitoringLocationName'] }} </h1>
 
-<p>{{ site['OrganizationIdentifier'] }}</p>
-<p>{{ site['OrganizationFormalName'] }}</p>
-<p>{{ site['MonitoringLocationIdentifier'] }}</p>
-<p>{{ site['MonitoringLocationName'] }}</p>
-<p>{{ site['MonitoringLocationTypeName'] }}</p>
-<p>{{ site['MonitoringLocationDescriptionText'] }}</p>
-<p>Eight Digit Hydrologic Unit Code(HUC): {{ site['HUCEightDigitCode'] }}</p>
-<p>Drainage Area: {{ site['DrainageAreaMeasure/MeasureValue'] }} {{ site['DrainageAreaMeasure/MeasureUnitCode'] }}</p>
-<p>Contributing Drainage Area: {{ site['ContributingDrainageAreaMeasure/MeasureValue'] }} {{ site['ContributingDrainageAreaMeasure/MeasureUnitCode'] }}</p>
-<p>{{ site['LatitudeMeasure'] }}</p>
-<p>{{ site['LongitudeMeasure'] }}</p>
-<p>{{ site['SourceMapScaleNumeric'] }}</p>
-<p>{{ site['HorizontalAccuracyMeasure/MeasureValue'] }}</p>
-<p>{{ site['HorizontalAccuracyMeasure/MeasureUnitCode'] }}</p>
-<p>{{ site['HorizontalCollectionMethodName'] }}</p>
-<p>{{ site['HorizontalCoordinateReferenceSystemDatumName'] }}</p>
-<p>{{ site['VerticalMeasure/MeasureValue'] }}</p>
-<p>{{ site['VerticalMeasure/MeasureUnitCode'] }}</p>
-<p>{{ site['VerticalAccuracyMeasure/MeasureValue'] }}</p>
-<p>{{ site['VerticalAccuracyMeasure/MeasureUnitCode'] }}</p>
-<p>{{ site['VerticalCollectionMethodName'] }}</p>
-<p>{{ site['VerticalCoordinateReferenceSystemDatumName'] }}</p>
-<p>{{ site['CountryCode'] }}</p>
-<p>{{ site['StateCode'] }}</p>
-<p>{{ site['CountyCode'] }}</p>
-<p>{{ site['AquiferName'] }}</p>
-<p>{{ site['FormationTypeText'] }}</p>
-<p>{{ site['AquiferTypeName'] }}</p>
-<p>{{ site['ConstructionDateText'] }}</p>
-<p>{{ site['WellDepthMeasure/MeasureValue'] }}</p>
-<p>{{ site['WellDepthMeasure/MeasureUnitCode'] }}</p>
-<p>{{ site['WellHoleDepthMeasure/MeasureValue'] }}</p>
-<p>{{ site['WellHoleDepthMeasure/MeasureUnitCode'] }}</p>
-<p>{{ site['ProviderName'] }}</p>
+    <p><a href="{{ url_for('home-canonical') }}">WQP Home</a> > <a href="{{ url_for('uri_base') }}">site</a> > <a href="{{ url_for('uri_provider',provider_id=provider) }}">{{ provider }}</a> > <a href="{{ url_for('uri_organization',provider_id=provider, organization_id=organization) }}">{{ organization }}</a>
+         > <a href="{{ url_for('uri_site',provider_id=provider, organization_id=organization, site_id=site_id) }}">{{ site_id }}</a>
+    </p>
+
+    <h1>{{ site['MonitoringLocationName'] }} ({{ site['MonitoringLocationIdentifier'] }}) site data in the Water Quality Portal</h1>
+
+    <p>Data Provider: <strong>{{ site['ProviderName'] }}</strong> (<a href="{{ url_for('wqp_description-canonical') }}">Learn more about Water Quality Portal Data Providers</a>)</p>
+    <p></p>
+<p>
+    This {{ site['MonitoringLocationTypeName']|lower }} site, maintained by the {{ site['OrganizationFormalName'] }} (identifier {{ site['OrganizationIdentifier'] }}),
+    is has the name "{{ site['MonitoringLocationName'] }}" and has the identifier {{ site['MonitoringLocationIdentifier'] }}.
+    {% if  site['HUCEightDigitCode'] %} This site is in the watershed defined by the 8 digit <a href="http://water.usgs.gov/GIS/huc.html" title="Learn more about HUCs" target="_blank"> Hydrologic Unit Code (HUC)</a>
+    {{ site['HUCEightDigitCode'] }}.  You can learn more about what is happening in this HUC at the
+    <a href="https://cfpub.epa.gov/surf/huc.cfm?huc_code=03080103" title="go to the EPA's site about this HUC" target="_blank"> EPA's Surf Your Watershed site</a>. {% endif %}
+    {% if site['DrainageAreaMeasure/MeasureValue'] %} This site has a drainage area of {{ site['DrainageAreaMeasure/MeasureValue'] }} {{ site['DrainageAreaMeasure/MeasureUnitCode'] }}{% if site['ContributingDrainageAreaMeasure/MeasureValue'] %} and the contributing drainage area is {{ site['ContributingDrainageAreaMeasure/MeasureValue'] }} {{ site['ContributingDrainageAreaMeasure/MeasureUnitCode'] }}{% endif %}.{% endif %}
+</p>
+<p>
+    {% if site['LatitudeMeasure'] and site['LongitudeMeasure'] %}This site is located {% if site['StateName'] and site['CountyName']  %}in {{ site['CountyName'] |title}} County, {{ site['StateName']|title }}{% endif %} at {{ site['LatitudeMeasure'] }} degrees latitude and {{ site['LongitudeMeasure'] }} degrees longitude{% if site['HorizontalCoordinateReferenceSystemDatumName'] %} using the datum {{ site['HorizontalCoordinateReferenceSystemDatumName'] }}{% endif %}.
+    {% if site['HorizontalAccuracyMeasure/MeasureValue'] and site['HorizontalAccuracyMeasure/MeasureUnitCode'] and site['HorizontalCollectionMethodName'] %}
+    The horizontal location collection method was "{{ site['HorizontalCollectionMethodName'] }}" and the accuracy is {{ site['HorizontalAccuracyMeasure/MeasureValue'] }} {{ site['HorizontalAccuracyMeasure/MeasureUnitCode'] }}.
+        {% if site['SourceMapScaleNumeric'] %}The source map scale is 1:{{ site['SourceMapScaleNumeric'] }}.{% endif %}
+        {% else %} No horizontal location accuracy metadata is available.
+    {% endif %}
+        {% elif site['StateName'] and site['CountyName']  %}This site is located in {{ site['CountyName'] |title}} County, {{ site['StateName']|title }}
+    {% endif %}
+    {% if  site['VerticalMeasure/MeasureValue'] and site['VerticalMeasure/MeasureUnitCode']%} This site is at an elevation of {{ site['VerticalMeasure/MeasureValue'] }} {{ site['VerticalMeasure/MeasureUnitCode'] }}
+    {% if site['VerticalAccuracyMeasure/MeasureValue'] and site['VerticalAccuracyMeasure/MeasureUnitCode'] and site['VerticalCollectionMethodName']  %}
+    and the accuracy of the elevation measurement, collected using the method "{{ site['VerticalCollectionMethodName'] }}" is {{ site['VerticalAccuracyMeasure/MeasureValue'] }} {{ site['VerticalAccuracyMeasure/MeasureUnitCode'] }}.
+    {% if site['VerticalCoordinateReferenceSystemDatumName'] %} The vertical coordinate reference system is {{ site['VerticalCoordinateReferenceSystemDatumName'] }}.{% endif %}
+        {% else %} No vertical location accuracy metadata is available.
+    {% endif %}
+    {% endif %}
+</p>
+
+<p>{% if site['AquiferName'] %}This site is located in the "{{ site['AquiferName'] }}" aquifer. {% endif %}{% if site['FormationTypeText'] %} The geologic formation type is {{ site['FormationTypeText'] }}.{% endif %}
+    {% if site['AquiferTypeName'] %}The aquifer is a {{ site['AquiferTypeName'] }} type.{% endif %}
+{% if site['ConstructionDateText'] %}The well was contructed on {{ site['ConstructionDateText'] }}.{% endif %}
+{% if site['WellDepthMeasure/MeasureValue'] and site['WellDepthMeasure/MeasureUnitCode'] %}The well depth is {{ site['WellDepthMeasure/MeasureValue'] }} {{ site['WellDepthMeasure/MeasureUnitCode'] }}.{% endif %}
+{% if site['WellHoleDepthMeasure/MeasureValue'] and site['WellHoleDepthMeasure/MeasureUnitCode'] %}The well hole depth is {{ site['WellHoleDepthMeasure/MeasureValue'] }} {{ site['WellHoleDepthMeasure/MeasureUnitCode'] }}.{% endif %}
+</p>
+
+To download the metadata about this site along with water quality data, go to the <a href="{{ url_for("portal-canonical") }}">Portal Page</a> and enter "{{ site['MonitoringLocationIdentifier'] }}" into the "Site ID" box under Site Parameters
+
 
 
 

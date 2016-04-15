@@ -2,7 +2,11 @@ from flask import render_template, request, make_response, redirect, url_for
 from . import app
 from .utils import pull_feed, geoserver_proxy_request
 from utils import generate_provider_list, generate_organization_list, generate_site_list, get_site_info
+import time
 
+# set some useful local variables from the global config variables
+code_endpoint = app.config['CODES_ENDPOINT']
+base_url = app.config['SEARCH_QUERY_ENDPOINT']
 
 @app.route('/index.jsp')
 @app.route('/index/')
@@ -153,22 +157,53 @@ def kml():
 def images(image_file):
     return app.send_static_file('img/'+image_file)
 
-@app.route('/Station/', endpoint='uri_base')
-@app.route('/Station/<provider_id>', endpoint='uri_provider')
-@app.route('/Station/<provider_id>/<organization_id>/', endpoint='uri_organization')
-@app.route('/Station/<provider_id>/<organization_id>/<site_id>', endpoint='uri_site')
+
+@app.route('/site/', endpoint='uri_base')
+def uri_base():
+    providers = generate_provider_list(code_endpoint)
+    if providers['status_code'] == 200 and providers['providers']:
+        if providers['providers']:
+            provider_list = providers['providers']
+            return render_template('Station.html', providers=provider_list)
+        else:
+            return 500
+    elif providers['status_code'] == 404:
+        return 404
+    elif providers['status_code'] == 500:
+        return 500
+
+
+@app.route('/site/<provider_id>', endpoint='uri_provider')
+def uri_provider(provider_id):
+    organizations_response = generate_organization_list(code_endpoint, provider_id)
+    if organizations_response['status_code'] == 200:
+        if organizations_response['organizations']:
+            organizations = organizations_response['organizations']
+            return render_template('Provider.html', provider=provider_id, organizations=organizations)
+        else:
+            return 500
+    elif organizations_response['status_code'] == 404:
+        return 404
+    elif organizations_response['status_code'] == 500:
+        return 500
+
+@app.route('/site/<provider_id>/<organization_id>/', endpoint='uri_organization')
+def uri_organization(provider_id, organization_id):
+    timestart = time.time()
+    print ('start: '+str(timestart))
+    sites = generate_site_list(base_url, provider_id, organization_id)
+    timesites = time.time()
+    print ('got the site info: '+str(timesites-timestart))
+    if sites['status_code'] == 200:
+        template = render_template('sites.html', provider=provider_id, organization=organization_id,
+                               site_list=sites['list'], sites_geo=sites['geojson'])
+        timetemplate = time.time()
+        print ('template rendered: '+str(timetemplate-timesites))
+        return template
+
+
+@app.route('/site/<provider_id>/<organization_id>/<site_id>', endpoint='uri_site')
 def uris(provider_id = None, organization_id = None, site_id = None):
-    code_endpoint = app.config['CODES_ENDPOINT']
-    base_url = app.config['SEARCH_QUERY_ENDPOINT']
-    if not provider_id and not organization_id and not site_id:
-        provider_list = generate_provider_list(code_endpoint)
-        return render_template('Station.html', providers=provider_list)
-    elif provider_id and not organization_id and not site_id:
-        organizations = generate_organization_list(code_endpoint, provider_id)
-        return render_template('Provider.html', provider=provider_id, organizations=organizations)
-    elif provider_id and organization_id and not site_id:
-        sites = generate_site_list(base_url, provider_id, organization_id)
-        return render_template('sites.html', provider=provider_id, organization=organization_id, site_list=sites[0], sites_geo=sites[1] )
-    elif provider_id and organization_id and site_id:
-        site_data = get_site_info(base_url, provider_id, site_id)
-        return render_template('site.html', site=site_data, provider=provider_id, organization=organization_id)
+    site_data = get_site_info(base_url, provider_id, site_id, code_endpoint)
+    if site_data['status_code'] == 200:
+        return render_template('site.html', site=site_data['site_data'], provider=provider_id, organization=organization_id, site_id=site_id)

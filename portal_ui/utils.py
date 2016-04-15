@@ -5,6 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 from flask import request, make_response
 import tablib
+import ujson
 
 def pull_feed(feed_url):
     """
@@ -62,12 +63,15 @@ def generate_provider_list(endpoint):
     :return: a list of provider names
     """
     provider_endpoint = endpoint+'/providers'
-    r = requests.get(provider_endpoint, {"mimeType": "json"}).json()
-    codes = r.get('codes')
-    provider_list = []
-    for code in codes:
-        provider_list.append(code['value'])
-    return provider_list
+    r = requests.get(provider_endpoint, {"mimeType": "json"})
+    status_code = r.status_code
+    provider_list = None
+    if status_code == 200:
+        codes = r.json().get('codes')
+        provider_list = []
+        for code in codes:
+            provider_list.append(code['value'])
+    return {"status_code": status_code, "providers": provider_list}
 
 
 def generate_organization_list(endpoint, provider):
@@ -78,18 +82,21 @@ def generate_organization_list(endpoint, provider):
     :return: a list of dicts of organizations and organization IDs for a specific provider
     """
     provider_endpoint = endpoint+'/organizations'
-    r = requests.get(provider_endpoint, {"mimeType": "json"}).json()
-    codes = r.get('codes')
-    organization_list = []
-    for organization in codes:
-        org_dict = {}
-        org_providers = organization['providers'].split(' ')
-        if provider in org_providers:
-            org_dict['id'] = organization['value']
-            org_dict['name'] = organization['desc']
-        if org_dict:
-            organization_list.append(org_dict)
-    return organization_list
+    r = requests.get(provider_endpoint, {"mimeType": "json"})
+    status_code = r.status_code
+    organization_list = None
+    if status_code == 200:
+        organization_list = []
+        codes = r.json().get('codes')
+        for organization in codes:
+            org_dict = {}
+            org_providers = organization['providers'].split(' ')
+            if provider in org_providers:
+                org_dict['id'] = organization['value']
+                org_dict['name'] = organization['desc']
+            if org_dict:
+                organization_list.append(org_dict)
+    return {"status_code": status_code, "organizations": organization_list}
 
 
 def generate_site_list(base_url, provider_id, organization_id):
@@ -98,32 +105,52 @@ def generate_site_list(base_url, provider_id, organization_id):
     :param base_url: the base url we are using for the generating the search URL
     :param organization_id:
     :param provider_id:
-    :return: a list of dicts that describe sites that are associated with a provider
+    :return: a list of dicts that describe sites that are associated with an organization under a data provider
     """
     search_endpoint = base_url+"Station/search/"
-    site_geojson = requests.get(search_endpoint, {"organization": organization_id, "providers": provider_id,
-                                      "mimeType": "geojson", "sorted": "no"}).json()
-    site_list = []
-    sites = site_geojson.get('features')
-    if sites:
-        for site in sites:
-            site['id'] = site['properties'].get('MonitoringLocationIdentifier')
-            site['name'] = site['properties'].get('MonitoringLocationName')
-            site['type'] = site['properties'].get('ResolvedMonitoringLocationTypeName')
-            site_list.append(site)
-    return [site_list, site_geojson]
+    r = requests.get(search_endpoint, {"organization": organization_id, "providers": provider_id,
+                                      "mimeType": "geojson", "sorted": "no", "uripage": "yes"})
+    status_code = r.status_code
+    if status_code == 200:
+        site_geojson_text = r.text
+        site_geojson = ujson.loads(site_geojson_text)
+        site_list = []
+        sites = site_geojson.get('features')
+        if sites:
+            for site in sites:
+                site['id'] = site['properties'].get('MonitoringLocationIdentifier')
+                site['name'] = site['properties'].get('MonitoringLocationName')
+                site['type'] = site['properties'].get('ResolvedMonitoringLocationTypeName')
+                site_list.append(site)
+        return {"list": site_list, "geojson": site_geojson, "status_code": status_code}
+    else:
+        return {"list": None, "geojson": None, "status_code": status_code}
 
 
-def get_site_info(base_url, provider_id, site_id):
+def get_site_info(base_url, provider_id, site_id, code_endpoint):
     """
 
     :param base_url:
     :param provider_id:
     :param site_id:
+    :param code_endpoint
     :return:
     """
     search_endpoint = base_url + "Station/search/"
-    site_data_raw = requests.get(search_endpoint, {"providers": provider_id, "siteid": site_id,
-                                                  "mimeType": "csv", "sorted": "no"}).text
-    site_data = tablib.Dataset().load(site_data_raw).dict[0]
-    return site_data
+    r = requests.get(search_endpoint, {"providers": provider_id, "siteid": site_id,"mimeType": "csv", "sorted": "no", "uripage": "yes"})
+    status_code = r.status_code
+    site_data = None
+    if status_code == 200:
+        site_data_raw = r.text
+        site_data = tablib.Dataset().load(site_data_raw).dict[0]
+        if site_data.get('CountryCode') == 'US' and site_data.get('StateCode') and site_data.get('CountyCode'):
+            statecode = 'US:'+site_data['StateCode']
+            search_string = statecode+':'+site_data['CountyCode']
+            county_request = requests.get(code_endpoint+"/countycode",{"statecode":statecode, "mimeType": "json", "text": search_string})
+            if county_request.status_code == 200:
+                county_info = county_request.json()
+                if county_info.get('recordCount') == 1:
+                    info_list = county_info['codes'][0]['desc'].split(',')
+                    site_data['StateName'] = info_list[1]
+                    site_data['CountyName'] = info_list[2]
+    return {"status_code": status_code, "site_data": site_data}
