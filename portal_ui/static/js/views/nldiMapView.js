@@ -24,9 +24,27 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 	var navValue = '';
 
 	var insetMap, map;
+	var $mapDiv = $('#' + options.mapDivId);
+	var $insetMapDiv = $('#' + options.insetMapDivId);
 
 	var nldiSiteLayers, nldiFlowlineLayers;
 	var insetNldiSiteLayers, insetNldiFlowlineLayers;
+
+	var cleanUpMaps = function() {
+		if (nldiSiteLayers) {
+			map.removeLayer(nldiSiteLayers);
+		}
+		if (nldiFlowlineLayers) {
+			map.removeLayer(nldiFlowlineLayers);
+		}
+		if (insetNldiSiteLayers) {
+			insetMap.removeLayer(insetNldiSiteLayers);
+		}
+		if (insetNldiFlowlineLayers) {
+			insetMap.removeLayer(insetNldiFlowlineLayers);
+		}
+		map.closePopup();
+	};
 
 	/*
 	 * @param {L.LatLngBounds} bounds - Looking for a com id within bounds
@@ -92,7 +110,6 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 	 * @param {L.MouseEvent} ev
 	 */
 	var findSitesHandler = function(ev) {
-		var $mapDiv = $('#' + options.mapDivId);
 		var point = ev.layerPoint;
 		var bounds = L.latLngBounds(map.layerPointToLatLng([point.x - 5, point.y + 5 ]),
 			map.layerPointToLatLng([point.x + 5, point.y - 5]));
@@ -125,41 +142,40 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 				log.debug('Got COMID response');
 
 				if (result.totalFeatures === 0) {
-					openPopup('<p>No watershed selected. Please try at a different location.</p>');
+					openPopup('<p>No reach has been selected. Please try at a different location.</p>');
 					$mapDiv.css('cursor', '');
 
 				}
 				else if (result.totalFeatures > 2) {
-					openPopup('<p>More than one watershed has been selected. Please zoom in and try again.</p>');
+					openPopup('<p>More than one reach has been selected. Please zoom in and try again.</p>');
 					$mapDiv.css('cursor', '');
 				}
 				else {
 					var getNldiSites = fetchNldiSites(result.comid, navValue);
 					var getNldiFlowlines = fetchNldiFlowlines(result.comid, navValue);
 
-					if (nldiSiteLayers) {
-						map.removeLayer(nldiSiteLayers);
-						insetMap.removeLayer(insetNldiSiteLayers);
-					}
-					if (nldiFlowlineLayers) {
-						map.removeLayer(nldiFlowlineLayers);
-						insetMap.remvoveLayer(insetNldiSiteLayers);
-					}
+					cleanUpMaps();
+					openPopup('Successfully retrieved comid ' + result.comid + '. Retrieving sites.');
+
+
 					$.when(getNldiSites, getNldiFlowlines)
 						.done(function(sitesGeojson, flowlinesGeojson) {
+							map.closePopup();
+
+							nldiFlowlineLayers = flowlineLayer(flowlinesGeojson);
+							insetNldiFlowlineLayers = flowlineLayer(flowlinesGeojson);
+							map.addLayer(nldiFlowlineLayers);
+							insetMap.addLayer(insetNldiFlowlineLayers);
+
 							if (sitesGeojson[0].features.length < 1000) {
 								nldiSiteLayers = siteLayer(sitesGeojson);
 								insetNldiSiteLayers = siteLayer(sitesGeojson);
 
-								nldiFlowlineLayers = flowlineLayer(flowlinesGeojson);
-								insetNldiFlowlineLayers = flowlineLayer(flowlinesGeojson);
-
 								map.addLayer(nldiSiteLayers);
-								map.addLayer(nldiFlowlineLayers);
+								insetMap.addLayer(insetNldiSiteLayers);
+
 								map.fitBounds(nldiFlowlineLayers.getBounds());
 
-								insetMap.addLayer(insetNldiSiteLayers);
-								insetMap.addLayer(insetNldiFlowlineLayers);
 							}
 							else {
 								openPopup('<p>The number of sites exceeds 1000 and can\'t be used to query the WQP. You may want to try searching by HUC');
@@ -183,22 +199,26 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 	 * Show the full size map and set it's navigation select value. Hide the inset map
 	 */
 	var showMap = function () {
-		$('#' + options.insetMapDivId).hide();
-		$('#' + options.mapDivId).show();
-		navControl.setNavValue(navValue);
-		map.invalidateSize();
-		map.setView(insetMap.getCenter(), insetMap.getZoom());
+		if ($mapDiv.is(':hidden')) {
+			$insetMapDiv.hide();
+			$mapDiv.show();
+			navControl.setNavValue(navValue);
+			map.invalidateSize();
+			map.setView(insetMap.getCenter(), insetMap.getZoom());
+		}
 	};
 
 	/*
 	 * Show the inset map and set it's navigation select value. Hide the full size map
 	 */
 	var showInsetMap = function () {
-		$('#' + options.insetMapDivId).show();
-		$('#' + options.mapDivId).hide();
-		insetNavControl.setNavValue(navValue);
-		insetMap.invalidateSize();
-		insetMap.setView(map.getCenter(), map.getZoom());
+		if ($insetMapDiv.is(':hidden')) {
+			$insetMapDiv.show();
+			$mapDiv.hide();
+			insetNavControl.setNavValue(navValue);
+			insetMap.invalidateSize();
+			insetMap.setView(map.getCenter(), map.getZoom());
+		}
 	};
 
 	/*
@@ -208,6 +228,8 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 	var navChangeHandler = function(ev) {
 		var value = $(ev.target).val();
 		navValue = value;
+
+		cleanUpMaps();
 		if (value) {
 			showMap();
 		}
@@ -271,8 +293,8 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 		insetMap.addControl(L.control.zoom());
 
 		map = new MapWithSingleClickHandler(options.mapDivId, {
-			center: [38.5, -100.0],
-			zoom : 4,
+			center: [37.0, -100.0],
+			zoom : 3,
 			layers : [baseLayers['World Gray'], hydroLayer],
 			zoomControl : false
 		});
