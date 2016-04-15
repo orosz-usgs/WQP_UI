@@ -16,7 +16,7 @@ CODES_ENDPOINT = ''
 SEARCH_QUERY_ENDPOINT = ''
 PUBLIC_SRSNAMES_ENDPOINT = ''
 
-NLDI_COMID_OGC_ENDPOINT = ''
+NLDI_COMID_ENDPOINT = 'http://ec2-54-163-241-137.compute-1.amazonaws.com/arcgis/rest/services/NHDPlus_Flattened/MapServer'
 NLDI_SERVICES_ENDPOINT = ''
 
 NWIS_SITES_OGC_ENDPOINT = 'http://cida.usgs.gov/nwc/proxygeoserver/NWC/wms'

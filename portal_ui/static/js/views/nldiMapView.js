@@ -1,6 +1,7 @@
 /* jslint browser: true */
 /* global L */
 /* global $ */
+/* global _ */
 /* global log */
 /* global Config */
 
@@ -25,31 +26,28 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 	var insetMap, map;
 
 	var nldiSiteLayers, nldiFlowlineLayers;
+	var insetNldiSiteLayers, insetNldiFlowlineLayers;
 
 	var fetchComid = function(bounds) {
 		var deferred  = $.Deferred();
-		$.ajax({
-			url : Config.NLDI_COMID_OGC_ENDPOINT + 'ows',
-			method : 'GET',
-			data : {
-				service : 'wfs',
-				version : '1.0.0',
-				request : 'GetFeature',
-				typeName : 'nhdPlus:nhdflowline_network',
-				maxFeatures : 1,
-				bbox : bounds.toBBoxString(),
-				outputFormat : 'application/json'
-			},
-			success : function(response) {
-				deferred.resolve({
-					totalFeatures : response.totalFeatures,
-					comid : (response.features.length > 0) ? response.features[0].properties.comid : ''
-				});
-			},
-			error : function(jqXHR) {
-				deferred.reject(jqXHR);
-			}
-		});
+
+		L.esri.Tasks.query({
+			url : Config.NLDI_COMID_ENDPOINT
+		})
+			.intersects(bounds)
+			.layer(1)
+			.fields(['COMID'])
+			.run(function(error, featureCollection, response) {
+				if (error) {
+					deferred.reject();
+				}
+				else {
+					deferred.resolve({
+						totalFeatures : featureCollection.features.length,
+						comid : (featureCollection.features.length > 0) ? featureCollection.features[0].properties.COMID : ''
+					});
+				}
+			});
 
 		return deferred.promise();
 	};
@@ -81,6 +79,20 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 			map.openPopup(popup);
 		};
 
+		var flowlineLayer = _.partial(L.geoJson);
+		var siteLayer = _.partial(L.geoJson, _, {
+			pointToLayer: function (featureData, latlng) {
+				return L.circleMarker(latlng, {
+					radius: 5,
+					fillColor: "#ff3300",
+					color: "#000",
+					weight: 1,
+					opacity: 1,
+					fillOpacity: 0.8
+				});
+			}
+		});
+
 		log.debug('Clicked at location: ' + ev.latlng.toString());
 		$mapDiv.css('cursor', 'progress');
 		fetchComid(bounds)
@@ -92,7 +104,7 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 					$mapDiv.css('cursor', '');
 
 				}
-				else if (result.totalFeatures > 1) {
+				else if (result.totalFeatures > 2) {
 					openPopup('<p>More than one watershed has been selected. Please zoom in and try again.</p>');
 					$mapDiv.css('cursor', '');
 				}
@@ -102,16 +114,31 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 
 					if (nldiSiteLayers) {
 						map.removeLayer(nldiSiteLayers);
+						insetMap.removeLayer(insetNldiSiteLayers);
 					}
 					if (nldiFlowlineLayers) {
-						map.removeLayer(nldiSiteLayers);
+						map.removeLayer(nldiFlowlineLayers);
+						insetMap.remvoveLayer(insetNldiSiteLayers);
 					}
 					$.when(getNldiSites, getNldiFlowlines)
 						.done(function(sitesGeojson, flowlinesGeojson) {
-							nldiSiteLayers = L.geoJson(sitesGeojson);
-							map.addLayer(nldiSiteLayers);
-							nldiFlowlineLayers = L.geoJson(flowlinesGeojson);
-							map.addLayer(nldiFlowlineLayers);
+							if (sitesGeojson[0].features.length < 1000) {
+								nldiSiteLayers = siteLayer(sitesGeojson);
+								insetNldiSiteLayers = siteLayer(sitesGeojson);
+
+								nldiFlowlineLayers = flowlineLayer(flowlinesGeojson);
+								insetNldiFlowlineLayers = flowlineLayer(flowlinesGeojson);
+
+								map.addLayer(nldiSiteLayers);
+								map.addLayer(nldiFlowlineLayers);
+								map.fitBounds(nldiFlowlineLayers.getBounds());
+
+								insetMap.addLayer(insetNldiSiteLayers);
+								insetMap.addLayer(insetNldiFlowlineLayers);
+							}
+							else {
+								openPopup('<p>The number of sites exceeds 1000 and can\'t be used to query the WQP. You may want to try searching by HUC');
+							}
 						})
 						.fail(function() {
 							openPopup('Unable to retrieve NLDI information');
@@ -123,7 +150,6 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 			})
 			.fail(function() {
 				openPopup('<p>Unable to retrieve comids, service call failed</p>');
-				fetchComid.reject();
 				$mapDiv.css('cursor', '');
 			});
 	};
@@ -137,6 +163,7 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 		$('#' + options.mapDivId).show();
 		navControl.setNavValue(navValue);
 		map.invalidateSize();
+		map.fitBounds(insetMap.getBounds());
 	};
 
 	/*
@@ -148,6 +175,7 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 		$('#' + options.mapDivId).hide();
 		insetNavControl.setNavValue(navValue);
 		insetMap.invalidateSize();
+		insetMap.fitBounds(map.getBounds());
 	};
 
 	/*
