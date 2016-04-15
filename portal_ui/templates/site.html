@@ -18,7 +18,8 @@
     is has the name "{{ site['MonitoringLocationName'] }}" and has the identifier {{ site['MonitoringLocationIdentifier'] }}.
     {% if  site['HUCEightDigitCode'] %} This site is in the watershed defined by the 8 digit <a href="http://water.usgs.gov/GIS/huc.html" title="Learn more about HUCs" target="_blank"> Hydrologic Unit Code (HUC)</a>
     {{ site['HUCEightDigitCode'] }}.  You can learn more about what is happening in this HUC at the
-    <a href="https://cfpub.epa.gov/surf/huc.cfm?huc_code=03080103" title="go to the EPA's site about this HUC" target="_blank"> EPA's Surf Your Watershed site</a>. {% endif %}
+    <a target="_blank" href="https://cfpub.epa.gov/surf/huc.cfm?huc_code={{ site['HUCEightDigitCode'] }}" title="go to the EPA's site about this HUC" target="_blank"> EPA's Surf Your Watershed site</a> or at the <a target="_blank" href="http://water.usgs.gov/lookup/getwatershed?{{ site['HUCEightDigitCode']  }}" title="Go to the USGS Science in Your watershed site">USGS Science In Your Watershed site</a>.
+        To learn more about water use in this watershed, you can go to the <a title="Go to the National Water Census Water Use Data Portal " href="http://cida.usgs.gov/nwc/#!waterbudget/huc/{{ site['HUCEightDigitCode'] }}">National Water Census Data Portal</a>. {% endif %}
     {% if site['DrainageAreaMeasure/MeasureValue'] %} This site has a drainage area of {{ site['DrainageAreaMeasure/MeasureValue'] }} {{ site['DrainageAreaMeasure/MeasureUnitCode'] }}{% if site['ContributingDrainageAreaMeasure/MeasureValue'] %} and the contributing drainage area is {{ site['ContributingDrainageAreaMeasure/MeasureValue'] }} {{ site['ContributingDrainageAreaMeasure/MeasureUnitCode'] }}{% endif %}.{% endif %}
 </p>
 <p>
