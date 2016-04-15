@@ -1,4 +1,4 @@
-from flask import render_template, request, make_response, redirect, url_for
+from flask import render_template, request, make_response, redirect, url_for, abort
 from . import app
 from .utils import pull_feed, geoserver_proxy_request
 from utils import generate_provider_list, generate_organization_list, generate_site_list, get_site_info
@@ -158,52 +158,60 @@ def images(image_file):
     return app.send_static_file('img/'+image_file)
 
 
-@app.route('/site/', endpoint='uri_base')
+@app.route('/provider/', endpoint='uri_base')
 def uri_base():
     providers = generate_provider_list(code_endpoint)
     if providers['status_code'] == 200 and providers['providers']:
         if providers['providers']:
             provider_list = providers['providers']
-            return render_template('Station.html', providers=provider_list)
+            return render_template('provider_base.html', providers=provider_list)
         else:
-            return 500
+            abort(500)
     elif providers['status_code'] == 404:
-        return 404
+        abort(500)
     elif providers['status_code'] == 500:
-        return 500
+        abort(500)
 
 
-@app.route('/site/<provider_id>', endpoint='uri_provider')
+@app.route('/provider/<provider_id>', endpoint='uri_provider')
 def uri_provider(provider_id):
-    organizations_response = generate_organization_list(code_endpoint, provider_id)
-    if organizations_response['status_code'] == 200:
-        if organizations_response['organizations']:
-            organizations = organizations_response['organizations']
-            return render_template('Provider.html', provider=provider_id, organizations=organizations)
-        else:
-            return 500
-    elif organizations_response['status_code'] == 404:
-        return 404
-    elif organizations_response['status_code'] == 500:
-        return 500
+    providers = generate_provider_list(code_endpoint)['providers']
+    if provider_id not in providers:
+        abort(404)
+    else:
+        organizations_response = generate_organization_list(code_endpoint, provider_id)
+        if organizations_response['status_code'] == 200:
+            if organizations_response['organizations']:
+                organizations = organizations_response['organizations']
+                return render_template('Provider.html', provider=provider_id, organizations=organizations)
+            else:
+                abort(500)
+        elif organizations_response['status_code'] == 404:
+            abort(404)
+        elif organizations_response['status_code'] == 500:
+            abort(500)
 
-@app.route('/site/<provider_id>/<organization_id>/', endpoint='uri_organization')
+@app.route('/provider/<provider_id>/<organization_id>/', endpoint='uri_organization')
 def uri_organization(provider_id, organization_id):
-    timestart = time.time()
-    print ('start: '+str(timestart))
+    providers = generate_provider_list(code_endpoint)['providers']
+    if provider_id not in providers:
+        abort(404)
     sites = generate_site_list(base_url, provider_id, organization_id)
-    timesites = time.time()
-    print ('got the site info: '+str(timesites-timestart))
-    if sites['status_code'] == 200:
+    if sites['status_code'] == 200 and len(sites['list']) >= 1:
         template = render_template('sites.html', provider=provider_id, organization=organization_id,
                                site_list=sites['list'], sites_geo=sites['geojson'])
-        timetemplate = time.time()
-        print ('template rendered: '+str(timetemplate-timesites))
         return template
+    else:
+        abort(404)
 
 
-@app.route('/site/<provider_id>/<organization_id>/<site_id>', endpoint='uri_site')
-def uris(provider_id = None, organization_id = None, site_id = None):
-    site_data = get_site_info(base_url, provider_id, site_id, code_endpoint)
-    if site_data['status_code'] == 200:
+@app.route('/provider/<provider_id>/<organization_id>/<site_id>', endpoint='uri_site')
+def uris(provider_id, organization_id, site_id):
+    providers = generate_provider_list(code_endpoint)['providers']
+    if provider_id not in providers:
+        abort(404)
+    site_data = get_site_info(base_url, provider_id, site_id, organization_id, code_endpoint)
+    if site_data['status_code'] == 200 and site_data['site_data']:
         return render_template('site.html', site=site_data['site_data'], provider=provider_id, organization=organization_id, site_id=site_id)
+    else:
+        abort(404)

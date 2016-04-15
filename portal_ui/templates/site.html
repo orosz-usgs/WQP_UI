@@ -5,7 +5,7 @@
 
 {% block page_content %}
 
-    <p><a href="{{ url_for('home-canonical') }}">WQP Home</a> > <a href="{{ url_for('uri_base') }}">site</a> > <a href="{{ url_for('uri_provider',provider_id=provider) }}">{{ provider }}</a> > <a href="{{ url_for('uri_organization',provider_id=provider, organization_id=organization) }}">{{ organization }}</a>
+    <p><a href="{{ url_for('home-canonical') }}">WQP Home</a> > <a href="{{ url_for('uri_base') }}">Providers</a> > <a href="{{ url_for('uri_provider',provider_id=provider) }}">{{ provider }}</a> > <a href="{{ url_for('uri_organization',provider_id=provider, organization_id=organization) }}">{{ organization }}</a>
          > <a href="{{ url_for('uri_site',provider_id=provider, organization_id=organization, site_id=site_id) }}">{{ site_id }}</a>
     </p>
 
@@ -15,7 +15,7 @@
     <p></p>
 <p>
     This {{ site['MonitoringLocationTypeName']|lower }} site, maintained by the {{ site['OrganizationFormalName'] }} (identifier {{ site['OrganizationIdentifier'] }}),
-    is has the name "{{ site['MonitoringLocationName'] }}" and has the identifier {{ site['MonitoringLocationIdentifier'] }}.
+     has the name "{{ site['MonitoringLocationName'] }}" and has the identifier {{ site['MonitoringLocationIdentifier'] }}.
     {% if  site['HUCEightDigitCode'] %} This site is in the watershed defined by the 8 digit <a href="http://water.usgs.gov/GIS/huc.html" title="Learn more about HUCs" target="_blank"> Hydrologic Unit Code (HUC)</a>
     {{ site['HUCEightDigitCode'] }}.  You can learn more about what is happening in this HUC at the
     <a target="_blank" href="https://cfpub.epa.gov/surf/huc.cfm?huc_code={{ site['HUCEightDigitCode'] }}" title="go to the EPA's site about this HUC" target="_blank"> EPA's Surf Your Watershed site</a> or at the <a target="_blank" href="http://water.usgs.gov/lookup/getwatershed?{{ site['HUCEightDigitCode']  }}" title="Go to the USGS Science in Your watershed site">USGS Science In Your Watershed site</a>.

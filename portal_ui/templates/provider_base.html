@@ -4,6 +4,7 @@
 
 
 {% block page_content %}
+    <a href="{{ url_for('home-canonical') }}">WQP Home</a> > <a href="{{ url_for('uri_base') }}">Provider</a>
     <h1>Water Quality Portal Data Providers</h1>
     {% for provider in providers %}
         <a href="{{ url_for('uri_provider', provider_id = provider) }}">{{ provider }}</a></br>
