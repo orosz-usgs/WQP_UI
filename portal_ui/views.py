@@ -1,8 +1,8 @@
 from flask import render_template, request, make_response, redirect, url_for, abort
 from . import app
 from .utils import pull_feed, geoserver_proxy_request
-from utils import generate_provider_list, generate_organization_list, generate_site_list, get_site_info
-import time
+from utils import generate_provider_list, generate_organization_list, generate_site_list, get_site_info, check_org_id
+
 
 # set some useful local variables from the global config variables
 code_endpoint = app.config['CODES_ENDPOINT']
@@ -196,6 +196,10 @@ def uri_organization(provider_id, organization_id):
     providers = generate_provider_list(code_endpoint)['providers']
     if provider_id not in providers:
         abort(404)
+    org_check = check_org_id(organization_id, code_endpoint)
+    if org_check['status_code'] == 200 and org_check['org_exists'] == False:
+        print 'no org!'
+        abort(404)
     sites = generate_site_list(base_url, provider_id, organization_id)
     if sites['status_code'] == 200 and len(sites['list']) >= 1:
         template = render_template('sites.html', provider=provider_id, organization=organization_id,
@@ -209,6 +213,9 @@ def uri_organization(provider_id, organization_id):
 def uris(provider_id, organization_id, site_id):
     providers = generate_provider_list(code_endpoint)['providers']
     if provider_id not in providers:
+        abort(404)
+    org_check = check_org_id(organization_id, code_endpoint)
+    if org_check['status_code'] == 200 and org_check['org_exists'] == False:
         abort(404)
     site_data = get_site_info(base_url, provider_id, site_id, organization_id, code_endpoint)
     if site_data['status_code'] == 200 and site_data['site_data']:
