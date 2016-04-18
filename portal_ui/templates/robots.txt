@@ -1,0 +1,10 @@
+{% if robots_welcome == True %}
+User-agent: *
+Disallow: /Station
+Disallow: /Station/
+Disallow: /Result
+Disallow: /Result/
+{% else %}
+User-agent: *
+Disallow: /
+{% endif %}

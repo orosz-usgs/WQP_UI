@@ -28,3 +28,4 @@ REDIS_CONFIG = None
 
 #set the default cache timeout for wqp http caches
 CACHE_TIMEOUT = None
+

@@ -14,6 +14,7 @@ base_url = app.config['SEARCH_QUERY_ENDPOINT']
 cache_config = app.config['CACHE_CONFIG']
 redis_config = app.config['REDIS_CONFIG']
 cache_timeout = app.config['CACHE_TIMEOUT']
+robots_welcome = app.config.get('ROBOTS_WELCOME')
 
 cache = Cache(app, config=cache_config)
 
@@ -257,3 +258,8 @@ def clear_cache():
     else:
         cache.clear()
         return "no redis cache, full cache cleared"
+
+
+@app.route('/robots.txt')
+def robots():
+    return render_template('robots.txt', robots_welcome=robots_welcome)
