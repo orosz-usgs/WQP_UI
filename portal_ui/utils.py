@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 from flask import request, make_response
 import tablib
 import ujson
+import redis
 
 
 def pull_feed(feed_url):
@@ -142,6 +143,40 @@ def generate_site_list(base_url, provider_id, organization_id):
         return {"list": None, "geojson": None, "status_code": status_code}
 
 
+def generate_site_list_from_csv(base_url, provider_id, organization_id, redis_config=None, cache_timeout=None):
+    """
+
+    :param base_url: the base url we are using for the generating the search URL
+    :param organization_id:
+    :param provider_id:
+    :param redis_config:
+    :return: a list of dicts that describe sites that are associated with an organization under a data provider
+    """
+    search_endpoint = base_url+"Station/search/"
+    r = requests.get(search_endpoint, {"organization": organization_id, "providers": provider_id,
+                                       "mimeType": "csv", "sorted": "no", "uripage": "yes"})
+    status_code = r.status_code
+    if status_code == 200:
+        site_content = r.content
+        sites = tablib.Dataset().load(site_content).dict
+        site_list = []
+        if redis_config:
+            redis_session = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_config['db'])
+        if sites:
+            for site in sites:
+                site = dict(site)
+                site_key = 'sites_'+provider_id+'_'+site['MonitoringLocationIdentifier']
+                if redis_config:
+                    redis_session.set(site_key, site, nx=True, ex=cache_timeout)
+                site['id'] = site['MonitoringLocationIdentifier']
+                site['name'] = site['MonitoringLocationName']
+                site['type'] = site['MonitoringLocationTypeName']
+                site_list.append(site)
+        return {"list": site_list, "status_code": status_code}
+    else:
+        return {"list": None, "status_code": status_code}
+
+
 def get_site_info(base_url, provider_id, site_id, organization_id, code_endpoint):
     """
 
@@ -173,3 +208,14 @@ def get_site_info(base_url, provider_id, site_id, organization_id, code_endpoint
                         site_data[u'StateName'] = info_list[1]
                         site_data[u'CountyName'] = info_list[2]
     return {"status_code": status_code, "site_data": site_data}
+
+
+def make_cache_key():
+    '''
+    this function gets the provider ID out of the path for the various URI fields, so that we can set the cache prefix
+     in a way that can be cleared programatically.  The path needs to look like /provider/<provider_id>/*
+    :return: the provider
+    '''
+    path = request.path
+    key = '_'.join(path.split('/'))
+    return key

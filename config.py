@@ -22,3 +22,9 @@ NWIS_SITES_LAYER_NAME = 'NWC:gagesII'
 GA_TRACKING_CODE = ''
 
 LESS_BIN = os.path.join(PROJECT_HOME, 'node_modules', 'less', 'bin', 'lessc')
+
+CACHE_CONFIG = {'CACHE_TYPE': 'null'}
+REDIS_CONFIG = None
+
+#set the default cache timeout for wqp http caches
+CACHE_TIMEOUT = None

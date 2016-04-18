@@ -1,12 +1,21 @@
 from flask import render_template, request, make_response, redirect, url_for, abort
 from . import app
 from .utils import pull_feed, geoserver_proxy_request
-from utils import generate_provider_list, generate_organization_list, generate_site_list, get_site_info, check_org_id
+from utils import generate_provider_list, generate_organization_list, generate_site_list_from_csv, get_site_info, check_org_id, \
+    make_cache_key
+from flask.ext.cache import Cache
+import redis
+import ast
 
 
 # set some useful local variables from the global config variables
 code_endpoint = app.config['CODES_ENDPOINT']
 base_url = app.config['SEARCH_QUERY_ENDPOINT']
+cache_config = app.config['CACHE_CONFIG']
+redis_config = app.config['REDIS_CONFIG']
+cache_timeout = app.config['CACHE_TIMEOUT']
+
+cache = Cache(app, config=cache_config)
 
 @app.route('/index.jsp')
 @app.route('/index/')
@@ -191,7 +200,9 @@ def uri_provider(provider_id):
         elif organizations_response['status_code'] == 500:
             abort(500)
 
+
 @app.route('/provider/<provider_id>/<organization_id>/', endpoint='uri_organization')
+@cache.cached(timeout=cache_timeout, key_prefix=make_cache_key)
 def uri_organization(provider_id, organization_id):
     providers = generate_provider_list(code_endpoint)['providers']
     if provider_id not in providers:
@@ -200,16 +211,17 @@ def uri_organization(provider_id, organization_id):
     if org_check['status_code'] == 200 and org_check['org_exists'] == False:
         print 'no org!'
         abort(404)
-    sites = generate_site_list(base_url, provider_id, organization_id)
+    sites = generate_site_list_from_csv(base_url, provider_id, organization_id, redis_config)
     if sites['status_code'] == 200 and len(sites['list']) >= 1:
         template = render_template('sites.html', provider=provider_id, organization=organization_id,
-                               site_list=sites['list'], sites_geo=sites['geojson'])
+                               site_list=sites['list'])
         return template
     else:
         abort(404)
 
 
 @app.route('/provider/<provider_id>/<organization_id>/<site_id>', endpoint='uri_site')
+@cache.cached(timeout=cache_timeout, key_prefix=make_cache_key)
 def uris(provider_id, organization_id, site_id):
     providers = generate_provider_list(code_endpoint)['providers']
     if provider_id not in providers:
@@ -217,8 +229,31 @@ def uris(provider_id, organization_id, site_id):
     org_check = check_org_id(organization_id, code_endpoint)
     if org_check['status_code'] == 200 and org_check['org_exists'] == False:
         abort(404)
-    site_data = get_site_info(base_url, provider_id, site_id, organization_id, code_endpoint)
-    if site_data['status_code'] == 200 and site_data['site_data']:
-        return render_template('site.html', site=site_data['site_data'], provider=provider_id, organization=organization_id, site_id=site_id)
+    site_data = None
+    if redis_config:
+        r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_config['db'])
+        site_key = 'sites_'+provider_id+'_'+site_id
+        redis_site_data = r.get(site_key)
+        if redis_site_data:
+            site_data = ast.literal_eval(redis_site_data)
+        else:
+            service_site_data = get_site_info(base_url, provider_id, site_id, organization_id, code_endpoint)
+            if service_site_data['status_code'] == 200 and service_site_data['site_data']:
+                site_data = service_site_data['site_data']
+            elif service_site_data['status_code'] == 500:
+                abort(500)
+    if site_data:
+        return render_template('site.html', site=site_data, provider=provider_id, organization=organization_id,
+                               site_id=site_id, cache_timeout=cache_timeout)
     else:
         abort(404)
+
+@app.route('/clearcache/')
+def clear_cache():
+    if cache_config['CACHE_TYPE'] == 'redis':
+        r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_config['db'])
+        r.flushall()
+        return 'cache cleared '
+    else:
+        cache.clear()
+        return "no redis cache, full cache cleared"

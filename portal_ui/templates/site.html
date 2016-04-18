@@ -49,7 +49,18 @@
 
 To download the metadata about this site along with water quality data, go to the <a href="{{ url_for("portal-canonical") }}">Portal Page</a> and enter "{{ site['MonitoringLocationIdentifier'] }}" into the "Site ID" box under Site Parameters
 
-
+<h2>Detailed Metadata</h2>
+    <p>For the definitions of the metadata elements, please go to the Water Quality Portal <a href="{{ url_for('portal_userguide-canonical') }}">user guide</a> </p>
+    <table class="table table-striped">
+        {% for key, value in site.iteritems() %}
+         {% if value %}
+            <tr>
+                <td>{{key}}</td>
+                <td>{{value}}</td>
+            </tr>
+         {% endif %}
+        {% endfor %}
+    </table>
 
 
 {% endblock %}
