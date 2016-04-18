@@ -29,3 +29,5 @@ REDIS_CONFIG = None
 #set the default cache timeout for wqp http caches
 CACHE_TIMEOUT = None
 
+#for robots.txt
+ROBOTS_WELCOME = False
