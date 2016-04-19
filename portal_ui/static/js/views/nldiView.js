@@ -22,8 +22,6 @@ PORTAL.VIEWS.nldiView  = function(options) {
 
 	var self = {};
 
-	var siteIds = [];
-
 	var navValue = '';
 
 	var insetMap, map;
@@ -165,7 +163,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 				else {
 					var getNldiSites = fetchNldiSites(result.comid, navValue);
 					var getNldiFlowlines = fetchNldiFlowlines(result.comid, navValue);
-
+					var siteIds = [];
 					cleanUpMaps();
 					siteIds = [];
 					openPopup('Successfully retrieved comid ' + result.comid + '. Retrieving sites.');
@@ -323,10 +321,6 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		map.addControl(L.control.zoom());
 
 		map.addSingleClickHandler(findSitesHandler);
-	};
-
-	self.getSiteIds = function() {
-		return siteIds;
 	};
 
 	return self;

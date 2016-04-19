@@ -61,6 +61,26 @@ describe('Test PORTAl.UTILS package', function () {
 		});
 	});
 
+	describe('Test getQueryParamJson', function() {
+
+		var testArray = [
+			{name : 'statecode', value : 'US:55'},
+			{name : 'statecode', value : 'US:54'},
+			{name : 'siteType', value : 'Well'},
+			{name : 'mimeType', value : 'csv'}
+		];
+
+		it('Expects that the calling the function produces the currently encoded json object', function() {
+			var result = PORTAL.UTILS.getQueryParamJson(testArray);
+			expect(result).toEqual({
+				statecode : ['US:55', 'US:54'],
+				siteType : ['Well'],
+				mimeType : ['csv']
+			});
+		});
+
+	});
+
 	describe('Test toggleShowHideSections', function () {
 		beforeEach(function () {
 			var buttonHtml = '<button id="show-hide-toggle" title="Show content">' +
