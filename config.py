@@ -24,4 +24,6 @@ NWIS_SITES_LAYER_NAME = 'NWC:gagesII'
 
 GA_TRACKING_CODE = ''
 
+NLDI_ENABLED = True
+
 LESS_BIN = os.path.join(PROJECT_HOME, 'node_modules', 'less', 'bin', 'lessc')
