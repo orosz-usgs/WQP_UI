@@ -159,7 +159,6 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 			var queryString = decodeURIComponent(PORTAL.UTILS.getQueryString(queryParamArray));
 
 			var startDownload = function(totalCount) {
-				var queryJson = PORTAL.UTILS.getQueryParamJson(queryParamArray);
 				_gaq.push([
 					'_trackEvent',
 					'Portal Page',
