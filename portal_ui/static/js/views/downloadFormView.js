@@ -1,6 +1,7 @@
 /* jslint browser: true */
 /* global $ */
 /* global _ */
+/* global Config */
 /* global _gaq */
 
 
@@ -63,7 +64,7 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 	 * 		@reject - if any fetches failed.
 	 */
 	self.initialize = function() {
-		var nldiView = PORTAL.VIEWS.nldiView({
+		var nldiMapView = PORTAL.VIEWS.nldiMapView({
 			insetMapDivId : 'nldi-inset-map',
 			mapDivId : 'nldi-map'
 		});
@@ -79,7 +80,7 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 			$container : options.$form.find('#site-params'),
 			siteTypeModel : PORTAL.MODELS.cachedCodes({codes : 'sitetype'}),
 			organizationModel : PORTAL.MODELS.cachedCodes({codes : 'organization'}),
-			nldiView : nldiView
+			nldiMapView : nldiMapView
 		});
 		var samplingParametersInputView = PORTAL.VIEWS.samplingParameterInputView({
 			$container : options.$form.find('#sampling'),
@@ -119,7 +120,13 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 		dataDetailsView.initialize();
 		pointLocationInputView.initialize();
 		boundingBoxInputView.initialize();
-		nldiView.initialize();
+		if (Config.NLDI_ENABLED) {
+			nldiMapView.initialize();
+		} else {
+			options.$form.find('#nldi-container').hide();
+			options.$form.find('#nldi-inset-map').hide();
+			options.$form.find('#nldi-map').hide();
+		}
 
 		// Create help popovers which close when you click anywhere else other than another popover trigger.
 		$('html').click(function (e) {
@@ -149,9 +156,7 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 		options.$form.find('#main-button').click(function (event) {
 			var fileFormat = dataDetailsView.getMimeType();
 			var resultType = dataDetailsView.getResultType();
-			var queryParamArray = self.getQueryParamArray();
-			var queryString = PORTAL.UTILS.getQueryString(queryParamArray);
-			var queryJson = self.getQueryParamJson(queryParamArray, nldiView.getSiteIds());
+			var queryString = PORTAL.UTILS.getQueryString(self.getQueryParamArray());
 
 			var startDownload = function (totalCount) {
 				_gaq.push([
@@ -160,8 +165,7 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 					dataDetailsView.getResultType() + 'Download',
 					decodeURIComponent(queryString),
 					parseInt(totalCount)]);
-				
-				//options.$form.submit();
+				options.$form.submit();
 			};
 
 			event.preventDefault();
@@ -178,7 +182,7 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 			]);
 
 			options.downloadProgressDialog.show('download');
-			PORTAL.queryServices.fetchQueryCounts(resultType, queryJson)
+			PORTAL.queryServices.fetchHeadRequest(resultType, queryString)
 				.done(function (response) {
 					var counts = PORTAL.DataSourceUtils.getCountsFromHeader(response, PORTAL.MODELS.providers.getIds());
 					options.downloadProgressDialog.updateProgress(counts, resultType, fileFormat, startDownload);
@@ -207,31 +211,10 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 	 */
 	self.getQueryParamArray = function () {
 		// Need to eliminate form parameters within the mapping-div
-		var $formInputs = options.$form.find(':input').not('#mapping-div :input, #nldi-inset-map :input, #nldi-map :input');
+		var $formInputs = options.$form.find(':input').not('#mapping-div :input');
 		return _.filter($formInputs.serializeArray(), function(param) {
 			return (param.value);
 		});
-	};
-	
-	self.getQueryParamJson = function(queryParamArray, siteIds) {
-		var result = {};
-		
-		_.chain(queryParamArray)
-			.reject(function(param) {
-				return (param.name === 'mimeType') ||
-					(param.name === 'zip') ||
-					(param.name === 'sorted');
-			})
-			.groupBy(function(param) {
-				return param.name;
-			})
-			.each(function(values, name) {
-				result[name] = _.pluck(values, 'value');
-			});
-		if (siteIds) {
-			result.siteid = (_.has(result, 'siteid') ? result.siteId  : []).concat(siteIds);
-		}
-		return result;
 	};
 
 	return self;
