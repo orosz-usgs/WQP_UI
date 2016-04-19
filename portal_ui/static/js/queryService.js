@@ -12,6 +12,16 @@ PORTAL.queryServices = (function () {
 	"use strict";
 	var self = {};
 
+	/*
+	 * @param {String} resultType - 'Station' or 'Result'
+	 * @param {Array of Objects with name and value properties representing query parameters} queryParamArray
+	 * @param {Array of Strings} providers - The application's providers.
+	 * @return {Jquery.Promise}
+	 * 		@resolve {Object} - If the counts are successfully fetched this object will contain a 'total' property and
+	 * 			properties for each provider. This property values will be an object with sites and results properties which
+	 * 			will contain the counts for that provider (or total)
+	 * 		@reject {String} - If the fetch fails, returns an error message.
+	 */
 	self.fetchQueryCounts = function(resultType, queryParamArray, providers) {
 		var deferred = $.Deferred();
 
@@ -46,7 +56,7 @@ PORTAL.queryServices = (function () {
 			},
 			error: function(jqXHR, textStatus) {
 				log.error('Unable to contact the WQP services: ' + textStatus);
-				deferred.resolve('Unable to contact the WQP services: ' + textStatus);
+				deferred.reject('Unable to contact the WQP services: ' + textStatus);
 			}
 		});
 
