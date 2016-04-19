@@ -27,3 +27,12 @@ GA_TRACKING_CODE = ''
 NLDI_ENABLED = True
 
 LESS_BIN = os.path.join(PROJECT_HOME, 'node_modules', 'less', 'bin', 'lessc')
+
+CACHE_CONFIG = {'CACHE_TYPE': 'null'}
+REDIS_CONFIG = None
+
+#set the default cache timeout for wqp http caches
+CACHE_TIMEOUT = None
+
+#for robots.txt
+ROBOTS_WELCOME = False

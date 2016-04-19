@@ -1,9 +1,24 @@
-import requests
-
-from flask import render_template, request, make_response, redirect, url_for
-
+from flask import render_template, request, make_response, redirect, url_for, abort
 from . import app
 from .utils import pull_feed, geoserver_proxy_request
+from utils import generate_provider_list, generate_organization_list, get_site_info, check_org_id, \
+    make_cache_key, generate_site_list_from_csv, generate_redis_db_number
+from flask.ext.cache import Cache
+import redis
+import ast
+import requests
+import tablib
+
+
+# set some useful local variables from the global config variables
+code_endpoint = app.config['CODES_ENDPOINT']
+base_url = app.config['SEARCH_QUERY_ENDPOINT']
+cache_config = app.config['CACHE_CONFIG']
+redis_config = app.config['REDIS_CONFIG']
+cache_timeout = app.config['CACHE_TIMEOUT']
+robots_welcome = app.config.get('ROBOTS_WELCOME')
+
+cache = Cache(app, config=cache_config)
 
 @app.route('/index.jsp')
 @app.route('/index/')
@@ -125,8 +140,8 @@ def coverage_geoserverproxy(op):
 def sites_geoserverproxy(op):
     target_url = app.config['SITES_MAP_GEOSERVER_ENDPOINT'] + '/' + op
     return geoserver_proxy_request(target_url)
-
-
+   
+ 
 @app.route('/nwis_site_sld/')
 def nwis_site_sld():
     resp = app.make_response(render_template('style_sheets/nwis_sites.sld')) 
@@ -154,3 +169,140 @@ def kml():
 def images(image_file):
     return app.send_static_file('img/'+image_file)
 
+
+@app.route('/provider/', endpoint='uri_base')
+def uri_base():
+    providers = generate_provider_list(code_endpoint)
+    if providers['status_code'] == 200 and providers['providers']:
+        if providers['providers']:
+            provider_list = providers['providers']
+            return render_template('provider_base.html', providers=provider_list)
+        else:
+            abort(500)
+    elif providers['status_code'] == 404:
+        abort(500)
+    elif providers['status_code'] == 500:
+        abort(500)
+
+
+@app.route('/provider/<provider_id>', endpoint='uri_provider')
+def uri_provider(provider_id):
+    providers = generate_provider_list(code_endpoint)['providers']
+    if provider_id not in providers:
+        abort(404)
+    else:
+        organizations_response = generate_organization_list(code_endpoint, provider_id)
+        if organizations_response['status_code'] == 200:
+            if organizations_response['organizations']:
+                organizations = organizations_response['organizations']
+                return render_template('Provider.html', provider=provider_id, organizations=organizations)
+            else:
+                abort(500)
+        elif organizations_response['status_code'] == 404:
+            abort(404)
+        elif organizations_response['status_code'] == 500:
+            abort(500)
+
+
+@app.route('/provider/<provider_id>/<organization_id>/', endpoint='uri_organization')
+@cache.cached(timeout=cache_timeout, key_prefix=make_cache_key)
+def uri_organization(provider_id, organization_id):
+    providers = generate_provider_list(code_endpoint)['providers']
+    if provider_id not in providers:
+        abort(404)
+    org_check = check_org_id(organization_id, code_endpoint)
+    if org_check['status_code'] == 200 and org_check['org_exists'] == False:
+        abort(404)
+    sites_list = None
+    if redis_config:
+        redis_db_number = generate_redis_db_number(provider_id)
+        redis_session = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'],
+                                          db=redis_db_number)
+        all_sites_key = 'all_sites_' + provider_id + '_' + organization_id
+        redis_all_site_data = redis_session.get(all_sites_key)
+        if redis_all_site_data:
+            sites_list = ast.literal_eval(redis_all_site_data)
+        else:
+            sites = generate_site_list_from_csv(base_url, provider_id, organization_id, redis_config)
+            if sites['status_code'] == 200 and len(sites['list']) >= 1:
+                sites_list = sites['list']
+            else:
+                abort(404)
+    else:
+        sites = generate_site_list_from_csv(base_url, provider_id, organization_id, redis_config)
+        if sites['status_code'] == 200 and len(sites['list']) >= 1:
+            sites_list = sites['list']
+        else:
+            abort(404)
+    if sites_list:
+        return render_template('sites.html', provider=provider_id, organization=organization_id, site_list=sites_list)
+    else:
+        abort(404)
+
+
+@app.route('/provider/<provider_id>/<organization_id>/<site_id>', endpoint='uri_site')
+def uris(provider_id, organization_id, site_id):
+    providers = generate_provider_list(code_endpoint)['providers']
+    if provider_id not in providers:
+        abort(404)
+    org_check = check_org_id(organization_id, code_endpoint)
+    if org_check['status_code'] == 200 and org_check['org_exists'] == False:
+        abort(404)
+    site_data = None
+    if redis_config:
+        redis_db_number = generate_redis_db_number(provider_id)
+        r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db_number)
+        site_key = 'sites_'+provider_id+'_'+site_id
+        redis_site_data = r.get(site_key)
+        if redis_site_data:
+            site_data = ast.literal_eval(redis_site_data)
+        else:
+            service_site_data = get_site_info(base_url, provider_id, site_id, organization_id, code_endpoint)
+            if service_site_data['status_code'] == 200 and service_site_data['site_data']:
+                site_data = service_site_data['site_data']
+            elif service_site_data['status_code'] == 500:
+                abort(500)
+    else:
+        service_site_data = get_site_info(base_url, provider_id, site_id, organization_id, code_endpoint)
+        if service_site_data['status_code'] == 200 and service_site_data['site_data']:
+            site_data = service_site_data['site_data']
+        elif service_site_data['status_code'] == 500:
+            abort(500)
+    if site_data:
+        return render_template('site.html', site=site_data, provider=provider_id, organization=organization_id,
+                               site_id=site_id, cache_timeout=cache_timeout)
+    else:
+        abort(404)
+
+@app.route('/clear_cache/')
+@app.route('/clear_cache/<provider_id>/')
+def clear_cache(provider_id = None):
+    if cache_config['CACHE_TYPE'] == 'redis':
+        if provider_id:
+            redis_db_number = generate_redis_db_number(provider_id)
+            r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db_number)
+            r.flushdb()
+            cache.clear()
+            return 'site cache cleared for: '+provider_id
+        else:
+            r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_config['db'])
+            r.flushall()
+            return 'complete cache cleared '
+    else:
+        cache.clear()
+        return "no redis cache, full cache cleared"
+
+@app.route('/rebuild_site_cache/<provider_id>')
+def rebuild_site_cache(provider_id=None):
+    sites = generate_site_list_from_csv(base_url, provider_id=provider_id, redis_config=redis_config)
+    if sites['status_code'] == 200 and len(sites['list']) >= 1:
+        return 'successfully rebuilt '+provider_id+' site cache!'
+    if sites['status_code'] == 500:
+        abort(500)
+    else:
+        abort(404)
+
+
+@app.route('/robots.txt')
+def robots():
+    return render_template('robots.txt', robots_welcome=robots_welcome)
