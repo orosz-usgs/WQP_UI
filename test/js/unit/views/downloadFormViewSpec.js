@@ -71,7 +71,7 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
 		spyOn(PORTAL.VIEWS, 'samplingParameterInputView').and.returnValue(samplingParametersMock);
 		spyOn(PORTAL.VIEWS, 'biologicalSamplingInputView').and.returnValue(biologicalSamplingMock);
 		spyOn(PORTAL.VIEWS, 'dataDetailsView').and.returnValue(dataDetailsMock);
-		spyOn(PORTAL.VIEWS, 'nldiMapView').and.returnValue(nldiMock);
+		spyOn(PORTAL.VIEWS, 'nldiView').and.returnValue(nldiMock);
 
 		fetchProvidersDeferred = $.Deferred();
 		spyOn(PORTAL.MODELS.providers, 'fetch').and.returnValue(fetchProvidersDeferred);

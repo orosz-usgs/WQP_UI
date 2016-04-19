@@ -1,4 +1,5 @@
 /*jslint browser: true*/
+/* global _ */
 /* global $ */
 /* global Config */
 /* global log */
@@ -36,6 +37,28 @@ PORTAL.queryServices = (function () {
 				deferred.resolve('Unable to contact the WQP services: ' + textStatus);
 			}
 		});
+		return deferred.promise();
+	};
+
+	self.fetchQueryCounts = function(resultType, queryParamJson) {
+		var deferred = $.Deferred();
+		var countQueryJson = _.omit(queryParamJson, ['mimeType', 'zip', 'sorted']);
+			
+		$.ajax({
+			url : Config.QUERY_URLS[resultType] + '/count?mimeType=json',
+			method : 'POST',
+			contentType : 'application/json',
+			data : JSON.stringify(countQueryJson),
+			success : function(data, textStatus, jqXHR) {
+				log.debug('Successfully got counts');
+				deferred.resolve(jqXHR);
+			},
+			error: function(jqXHR, textStatus) {
+				log.error('Unable to contact the WQP services: ' + textStatus);
+				deferred.resolve('Unable to contact the WQP services: ' + textStatus);
+			}
+		});
+
 		return deferred.promise();
 	};
 
