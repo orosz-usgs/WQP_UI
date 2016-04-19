@@ -12,5 +12,6 @@ var Config = {
 	STATIC_ENDPOINT : '',
 	SLD_ENDPOINT : 'http://fakesldendpoint',
 	SEARCH_QUERY_ENDPOINT : 'http://fakesearchservice',
-	NAWQA_ONLY_PROJECTS : true
+	NAWQA_ONLY_PROJECTS : true,
+	NLDI_ENABLED : true
 };
