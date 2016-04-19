@@ -22,6 +22,8 @@ PORTAL.VIEWS.nldiView  = function(options) {
 
 	var self = {};
 
+	var siteIds = [];
+
 	var navValue = '';
 
 	var insetMap, map;
@@ -31,7 +33,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	var nldiSiteLayers, nldiFlowlineLayers;
 	var insetNldiSiteLayers, insetNldiFlowlineLayers;
 
-	var cleanUpMaps = function() {
+	var cleanUpMapsAndSites = function() {
 		if (nldiSiteLayers) {
 			map.removeLayer(nldiSiteLayers);
 		}
@@ -45,6 +47,9 @@ PORTAL.VIEWS.nldiView  = function(options) {
 			insetMap.removeLayer(insetNldiFlowlineLayers);
 		}
 		map.closePopup();
+
+		siteIds = [];
+		options.$siteInputContainer.html('');
 	};
 
 	/*
@@ -163,9 +168,8 @@ PORTAL.VIEWS.nldiView  = function(options) {
 				else {
 					var getNldiSites = fetchNldiSites(result.comid, navValue);
 					var getNldiFlowlines = fetchNldiFlowlines(result.comid, navValue);
-					var siteIds = [];
-					
-					cleanUpMaps();
+
+					cleanUpMapsAndSites();
 					openPopup('Successfully retrieved comid ' + result.comid + '. Retrieving sites.');
 
 
@@ -177,19 +181,18 @@ PORTAL.VIEWS.nldiView  = function(options) {
 							insetNldiFlowlineLayers = flowlineLayer(flowlinesGeojson);
 							map.addLayer(nldiFlowlineLayers);
 							insetMap.addLayer(insetNldiFlowlineLayers);
+							map.fitBounds(nldiFlowlineLayers.getBounds());
 
 							if (sitesGeojson[0].features.length < 1000) {
 								nldiSiteLayers = siteLayer(sitesGeojson);
 								insetNldiSiteLayers = siteLayer(sitesGeojson);
+								
+								map.addLayer(nldiSiteLayers);
+								insetMap.addLayer(insetNldiSiteLayers);
 
 								siteIds = _.map(sitesGeojson[0].features, function(feature) {
 									return feature.properties.identifier;
 								});
-
-								map.addLayer(nldiSiteLayers);
-								insetMap.addLayer(insetNldiSiteLayers);
-
-								map.fitBounds(nldiFlowlineLayers.getBounds());
 
 							}
 							else {
@@ -246,7 +249,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		var value = $(ev.target).val();
 		navValue = value;
 
-		cleanUpMaps();
+		cleanUpMapsAndSites();
 		if (value) {
 			showMap();
 		}
