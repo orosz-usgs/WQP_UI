@@ -143,7 +143,7 @@ def generate_site_list(base_url, provider_id, organization_id):
         return {"list": None, "geojson": None, "status_code": status_code}
 
 
-def generate_site_list_from_csv(base_url, provider_id, organization_id, redis_config=None, cache_timeout=None):
+def generate_site_list_from_csv(base_url, provider_id=None, organization_id=None, redis_config=None, cache_timeout=None):
     """
 
     :param base_url: the base url we are using for the generating the search URL
@@ -160,18 +160,26 @@ def generate_site_list_from_csv(base_url, provider_id, organization_id, redis_co
         site_content = r.content
         sites = tablib.Dataset().load(site_content).dict
         site_list = []
-        if redis_config:
-            redis_session = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_config['db'])
         if sites:
             for site in sites:
                 site = dict(site)
+                site_info = {}
                 site_key = 'sites_'+provider_id+'_'+site['MonitoringLocationIdentifier']
                 if redis_config:
+                    redis_db_number = generate_redis_db_number(provider_id)
+                    redis_session = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'],
+                                                      db=redis_db_number)
                     redis_session.set(site_key, site, nx=True, ex=cache_timeout)
-                site['id'] = site['MonitoringLocationIdentifier']
-                site['name'] = site['MonitoringLocationName']
-                site['type'] = site['MonitoringLocationTypeName']
-                site_list.append(site)
+                site_info['id'] = site['MonitoringLocationIdentifier']
+                site_info['name'] = site['MonitoringLocationName']
+                site_info['type'] = site['MonitoringLocationTypeName']
+                site_list.append(site_info)
+            if redis_config:
+                redis_db_number = generate_redis_db_number(provider_id)
+                redis_session = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'],
+                                              db=redis_db_number)
+                all_sites_key = 'all_sites_'+provider_id+'_'+organization_id
+                redis_session.set(all_sites_key, site_list, nx=True, ex=cache_timeout)
         return {"list": site_list, "status_code": status_code}
     else:
         return {"list": None, "status_code": status_code}
@@ -219,3 +227,21 @@ def make_cache_key():
     path = request.path
     key = '_'.join(path.split('/'))
     return key
+
+def generate_redis_db_number(provider):
+    '''
+
+    :param provider:
+    :return: a database number to assign for redis to allow for cache clearing
+    '''
+    #set a default
+    redis_db_number = 0
+    if provider == 'NWIS':
+        redis_db_number = 1
+    elif provider == 'STORET':
+        redis_db_number = 2
+    elif provider == 'STEWARDS':
+        redis_db_number = 3
+    elif provider == 'BIODATA':
+        redis_db_number = 4
+    return redis_db_number

@@ -1,11 +1,13 @@
 from flask import render_template, request, make_response, redirect, url_for, abort
 from . import app
 from .utils import pull_feed, geoserver_proxy_request
-from utils import generate_provider_list, generate_organization_list, generate_site_list_from_csv, get_site_info, check_org_id, \
-    make_cache_key
+from utils import generate_provider_list, generate_organization_list, get_site_info, check_org_id, \
+    make_cache_key, generate_site_list_from_csv, generate_redis_db_number
 from flask.ext.cache import Cache
 import redis
 import ast
+import requests
+import tablib
 
 
 # set some useful local variables from the global config variables
@@ -131,13 +133,13 @@ def public_srsnames():
 @app.route('/coverage_geoserver/<op>', methods=['GET', 'POST'])
 def coverage_geoserverproxy(op):
     target_url = app.config['COVERAGE_MAP_GEOSERVER_ENDPOINT'] + '/' + op
-    return geoserver_proxy_request(target_url);
+    return geoserver_proxy_request(target_url)
     
 
 @app.route('/sites_geoserver/<op>', methods=['GET', 'POST'])
 def sites_geoserverproxy(op):
     target_url = app.config['SITES_MAP_GEOSERVER_ENDPOINT'] + '/' + op
-    return geoserver_proxy_request(target_url);
+    return geoserver_proxy_request(target_url)
    
  
 @app.route('/nwis_site_sld/')
@@ -210,19 +212,35 @@ def uri_organization(provider_id, organization_id):
         abort(404)
     org_check = check_org_id(organization_id, code_endpoint)
     if org_check['status_code'] == 200 and org_check['org_exists'] == False:
-        print 'no org!'
         abort(404)
-    sites = generate_site_list_from_csv(base_url, provider_id, organization_id, redis_config)
-    if sites['status_code'] == 200 and len(sites['list']) >= 1:
-        template = render_template('sites.html', provider=provider_id, organization=organization_id,
-                               site_list=sites['list'])
-        return template
+    sites_list = None
+    if redis_config:
+        redis_db_number = generate_redis_db_number(provider_id)
+        redis_session = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'],
+                                          db=redis_db_number)
+        all_sites_key = 'all_sites_' + provider_id + '_' + organization_id
+        redis_all_site_data = redis_session.get(all_sites_key)
+        if redis_all_site_data:
+            sites_list = ast.literal_eval(redis_all_site_data)
+        else:
+            sites = generate_site_list_from_csv(base_url, provider_id, organization_id, redis_config)
+            if sites['status_code'] == 200 and len(sites['list']) >= 1:
+                sites_list = sites['list']
+            else:
+                abort(404)
+    else:
+        sites = generate_site_list_from_csv(base_url, provider_id, organization_id, redis_config)
+        if sites['status_code'] == 200 and len(sites['list']) >= 1:
+            sites_list = sites['list']
+        else:
+            abort(404)
+    if sites_list:
+        return render_template('sites.html', provider=provider_id, organization=organization_id, site_list=sites_list)
     else:
         abort(404)
 
 
 @app.route('/provider/<provider_id>/<organization_id>/<site_id>', endpoint='uri_site')
-@cache.cached(timeout=cache_timeout, key_prefix=make_cache_key)
 def uris(provider_id, organization_id, site_id):
     providers = generate_provider_list(code_endpoint)['providers']
     if provider_id not in providers:
@@ -232,7 +250,8 @@ def uris(provider_id, organization_id, site_id):
         abort(404)
     site_data = None
     if redis_config:
-        r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_config['db'])
+        redis_db_number = generate_redis_db_number(provider_id)
+        r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db_number)
         site_key = 'sites_'+provider_id+'_'+site_id
         redis_site_data = r.get(site_key)
         if redis_site_data:
@@ -243,21 +262,45 @@ def uris(provider_id, organization_id, site_id):
                 site_data = service_site_data['site_data']
             elif service_site_data['status_code'] == 500:
                 abort(500)
+    else:
+        service_site_data = get_site_info(base_url, provider_id, site_id, organization_id, code_endpoint)
+        if service_site_data['status_code'] == 200 and service_site_data['site_data']:
+            site_data = service_site_data['site_data']
+        elif service_site_data['status_code'] == 500:
+            abort(500)
     if site_data:
         return render_template('site.html', site=site_data, provider=provider_id, organization=organization_id,
                                site_id=site_id, cache_timeout=cache_timeout)
     else:
         abort(404)
 
-@app.route('/clearcache/')
-def clear_cache():
+@app.route('/clear_cache/')
+@app.route('/clear_cache/<provider_id>/')
+def clear_cache(provider_id = None):
     if cache_config['CACHE_TYPE'] == 'redis':
-        r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_config['db'])
-        r.flushall()
-        return 'cache cleared '
+        if provider_id:
+            redis_db_number = generate_redis_db_number(provider_id)
+            r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db_number)
+            r.flushdb()
+            cache.clear()
+            return 'site cache cleared for: '+provider_id
+        else:
+            r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_config['db'])
+            r.flushall()
+            return 'complete cache cleared '
     else:
         cache.clear()
         return "no redis cache, full cache cleared"
+
+@app.route('/rebuild_site_cache/<provider_id>')
+def rebuild_site_cache(provider_id=None):
+    sites = generate_site_list_from_csv(base_url, provider_id=provider_id, redis_config=redis_config)
+    if sites['status_code'] == 200 and len(sites['list']) >= 1:
+        return 'successfully rebuilt '+provider_id+' site cache!'
+    if sites['status_code'] == 500:
+        abort(500)
+    else:
+        abort(404)
 
 
 @app.route('/robots.txt')
