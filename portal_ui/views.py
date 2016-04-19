@@ -6,8 +6,7 @@ from utils import generate_provider_list, generate_organization_list, get_site_i
 from flask.ext.cache import Cache
 import redis
 import ast
-import requests
-import tablib
+
 
 
 # set some useful local variables from the global config variables
