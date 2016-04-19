@@ -164,8 +164,8 @@ PORTAL.VIEWS.nldiView  = function(options) {
 					var getNldiSites = fetchNldiSites(result.comid, navValue);
 					var getNldiFlowlines = fetchNldiFlowlines(result.comid, navValue);
 					var siteIds = [];
+					
 					cleanUpMaps();
-					siteIds = [];
 					openPopup('Successfully retrieved comid ' + result.comid + '. Retrieving sites.');
 
 
