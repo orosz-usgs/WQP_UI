@@ -15,6 +15,7 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
  * @param {Object} options
  * 		@prop {String} insetMapDivId
  * 		@prop {String} mapDivId
+ * 		@prop {Jquery element} $siteInputContainer
  */
 PORTAL.VIEWS.nldiView  = function(options) {
 	"use strict";
@@ -91,6 +92,15 @@ PORTAL.VIEWS.nldiView  = function(options) {
 			method : 'GET'
 		});
 
+	};
+
+	var updateNldiSitesInputs = function(newSites) {
+		var addInput = function(memo, siteId) {
+			return memo + '<input type="hidden" name="siteid" value="' + siteId + '" />';
+		};
+		var htmlInputs = _.reduce(newSites, addInput, '');
+
+		options.$siteInputContainer.html(htmlInputs);
 	};
 
 	/*
@@ -187,9 +197,11 @@ PORTAL.VIEWS.nldiView  = function(options) {
 							else {
 								openPopup('<p>The number of sites exceeds 1000 and can\'t be used to query the WQP. You may want to try searching by HUC');
 							}
+							updateNldiSitesInputs(siteIds);
 						})
 						.fail(function() {
 							openPopup('Unable to retrieve NLDI information');
+							updateNldiSitesInputs(siteIds);
 						})
 						.always(function() {
 							$mapDiv.css('cursor', '');

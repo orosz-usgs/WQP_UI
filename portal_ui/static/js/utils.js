@@ -38,6 +38,20 @@ PORTAL.UTILS = function() {
 		}
 		return $.param(resultArray);
 	};
+	
+	self.getQueryParamJson = function(queryParamArray) {
+		var result = {};
+
+		_.chain(queryParamArray) 
+			.groupBy(function(param) {
+				return param.name;
+			})
+			.each(function(values, name) {
+				result[name] = _.pluck(values, 'value');
+			});
+
+		return result;
+	};
 
 	self.isExtraSmallBrowser = function() {
 		return $('body').width() < 750;

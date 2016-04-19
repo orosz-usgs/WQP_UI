@@ -1,57 +1,48 @@
 /*jslint browser: true*/
+/* global log */
 /* global _ */
 /* global $ */
 /* global Config */
 /* global log */
+/* global numeral */
+
 var PORTAL = PORTAL || {};
 
 PORTAL.queryServices = (function () {
 	"use strict";
 	var self = {};
 
-	/*
-	 * Make a head request for the current set of query parameters and the resultType.
-	 * @param {String} resultType - The type of result for which the query should be made.
-	 * @param {String} queryParams - a query string
-	 * @returns Jquery promise - The promise is resolved if the head request succeeds and the received xhr object is returned.
-	 * If the request is not made due to url length or it fails, the promise is rejects and a string message is returned
-	 */
-	self.fetchHeadRequest = function (resultType, queryParams) {
+	self.fetchQueryCounts = function(resultType, queryParamArray, providers) {
 		var deferred = $.Deferred();
-		var url = self.getFormUrl(resultType, queryParams);
 
-		if (url.length > 2000) {
-			deferred.resolve('Too many query criteria selected.  <br>Please reduce your selections <br>' +
-				'NOTE: selecting all options for a given criteria is the same as selecting none.<br>' +
-				'query length threshold 2000, current length: ' + url.length);
-		}
-		$.ajax({
-			url: url,
-			method: 'HEAD',
-			cache: false,
-			success: function (data, textStatus, jqXHR) {
-				deferred.resolve(jqXHR);
-			},
-			error: function (jqXHR, textStatus) {
-				log.error('Unable to contact the WQP services: ' + textStatus);
-				deferred.resolve('Unable to contact the WQP services: ' + textStatus);
-			}
-		});
-		return deferred.promise();
-	};
-
-	self.fetchQueryCounts = function(resultType, queryParamJson) {
-		var deferred = $.Deferred();
+		var queryParamJson = PORTAL.UTILS.getQueryParamJson(queryParamArray);
 		var countQueryJson = _.omit(queryParamJson, ['mimeType', 'zip', 'sorted']);
-			
+
+		var formatCount = function(countData, key) {
+			var countString = _.has(countData, key) ? countData[key] : '0';
+			return numeral(countString).format('0,0');
+		};
+
 		$.ajax({
 			url : Config.QUERY_URLS[resultType] + '/count?mimeType=json',
 			method : 'POST',
 			contentType : 'application/json',
 			data : JSON.stringify(countQueryJson),
-			success : function(data, textStatus, jqXHR) {
+			success : function(data) {
+				var result = {
+					total : {
+						sites : formatCount(data, 'Total-Site-Count'),
+						results : formatCount(data, 'Total-Result-Count')
+					}
+				};
+				_.each(providers, function(provider) {
+					result[provider] = {
+						sites : formatCount(data, provider + '-Site-Count'),
+						results : formatCount(data, provider + '-Result-Count')
+					};
+				});
 				log.debug('Successfully got counts');
-				deferred.resolve(jqXHR);
+				deferred.resolve(result);
 			},
 			error: function(jqXHR, textStatus) {
 				log.error('Unable to contact the WQP services: ' + textStatus);
