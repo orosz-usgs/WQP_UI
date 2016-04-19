@@ -1,6 +1,7 @@
 /* jslint browser: true */
 /* global $ */
 /* global _ */
+/* global Config */
 /* global _gaq */
 
 
@@ -119,7 +120,13 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 		dataDetailsView.initialize();
 		pointLocationInputView.initialize();
 		boundingBoxInputView.initialize();
-		nldiMapView.initialize();
+		if (Config.NLDI_ENABLED) {
+			nldiMapView.initialize();
+		} else {
+			options.$form.find('#nldi-container').hide();
+			options.$form.find('#nldi-inset-map').hide();
+			options.$form.find('#nldi-map').hide();
+		}
 
 		// Create help popovers which close when you click anywhere else other than another popover trigger.
 		$('html').click(function (e) {
