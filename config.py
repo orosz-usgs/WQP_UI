@@ -36,3 +36,6 @@ CACHE_TIMEOUT = None
 
 #for robots.txt
 ROBOTS_WELCOME = False
+
+#for provider pages
+PROVIDER_PAGES = False
