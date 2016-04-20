@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Water Quality Portal Data Organizations for {{ provider }}{% endblock %}
+
+
+
+{% block page_content %}
+    <a href="{{ url_for('home-canonical') }}">WQP Home</a> > <a href="{{ url_for('uri_base') }}">Providers</a> > <a href="{{ url_for('uri_provider',provider_id=provider) }}">{{ provider }}</a>
+    <h1>Water Quality Portal Data Organizations for {{ provider }}</h1>
+    {% for organization in organizations %}
+        <a href="{{ url_for('uri_organization', organization_id = organization['id'], provider_id = provider) }}">{{ organization['name'] }} - {{ organization['id'] }}</a></br>
+    {% endfor %}
+{% endblock %}
