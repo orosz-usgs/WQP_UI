@@ -26,7 +26,7 @@ L.control.NldiNavControl = L.Control.extend({
 
 		var container = L.DomUtil.create('div', 'leaflet-nldi-nav-picker-div');
 		this._selectEl = L.DomUtil.create('select', 'leaflet-nldi-nav-picker', container);
-		this._selectEl.innerHTML = '<option></option>' +
+		this._selectEl.innerHTML = '<option value="">Select navigation type</option>' +
 				'<option value="UM">Upstream main</option>' +
 				'<option value="DM">Downstream main</option>' +
 				'<option value="UT">Upstream with tributaries</option>' +
