@@ -192,7 +192,7 @@ def uri_provider(provider_id):
         if organizations_response['status_code'] == 200:
             if organizations_response['organizations']:
                 organizations = organizations_response['organizations']
-                return render_template('Provider.html', provider=provider_id, organizations=organizations)
+                return render_template('provider.html', provider=provider_id, organizations=organizations)
             else:
                 abort(500)
         elif organizations_response['status_code'] == 404:
