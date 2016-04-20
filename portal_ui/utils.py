@@ -207,17 +207,6 @@ def get_site_info(base_url, provider_id, site_id, organization_id, code_endpoint
         data = tablib.Dataset().load(site_data_raw).dict[0]
         if data is not None:
             site_data = dict(data)
-            if site_data.get('CountryCode') == 'US' and site_data.get('StateCode') and site_data.get('CountyCode'):
-                statecode = 'US:' + site_data['StateCode']
-                search_string = statecode + ':' + site_data['CountyCode']
-                county_request = requests.get(code_endpoint + "/countycode", {"statecode": statecode, "mimeType": "json",
-                                                                            "text": search_string})
-                if county_request.status_code == 200:
-                    county_info = county_request.json()
-                    if county_info.get('recordCount') == 1:
-                        info_list = county_info['codes'][0]['desc'].split(',')
-                        site_data[u'StateName'] = info_list[1]
-                        site_data[u'CountyName'] = info_list[2]
     return {"status_code": status_code, "site_data": site_data}
 
 

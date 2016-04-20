@@ -5,6 +5,7 @@ from .utils import pull_feed, geoserver_proxy_request, generate_provider_list, g
 from flask.ext.cache import Cache
 import redis
 import ast
+import requests
 
 
 
@@ -183,6 +184,7 @@ def uri_base():
 
 
 @app.route('/provider/<provider_id>', endpoint='uri_provider')
+@cache.cached(timeout=cache_timeout, key_prefix=make_cache_key)
 def uri_provider(provider_id):
     providers = generate_provider_list(code_endpoint)['providers']
     if provider_id not in providers:
@@ -266,7 +268,25 @@ def uris(provider_id, organization_id, site_id):
         elif service_site_data['status_code'] == 500:
             abort(500)
     if site_data:
-        return render_template('site.html', site=site_data, provider=provider_id, organization=organization_id,
+        site_data_additional = {}
+        if site_data.get('CountryCode') == 'US' and site_data.get('StateCode') and site_data.get('CountyCode'):
+            statecode = 'US:' + site_data['StateCode']
+            search_string = statecode + ':' + site_data['CountyCode']
+            county_request = requests.get(code_endpoint + "/countycode", {"statecode": statecode, "mimeType": "json",
+                                                                          "text": search_string})
+            if county_request.status_code == 200:
+                county_info = county_request.json()
+                if county_info.get('recordCount') == 1:
+                    info_list = county_info['codes'][0]['desc'].split(',')
+                    site_data_additional[u'StateName'] = info_list[1]
+                    site_data_additional[u'CountyName'] = info_list[2]
+        if site_data.get('ProviderName') == 'NWIS':
+            nwis_id_list = site_data['MonitoringLocationIdentifier'].split('-')
+            site_data_additional[u'NWISOrg'] = nwis_id_list[0]
+            site_data_additional[u'NWISNumber'] = nwis_id_list[1]
+
+        return render_template('site.html', site=site_data, site_data_additional=site_data_additional,
+                               provider=provider_id, organization=organization_id,
                                site_id=site_id, cache_timeout=cache_timeout)
     else:
         abort(404)
