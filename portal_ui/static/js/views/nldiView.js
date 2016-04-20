@@ -27,6 +27,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	var siteIds = [];
 
 	var navValue = '';
+	var distanceValue = '';
 
 	var insetMap, map;
 	var $mapDiv = $('#' + options.mapDivId);
@@ -100,10 +101,15 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	 * @param {String navigate
 	 * @returns $.jqXHR object
 	 */
-	var fetchNldiSites = function(comid, navigate) {
+	var fetchNldiSites = function(comid, navigate, distance) {
+		var data = {};
+		if (distance) {
+			data  = {distance : distance};
+		}
 		return $.ajax({
 			url : Config.NLDI_SERVICES_ENDPOINT + 'comid/' + comid + '/navigate/' + navigate + '/wqp',
-			method : 'GET'
+			method : 'GET',
+			data : data
 		});
 
 	};
@@ -113,10 +119,15 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	 * @param {String navigate
 	 * @returns $.jqXHR object
 	 */
-	var fetchNldiFlowlines = function(comid, navigate) {
+	var fetchNldiFlowlines = function(comid, navigate, distance) {
+		var data = {};
+		if (distance) {
+			data  = {distance : distance};
+		}
 		return $.ajax({
 			url : Config.NLDI_SERVICES_ENDPOINT + 'comid/' + comid + '/navigate/' + navigate,
-			method : 'GET'
+			method : 'GET',
+			data : data
 		});
 	};
 
@@ -137,7 +148,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 
 		if ((comid) && (navigate)) {
 			$mapDiv.css('cursor', 'progress');
-			$.when(fetchNldiSites(comid, navigate), fetchNldiFlowlines(comid, navigate))
+			$.when(fetchNldiSites(comid, navigate, distance), fetchNldiFlowlines(comid, navigate, distance))
 				.done(function (sitesGeojson, flowlinesGeojson) {
 					map.closePopup();
 
@@ -186,35 +197,40 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		var bounds = L.latLngBounds(map.layerPointToLatLng([point.x - 5, point.y + 5 ]),
 			map.layerPointToLatLng([point.x + 5, point.y - 5]));
 
-		log.debug('Clicked at location: ' + ev.latlng.toString());
-		$mapDiv.css('cursor', 'progress');
-		comid = '';
-		comidLatLng = undefined;
+		if (navValue) {
+			log.debug('Clicked at location: ' + ev.latlng.toString());
+			$mapDiv.css('cursor', 'progress');
+			comid = '';
+			comidLatLng = undefined;
 
-		fetchComid(bounds)
-			.done(function(result) {
-				log.debug('Got COMID response');
+			fetchComid(bounds)
+				.done(function (result) {
+					log.debug('Got COMID response');
 
-				if (result.totalFeatures === 0) {
-					map.openPopup('<p>No reach has been selected. Please try at a different location.</p>', ev.latlng);
+					if (result.totalFeatures === 0) {
+						map.openPopup('<p>No reach has been selected. Please try at a different location.</p>', ev.latlng);
+						$mapDiv.css('cursor', '');
+
+					}
+					else if (result.totalFeatures > 2) {
+						map.openPopup('<p>More than one reach has been selected. Please zoom in and try again.</p>', ev.latlng);
+						$mapDiv.css('cursor', '');
+					}
+					else {
+						comid = result.comid;
+						comidLatLng = ev.latlng;
+						map.openPopup('<p>Successfully retrieved comid ' + result.comid + '. Retrieving sites.</p>', ev.latlng);
+						updateNldiSites(comid, navValue, distanceValue);
+					}
+				})
+				.fail(function () {
+					map.openPopup('<p>Unable to retrieve comids, service call failed</p>', ev.latlng);
 					$mapDiv.css('cursor', '');
-
-				}
-				else if (result.totalFeatures > 2) {
-					map.openPopup('<p>More than one reach has been selected. Please zoom in and try again.</p>', ev.latlng);
-					$mapDiv.css('cursor', '');
-				}
-				else {
-					comid = result.comid;
-					comidLatLng = ev.latlng;
-					map.openPopup('<p>Successfully retrieved comid ' + result.comid + '. Retrieving sites.</p>', ev.latlng);
-					updateNldiSites(comid, navValue);
-				}
-			})
-			.fail(function() {
-				map.openPopup('<p>Unable to retrieve comids, service call failed</p>', ev.latlng);
-				$mapDiv.css('cursor', '');
-			});
+				});
+		}
+		else {
+			map.openPopup('<p>Please select a navigation direction</p>', ev.latlng);
+		}
 	};
 
 	/*
@@ -224,7 +240,8 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		if ($mapDiv.is(':hidden')) {
 			$insetMapDiv.hide();
 			$mapDiv.show();
-			navControl.setNavValue(navValue);
+			nldiControl.setNavValue(navValue);
+			nldiControl.setDistanceValue(distanceValue);
 			map.invalidateSize();
 			map.setView(insetMap.getCenter(), insetMap.getZoom());
 		}
@@ -238,7 +255,8 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		if ($insetMapDiv.is(':hidden')) {
 			$insetMapDiv.show();
 			$mapDiv.hide();
-			insetNavControl.setNavValue(navValue);
+			insetNldiControl.setNavValue(navValue);
+			insetNldiControl.setDistanceValue(distanceValue);
 			insetMap.invalidateSize();
 			insetMap.setView(map.getCenter(), map.getZoom());
 		}
@@ -249,24 +267,34 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	 * Handle the change event for the nav selection control.
 	 */
 	var navChangeHandler = function(ev) {
-		var value = $(ev.target).val();
-
-		navValue = value;
+		navValue = $(ev.target).val();
 		cleanUpMapsAndSites();
-		if (value) {
+		if (navValue) {
 			showMap();
 			if (comid) {
 				map.openPopup('Retrieving sites at comid ' + comid + '.', comidLatLng);
-				updateNldiSites(comid, navValue);
+				updateNldiSites(comid, navValue, distanceValue);
 			}
 		}
 		else {
-			showInsetMap(value);
+			showInsetMap();
 		}
 	};
 
 	var distanceChangeHandler = function(ev) {
-		return;
+		distanceValue = $(ev.target).val();
+		cleanUpMapsAndSites();
+
+		if ((distanceValue) && (navValue)) {
+			showMap();
+			if (comid) {
+				map.openPopup('Retrieving sites at comid ' + comid + '.',  comidLatLng);
+				updateNldiSites(comid, navValue, distanceValue);
+			}
+		}
+		else {
+			showInsetMap();
+		}
 	}
 
 	var insetBaseLayers = {
@@ -290,11 +318,11 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		'Hydro Reference' : hydroLayer
 	});
 
-	var insetNavControl = L.control.nldiControl({
+	var insetNldiControl = L.control.nldiControl({
 		navChangeHandler : navChangeHandler,
 		distanceChangeHandler : distanceChangeHandler
 	});
-	var navControl = L.control.nldiControl({
+	var nldiControl = L.control.nldiControl({
 		navChangeHandler : navChangeHandler,
 		distanceChangeHandler : distanceChangeHandler
 	});
@@ -322,7 +350,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		});
 		insetMap.addLayer(insetHydroLayer);
 		insetMap.addControl(expandControl);
-		insetMap.addControl(insetNavControl);
+		insetMap.addControl(insetNldiControl);
 		insetMap.addControl(L.control.zoom());
 
 		map = new MapWithSingleClickHandler(options.mapDivId, {
@@ -333,7 +361,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		});
 		map.addControl(collapseControl);
 		map.addControl(layerSwitcher);
-		map.addControl(navControl);
+		map.addControl(nldiControl);
 		map.addControl(L.control.zoom());
 
 		map.addSingleClickHandler(findSitesHandler);

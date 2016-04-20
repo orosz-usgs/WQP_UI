@@ -23,6 +23,13 @@ L.control.NldiControl = L.Control.extend({
 		}
 	},
 
+	setDistanceValue : function(value) {
+		"use strict";
+		if (this._distanceInput) {
+			this._distanceInput.value = value;
+		}
+	},
+
 	onAdd : function(map) {
 		"use strict";
 
