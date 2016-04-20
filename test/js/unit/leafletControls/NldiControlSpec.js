@@ -9,20 +9,20 @@ describe('leafletControl/NldiControl', function() {
 	var $testDiv;
 	var map;
 	var testControl;
-	var changeHandlerSpy;
+	var navChangeHandlerSpy;
 
 	beforeEach(function() {
 		$('body').append('<div id="test-div" style="height: 30px; width: 30px"></div>');
 		$testDiv = $('#test-div');
 
-		changeHandlerSpy = jasmine.createSpy('changeHandler');
+		navChangeHandlerSpy = jasmine.createSpy('navChangeHandler');
 
 		map = L.map('test-div', {
 			center : [43.0, -100.0],
 			zoom : 4
 		});
 		testControl = L.control.nldiControl({
-			changeHandler : changeHandlerSpy
+			navChangeHandler : navChangeHandlerSpy
 		});
 	});
 
@@ -43,7 +43,7 @@ describe('leafletControl/NldiControl', function() {
 		spyOn(L.DomEvent, 'removeListener').and.callThrough();
 		map.removeControl(testControl);
 		expect(L.DomEvent.removeListener).toHaveBeenCalled();
-		expect(L.DomEvent.removeListener.calls.argsFor(0)[2]).toBe(changeHandlerSpy);
+		expect(L.DomEvent.removeListener.calls.argsFor(0)[2]).toBe(navChangeHandlerSpy);
 	});
 
 });

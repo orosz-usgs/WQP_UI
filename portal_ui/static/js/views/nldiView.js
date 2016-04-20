@@ -280,10 +280,10 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	});
 
 	var insetNavControl = L.control.nldiControl({
-		changeHandler : navChangeHandler
+		navChangeHandler : navChangeHandler
 	});
 	var navControl = L.control.nldiControl({
-		changeHandler : navChangeHandler
+		navChangeHandler : navChangeHandler
 	});
 
 	var expandControl = L.easyButton('fa-lg fa-expand', showMap, 'Expand NLDI Map', {

@@ -4,7 +4,7 @@
 L.control.NldiControl = L.Control.extend({
 	options : {
 		position : 'topleft',
-		changeHandler : null
+		navChangeHandler : null
 	},
 
 	initialize : function(options) {
@@ -31,7 +31,7 @@ L.control.NldiControl = L.Control.extend({
 				'<option value="DM">Downstream main</option>' +
 				'<option value="UT">Upstream with tributaries</option>' +
 				'<option value="DD">Downstream with diversions</option>';
-		L.DomEvent.addListener(this._selectEl, 'change', this.options.changeHandler, this);
+		L.DomEvent.addListener(this._selectEl, 'change', this.options.navChangeHandler, this);
 		L.DomEvent.disableClickPropagation(this._selectEl);
 
 		return container;
@@ -39,7 +39,7 @@ L.control.NldiControl = L.Control.extend({
 
 	onRemove : function(map) {
 		"use strict";
-		L.DomEvent.removeListener(this._selectEl, 'change', this.options.changeHandler);
+		L.DomEvent.removeListener(this._selectEl, 'change', this.options.navChangeHandler);
 	}
 });
 
