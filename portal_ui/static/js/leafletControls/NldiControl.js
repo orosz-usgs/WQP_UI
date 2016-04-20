@@ -1,7 +1,7 @@
 /* jslint browser: true */
 /* global L */
 
-L.control.NldiNavControl = L.Control.extend({
+L.control.NldiControl = L.Control.extend({
 	options : {
 		position : 'topleft',
 		changeHandler : null
@@ -43,7 +43,7 @@ L.control.NldiNavControl = L.Control.extend({
 	}
 });
 
-L.control.nldiNavControl = function(options) {
+L.control.nldiControl = function(options) {
 	"use strict";
-	return new L.control.NldiNavControl(options);
+	return new L.control.NldiControl(options);
 };

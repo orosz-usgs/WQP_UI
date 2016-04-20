@@ -279,10 +279,10 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		'Hydro Reference' : hydroLayer
 	});
 
-	var insetNavControl = L.control.nldiNavControl({
+	var insetNavControl = L.control.nldiControl({
 		changeHandler : navChangeHandler
 	});
-	var navControl = L.control.nldiNavControl({
+	var navControl = L.control.nldiControl({
 		changeHandler : navChangeHandler
 	});
 

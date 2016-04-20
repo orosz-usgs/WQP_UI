@@ -3,7 +3,7 @@
 /* global L */
 /* global $ */
 
-describe('leafletControl/NldiNavControl', function() {
+describe('leafletControl/NldiControl', function() {
 	"use strict";
 
 	var $testDiv;
@@ -21,7 +21,7 @@ describe('leafletControl/NldiNavControl', function() {
 			center : [43.0, -100.0],
 			zoom : 4
 		});
-		testControl = L.control.nldiNavControl({
+		testControl = L.control.nldiControl({
 			changeHandler : changeHandlerSpy
 		});
 	});
