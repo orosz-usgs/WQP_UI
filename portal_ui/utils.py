@@ -66,29 +66,29 @@ def generate_provider_list(endpoint):
     :param endpoint: the base codes endpoint
     :return: a list of provider names
     """
-    provider_endpoint = endpoint+'/providers'
+    provider_endpoint = endpoint + '/providers'
     r = requests.get(provider_endpoint, {"mimeType": "json"})
     status_code = r.status_code
     provider_list = None
     if status_code == 200:
         codes = r.json().get('codes')
-        provider_list = []
-        for code in codes:
-            provider_list.append(code['value'])
+        provider_list = [code['value'] for code in codes]
     return {"status_code": status_code, "providers": provider_list}
 
 
 def check_org_id(org_id, code_endpoint):
     org_exists = False
-    org_endpoint = code_endpoint+'/Organization'
-    r = requests.get(org_endpoint, {"mimeType": "json", "text":org_id} )
+    org_endpoint = code_endpoint + '/Organization'
+    r = requests.get(org_endpoint, {"mimeType": "json", "text": org_id})
     status_code = r.status_code
     if status_code == 200:
         codes = r.json().get('codes')
         for code in codes:
             if code['value'] == org_id:
                 org_exists = True
+                break
     return {"org_exists": org_exists, "status_code": status_code}
+
 
 def generate_organization_list(endpoint, provider):
     """
@@ -97,7 +97,7 @@ def generate_organization_list(endpoint, provider):
     :param provider: which provider we are looking for
     :return: a list of dicts of organizations and organization IDs for a specific provider
     """
-    provider_endpoint = endpoint+'/organizations'
+    provider_endpoint = endpoint + '/organizations'
     r = requests.get(provider_endpoint, {"mimeType": "json"})
     status_code = r.status_code
     organization_list = None
@@ -123,7 +123,7 @@ def generate_site_list(base_url, provider_id, organization_id):
     :param provider_id:
     :return: a list of dicts that describe sites that are associated with an organization under a data provider
     """
-    search_endpoint = base_url+"Station/search/"
+    search_endpoint = base_url + "Station/search/"
     r = requests.get(search_endpoint, {"organization": organization_id, "providers": provider_id,
                                        "mimeType": "geojson", "sorted": "no", "uripage": "yes"})
     status_code = r.status_code
@@ -143,16 +143,18 @@ def generate_site_list(base_url, provider_id, organization_id):
         return {"list": None, "geojson": None, "status_code": status_code}
 
 
-def generate_site_list_from_csv(base_url, provider_id=None, organization_id=None, redis_config=None, cache_timeout=None):
+def generate_site_list_from_csv(base_url, provider_id=None, organization_id=None, redis_config=None,
+                                cache_timeout=None):
     """
 
     :param base_url: the base url we are using for the generating the search URL
     :param organization_id:
     :param provider_id:
     :param redis_config:
+    :param cache_timeout: time for a cached value to live
     :return: a list of dicts that describe sites that are associated with an organization under a data provider
     """
-    search_endpoint = base_url+"Station/search/"
+    search_endpoint = base_url + "Station/search/"
     r = requests.get(search_endpoint, {"organization": organization_id, "providers": provider_id,
                                        "mimeType": "csv", "sorted": "no", "uripage": "yes"})
     status_code = r.status_code
@@ -164,7 +166,7 @@ def generate_site_list_from_csv(base_url, provider_id=None, organization_id=None
             for site in sites:
                 site = dict(site)
                 site_info = {}
-                site_key = 'sites_'+provider_id+'_'+site['MonitoringLocationIdentifier']
+                site_key = 'sites_' + provider_id + '_' + site['MonitoringLocationIdentifier']
                 if redis_config:
                     redis_db_number = generate_redis_db_number(provider_id)
                     redis_session = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'],
@@ -177,8 +179,8 @@ def generate_site_list_from_csv(base_url, provider_id=None, organization_id=None
             if redis_config:
                 redis_db_number = generate_redis_db_number(provider_id)
                 redis_session = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'],
-                                              db=redis_db_number)
-                all_sites_key = 'all_sites_'+provider_id+'_'+organization_id
+                                                  db=redis_db_number)
+                all_sites_key = 'all_sites_' + provider_id + '_' + organization_id
                 redis_session.set(all_sites_key, site_list, nx=True, ex=cache_timeout)
         return {"list": site_list, "status_code": status_code}
     else:
@@ -191,6 +193,7 @@ def get_site_info(base_url, provider_id, site_id, organization_id, code_endpoint
     :param base_url:
     :param provider_id:
     :param site_id:
+    :param organization_id: id of the organization that has the site
     :param code_endpoint
     :return:
     """
@@ -205,9 +208,9 @@ def get_site_info(base_url, provider_id, site_id, organization_id, code_endpoint
         if data is not None:
             site_data = dict(data)
             if site_data.get('CountryCode') == 'US' and site_data.get('StateCode') and site_data.get('CountyCode'):
-                statecode = 'US:'+site_data['StateCode']
-                search_string = statecode+':'+site_data['CountyCode']
-                county_request = requests.get(code_endpoint+"/countycode", {"statecode": statecode, "mimeType": "json",
+                statecode = 'US:' + site_data['StateCode']
+                search_string = statecode + ':' + site_data['CountyCode']
+                county_request = requests.get(code_endpoint + "/countycode", {"statecode": statecode, "mimeType": "json",
                                                                             "text": search_string})
                 if county_request.status_code == 200:
                     county_info = county_request.json()
@@ -219,22 +222,23 @@ def get_site_info(base_url, provider_id, site_id, organization_id, code_endpoint
 
 
 def make_cache_key():
-    '''
+    """
     this function gets the provider ID out of the path for the various URI fields, so that we can set the cache prefix
      in a way that can be cleared programatically.  The path needs to look like /provider/<provider_id>/*
     :return: the provider
-    '''
+    """
     path = request.path
     key = '_'.join(path.split('/'))
     return key
 
+
 def generate_redis_db_number(provider):
-    '''
+    """
 
     :param provider:
     :return: a database number to assign for redis to allow for cache clearing
-    '''
-    #set a default
+    """
+    # set a default
     redis_db_number = 0
     if provider == 'NWIS':
         redis_db_number = 1

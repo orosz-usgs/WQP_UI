@@ -1,4 +1,4 @@
-{% if robots_welcome == True %}
+{% if config.ROBOTS_WELCOME == True %}
 User-agent: *
 Disallow: /Station
 Disallow: /Station/

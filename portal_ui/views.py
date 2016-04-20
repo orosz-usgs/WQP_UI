@@ -1,7 +1,6 @@
 from flask import render_template, request, make_response, redirect, url_for, abort
 from . import app
-from .utils import pull_feed, geoserver_proxy_request
-from utils import generate_provider_list, generate_organization_list, get_site_info, check_org_id, \
+from .utils import pull_feed, geoserver_proxy_request, generate_provider_list, generate_organization_list, get_site_info, check_org_id, \
     make_cache_key, generate_site_list_from_csv, generate_redis_db_number
 from flask.ext.cache import Cache
 import redis
@@ -15,7 +14,6 @@ base_url = app.config['SEARCH_QUERY_ENDPOINT']
 cache_config = app.config['CACHE_CONFIG']
 redis_config = app.config['REDIS_CONFIG']
 cache_timeout = app.config['CACHE_TIMEOUT']
-robots_welcome = app.config.get('ROBOTS_WELCOME')
 
 cache = Cache(app, config=cache_config)
 
@@ -251,7 +249,7 @@ def uris(provider_id, organization_id, site_id):
     if redis_config:
         redis_db_number = generate_redis_db_number(provider_id)
         r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db_number)
-        site_key = 'sites_'+provider_id+'_'+site_id
+        site_key = 'sites_' + provider_id + '_' + site_id
         redis_site_data = r.get(site_key)
         if redis_site_data:
             site_data = ast.literal_eval(redis_site_data)
@@ -282,7 +280,7 @@ def clear_cache(provider_id = None):
             r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db_number)
             r.flushdb()
             cache.clear()
-            return 'site cache cleared for: '+provider_id
+            return 'site cache cleared for: ' + provider_id
         else:
             r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_config['db'])
             r.flushall()
@@ -295,7 +293,7 @@ def clear_cache(provider_id = None):
 def rebuild_site_cache(provider_id=None):
     sites = generate_site_list_from_csv(base_url, provider_id=provider_id, redis_config=redis_config)
     if sites['status_code'] == 200 and len(sites['list']) >= 1:
-        return 'successfully rebuilt '+provider_id+' site cache!'
+        return 'successfully rebuilt ' + provider_id + ' site cache!'
     if sites['status_code'] == 500:
         abort(500)
     else:
@@ -304,4 +302,4 @@ def rebuild_site_cache(provider_id=None):
 
 @app.route('/robots.txt')
 def robots():
-    return render_template('robots.txt', robots_welcome=robots_welcome)
+    return render_template('robots.txt')

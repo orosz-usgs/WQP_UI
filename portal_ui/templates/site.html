@@ -23,28 +23,33 @@
     {% if site['DrainageAreaMeasure/MeasureValue'] %} This site has a drainage area of {{ site['DrainageAreaMeasure/MeasureValue'] }} {{ site['DrainageAreaMeasure/MeasureUnitCode'] }}{% if site['ContributingDrainageAreaMeasure/MeasureValue'] %} and the contributing drainage area is {{ site['ContributingDrainageAreaMeasure/MeasureValue'] }} {{ site['ContributingDrainageAreaMeasure/MeasureUnitCode'] }}{% endif %}.{% endif %}
 </p>
 <p>
-    {% if site['LatitudeMeasure'] and site['LongitudeMeasure'] %}This site is located {% if site['StateName'] and site['CountyName']  %}in {{ site['CountyName'] |title}} County, {{ site['StateName']|title }}{% endif %} at {{ site['LatitudeMeasure'] }} degrees latitude and {{ site['LongitudeMeasure'] }} degrees longitude{% if site['HorizontalCoordinateReferenceSystemDatumName'] %} using the datum {{ site['HorizontalCoordinateReferenceSystemDatumName'] }}{% endif %}.
-    {% if site['HorizontalAccuracyMeasure/MeasureValue'] and site['HorizontalAccuracyMeasure/MeasureUnitCode'] and site['HorizontalCollectionMethodName'] %}
-    The horizontal location collection method was "{{ site['HorizontalCollectionMethodName'] }}" and the accuracy is {{ site['HorizontalAccuracyMeasure/MeasureValue'] }} {{ site['HorizontalAccuracyMeasure/MeasureUnitCode'] }}.
-        {% if site['SourceMapScaleNumeric'] %}The source map scale is 1:{{ site['SourceMapScaleNumeric'] }}.{% endif %}
+    {% if site['LatitudeMeasure'] and site['LongitudeMeasure'] %}
+        This site is located
+        {% if site['StateName'] and site['CountyName']  %}in {{ site['CountyName'] |title}} County, {{ site['StateName']|title }}{% endif %} at {{ site['LatitudeMeasure'] }} degrees latitude and {{ site['LongitudeMeasure'] }} degrees longitude
+        {% if site['HorizontalCoordinateReferenceSystemDatumName'] %} using the datum {{ site['HorizontalCoordinateReferenceSystemDatumName'] }}{% endif %}.
+        {% if site['HorizontalAccuracyMeasure/MeasureValue'] and site['HorizontalAccuracyMeasure/MeasureUnitCode'] and site['HorizontalCollectionMethodName'] %}
+            The horizontal location collection method was "{{ site['HorizontalCollectionMethodName'] }}" and the accuracy is {{ site['HorizontalAccuracyMeasure/MeasureValue'] }} {{ site['HorizontalAccuracyMeasure/MeasureUnitCode'] }}.
+            {% if site['SourceMapScaleNumeric'] %}The source map scale is 1:{{ site['SourceMapScaleNumeric'] }}.{% endif %}
         {% else %} No horizontal location accuracy metadata is available.
+        {% endif %}
+    {% elif site['StateName'] and site['CountyName']  %}This site is located in {{ site['CountyName'] |title}} County, {{ site['StateName']|title }}
     {% endif %}
-        {% elif site['StateName'] and site['CountyName']  %}This site is located in {{ site['CountyName'] |title}} County, {{ site['StateName']|title }}
-    {% endif %}
+
     {% if  site['VerticalMeasure/MeasureValue'] and site['VerticalMeasure/MeasureUnitCode']%} This site is at an elevation of {{ site['VerticalMeasure/MeasureValue'] }} {{ site['VerticalMeasure/MeasureUnitCode'] }}
-    {% if site['VerticalAccuracyMeasure/MeasureValue'] and site['VerticalAccuracyMeasure/MeasureUnitCode'] and site['VerticalCollectionMethodName']  %}
-    and the accuracy of the elevation measurement, collected using the method "{{ site['VerticalCollectionMethodName'] }}" is {{ site['VerticalAccuracyMeasure/MeasureValue'] }} {{ site['VerticalAccuracyMeasure/MeasureUnitCode'] }}.
-    {% if site['VerticalCoordinateReferenceSystemDatumName'] %} The vertical coordinate reference system is {{ site['VerticalCoordinateReferenceSystemDatumName'] }}.{% endif %}
+        {% if site['VerticalAccuracyMeasure/MeasureValue'] and site['VerticalAccuracyMeasure/MeasureUnitCode'] and site['VerticalCollectionMethodName']  %}
+            and the accuracy of the elevation measurement, collected using the method "{{ site['VerticalCollectionMethodName'] }}" is {{ site['VerticalAccuracyMeasure/MeasureValue'] }} {{ site['VerticalAccuracyMeasure/MeasureUnitCode'] }}.
+            {% if site['VerticalCoordinateReferenceSystemDatumName'] %} The vertical coordinate reference system is {{ site['VerticalCoordinateReferenceSystemDatumName'] }}.{% endif %}
         {% else %} No vertical location accuracy metadata is available.
-    {% endif %}
+        {% endif %}
     {% endif %}
 </p>
 
-<p>{% if site['AquiferName'] %}This site is located in the "{{ site['AquiferName'] }}" aquifer. {% endif %}{% if site['FormationTypeText'] %} The geologic formation type is {{ site['FormationTypeText'] }}.{% endif %}
+<p>{% if site['AquiferName'] %}This site is located in the "{{ site['AquiferName'] }}" aquifer. {% endif %}
+    {% if site['FormationTypeText'] %} The geologic formation type is {{ site['FormationTypeText'] }}.{% endif %}
     {% if site['AquiferTypeName'] %}The aquifer is a {{ site['AquiferTypeName'] }} type.{% endif %}
-{% if site['ConstructionDateText'] %}The well was contructed on {{ site['ConstructionDateText'] }}.{% endif %}
-{% if site['WellDepthMeasure/MeasureValue'] and site['WellDepthMeasure/MeasureUnitCode'] %}The well depth is {{ site['WellDepthMeasure/MeasureValue'] }} {{ site['WellDepthMeasure/MeasureUnitCode'] }}.{% endif %}
-{% if site['WellHoleDepthMeasure/MeasureValue'] and site['WellHoleDepthMeasure/MeasureUnitCode'] %}The well hole depth is {{ site['WellHoleDepthMeasure/MeasureValue'] }} {{ site['WellHoleDepthMeasure/MeasureUnitCode'] }}.{% endif %}
+    {% if site['ConstructionDateText'] %}The well was contructed on {{ site['ConstructionDateText'] }}.{% endif %}
+    {% if site['WellDepthMeasure/MeasureValue'] and site['WellDepthMeasure/MeasureUnitCode'] %}The well depth is {{ site['WellDepthMeasure/MeasureValue'] }} {{ site['WellDepthMeasure/MeasureUnitCode'] }}.{% endif %}
+    {% if site['WellHoleDepthMeasure/MeasureValue'] and site['WellHoleDepthMeasure/MeasureUnitCode'] %}The well hole depth is {{ site['WellHoleDepthMeasure/MeasureValue'] }} {{ site['WellHoleDepthMeasure/MeasureUnitCode'] }}.{% endif %}
 </p>
 
 To download the metadata about this site along with water quality data, go to the <a href="{{ url_for("portal-canonical") }}">Portal Page</a> and enter "{{ site['MonitoringLocationIdentifier'] }}" into the "Site ID" box under Site Parameters
