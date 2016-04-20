@@ -4,7 +4,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" >
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		
+		{% block meta_tags %}{% endblock %}
 		<title>
 			{% block title %}{% endblock %}
 		</title>
@@ -127,6 +127,7 @@
 				                    <li> <a href="{{ url_for('apps_using_portal-canonical') }}">Applications using the WQP</a></li>
 				                    <li> <a href="{{ url_for('other_portal_links-canonical') }}">Other Water Quality Portals</a></li>
 				                    <li> <a href="{{ url_for('contact_us-canonical') }}">Contact us</a></li>
+                                    {% if config.PROVIDER_PAGES %}<li> <a href="{{ url_for('uri_base') }}">Explore WQP sites</a> </li>{% endif %}
 				                </ul>
 				            </li>
 				        </ul>

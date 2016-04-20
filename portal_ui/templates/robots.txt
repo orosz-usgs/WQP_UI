@@ -1,0 +1,10 @@
+{% if config.ROBOTS_WELCOME == True %}
+User-agent: *
+Disallow: /Station
+Disallow: /Station/
+Disallow: /Result
+Disallow: /Result/
+{% else %}
+User-agent: *
+Disallow: /
+{% endif %}
