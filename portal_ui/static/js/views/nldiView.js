@@ -15,11 +15,14 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
  * @param {Object} options
  * 		@prop {String} insetMapDivId
  * 		@prop {String} mapDivId
+ * 		@prop {Jquery element} $siteInputContainer
  */
-PORTAL.VIEWS.nldiMapView  = function(options) {
+PORTAL.VIEWS.nldiView  = function(options) {
 	"use strict";
 
 	var self = {};
+
+	var siteIds = [];
 
 	var navValue = '';
 
@@ -30,7 +33,7 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 	var nldiSiteLayers, nldiFlowlineLayers;
 	var insetNldiSiteLayers, insetNldiFlowlineLayers;
 
-	var cleanUpMaps = function() {
+	var cleanUpMapsAndSites = function() {
 		if (nldiSiteLayers) {
 			map.removeLayer(nldiSiteLayers);
 		}
@@ -44,6 +47,9 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 			insetMap.removeLayer(insetNldiFlowlineLayers);
 		}
 		map.closePopup();
+
+		siteIds = [];
+		options.$siteInputContainer.html('');
 	};
 
 	/*
@@ -89,6 +95,15 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 			method : 'GET'
 		});
 
+	};
+
+	var updateNldiSitesInputs = function(newSites) {
+		var addInput = function(memo, siteId) {
+			return memo + '<input type="hidden" name="siteid" value="' + siteId + '" />';
+		};
+		var htmlInputs = _.reduce(newSites, addInput, '');
+
+		options.$siteInputContainer.html(htmlInputs);
 	};
 
 	/*
@@ -154,7 +169,7 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 					var getNldiSites = fetchNldiSites(result.comid, navValue);
 					var getNldiFlowlines = fetchNldiFlowlines(result.comid, navValue);
 
-					cleanUpMaps();
+					cleanUpMapsAndSites();
 					openPopup('Successfully retrieved comid ' + result.comid + '. Retrieving sites.');
 
 
@@ -166,23 +181,28 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 							insetNldiFlowlineLayers = flowlineLayer(flowlinesGeojson);
 							map.addLayer(nldiFlowlineLayers);
 							insetMap.addLayer(insetNldiFlowlineLayers);
+							map.fitBounds(nldiFlowlineLayers.getBounds());
 
 							if (sitesGeojson[0].features.length < 1000) {
 								nldiSiteLayers = siteLayer(sitesGeojson);
 								insetNldiSiteLayers = siteLayer(sitesGeojson);
-
+								
 								map.addLayer(nldiSiteLayers);
 								insetMap.addLayer(insetNldiSiteLayers);
 
-								map.fitBounds(nldiFlowlineLayers.getBounds());
+								siteIds = _.map(sitesGeojson[0].features, function(feature) {
+									return feature.properties.identifier;
+								});
 
 							}
 							else {
 								openPopup('<p>The number of sites exceeds 1000 and can\'t be used to query the WQP. You may want to try searching by HUC');
 							}
+							updateNldiSitesInputs(siteIds);
 						})
 						.fail(function() {
 							openPopup('Unable to retrieve NLDI information');
+							updateNldiSitesInputs(siteIds);
 						})
 						.always(function() {
 							$mapDiv.css('cursor', '');
@@ -229,7 +249,7 @@ PORTAL.VIEWS.nldiMapView  = function(options) {
 		var value = $(ev.target).val();
 		navValue = value;
 
-		cleanUpMaps();
+		cleanUpMapsAndSites();
 		if (value) {
 			showMap();
 		}

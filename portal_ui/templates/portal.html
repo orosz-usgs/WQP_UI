@@ -24,7 +24,7 @@
 {% block page_content %}
 	<div id="page-content">
 		<form role="form" id="params" name="params" autocomplete="off"
-			  action="{{ config.SEARCH_QUERY_ENDPOINT }}Station/search">
+			  method="get" action="{{ config.SEARCH_QUERY_ENDPOINT }}Station/search">
 			<div class="panel" id="location-parameters">
 				<div class="panel-heading">
 					LOCATION
@@ -191,6 +191,7 @@
 							<label class="control-label" for="nldi-picker">NLDI Site Service:</label>
 							<button type="button" class="help-link popover-help" id="nldiHelp" data-help="nldi">?</button>
 						</div>
+						<div id="nldi-sites-container"></div>
 						<div id="nldi-inset-map"></div>
 					</div>
 				</div>

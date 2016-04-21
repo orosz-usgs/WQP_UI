@@ -64,11 +64,6 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 	 * 		@reject - if any fetches failed.
 	 */
 	self.initialize = function() {
-		var nldiMapView = PORTAL.VIEWS.nldiMapView({
-			insetMapDivId : 'nldi-inset-map',
-			mapDivId : 'nldi-map'
-		});
-
 		var placeInputView = getPlaceInputView();
 		var pointLocationInputView = PORTAL.VIEWS.pointLocationInputView({
 			$container : options.$form.find('#point-location')
@@ -79,8 +74,12 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 		var siteParameterInputView = PORTAL.VIEWS.siteParameterInputView({
 			$container : options.$form.find('#site-params'),
 			siteTypeModel : PORTAL.MODELS.cachedCodes({codes : 'sitetype'}),
-			organizationModel : PORTAL.MODELS.cachedCodes({codes : 'organization'}),
-			nldiMapView : nldiMapView
+			organizationModel : PORTAL.MODELS.cachedCodes({codes : 'organization'})
+		});
+		var nldiView = PORTAL.VIEWS.nldiView({
+			insetMapDivId : 'nldi-inset-map',
+			mapDivId : 'nldi-map',
+			$siteInputContainer : options.$form.find('#nldi-sites-container')
 		});
 		var samplingParametersInputView = PORTAL.VIEWS.samplingParameterInputView({
 			$container : options.$form.find('#sampling'),
@@ -121,7 +120,7 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 		pointLocationInputView.initialize();
 		boundingBoxInputView.initialize();
 		if (Config.NLDI_ENABLED) {
-			nldiMapView.initialize();
+			nldiView.initialize();
 		} else {
 			options.$form.find('#nldi-container').hide();
 			options.$form.find('#nldi-inset-map').hide();
@@ -129,7 +128,7 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 		}
 
 		// Create help popovers which close when you click anywhere else other than another popover trigger.
-		$('html').click(function (e) {
+		$('html').click(function () {
 			$('.popover-help').popover('hide');
 		});
 		options.$form.find('.popover-help').each(function () {
@@ -156,15 +155,17 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 		options.$form.find('#main-button').click(function (event) {
 			var fileFormat = dataDetailsView.getMimeType();
 			var resultType = dataDetailsView.getResultType();
-			var queryString = PORTAL.UTILS.getQueryString(self.getQueryParamArray());
+			var queryParamArray = self.getQueryParamArray();
+			var queryString = decodeURIComponent(PORTAL.UTILS.getQueryString(queryParamArray));
 
-			var startDownload = function (totalCount) {
+			var startDownload = function(totalCount) {
 				_gaq.push([
 					'_trackEvent',
 					'Portal Page',
 					dataDetailsView.getResultType() + 'Download',
-					decodeURIComponent(queryString),
+					queryString,
 					parseInt(totalCount)]);
+
 				options.$form.submit();
 			};
 
@@ -178,17 +179,15 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 				'_trackEvent',
 				'Portal Page',
 				resultType + 'Count',
-				decodeURIComponent(queryString)
+				queryString
 			]);
 
 			options.downloadProgressDialog.show('download');
-			PORTAL.queryServices.fetchHeadRequest(resultType, queryString)
-				.done(function (response) {
-					var counts = PORTAL.DataSourceUtils.getCountsFromHeader(response, PORTAL.MODELS.providers.getIds());
+			PORTAL.queryServices.fetchQueryCounts(resultType, queryParamArray, PORTAL.MODELS.providers.getIds())
+				.done(function(counts) {
 					options.downloadProgressDialog.updateProgress(counts, resultType, fileFormat, startDownload);
-
 				})
-				.fail(function (message) {
+				.fail(function(message) {
 					options.downloadProgressDialog.cancelProgress(message);
 				});
 		});
@@ -211,11 +210,11 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 	 */
 	self.getQueryParamArray = function () {
 		// Need to eliminate form parameters within the mapping-div
-		var $formInputs = options.$form.find(':input').not('#mapping-div :input');
+		var $formInputs = options.$form.find(':input').not('#mapping-div :input, #nldi-inset-map :input, #nldi-map :input');
 		return _.filter($formInputs.serializeArray(), function(param) {
 			return (param.value);
 		});
 	};
-
+	
 	return self;
 };

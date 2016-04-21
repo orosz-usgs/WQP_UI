@@ -1,7 +1,11 @@
 /*jslint browser: true*/
+/* global log */
+/* global _ */
 /* global $ */
 /* global Config */
 /* global log */
+/* global numeral */
+
 var PORTAL = PORTAL || {};
 
 PORTAL.queryServices = (function () {
@@ -9,33 +13,53 @@ PORTAL.queryServices = (function () {
 	var self = {};
 
 	/*
-	 * Make a head request for the current set of query parameters and the resultType.
-	 * @param {String} resultType - The type of result for which the query should be made.
-	 * @param {String} queryParams - a query string
-	 * @returns Jquery promise - The promise is resolved if the head request succeeds and the received xhr object is returned.
-	 * If the request is not made due to url length or it fails, the promise is rejects and a string message is returned
+	 * @param {String} resultType - 'Station' or 'Result'
+	 * @param {Array of Objects with name and value properties representing query parameters} queryParamArray
+	 * @param {Array of Strings} providers - The application's providers.
+	 * @return {Jquery.Promise}
+	 * 		@resolve {Object} - If the counts are successfully fetched this object will contain a 'total' property and
+	 * 			properties for each provider. This property values will be an object with sites and results properties which
+	 * 			will contain the counts for that provider (or total)
+	 * 		@reject {String} - If the fetch fails, returns an error message.
 	 */
-	self.fetchHeadRequest = function (resultType, queryParams) {
+	self.fetchQueryCounts = function(resultType, queryParamArray, providers) {
 		var deferred = $.Deferred();
-		var url = self.getFormUrl(resultType, queryParams);
 
-		if (url.length > 2000) {
-			deferred.resolve('Too many query criteria selected.  <br>Please reduce your selections <br>' +
-				'NOTE: selecting all options for a given criteria is the same as selecting none.<br>' +
-				'query length threshold 2000, current length: ' + url.length);
-		}
+		var queryParamJson = PORTAL.UTILS.getQueryParamJson(queryParamArray);
+		var countQueryJson = _.omit(queryParamJson, ['mimeType', 'zip', 'sorted']);
+
+		var formatCount = function(countData, key) {
+			var countString = _.has(countData, key) ? countData[key] : '0';
+			return numeral(countString).format('0,0');
+		};
+
 		$.ajax({
-			url: url,
-			method: 'HEAD',
-			cache: false,
-			success: function (data, textStatus, jqXHR) {
-				deferred.resolve(jqXHR);
+			url : Config.QUERY_URLS[resultType] + '/count?mimeType=json',
+			method : 'POST',
+			contentType : 'application/json',
+			data : JSON.stringify(countQueryJson),
+			success : function(data) {
+				var result = {
+					total : {
+						sites : formatCount(data, 'Total-Site-Count'),
+						results : formatCount(data, 'Total-Result-Count')
+					}
+				};
+				_.each(providers, function(provider) {
+					result[provider] = {
+						sites : formatCount(data, provider + '-Site-Count'),
+						results : formatCount(data, provider + '-Result-Count')
+					};
+				});
+				log.debug('Successfully got counts');
+				deferred.resolve(result);
 			},
-			error: function (jqXHR, textStatus) {
+			error: function(jqXHR, textStatus) {
 				log.error('Unable to contact the WQP services: ' + textStatus);
-				deferred.resolve('Unable to contact the WQP services: ' + textStatus);
+				deferred.reject('Unable to contact the WQP services: ' + textStatus);
 			}
 		});
+
 		return deferred.promise();
 	};
 

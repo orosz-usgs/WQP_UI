@@ -12,8 +12,8 @@ describe ('Tests for PORTAL.VIEWS.siteMapView', function() {
 
 	var siteMapInitializeSpy, siteMapRenderSpy, siteMapUpdateSitesLayerSpy, siteMapClearBoxIdSpy;
 	var identifyInitializeSpy;
-	var mockDownloadDialog, mockIdentifyDialog, mockDownloadView;
-	var fetchHeadDeferred;
+	var mockDownloadDialog, mockDownloadView;
+	var fetchCountsDeferred;
 	var validateSuccess;
 
 	var $showHideBtn, $mapContainer, $showMapBtn;
@@ -64,8 +64,8 @@ describe ('Tests for PORTAL.VIEWS.siteMapView', function() {
 			])
 		};
 
-		fetchHeadDeferred = $.Deferred();
-		spyOn(PORTAL.queryServices, 'fetchHeadRequest').and.returnValue(fetchHeadDeferred);
+		fetchCountsDeferred = $.Deferred();
+		spyOn(PORTAL.queryServices, 'fetchQueryCounts').and.returnValue(fetchCountsDeferred);
 
 		testView = PORTAL.VIEWS.siteMapView({
 			$container : $testDiv,
@@ -106,26 +106,25 @@ describe ('Tests for PORTAL.VIEWS.siteMapView', function() {
 		$showMapBtn.trigger('click');
 		expect(mockDownloadView.validateDownloadForm).toHaveBeenCalled();
 		expect(mockDownloadDialog.show).not.toHaveBeenCalled();
-		expect(PORTAL.queryServices.fetchHeadRequest).not.toHaveBeenCalled();
+		expect(PORTAL.queryServices.fetchQueryCounts).not.toHaveBeenCalled();
 	});
 
 	it('Expects that clicking on the show map button if the form is valid, should show the progress dialog', function() {
 		validateSuccess = true;
 		$showMapBtn.trigger('click');
 		expect(mockDownloadDialog.show).toHaveBeenCalled();
-		expect(PORTAL.queryServices.fetchHeadRequest).toHaveBeenCalled();
+		expect(PORTAL.queryServices.fetchQueryCounts).toHaveBeenCalled();
 	});
 
 	it('Expects that after a successful head request fetch, the download dialog is updated', function() {
-		spyOn(PORTAL.DataSourceUtils, 'getCountsFromHeader');
 		$showMapBtn.trigger('click');
-		fetchHeadDeferred.resolve();
+		fetchCountsDeferred.resolve();
 		expect(mockDownloadDialog.updateProgress).toHaveBeenCalled();
 	});
 
 	it('Expect that after a failed head request fetch, the download dialog is canceled', function() {
 		$showMapBtn.trigger('click');
-		fetchHeadDeferred.reject();
+		fetchCountsDeferred.reject();
 		expect(mockDownloadDialog.cancelProgress).toHaveBeenCalled();
 	});
 });

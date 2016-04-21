@@ -9,7 +9,6 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
  * Creates a site parameter input view object
  * @param {Object} options
  * 		@prop {Jquery element} $container - element where the site parameter inputs are contained
- * 		@prop {PORTAL.VIEWS.nldiMapView} nhdlMapView
  * 		@prop {PORTAL.MODELS.cachedCodes} siteTypeModel
  * 		@prop {PORTAL.MODELS.cachedCodes} organizationModel
  * @returns {Object}

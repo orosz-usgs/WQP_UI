@@ -19,6 +19,8 @@ PORTAL.VIEWS.siteMapView = function(options) {
 
 	var self = {};
 
+	var STATION_RESULTS = 'Station';
+
 	var mapId = 'query-results-map';
 
 	var identifyDialog;
@@ -105,15 +107,14 @@ PORTAL.VIEWS.siteMapView = function(options) {
 			]);
 
 			options.downloadProgressDialog.show('map');
-			PORTAL.queryServices.fetchHeadRequest('Station', queryString).done(function (response) {
-				var fileFormat = 'xml';
-				var counts = PORTAL.DataSourceUtils.getCountsFromHeader(response, PORTAL.MODELS.providers.getIds());
-
-				options.downloadProgressDialog.updateProgress(counts, 'Station', fileFormat, showMap);
-
-			}).fail(function (message) {
-				options.downloadProgressDialog.cancelProgress(message);
-			});
+			PORTAL.queryServices.fetchQueryCounts(STATION_RESULTS, queryParamArray, PORTAL.MODELS.providers.getIds())
+				.done(function (counts) {
+					var fileFormat = 'xml';
+					options.downloadProgressDialog.updateProgress(counts, STATION_RESULTS, fileFormat, showMap);
+				})
+				.fail(function (message) {
+					options.downloadProgressDialog.cancelProgress(message);
+				});
 		});
 	};
 

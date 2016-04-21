@@ -12,7 +12,7 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
 
 	var placeMock, boundingBoxMock, pointLocationMock, siteParameterMock, samplingParametersMock, biologicalSamplingMock,
 		dataDetailsMock, nldiMock;
-	var fetchProvidersDeferred, fetchHeadDeferred;
+	var fetchProvidersDeferred, fetchCountsDeferred;
 	var placeInitDeferred, siteParameterInitDeferred, samplingInitDeferred, bioSamplingInitDeferred;
 	var mockDownloadDialog;
 
@@ -71,13 +71,13 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
 		spyOn(PORTAL.VIEWS, 'samplingParameterInputView').and.returnValue(samplingParametersMock);
 		spyOn(PORTAL.VIEWS, 'biologicalSamplingInputView').and.returnValue(biologicalSamplingMock);
 		spyOn(PORTAL.VIEWS, 'dataDetailsView').and.returnValue(dataDetailsMock);
-		spyOn(PORTAL.VIEWS, 'nldiMapView').and.returnValue(nldiMock);
+		spyOn(PORTAL.VIEWS, 'nldiView').and.returnValue(nldiMock);
 
 		fetchProvidersDeferred = $.Deferred();
 		spyOn(PORTAL.MODELS.providers, 'fetch').and.returnValue(fetchProvidersDeferred);
 
-		fetchHeadDeferred = $.Deferred();
-		spyOn(PORTAL.queryServices, 'fetchHeadRequest').and.returnValue(fetchHeadDeferred);
+		fetchCountsDeferred = $.Deferred();
+		spyOn(PORTAL.queryServices, 'fetchQueryCounts').and.returnValue(fetchCountsDeferred);
 
 		mockDownloadDialog = {
 			show : jasmine.createSpy('mockDownloadShow'),
@@ -204,7 +204,6 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
 		var success;
 		beforeEach(function() {
 			spyOn(PORTAL.CONTROLLERS, 'validateDownloadForm').and.callFake(function() { return success;});
-			spyOn(PORTAL.DataSourceUtils, 'getCountsFromHeader').and.returnValue({});
 			testView.initialize();
 		});
 
@@ -214,24 +213,24 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
 			expect(mockDownloadDialog.show).not.toHaveBeenCalled();
 		});
 
-		it('Expects that if the form does validate, the downloadProgressDialog is shown and a head request is made', function() {
+		it('Expects that if the form does validate, the downloadProgressDialog is shown and a counts request is made', function() {
 			success = true;
 			$('#main-button').trigger('click');
 			expect(mockDownloadDialog.show).toHaveBeenCalled();
-			expect(PORTAL.queryServices.fetchHeadRequest).toHaveBeenCalledWith('Result', 'fake-param=Fake1');
+			expect(PORTAL.queryServices.fetchQueryCounts).toHaveBeenCalledWith('Result', [ Object({ name: 'fake-param', value: 'Fake1' }) ], [ 'Src1', 'Src2', 'Src3' ]);
 		});
 
-		it('Expects that if the head request is successful, the dialog is updated', function() {
+		it('Expects that if the count request is successful, the dialog is updated', function() {
 			success = true;
 			$('#main-button').trigger('click');
-			fetchHeadDeferred.resolve({});
+			fetchCountsDeferred.resolve({});
 			expect(mockDownloadDialog.updateProgress).toHaveBeenCalled();
 		});
 
 		it('Expects that if the head request fails, the dialog is canceled', function() {
 			success = true;
 			$('#main-button').trigger('click');
-			fetchHeadDeferred.reject();
+			fetchCountsDeferred.reject();
 			expect(mockDownloadDialog.cancelProgress).toHaveBeenCalled();
 		});
 	});
