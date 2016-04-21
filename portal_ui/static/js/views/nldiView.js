@@ -102,14 +102,12 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	 * @returns $.jqXHR object
 	 */
 	var fetchNldiSites = function(comid, navigate, distance) {
-		var data = {};
-		if (distance) {
-			data  = {distance : distance};
-		}
 		return $.ajax({
 			url : Config.NLDI_SERVICES_ENDPOINT + 'comid/' + comid + '/navigate/' + navigate + '/wqp',
 			method : 'GET',
-			data : data
+			data : {
+				distance : distance
+			}
 		});
 
 	};
@@ -120,14 +118,12 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	 * @returns $.jqXHR object
 	 */
 	var fetchNldiFlowlines = function(comid, navigate, distance) {
-		var data = {};
-		if (distance) {
-			data  = {distance : distance};
-		}
 		return $.ajax({
 			url : Config.NLDI_SERVICES_ENDPOINT + 'comid/' + comid + '/navigate/' + navigate,
 			method : 'GET',
-			data : data
+			data : {
+				distance : distance
+			}
 		});
 	};
 
@@ -150,13 +146,17 @@ PORTAL.VIEWS.nldiView  = function(options) {
 			$mapDiv.css('cursor', 'progress');
 			$.when(fetchNldiSites(comid, navigate, distance), fetchNldiFlowlines(comid, navigate, distance))
 				.done(function (sitesGeojson, flowlinesGeojson) {
+					var flowlineBounds;
+
 					map.closePopup();
 
 					nldiFlowlineLayers = flowlineLayer(flowlinesGeojson);
 					insetNldiFlowlineLayers = flowlineLayer(flowlinesGeojson);
 					map.addLayer(nldiFlowlineLayers);
 					insetMap.addLayer(insetNldiFlowlineLayers);
-					map.fitBounds(nldiFlowlineLayers.getBounds());
+
+					flowlineBounds = nldiFlowlineLayers.getBounds();
+					map.fitBounds(flowlineBounds);
 
 					if (sitesGeojson[0].features.length < 1000) {
 						nldiSiteLayers = siteLayer(sitesGeojson);
@@ -172,7 +172,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 					}
 					else {
 						map.openPopup('<p>The number of sites exceeds 1000 and can\'t be used to query the WQP. You may want to try searching by HUC',
-							map.getCenter());
+							flowlineBounds.getCenter());
 					}
 					updateNldiSitesInputs(siteIds);
 				})
@@ -285,7 +285,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		distanceValue = $(ev.target).val();
 		cleanUpMapsAndSites();
 
-		if ((distanceValue) && (navValue)) {
+		if (navValue) {
 			showMap();
 			if (comid) {
 				map.openPopup('Retrieving sites at comid ' + comid + '.',  comidLatLng);

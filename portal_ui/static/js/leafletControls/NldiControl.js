@@ -45,9 +45,9 @@ L.control.NldiControl = L.Control.extend({
 		L.DomEvent.disableClickPropagation(this._navSelectEl);
 
 		this._distanceInput = L.DomUtil.create('input', 'leaflet-nldi-distance-input', container);
-		this._distanceInput.type = 'number';
-		this._distanceInput.min = '1';
-		this._distanceInput.step = '1';
+		this._distanceInput.type = 'text';
+		this._distanceInput.size = '15';
+		this._distanceInput.placeholder = 'Distance in km'
 		L.DomEvent.addListener(this._distanceInput, 'change', this.options.distanceChangeHandler, this);
 		L.DomEvent.disableClickPropagation(this._distanceInput);
 
