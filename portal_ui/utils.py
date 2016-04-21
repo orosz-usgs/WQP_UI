@@ -166,7 +166,7 @@ def generate_site_list_from_csv(base_url, provider_id=None, organization_id=None
         if redis_config:
             redis_db_number = generate_redis_db_number(provider_id)
             redis_session = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'],
-                                              db=redis_db_number)
+                                              db=redis_db_number, password=redis_config.get('password'))
         if sites:
             for site in sites:
                 site = dict(site)

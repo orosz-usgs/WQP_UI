@@ -216,7 +216,7 @@ def uri_organization(provider_id, organization_id):
     if redis_config:
         redis_db_number = generate_redis_db_number(provider_id)
         redis_session = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'],
-                                          db=redis_db_number)
+                                          db=redis_db_number, password=redis_config.get('password'))
         all_sites_key = 'all_sites_' + provider_id + '_' + organization_id
         redis_all_site_data = redis_session.get(all_sites_key)
         if redis_all_site_data:
@@ -250,7 +250,8 @@ def uris(provider_id, organization_id, site_id):
     site_data = None
     if redis_config:
         redis_db_number = generate_redis_db_number(provider_id)
-        r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db_number)
+        r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db_number,
+                              password=redis_config.get('password'))
         site_key = 'sites_' + provider_id + '_' + site_id
         redis_site_data = r.get(site_key)
         if redis_site_data:
@@ -297,12 +298,14 @@ def clear_cache(provider_id = None):
     if cache_config['CACHE_TYPE'] == 'redis':
         if provider_id:
             redis_db_number = generate_redis_db_number(provider_id)
-            r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db_number)
+            r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db_number,
+                                  password=redis_config.get('password'))
             r.flushdb()
             cache.clear()
             return 'site cache cleared for: ' + provider_id
         else:
-            r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_config['db'])
+            r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_config['db'],
+                                  password=redis_config.get('password'))
             r.flushall()
             return 'complete cache cleared '
     else:
@@ -311,7 +314,8 @@ def clear_cache(provider_id = None):
 
 @app.route('/rebuild_site_cache/<provider_id>')
 def rebuild_site_cache(provider_id=None):
-    sites = generate_site_list_from_csv(base_url, provider_id=provider_id, redis_config=redis_config)
+    sites = generate_site_list_from_csv(base_url, provider_id=provider_id, redis_config=redis_config,
+                                        password=redis_config.get('password'))
     if sites['status_code'] == 200 and len(sites['list']) >= 1:
         return 'successfully rebuilt ' + provider_id + ' site cache!'
     if sites['status_code'] == 500:
