@@ -158,28 +158,27 @@ def generate_site_list_from_csv(base_url, provider_id=None, organization_id=None
     r = requests.get(search_endpoint, {"organization": organization_id, "providers": provider_id,
                                        "mimeType": "csv", "sorted": "no", "uripage": "yes"})
     status_code = r.status_code
+    redis_session = None
     if status_code == 200:
         site_content = r.content
         sites = tablib.Dataset().load(site_content).dict
         site_list = []
+        if redis_config:
+            redis_db_number = generate_redis_db_number(provider_id)
+            redis_session = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'],
+                                              db=redis_db_number)
         if sites:
             for site in sites:
                 site = dict(site)
                 site_info = {}
-                site_key = 'sites_' + provider_id + '_' + site['MonitoringLocationIdentifier']
-                if redis_config:
-                    redis_db_number = generate_redis_db_number(provider_id)
-                    redis_session = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'],
-                                                      db=redis_db_number)
+                if redis_session:
+                    site_key = 'sites_' + provider_id + '_' + site['MonitoringLocationIdentifier']
                     redis_session.set(site_key, site, nx=True, ex=cache_timeout)
                 site_info['id'] = site['MonitoringLocationIdentifier']
                 site_info['name'] = site['MonitoringLocationName']
                 site_info['type'] = site['MonitoringLocationTypeName']
                 site_list.append(site_info)
-            if redis_config:
-                redis_db_number = generate_redis_db_number(provider_id)
-                redis_session = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'],
-                                                  db=redis_db_number)
+            if redis_session:
                 all_sites_key = 'all_sites_' + provider_id + '_' + organization_id
                 redis_session.set(all_sites_key, site_list, nx=True, ex=cache_timeout)
         return {"list": site_list, "status_code": status_code}
@@ -187,14 +186,13 @@ def generate_site_list_from_csv(base_url, provider_id=None, organization_id=None
         return {"list": None, "status_code": status_code}
 
 
-def get_site_info(base_url, provider_id, site_id, organization_id, code_endpoint):
+def get_site_info(base_url, provider_id, site_id, organization_id):
     """
 
     :param base_url:
     :param provider_id:
     :param site_id:
     :param organization_id: id of the organization that has the site
-    :param code_endpoint
     :return:
     """
     search_endpoint = base_url + "Station/search/"
@@ -224,7 +222,7 @@ def make_cache_key():
 def generate_redis_db_number(provider):
     """
 
-    :param provider:
+    :param provider: a WQP data provider
     :return: a database number to assign for redis to allow for cache clearing
     """
     # set a default
