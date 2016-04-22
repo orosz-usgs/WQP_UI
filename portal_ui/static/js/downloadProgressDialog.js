@@ -33,11 +33,12 @@ PORTAL.VIEWS.downloadProgressDialog = function(el) {
         return '<button id="' + id + '" type="button" class="btn btn-default">' + label + '</button>';
     };
 
-    that.show = function(thisOpKind) {
+    that.show = function(thisOpKind, dialogMessage) {
+		var message = (dialogMessage) ? dialogMessage : 'Validating query ... Please wait.'
         opKind = thisOpKind;
         
         el.find('.modal-footer').html('');
-        el.find('.modal-body').html('Validating query ... Please wait.');
+        el.find('.modal-body').html(message);
         el.find('.modal-header h4').html(DIALOG[opKind].title);
         el.modal('show');
     };

@@ -1,7 +1,7 @@
 /* jslint browser: true */
 /* global _gaq */
 /* global $ */
-/* global PortalDataMap */
+/* global _ */
 
 var PORTAL = PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
@@ -74,9 +74,11 @@ PORTAL.VIEWS.siteMapView = function(options) {
 
 		// Add click handler for Show Sites button
 		options.$container.find('#show-on-map-button').click(function () {
-			var self = this;
 			var queryParamArray = options.downloadFormView.getQueryParamArray();
 			var queryString = PORTAL.UTILS.getQueryString(queryParamArray);
+			var siteIds = _.filter(queryParamArray, function(param) {
+				return param.name === 'siteid';
+			});
 
 			var showMap = function (totalCount) {
 				// Show the map if it is currently hidden
@@ -99,22 +101,29 @@ PORTAL.VIEWS.siteMapView = function(options) {
 				return;
 			}
 
-			_gaq.push([
-				'_trackEvent',
-				'Portal Map',
-				'MapCount',
-				decodeURIComponent(queryString)
-			]);
+			if (siteIds.length > 50) {
+				options.downloadProgressDialog.show('map',
+					'Unable to map sites. The query contains too many sites to be mapped. Downloads are still available');
+			}
+			else {
+				_gaq.push([
+					'_trackEvent',
+					'Portal Map',
+					'MapCount',
+					decodeURIComponent(queryString)
+				]);
 
-			options.downloadProgressDialog.show('map');
-			PORTAL.queryServices.fetchQueryCounts(STATION_RESULTS, queryParamArray, PORTAL.MODELS.providers.getIds())
-				.done(function (counts) {
-					var fileFormat = 'xml';
-					options.downloadProgressDialog.updateProgress(counts, STATION_RESULTS, fileFormat, showMap);
-				})
-				.fail(function (message) {
-					options.downloadProgressDialog.cancelProgress(message);
-				});
+
+				options.downloadProgressDialog.show('map');
+				PORTAL.queryServices.fetchQueryCounts(STATION_RESULTS, queryParamArray, PORTAL.MODELS.providers.getIds())
+					.done(function (counts) {
+						var fileFormat = 'xml';
+						options.downloadProgressDialog.updateProgress(counts, STATION_RESULTS, fileFormat, showMap);
+					})
+					.fail(function (message) {
+						options.downloadProgressDialog.cancelProgress(message);
+					});
+			}
 		});
 	};
 

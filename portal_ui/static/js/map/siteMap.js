@@ -1,8 +1,6 @@
 /* jslint browser: true */
 /* global ol */
 /* global WQP */
-/* global log */
-/* global $ */
 
 var PORTAL = PORTAL || {};
 PORTAL.MAP = PORTAL.MAP || {};
@@ -88,7 +86,6 @@ PORTAL.MAP.siteMap = function(options) {
 		// Set up event handler for single click identify
 		map.on('singleclick', function(ev) {
 			if (wqpSitesLayer && !boxDrawInteraction.getActive()) {
-				var sitesSource = wqpSitesLayer.getSource();
 				var lowerLeft = map.getCoordinateFromPixel([ev.pixel[0] - 5, ev.pixel[1] + 5]);
 				var upperRight = map.getCoordinateFromPixel([ev.pixel[0] + 5, ev.pixel[1] - 5]);
 				var boundingBox =[lowerLeft[0], lowerLeft[1], upperRight[0], upperRight[1]];
@@ -112,7 +109,6 @@ PORTAL.MAP.siteMap = function(options) {
 		});
 		boxIdSource.on('addfeature', function() {
 			if (wqpSitesLayer) {
-				var sitesSource = wqpSitesLayer.getSource();
 				var boundingBox = this.getExtent();
 				var queryParamArray = wqpSitesLayer.getProperties().queryParamArray;
 
