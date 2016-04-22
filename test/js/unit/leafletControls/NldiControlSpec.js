@@ -37,8 +37,56 @@ describe('leafletControl/NldiControl', function() {
 		map.addControl(testControl);
 		expect($testDiv.find('.leaflet-nldi-input-div').length).toBe(1);
 	});
-	
-	// Unable to test the event handler because triggering the 'change' programatically did not trigger the leaflet event listener.
+
+	it('Expects that calling setNavValue updates the value of the navigation input', function() {
+		var navEl;
+		map.addControl(testControl);
+		navEl = document.getElementsByClassName('leaflet-nldi-nav-picker')[0];
+		testControl.setNavValue('UT');
+
+		expect(navEl.value).toEqual('UT');
+
+		testControl.setNavValue('');
+		expect(navEl.value).toEqual('');
+	});
+
+	it('Expects that calling setDistanceValue updates the value of the distance input', function() {
+		var distanceEl;
+		map.addControl(testControl);
+		distanceEl = document.getElementsByClassName('leaflet-nldi-distance-input')[0];
+		testControl.setDistanceValue('1234');
+
+		expect(distanceEl.value).toEqual('1234');
+
+		testControl.setDistanceValue('');
+		expect(distanceEl.value).toEqual('');
+	});
+
+	it('Expects that if the navigation is changed, the nav change handler is called', function() {
+		var navEl;
+		var event = document.createEvent('HTMLEvents');
+		map.addControl(testControl);
+		navEl = document.getElementsByClassName('leaflet-nldi-nav-picker')[0];
+		navEl.value = 'UM';
+		event.initEvent('change', true, false);
+
+		expect(navChangeHandlerSpy).not.toHaveBeenCalled();
+		navEl.dispatchEvent(event);
+		expect(navChangeHandlerSpy).toHaveBeenCalled();
+	});
+
+	it('Expects that if the distance is changed, the distance change handler is called', function() {
+		var distanceEl;
+		var event = document.createEvent('HTMLEvents');
+		map.addControl(testControl);
+		distanceEl = document.getElementsByClassName('leaflet-nldi-distance-input')[0];
+		distanceEl.value = '123';
+		event.initEvent('change', true, false);
+
+		expect(distanceChangeHandlerSpy).not.toHaveBeenCalled();
+		distanceEl.dispatchEvent(event);
+		expect(distanceChangeHandlerSpy).toHaveBeenCalled();
+	});
 
 	it('Expects that if the nav control is removed from the map, the handler\'s listeners are removed', function() {
 		map.addControl(testControl);
