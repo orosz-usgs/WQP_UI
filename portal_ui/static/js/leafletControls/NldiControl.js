@@ -5,7 +5,8 @@ L.control.NldiControl = L.Control.extend({
 	options : {
 		position : 'topleft',
 		navChangeHandler : null,
-		distanceChangeHandler : null
+		distanceChangeHandler : null,
+		clearClickHandler : null
 	},
 
 	initialize : function(options) {
@@ -14,6 +15,7 @@ L.control.NldiControl = L.Control.extend({
 		L.Control.prototype.initialize.apply(this, options);
 		this._navSelectEl = undefined;
 		this._distanceInput = undefined;
+		this._clearBtn = undefined;
 	},
 
 	setNavValue : function(value) {
@@ -36,6 +38,7 @@ L.control.NldiControl = L.Control.extend({
 		var container = L.DomUtil.create('div', 'leaflet-nldi-input-div');
 
 		this._navSelectEl = L.DomUtil.create('select', 'leaflet-nldi-nav-picker', container);
+		this._navSelectEl.title = 'Pick navigation type';
 		this._navSelectEl.innerHTML = '<option value="">Select navigation type</option>' +
 				'<option value="UM">Upstream main</option>' +
 				'<option value="DM">Downstream main</option>' +
@@ -47,9 +50,17 @@ L.control.NldiControl = L.Control.extend({
 		this._distanceInput = L.DomUtil.create('input', 'leaflet-nldi-distance-input', container);
 		this._distanceInput.type = 'text';
 		this._distanceInput.size = '15';
+		this._distanceInput.title = 'Optional distance from comid';
 		this._distanceInput.placeholder = 'Distance in km';
 		L.DomEvent.addListener(this._distanceInput, 'change', this.options.distanceChangeHandler, this);
 		L.DomEvent.disableClickPropagation(this._distanceInput);
+
+		this._clearBtn = L.DomUtil.create('button', 'leaflet-nldi-clear-btn', container);
+		this._clearBtn.type = 'button';
+		this._clearBtn.title = 'Reset map';
+		this._clearBtn.innerHTML = '<i class="fa fa-undo"></i>';
+		L.DomEvent.addListener(this._clearBtn, 'click', this.options.clearClickHandler, this);
+		L.DomEvent.disableClickPropagation(this._clearBtn);
 
 		return container;
 	},

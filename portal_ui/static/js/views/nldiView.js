@@ -295,7 +295,19 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		else {
 			showInsetMap();
 		}
-	}
+	};
+
+	var clearHandler = function() {
+		comid = '';
+		navValue = '';
+		distanceValue = '';
+
+		this.setNavValue(navValue);
+		this.setDistanceValue(distanceValue);
+		
+		cleanUpMapsAndSites();
+		map.closePopup();
+	};
 
 	var insetBaseLayers = {
 		'World Gray' : L.esri.basemapLayer('Gray')
@@ -320,11 +332,13 @@ PORTAL.VIEWS.nldiView  = function(options) {
 
 	var insetNldiControl = L.control.nldiControl({
 		navChangeHandler : navChangeHandler,
-		distanceChangeHandler : distanceChangeHandler
+		distanceChangeHandler : distanceChangeHandler,
+		clearClickHandler : clearHandler
 	});
 	var nldiControl = L.control.nldiControl({
 		navChangeHandler : navChangeHandler,
-		distanceChangeHandler : distanceChangeHandler
+		distanceChangeHandler : distanceChangeHandler,
+		clearClickHandler : clearHandler
 	});
 
 	var expandControl = L.easyButton('fa-lg fa-expand', showMap, 'Expand NLDI Map', {
