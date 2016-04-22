@@ -39,7 +39,7 @@ describe ('Tests for PORTAL.VIEWS.siteMapView', function() {
 		identifyInitializeSpy = jasmine.createSpy('dialogInitialize');
 		spyOn(PORTAL.VIEWS, 'identifyDialog').and.returnValue({
 			initialize : identifyInitializeSpy
-		})
+		});
 
 		spyOn(PORTAL.MAP, 'siteMap').and.returnValue({
 			initialize : siteMapInitializeSpy,
