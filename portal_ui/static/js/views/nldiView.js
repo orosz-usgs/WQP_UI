@@ -202,6 +202,8 @@ PORTAL.VIEWS.nldiView  = function(options) {
 			$mapDiv.css('cursor', 'progress');
 			comid = '';
 			comidLatLng = undefined;
+			cleanUpMapsAndSites();
+			map.closePopup();
 
 			fetchComid(bounds)
 				.done(function (result) {
