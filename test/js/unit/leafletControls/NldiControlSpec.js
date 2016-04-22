@@ -33,7 +33,7 @@ describe('leafletControl/NldiControl', function() {
 		$testDiv.remove();
 	});
 
-	it('Expects that by the nav control is added to the map', function() {
+	it('Expects that by the nldi control is added to the map', function() {
 		map.addControl(testControl);
 		expect($testDiv.find('.leaflet-nldi-input-div').length).toBe(1);
 	});
@@ -88,7 +88,7 @@ describe('leafletControl/NldiControl', function() {
 		expect(distanceChangeHandlerSpy).toHaveBeenCalled();
 	});
 
-	it('Expects that if the nav control is removed from the map, the handler\'s listeners are removed', function() {
+	it('Expects that if the nldi control is removed from the map, the handler\'s listeners are removed', function() {
 		map.addControl(testControl);
 		spyOn(L.DomEvent, 'removeListener').and.callThrough();
 		map.removeControl(testControl);
