@@ -9,7 +9,7 @@ describe('leafletControl/NldiControl', function() {
 	var $testDiv;
 	var map;
 	var testControl;
-	var navChangeHandlerSpy, distanceChangeHandlerSpy;
+	var navChangeHandlerSpy, distanceChangeHandlerSpy, clearClickHandlerSpy;
 
 	beforeEach(function() {
 		$('body').append('<div id="test-div" style="height: 30px; width: 30px"></div>');
@@ -17,6 +17,7 @@ describe('leafletControl/NldiControl', function() {
 
 		navChangeHandlerSpy = jasmine.createSpy('navChangeHandler');
 		distanceChangeHandlerSpy = jasmine.createSpy('distanceChangeHandler');
+		clearClickHandlerSpy = jasmine.createSpy('clearClickHandler');
 
 		map = L.map('test-div', {
 			center : [43.0, -100.0],
@@ -24,7 +25,8 @@ describe('leafletControl/NldiControl', function() {
 		});
 		testControl = L.control.nldiControl({
 			navChangeHandler : navChangeHandlerSpy,
-			distanceChangeHandler : distanceChangeHandlerSpy
+			distanceChangeHandler : distanceChangeHandlerSpy,
+			clearClickHandler : clearClickHandlerSpy
 		});
 	});
 
@@ -88,13 +90,26 @@ describe('leafletControl/NldiControl', function() {
 		expect(distanceChangeHandlerSpy).toHaveBeenCalled();
 	});
 
+	it('Expects that if the clear button is clicked, the clear click handler is called', function() {
+		var clearBtn;
+		var event = document.createEvent('HTMLEvents');
+		map.addControl(testControl);
+		clearBtn = document.getElementsByClassName('leaflet-nldi-clear-btn')[0];
+		event.initEvent('click', true, false);
+
+		expect(clearClickHandlerSpy).not.toHaveBeenCalled();
+		clearBtn.dispatchEvent(event);
+		expect(clearClickHandlerSpy).toHaveBeenCalled();
+	});
+
 	it('Expects that if the nldi control is removed from the map, the handler\'s listeners are removed', function() {
 		map.addControl(testControl);
 		spyOn(L.DomEvent, 'removeListener').and.callThrough();
 		map.removeControl(testControl);
-		expect(L.DomEvent.removeListener.calls.count()).toBe(2);
+		expect(L.DomEvent.removeListener.calls.count()).toBe(3);
 		expect(L.DomEvent.removeListener.calls.argsFor(0)[2]).toBe(navChangeHandlerSpy);
 		expect(L.DomEvent.removeListener.calls.argsFor(1)[2]).toBe(distanceChangeHandlerSpy);
+		expect(L.DomEvent.removeListener.calls.argsFor(2)[2]).toBe(clearClickHandlerSpy);
 	});
 
 });

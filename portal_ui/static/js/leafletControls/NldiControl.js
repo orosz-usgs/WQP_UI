@@ -69,6 +69,7 @@ L.control.NldiControl = L.Control.extend({
 		"use strict";
 		L.DomEvent.removeListener(this._navSelectEl, 'change', this.options.navChangeHandler);
 		L.DomEvent.removeListener(this._distanceInput, 'change', this.options.distanceChangeHandler);
+		L.DomEvent.removeListener(this._clearBtn, 'click', this.options.clearClickHandler);
 	}
 });
 
