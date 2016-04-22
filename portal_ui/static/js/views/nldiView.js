@@ -24,10 +24,10 @@ PORTAL.VIEWS.nldiView  = function(options) {
 
 	var comid = '';
 	var comidLatLng;
-	var siteIds = [];
-
 	var navValue = '';
 	var distanceValue = '';
+
+	var siteIds = [];
 
 	var insetMap, map;
 	var $mapDiv = $('#' + options.mapDivId);
@@ -299,12 +299,13 @@ PORTAL.VIEWS.nldiView  = function(options) {
 
 	var clearHandler = function() {
 		comid = '';
+		comidLatLng = undefined;
 		navValue = '';
 		distanceValue = '';
 
 		this.setNavValue(navValue);
 		this.setDistanceValue(distanceValue);
-		
+
 		cleanUpMapsAndSites();
 		map.closePopup();
 	};
