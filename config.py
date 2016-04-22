@@ -24,6 +24,7 @@ NWIS_SITES_LAYER_NAME = 'NWC:gagesII'
 
 GA_TRACKING_CODE = ''
 
+#set to false in instance/config.py if you want to turn off the NLDI feature
 NLDI_ENABLED = True
 
 LESS_BIN = os.path.join(PROJECT_HOME, 'node_modules', 'less', 'bin', 'lessc')

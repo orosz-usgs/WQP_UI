@@ -22,7 +22,7 @@ bundles = {
         'js/utils.js',
         'js/identifyDialog.js',
         'js/MapConfig.js',
-        'js/leafletControls/NldiNavControl.js',
+        'js/leafletControls/NldiControl.js',
         'js/LeafletMixins/SingleClickEventHandlerMixin.js',
         'js/ol3Utils/mapUtils.js',
         'js/map/ToggleControl.js',

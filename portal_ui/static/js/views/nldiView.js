@@ -22,9 +22,12 @@ PORTAL.VIEWS.nldiView  = function(options) {
 
 	var self = {};
 
-	var siteIds = [];
-
+	var comid = '';
+	var comidLatLng;
 	var navValue = '';
+	var distanceValue = '';
+
+	var siteIds = [];
 
 	var insetMap, map;
 	var $mapDiv = $('#' + options.mapDivId);
@@ -46,11 +49,20 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		if (insetNldiFlowlineLayers) {
 			insetMap.removeLayer(insetNldiFlowlineLayers);
 		}
-		map.closePopup();
 
 		siteIds = [];
 		options.$siteInputContainer.html('');
 	};
+
+	var updateNldiSitesInputs = function(newSites) {
+		var addInput = function(memo, siteId) {
+			return memo + '<input type="hidden" name="siteid" value="' + siteId + '" />';
+		};
+		var htmlInputs = _.reduce(newSites, addInput, '');
+
+		options.$siteInputContainer.html(htmlInputs);
+	};
+
 
 	/*
 	 * @param {L.LatLngBounds} bounds - Looking for a com id within bounds
@@ -89,21 +101,15 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	 * @param {String navigate
 	 * @returns $.jqXHR object
 	 */
-	var fetchNldiSites = function(comid, navigate) {
+	var fetchNldiSites = function(comid, navigate, distance) {
 		return $.ajax({
 			url : Config.NLDI_SERVICES_ENDPOINT + 'comid/' + comid + '/navigate/' + navigate + '/wqp',
-			method : 'GET'
+			method : 'GET',
+			data : {
+				distance : distance
+			}
 		});
 
-	};
-
-	var updateNldiSitesInputs = function(newSites) {
-		var addInput = function(memo, siteId) {
-			return memo + '<input type="hidden" name="siteid" value="' + siteId + '" />';
-		};
-		var htmlInputs = _.reduce(newSites, addInput, '');
-
-		options.$siteInputContainer.html(htmlInputs);
 	};
 
 	/*
@@ -111,31 +117,17 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	 * @param {String navigate
 	 * @returns $.jqXHR object
 	 */
-	var fetchNldiFlowlines = function(comid, navigate) {
+	var fetchNldiFlowlines = function(comid, navigate, distance) {
 		return $.ajax({
 			url : Config.NLDI_SERVICES_ENDPOINT + 'comid/' + comid + '/navigate/' + navigate,
-			method : 'GET'
+			method : 'GET',
+			data : {
+				distance : distance
+			}
 		});
 	};
 
-	/*
-	 * Leaflet mouse event handler to find the sites associated with the COMID at the location in the event and displays
-	 * the sites and flowlines on the nldi map. Popups are used to tell the user if an error occurred in the process.
-	 *
-	 * @param {L.MouseEvent} ev
-	 */
-	var findSitesHandler = function(ev) {
-		var point = ev.layerPoint;
-		var bounds = L.latLngBounds(map.layerPointToLatLng([point.x - 5, point.y + 5 ]),
-			map.layerPointToLatLng([point.x + 5, point.y - 5]));
-
-		var openPopup = function(content) {
-			var popup = L.popup()
-				.setContent(content)
-				.setLatLng(ev.latlng);
-			map.openPopup(popup);
-		};
-
+	var updateNldiSites = function(comid, navigate, distance) {
 		var flowlineLayer = _.partial(L.geoJson);
 		var siteLayer = _.partial(L.geoJson, _, {
 			pointToLayer: function (featureData, latlng) {
@@ -150,69 +142,95 @@ PORTAL.VIEWS.nldiView  = function(options) {
 			}
 		});
 
-		log.debug('Clicked at location: ' + ev.latlng.toString());
-		$mapDiv.css('cursor', 'progress');
-		fetchComid(bounds)
-			.done(function(result) {
-				log.debug('Got COMID response');
+		if ((comid) && (navigate)) {
+			$mapDiv.css('cursor', 'progress');
+			$.when(fetchNldiSites(comid, navigate, distance), fetchNldiFlowlines(comid, navigate, distance))
+				.done(function (sitesGeojson, flowlinesGeojson) {
+					var flowlineBounds;
 
-				if (result.totalFeatures === 0) {
-					openPopup('<p>No reach has been selected. Please try at a different location.</p>');
-					$mapDiv.css('cursor', '');
+					map.closePopup();
 
-				}
-				else if (result.totalFeatures > 2) {
-					openPopup('<p>More than one reach has been selected. Please zoom in and try again.</p>');
-					$mapDiv.css('cursor', '');
-				}
-				else {
-					var getNldiSites = fetchNldiSites(result.comid, navValue);
-					var getNldiFlowlines = fetchNldiFlowlines(result.comid, navValue);
+					nldiFlowlineLayers = flowlineLayer(flowlinesGeojson);
+					insetNldiFlowlineLayers = flowlineLayer(flowlinesGeojson);
+					map.addLayer(nldiFlowlineLayers);
+					insetMap.addLayer(insetNldiFlowlineLayers);
 
-					cleanUpMapsAndSites();
-					openPopup('Successfully retrieved comid ' + result.comid + '. Retrieving sites.');
+					flowlineBounds = nldiFlowlineLayers.getBounds();
+					map.fitBounds(flowlineBounds);
 
+					if (sitesGeojson[0].features.length < 1000) {
+						nldiSiteLayers = siteLayer(sitesGeojson);
+						insetNldiSiteLayers = siteLayer(sitesGeojson);
 
-					$.when(getNldiSites, getNldiFlowlines)
-						.done(function(sitesGeojson, flowlinesGeojson) {
-							map.closePopup();
+						map.addLayer(nldiSiteLayers);
+						insetMap.addLayer(insetNldiSiteLayers);
 
-							nldiFlowlineLayers = flowlineLayer(flowlinesGeojson);
-							insetNldiFlowlineLayers = flowlineLayer(flowlinesGeojson);
-							map.addLayer(nldiFlowlineLayers);
-							insetMap.addLayer(insetNldiFlowlineLayers);
-							map.fitBounds(nldiFlowlineLayers.getBounds());
-
-							if (sitesGeojson[0].features.length < 1000) {
-								nldiSiteLayers = siteLayer(sitesGeojson);
-								insetNldiSiteLayers = siteLayer(sitesGeojson);
-								
-								map.addLayer(nldiSiteLayers);
-								insetMap.addLayer(insetNldiSiteLayers);
-
-								siteIds = _.map(sitesGeojson[0].features, function(feature) {
-									return feature.properties.identifier;
-								});
-
-							}
-							else {
-								openPopup('<p>The number of sites exceeds 1000 and can\'t be used to query the WQP. You may want to try searching by HUC');
-							}
-							updateNldiSitesInputs(siteIds);
-						})
-						.fail(function() {
-							openPopup('Unable to retrieve NLDI information');
-							updateNldiSitesInputs(siteIds);
-						})
-						.always(function() {
-							$mapDiv.css('cursor', '');
+						siteIds = _.map(sitesGeojson[0].features, function (feature) {
+							return feature.properties.identifier;
 						});
-				}
-			})
-			.fail(function() {
-				openPopup('<p>Unable to retrieve comids, service call failed</p>');
-				$mapDiv.css('cursor', '');
-			});
+
+					}
+					else {
+						map.openPopup('<p>The number of sites exceeds 1000 and can\'t be used to query the WQP. You may want to try searching by HUC',
+							flowlineBounds.getCenter());
+					}
+					updateNldiSitesInputs(siteIds);
+				})
+				.fail(function () {
+					map.openPopup('Unable to retrieve NLDI information', map.getCenter());
+					updateNldiSitesInputs(siteIds);
+				})
+				.always(function () {
+					$mapDiv.css('cursor', '');
+				});
+		}
+	};
+
+	/*
+	 * Leaflet mouse event handler to find the sites associated with the COMID at the location in the event and displays
+	 * the sites and flowlines on the nldi map. Popups are used to tell the user if an error occurred in the process.
+	 *
+	 * @param {L.MouseEvent} ev
+	 */
+	var findSitesHandler = function(ev) {
+		var point = ev.layerPoint;
+		var bounds = L.latLngBounds(map.layerPointToLatLng([point.x - 5, point.y + 5 ]),
+			map.layerPointToLatLng([point.x + 5, point.y - 5]));
+
+		if (navValue) {
+			log.debug('Clicked at location: ' + ev.latlng.toString());
+			$mapDiv.css('cursor', 'progress');
+			comid = '';
+			comidLatLng = undefined;
+
+			fetchComid(bounds)
+				.done(function (result) {
+					log.debug('Got COMID response');
+
+					if (result.totalFeatures === 0) {
+						map.openPopup('<p>No reach has been selected. Please try at a different location.</p>', ev.latlng);
+						$mapDiv.css('cursor', '');
+
+					}
+					else if (result.totalFeatures > 2) {
+						map.openPopup('<p>More than one reach has been selected. Please zoom in and try again.</p>', ev.latlng);
+						$mapDiv.css('cursor', '');
+					}
+					else {
+						comid = result.comid;
+						comidLatLng = ev.latlng;
+						map.openPopup('<p>Successfully retrieved comid ' + result.comid + '. Retrieving sites.</p>', ev.latlng);
+						updateNldiSites(comid, navValue, distanceValue);
+					}
+				})
+				.fail(function () {
+					map.openPopup('<p>Unable to retrieve comids, service call failed</p>', ev.latlng);
+					$mapDiv.css('cursor', '');
+				});
+		}
+		else {
+			map.openPopup('<p>Please select a navigation direction</p>', ev.latlng);
+		}
 	};
 
 	/*
@@ -222,10 +240,12 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		if ($mapDiv.is(':hidden')) {
 			$insetMapDiv.hide();
 			$mapDiv.show();
-			navControl.setNavValue(navValue);
+			nldiControl.setNavValue(navValue);
+			nldiControl.setDistanceValue(distanceValue);
 			map.invalidateSize();
 			map.setView(insetMap.getCenter(), insetMap.getZoom());
 		}
+		map.closePopup();
 	};
 
 	/*
@@ -235,7 +255,8 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		if ($insetMapDiv.is(':hidden')) {
 			$insetMapDiv.show();
 			$mapDiv.hide();
-			insetNavControl.setNavValue(navValue);
+			insetNldiControl.setNavValue(navValue);
+			insetNldiControl.setDistanceValue(distanceValue);
 			insetMap.invalidateSize();
 			insetMap.setView(map.getCenter(), map.getZoom());
 		}
@@ -246,16 +267,47 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	 * Handle the change event for the nav selection control.
 	 */
 	var navChangeHandler = function(ev) {
-		var value = $(ev.target).val();
-		navValue = value;
-
+		navValue = $(ev.target).val();
 		cleanUpMapsAndSites();
-		if (value) {
+		if (navValue) {
 			showMap();
+			if (comid) {
+				map.openPopup('Retrieving sites at comid ' + comid + '.', comidLatLng);
+				updateNldiSites(comid, navValue, distanceValue);
+			}
 		}
 		else {
-			showInsetMap(value);
+			showInsetMap();
 		}
+	};
+
+	var distanceChangeHandler = function(ev) {
+		distanceValue = $(ev.target).val();
+		cleanUpMapsAndSites();
+
+		if (navValue) {
+			showMap();
+			if (comid) {
+				map.openPopup('Retrieving sites at comid ' + comid + '.',  comidLatLng);
+				updateNldiSites(comid, navValue, distanceValue);
+			}
+		}
+		else {
+			showInsetMap();
+		}
+	};
+
+	var clearHandler = function() {
+		comid = '';
+		comidLatLng = undefined;
+		navValue = '';
+		distanceValue = '';
+
+		this.setNavValue(navValue);
+		this.setDistanceValue(distanceValue);
+
+		cleanUpMapsAndSites();
+		map.closePopup();
 	};
 
 	var insetBaseLayers = {
@@ -279,11 +331,15 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		'Hydro Reference' : hydroLayer
 	});
 
-	var insetNavControl = L.control.nldiNavControl({
-		changeHandler : navChangeHandler
+	var insetNldiControl = L.control.nldiControl({
+		navChangeHandler : navChangeHandler,
+		distanceChangeHandler : distanceChangeHandler,
+		clearClickHandler : clearHandler
 	});
-	var navControl = L.control.nldiNavControl({
-		changeHandler : navChangeHandler
+	var nldiControl = L.control.nldiControl({
+		navChangeHandler : navChangeHandler,
+		distanceChangeHandler : distanceChangeHandler,
+		clearClickHandler : clearHandler
 	});
 
 	var expandControl = L.easyButton('fa-lg fa-expand', showMap, 'Expand NLDI Map', {
@@ -309,7 +365,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		});
 		insetMap.addLayer(insetHydroLayer);
 		insetMap.addControl(expandControl);
-		insetMap.addControl(insetNavControl);
+		insetMap.addControl(insetNldiControl);
 		insetMap.addControl(L.control.zoom());
 
 		map = new MapWithSingleClickHandler(options.mapDivId, {
@@ -320,7 +376,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		});
 		map.addControl(collapseControl);
 		map.addControl(layerSwitcher);
-		map.addControl(navControl);
+		map.addControl(nldiControl);
 		map.addControl(L.control.zoom());
 
 		map.addSingleClickHandler(findSitesHandler);

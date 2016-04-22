@@ -19,6 +19,9 @@ SITES_MAP_GEOSERVER_ENDPOINT = ''
 	
 #points to the sld endpoint you want to use.
 SLD_ENDPOINT = ''
+
+# points to the endpoint which returns flow lines and sites for a comid
+NLDI_SERVICES_ENDPOINT = ''
 	
 #points to the codes endpoint
 CODES_ENDPOINT = ''
