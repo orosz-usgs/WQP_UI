@@ -1,8 +1,8 @@
 from flask import render_template, request, make_response, redirect, url_for, abort
 from . import app
-from .utils import pull_feed, geoserver_proxy_request, generate_provider_list, generate_organization_list, get_site_info, check_org_id, \
-    make_cache_key, generate_site_list_from_geojson, generate_redis_db_number, generate_site_list_from_streamed_tsv
-from flask.ext.cache import Cache
+from .utils import pull_feed, geoserver_proxy_request, generate_provider_list, generate_organization_list, \
+    get_site_info, check_org_id,generate_site_list_from_geojson, generate_redis_db_number, \
+    generate_site_list_from_streamed_tsv
 import redis
 import ast
 import requests
