@@ -1,8 +1,8 @@
 from flask import render_template, request, make_response, redirect, url_for, abort
 from . import app
-from .utils import pull_feed, geoserver_proxy_request, generate_provider_list, generate_organization_list, get_site_info, check_org_id, \
-    make_cache_key, generate_site_list_from_geojson, generate_redis_db_number, generate_site_list_from_streamed_tsv
-from flask.ext.cache import Cache
+from .utils import pull_feed, geoserver_proxy_request, generate_provider_list, generate_organization_list, \
+    get_site_info, check_org_id,generate_site_list_from_geojson, generate_redis_db_number, \
+    generate_site_list_from_streamed_tsv
 import redis
 import ast
 import requests
@@ -21,7 +21,6 @@ base_url = app.config['SEARCH_QUERY_ENDPOINT']
 redis_config = app.config['REDIS_CONFIG']
 cache_timeout = app.config['CACHE_TIMEOUT']
 
-cache = Cache(app, config=cache_config)
 
 @app.route('/index.jsp')
 @app.route('/index/')
@@ -31,6 +30,7 @@ def home():
         return redirect(url_for('home-canonical')), 301
     return render_template('index.html')
  
+
 @app.route('/contact_us.jsp')
 @app.route('/contact_us/', endpoint='contact_us-canonical')
 def contact_us():
@@ -38,12 +38,14 @@ def contact_us():
         return redirect(url_for('contact_us-canonical')), 301
     return render_template('contact_us.html')
 
+
 @app.route('/portal.jsp')
 @app.route('/portal/', endpoint='portal-canonical')
 def portal():
     if request.path == '/portal.jsp':
         return redirect(url_for('portal-canonical')), 301
     return render_template('portal.html')
+
 
 @app.route('/portal_userguide.jsp')
 @app.route('/portal_userguide/', endpoint='portal_userguide-canonical')
@@ -53,8 +55,9 @@ def portal_userguide():
     feed_url = "https://my.usgs.gov/confluence/createrssfeed.action?types=page&spaces=qwdp&title=myUSGS+4.0+RSS+Feed&labelString=wqp_user_guide&excludedSpaceKeys%3D&sort=modified&maxResults=1&timeSpan=3650&showContent=true&confirm=Create+RSS+Feed"
     return render_template('portal_userguide.html', feed_content=pull_feed(feed_url))
 
+
 @app.route('/webservices_documentation.jsp')
-@app.route('/webservices_documentation/', endpoint= 'webservices_documentation-canonical')
+@app.route('/webservices_documentation/', endpoint='webservices_documentation-canonical')
 def webservices_documentation():
     if request.path == '/webservices_documentation.jsp':
         return redirect(url_for('webservices_documentation-canonical')), 301
@@ -78,7 +81,6 @@ def upload_data():
         return redirect(url_for('upload_data-canonical')), 301
     feed_url = "https://my.usgs.gov/confluence/createrssfeed.action?types=page&spaces=qwdp&title=myUSGS+4.0+RSS+Feed&labelString=wqp_upload_data&excludedSpaceKeys%3D&sort=modified&maxResults=1&timeSpan=3650&showContent=true&confirm=Create+RSS+Feed"
     return render_template('upload_data.html', feed_content=pull_feed(feed_url))
-
 
 
 @app.route('/coverage.jsp')
@@ -260,13 +262,13 @@ def uris(provider_id, organization_id, site_id):
         if redis_site_data:
             site_data = ast.literal_eval(redis_site_data)
         else:
-            service_site_data = get_site_info(base_url, provider_id, site_id, organization_id, code_endpoint)
+            service_site_data = get_site_info(base_url, provider_id, site_id, organization_id)
             if service_site_data['status_code'] == 200 and service_site_data['site_data']:
                 site_data = service_site_data['site_data']
             elif service_site_data['status_code'] == 500:
                 abort(500)
     else:
-        service_site_data = get_site_info(base_url, provider_id, site_id, organization_id, code_endpoint)
+        service_site_data = get_site_info(base_url, provider_id, site_id, organization_id)
         if service_site_data['status_code'] == 200 and service_site_data['site_data']:
             site_data = service_site_data['site_data']
         elif service_site_data['status_code'] == 500:
@@ -295,10 +297,11 @@ def uris(provider_id, organization_id, site_id):
     else:
         abort(404)
 
+
 @app.route('/clear_cache/')
 @app.route('/clear_cache/<provider_id>/')
-def clear_cache(provider_id = None):
-    if cache_config['CACHE_TYPE'] == 'redis':
+def clear_cache(provider_id=None):
+    if redis_config:
         if provider_id:
             redis_db_number = generate_redis_db_number(provider_id)
             r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db_number,
@@ -313,6 +316,7 @@ def clear_cache(provider_id = None):
     else:
         return "no redis cache, no cache to clear"
 
+
 @app.route('/rebuild_site_cache/<provider_id>')
 def rebuild_site_cache(provider_id=None):
     providers = generate_provider_list(code_endpoint)['providers']
@@ -322,7 +326,8 @@ def rebuild_site_cache(provider_id=None):
     sites = generate_site_list_from_streamed_tsv(base_url, redis_config=redis_config, provider_id=provider_id,
                                                  redis_db=redis_db)
     if sites['cached_count'] > 0:
-        return 'rebuilt site cache for ' + provider_id+' with ' + str(sites['cached_count']) + ' cached and ' + str(sites['error_count']) + ' errors.'
+        return 'rebuilt site cache for ' + provider_id+' with ' + str(sites['cached_count']) + ' cached and ' + \
+               str(sites['error_count']) + ' errors.'
 
     else:
         return str(sites)
