@@ -18,7 +18,6 @@ sys.setdefaultencoding('utf8')
 # set some useful local variables from the global config variables
 code_endpoint = app.config['CODES_ENDPOINT']
 base_url = app.config['SEARCH_QUERY_ENDPOINT']
-cache_config = app.config['CACHE_CONFIG']
 redis_config = app.config['REDIS_CONFIG']
 cache_timeout = app.config['CACHE_TIMEOUT']
 
@@ -190,7 +189,6 @@ def uri_base():
 
 
 @app.route('/provider/<provider_id>', endpoint='uri_provider')
-@cache.cached(timeout=cache_timeout, key_prefix=make_cache_key)
 def uri_provider(provider_id):
     providers = generate_provider_list(code_endpoint)['providers']
     if provider_id not in providers:
@@ -210,7 +208,6 @@ def uri_provider(provider_id):
 
 
 @app.route('/provider/<provider_id>/<organization_id>/', endpoint='uri_organization')
-@cache.cached(timeout=cache_timeout, key_prefix=make_cache_key)
 def uri_organization(provider_id, organization_id):
     providers = generate_provider_list(code_endpoint)['providers']
     if provider_id not in providers:
@@ -307,7 +304,6 @@ def clear_cache(provider_id = None):
             r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db_number,
                                   password=redis_config.get('password'))
             r.flushdb()
-            cache.clear()
             return 'site cache cleared for: ' + provider_id
         else:
             r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_config['db'],
@@ -315,8 +311,7 @@ def clear_cache(provider_id = None):
             r.flushall()
             return 'complete cache cleared '
     else:
-        cache.clear()
-        return "no redis cache, full cache cleared"
+        return "no redis cache, no cache to clear"
 
 @app.route('/rebuild_site_cache/<provider_id>')
 def rebuild_site_cache(provider_id=None):
