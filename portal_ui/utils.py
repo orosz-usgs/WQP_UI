@@ -8,6 +8,7 @@ import tablib
 import ujson
 import redis
 import csv
+import cPickle as pickle
 
 
 def pull_feed(feed_url):
@@ -147,7 +148,7 @@ def generate_site_list_from_geojson(base_url, provider_id, organization_id, redi
                 site_list.append(site)
             if redis_session:
                 all_sites_key = 'all_sites_' + provider_id + '_' + organization_id
-                redis_session.set(all_sites_key, site_list)
+                redis_session.set(all_sites_key, pickle.dumps(site_list, protocol=2))
         return {"list": site_list, "geojson": site_geojson, "status_code": status_code}
     else:
         return {"list": None, "geojson": None, "status_code": status_code}
@@ -289,7 +290,7 @@ def generate_site_list_from_streamed_tsv(base_url, redis_config, provider_id, re
                         site_key = 'sites_' + provider_id + '_' + str(station_dict['OrganizationIdentifier']) + "_" + \
                                    str(station_dict['MonitoringLocationIdentifier'])
                         if redis_session:
-                            redis_session.set(site_key, station_dict)
+                            redis_session.set(site_key, pickle.dumps(station_dict, protocol=2))
                         cached_count += 1
                     elif len(station_data) != 36:
                         error_count += 1

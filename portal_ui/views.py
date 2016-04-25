@@ -7,6 +7,7 @@ import redis
 import ast
 import requests
 import sys
+import cPickle as pickle
 
 # fix a mysterious encoding issue, see
 # http://stackoverflow.com/questions/21129020/how-to-fix-unicodedecodeerror-ascii-codec-cant-decode-byte
@@ -225,7 +226,7 @@ def uri_organization(provider_id, organization_id):
         all_sites_key = 'all_sites_' + provider_id + '_' + organization_id
         redis_all_site_data = redis_session.get(all_sites_key)
         if redis_all_site_data:
-            sites_list = ast.literal_eval(redis_all_site_data)
+            sites_list = pickle.loads(redis_all_site_data)
         else:
             sites = generate_site_list_from_geojson(base_url, provider_id, organization_id, redis_config)
             if sites['status_code'] == 200 and len(sites['list']) >= 1:
@@ -260,7 +261,7 @@ def uris(provider_id, organization_id, site_id):
         site_key = 'sites_' + provider_id + '_' + str(organization_id) + "_" + str(site_id)
         redis_site_data = r.get(site_key)
         if redis_site_data:
-            site_data = ast.literal_eval(redis_site_data)
+            site_data = pickle.loads(redis_site_data)
         else:
             service_site_data = get_site_info(base_url, provider_id, site_id, organization_id)
             if service_site_data['status_code'] == 200 and service_site_data['site_data']:
