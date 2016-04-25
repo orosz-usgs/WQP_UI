@@ -190,7 +190,7 @@ def uri_base():
         abort(500)
 
 
-@app.route('/provider/<provider_id>', endpoint='uri_provider')
+@app.route('/provider/<provider_id>/', endpoint='uri_provider')
 def uri_provider(provider_id):
     providers = generate_provider_list(code_endpoint)['providers']
     if provider_id not in providers:
@@ -244,7 +244,7 @@ def uri_organization(provider_id, organization_id):
         abort(404)
 
 
-@app.route('/provider/<provider_id>/<organization_id>/<site_id>', endpoint='uri_site')
+@app.route('/provider/<provider_id>/<organization_id>/<site_id>/', endpoint='uri_site')
 def uris(provider_id, organization_id, site_id):
     providers = generate_provider_list(code_endpoint)['providers']
     if provider_id not in providers:
@@ -317,7 +317,7 @@ def clear_cache(provider_id=None):
         return "no redis cache, no cache to clear"
 
 
-@app.route('/rebuild_site_cache/<provider_id>')
+@app.route('/rebuild_site_cache/<provider_id>/')
 def rebuild_site_cache(provider_id=None):
     providers = generate_provider_list(code_endpoint)['providers']
     if provider_id not in providers:
