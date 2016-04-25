@@ -7,6 +7,7 @@ from flask import request, make_response
 import tablib
 import ujson
 import redis
+import csv
 
 
 def pull_feed(feed_url):
@@ -115,7 +116,7 @@ def generate_organization_list(endpoint, provider):
     return {"status_code": status_code, "organizations": organization_list}
 
 
-def generate_site_list(base_url, provider_id, organization_id):
+def generate_site_list_from_geojson(base_url, provider_id, organization_id, redis_config=None, cache_timeout=None):
     """
 
     :param base_url: the base url we are using for the generating the search URL
@@ -127,10 +128,16 @@ def generate_site_list(base_url, provider_id, organization_id):
     r = requests.get(search_endpoint, {"organization": organization_id, "providers": provider_id,
                                        "mimeType": "geojson", "sorted": "no", "uripage": "yes"})
     status_code = r.status_code
+    redis_session = None
     if status_code == 200:
         site_geojson_text = r.text
         site_geojson = ujson.loads(site_geojson_text)
         site_list = []
+        if redis_config:
+            redis_db_number = generate_redis_db_number(provider_id)
+            redis_session = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'],
+                                              db=redis_db_number, password=redis_config.get('password'))
+
         sites = site_geojson.get('features')
         if sites:
             for site in sites:
@@ -138,6 +145,9 @@ def generate_site_list(base_url, provider_id, organization_id):
                 site['name'] = site['properties'].get('MonitoringLocationName')
                 site['type'] = site['properties'].get('ResolvedMonitoringLocationTypeName')
                 site_list.append(site)
+            if redis_session:
+                all_sites_key = 'all_sites_' + provider_id + '_' + organization_id
+                redis_session.set(all_sites_key, site_list)
         return {"list": site_list, "geojson": site_geojson, "status_code": status_code}
     else:
         return {"list": None, "geojson": None, "status_code": status_code}
@@ -172,7 +182,7 @@ def generate_site_list_from_csv(base_url, provider_id=None, organization_id=None
                 site = dict(site)
                 site_info = {}
                 if redis_session:
-                    site_key = 'sites_' + provider_id + '_' + site['MonitoringLocationIdentifier']
+                    site_key = 'sites_' + provider_id + '_' + str(site['OrganizationIdentifier']) + "_" + str(site['MonitoringLocationIdentifier'])
                     redis_session.set(site_key, site, nx=True, ex=cache_timeout)
                 site_info['id'] = site['MonitoringLocationIdentifier']
                 site_info['name'] = site['MonitoringLocationName']
@@ -236,3 +246,52 @@ def generate_redis_db_number(provider):
     elif provider == 'BIODATA':
         redis_db_number = 4
     return redis_db_number
+
+
+def generate_site_list_from_streamed_tsv(base_url, redis_config, provider_id, redis_db, organization_id=None):
+    """
+
+    :param base_url: the base url we are using for the generating the search URL
+    :param organization_id:
+    :param provider_id:
+    :param redis_config:
+    :return: a list of dicts that describe sites that are associated with an organization under a data provider
+    """
+    search_endpoint = base_url+"Station/search/"
+    r = requests.get(search_endpoint, {"organization": organization_id, "providers": provider_id,
+                                       "mimeType": "tsv", "sorted": "no", "uripage": "yes"}, stream=True
+                     )
+
+    status = r.status_code
+    header_line = None
+    redis_session = None
+    if redis_config:
+        redis_session = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db,
+                                          password=redis_config.get('password'))
+    error_count = 0
+    cached_count = 0
+    counter = 0
+    for line in r.iter_lines():
+        # filter out keep-alive new lines
+        if line:
+            if counter == 0:
+                header_line = line
+                header_object = csv.reader([header_line], delimiter='\t')
+                for row in header_object:
+                    header = row
+                counter += 1
+            if counter >= 1:
+                station = csv.reader([line], delimiter='\t')
+                for row in station:
+                    station_data = row
+                    if len(station_data) == 36:
+                        station_dict = dict(zip(header, station_data))
+                        site_key = 'sites_' + provider_id + '_' + str(station_dict['OrganizationIdentifier']) + "_" + \
+                                   str(station_dict['MonitoringLocationIdentifier'])
+                        if redis_session:
+                            redis_session.set(site_key, station_dict)
+                        cached_count += 1
+                    elif len(station_data) != 36:
+                        error_count += 1
+
+    return {"status": status, "cached_count": cached_count, "error_count": error_count}

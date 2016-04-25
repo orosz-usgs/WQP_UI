@@ -1,13 +1,19 @@
 from flask import render_template, request, make_response, redirect, url_for, abort
 from . import app
 from .utils import pull_feed, geoserver_proxy_request, generate_provider_list, generate_organization_list, get_site_info, check_org_id, \
-    make_cache_key, generate_site_list_from_csv, generate_redis_db_number
+    make_cache_key, generate_site_list_from_geojson, generate_redis_db_number, generate_site_list_from_streamed_tsv
 from flask.ext.cache import Cache
 import redis
 import ast
 import requests
+import sys
 
-
+# fix a mysterious encoding issue, see
+# http://stackoverflow.com/questions/21129020/how-to-fix-unicodedecodeerror-ascii-codec-cant-decode-byte
+# this is a great reason to update to python 3,
+# which is unicode by default and doesn't suffer from so many weird problems due to encoding
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 # set some useful local variables from the global config variables
 code_endpoint = app.config['CODES_ENDPOINT']
@@ -222,13 +228,13 @@ def uri_organization(provider_id, organization_id):
         if redis_all_site_data:
             sites_list = ast.literal_eval(redis_all_site_data)
         else:
-            sites = generate_site_list_from_csv(base_url, provider_id, organization_id, redis_config)
+            sites = generate_site_list_from_geojson(base_url, provider_id, organization_id, redis_config)
             if sites['status_code'] == 200 and len(sites['list']) >= 1:
                 sites_list = sites['list']
             else:
                 abort(404)
     else:
-        sites = generate_site_list_from_csv(base_url, provider_id, organization_id, redis_config)
+        sites = generate_site_list_from_geojson(base_url, provider_id, organization_id, redis_config)
         if sites['status_code'] == 200 and len(sites['list']) >= 1:
             sites_list = sites['list']
         else:
@@ -252,7 +258,7 @@ def uris(provider_id, organization_id, site_id):
         redis_db_number = generate_redis_db_number(provider_id)
         r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db_number,
                               password=redis_config.get('password'))
-        site_key = 'sites_' + provider_id + '_' + site_id
+        site_key = 'sites_' + provider_id + '_' + str(organization_id) + "_" + str(site_id)
         redis_site_data = r.get(site_key)
         if redis_site_data:
             site_data = ast.literal_eval(redis_site_data)
@@ -314,14 +320,17 @@ def clear_cache(provider_id = None):
 
 @app.route('/rebuild_site_cache/<provider_id>')
 def rebuild_site_cache(provider_id=None):
-    sites = generate_site_list_from_csv(base_url, provider_id=provider_id, redis_config=redis_config,
-                                        password=redis_config.get('password'))
-    if sites['status_code'] == 200 and len(sites['list']) >= 1:
-        return 'successfully rebuilt ' + provider_id + ' site cache!'
-    if sites['status_code'] == 500:
-        abort(500)
-    else:
+    providers = generate_provider_list(code_endpoint)['providers']
+    if provider_id not in providers:
         abort(404)
+    redis_db = generate_redis_db_number(provider_id)
+    sites = generate_site_list_from_streamed_tsv(base_url, redis_config=redis_config, provider_id=provider_id,
+                                                 redis_db=redis_db)
+    if sites['cached_count'] > 0:
+        return 'rebuilt site cache for ' + provider_id+' with ' + str(sites['cached_count']) + ' cached and ' + str(sites['error_count']) + ' errors.'
+
+    else:
+        return str(sites)
 
 
 @app.route('/robots.txt')
