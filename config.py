@@ -24,19 +24,22 @@ NWIS_SITES_LAYER_NAME = 'NWC:gagesII'
 
 GA_TRACKING_CODE = ''
 
-#set to false in instance/config.py if you want to turn off the NLDI feature
+# set to false in instance/config.py if you want to turn off the NLDI feature
 NLDI_ENABLED = True
 
 LESS_BIN = os.path.join(PROJECT_HOME, 'node_modules', 'less', 'bin', 'lessc')
 
-CACHE_CONFIG = {'CACHE_TYPE': 'null'}
+# set REDIS Config if it exists
 REDIS_CONFIG = None
 
-#set the default cache timeout for wqp http caches
+# set the default cache timeout for wqp http caches
 CACHE_TIMEOUT = None
 
-#for robots.txt
+# for robots.txt
 ROBOTS_WELCOME = False
 
-#for provider pages
+# for provider pages
 PROVIDER_PAGES = False
+
+# set the local base url, this deals with the weird way we do wsgi around here
+LOCAL_BASE_URL = ''
