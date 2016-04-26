@@ -227,10 +227,8 @@ def uri_organization(provider_id, organization_id):
         all_sites_key = 'all_sites_' + provider_id + '_' + organization_id
         redis_all_site_data = redis_session.get(all_sites_key)
         if redis_all_site_data:
-            print("getting from cache")
             sites_geojson = ujson.loads(redis_all_site_data)
         else:
-            print ('making request')
             sites_request = requests.get(search_endpoint, {"organization": organization_id, "providers": provider_id,
                                        "mimeType": "geojson", "sorted": "no", "uripage": "yes"})
             if sites_request.status_code == 200:
