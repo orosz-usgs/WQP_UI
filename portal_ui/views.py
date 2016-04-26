@@ -1,22 +1,27 @@
-from flask import render_template, request, make_response, redirect, url_for, abort
+from flask import render_template, request, make_response, redirect, url_for, abort, Response
 from . import app
-from .utils import pull_feed, geoserver_proxy_request, generate_provider_list, generate_organization_list, get_site_info, check_org_id, \
-    make_cache_key, generate_site_list_from_csv, generate_redis_db_number
-from flask.ext.cache import Cache
+from .utils import pull_feed, geoserver_proxy_request, generate_provider_list, generate_organization_list, \
+    get_site_info, check_org_id, generate_redis_db_number, generate_site_list_from_streamed_tsv
 import redis
 import ast
 import requests
+import sys
+import cPickle as pickle
+import ujson
 
-
+# fix a mysterious encoding issue, see
+# http://stackoverflow.com/questions/21129020/how-to-fix-unicodedecodeerror-ascii-codec-cant-decode-byte
+# this is a great reason to update to python 3,
+# which is unicode by default and doesn't suffer from so many weird problems due to encoding
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 # set some useful local variables from the global config variables
 code_endpoint = app.config['CODES_ENDPOINT']
 base_url = app.config['SEARCH_QUERY_ENDPOINT']
-cache_config = app.config['CACHE_CONFIG']
 redis_config = app.config['REDIS_CONFIG']
 cache_timeout = app.config['CACHE_TIMEOUT']
 
-cache = Cache(app, config=cache_config)
 
 @app.route('/index.jsp')
 @app.route('/index/')
@@ -26,6 +31,7 @@ def home():
         return redirect(url_for('home-canonical')), 301
     return render_template('index.html')
  
+
 @app.route('/contact_us.jsp')
 @app.route('/contact_us/', endpoint='contact_us-canonical')
 def contact_us():
@@ -33,12 +39,14 @@ def contact_us():
         return redirect(url_for('contact_us-canonical')), 301
     return render_template('contact_us.html')
 
+
 @app.route('/portal.jsp')
 @app.route('/portal/', endpoint='portal-canonical')
 def portal():
     if request.path == '/portal.jsp':
         return redirect(url_for('portal-canonical')), 301
     return render_template('portal.html')
+
 
 @app.route('/portal_userguide.jsp')
 @app.route('/portal_userguide/', endpoint='portal_userguide-canonical')
@@ -48,8 +56,9 @@ def portal_userguide():
     feed_url = "https://my.usgs.gov/confluence/createrssfeed.action?types=page&spaces=qwdp&title=myUSGS+4.0+RSS+Feed&labelString=wqp_user_guide&excludedSpaceKeys%3D&sort=modified&maxResults=1&timeSpan=3650&showContent=true&confirm=Create+RSS+Feed"
     return render_template('portal_userguide.html', feed_content=pull_feed(feed_url))
 
+
 @app.route('/webservices_documentation.jsp')
-@app.route('/webservices_documentation/', endpoint= 'webservices_documentation-canonical')
+@app.route('/webservices_documentation/', endpoint='webservices_documentation-canonical')
 def webservices_documentation():
     if request.path == '/webservices_documentation.jsp':
         return redirect(url_for('webservices_documentation-canonical')), 301
@@ -73,7 +82,6 @@ def upload_data():
         return redirect(url_for('upload_data-canonical')), 301
     feed_url = "https://my.usgs.gov/confluence/createrssfeed.action?types=page&spaces=qwdp&title=myUSGS+4.0+RSS+Feed&labelString=wqp_upload_data&excludedSpaceKeys%3D&sort=modified&maxResults=1&timeSpan=3650&showContent=true&confirm=Create+RSS+Feed"
     return render_template('upload_data.html', feed_content=pull_feed(feed_url))
-
 
 
 @app.route('/coverage.jsp')
@@ -183,8 +191,7 @@ def uri_base():
         abort(500)
 
 
-@app.route('/provider/<provider_id>', endpoint='uri_provider')
-@cache.cached(timeout=cache_timeout, key_prefix=make_cache_key)
+@app.route('/provider/<provider_id>/', endpoint='uri_provider')
 def uri_provider(provider_id):
     providers = generate_provider_list(code_endpoint)['providers']
     if provider_id not in providers:
@@ -204,7 +211,6 @@ def uri_provider(provider_id):
 
 
 @app.route('/provider/<provider_id>/<organization_id>/', endpoint='uri_organization')
-@cache.cached(timeout=cache_timeout, key_prefix=make_cache_key)
 def uri_organization(provider_id, organization_id):
     providers = generate_provider_list(code_endpoint)['providers']
     if provider_id not in providers:
@@ -212,7 +218,8 @@ def uri_organization(provider_id, organization_id):
     org_check = check_org_id(organization_id, code_endpoint)
     if org_check['status_code'] == 200 and org_check['org_exists'] == False:
         abort(404)
-    sites_list = None
+    sites_geojson = None
+    search_endpoint = base_url + "Station/search/"
     if redis_config:
         redis_db_number = generate_redis_db_number(provider_id)
         redis_session = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'],
@@ -220,26 +227,39 @@ def uri_organization(provider_id, organization_id):
         all_sites_key = 'all_sites_' + provider_id + '_' + organization_id
         redis_all_site_data = redis_session.get(all_sites_key)
         if redis_all_site_data:
-            sites_list = ast.literal_eval(redis_all_site_data)
+            sites_geojson = ujson.loads(redis_all_site_data)
         else:
-            sites = generate_site_list_from_csv(base_url, provider_id, organization_id, redis_config)
-            if sites['status_code'] == 200 and len(sites['list']) >= 1:
-                sites_list = sites['list']
-            else:
+            sites_request = requests.get(search_endpoint, {"organization": organization_id, "providers": provider_id,
+                                       "mimeType": "geojson", "sorted": "no", "uripage": "yes"})
+            if sites_request.status_code == 200:
+                if sites_request.text == ']}':
+                    abort(404)
+                else:
+                    sites_geojson = ujson.loads(sites_request.text)
+                    redis_session.set(all_sites_key, sites_request.text)
+            elif sites_request.status_code == 500:
+                abort(500)
+            elif sites_request.status_code == 400:
                 abort(404)
     else:
-        sites = generate_site_list_from_csv(base_url, provider_id, organization_id, redis_config)
-        if sites['status_code'] == 200 and len(sites['list']) >= 1:
-            sites_list = sites['list']
-        else:
+        sites_request = requests.get(search_endpoint, {"organization": organization_id, "providers": provider_id,
+                                                       "mimeType": "geojson", "sorted": "no", "uripage": "yes"})
+        if sites_request.status_code == 200:
+            if sites_request.text == ']}':
+                abort(404)
+            else:
+                sites_geojson = ujson.loads(sites_request.text)
+        elif sites_request.status_code == 500:
+            abort(500)
+        elif sites_request.status_code == 400:
             abort(404)
-    if sites_list:
-        return render_template('sites.html', provider=provider_id, organization=organization_id, site_list=sites_list)
-    else:
-        abort(404)
+    if 'mimetype' in request.args and request.args.get("mimetype") == 'json':
+        return Response(ujson.dumps(sites_geojson), mimetype="application/json")
+    return render_template('sites.html', provider=provider_id, organization=organization_id, sites_geojson=sites_geojson)
 
 
-@app.route('/provider/<provider_id>/<organization_id>/<site_id>', endpoint='uri_site')
+
+@app.route('/provider/<provider_id>/<organization_id>/<site_id>/', endpoint='uri_site')
 def uris(provider_id, organization_id, site_id):
     providers = generate_provider_list(code_endpoint)['providers']
     if provider_id not in providers:
@@ -252,18 +272,18 @@ def uris(provider_id, organization_id, site_id):
         redis_db_number = generate_redis_db_number(provider_id)
         r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db_number,
                               password=redis_config.get('password'))
-        site_key = 'sites_' + provider_id + '_' + site_id
+        site_key = 'sites_' + provider_id + '_' + str(organization_id) + "_" + str(site_id)
         redis_site_data = r.get(site_key)
         if redis_site_data:
-            site_data = ast.literal_eval(redis_site_data)
+            site_data = pickle.loads(redis_site_data)
         else:
-            service_site_data = get_site_info(base_url, provider_id, site_id, organization_id, code_endpoint)
+            service_site_data = get_site_info(base_url, provider_id, site_id, organization_id)
             if service_site_data['status_code'] == 200 and service_site_data['site_data']:
                 site_data = service_site_data['site_data']
             elif service_site_data['status_code'] == 500:
                 abort(500)
     else:
-        service_site_data = get_site_info(base_url, provider_id, site_id, organization_id, code_endpoint)
+        service_site_data = get_site_info(base_url, provider_id, site_id, organization_id)
         if service_site_data['status_code'] == 200 and service_site_data['site_data']:
             site_data = service_site_data['site_data']
         elif service_site_data['status_code'] == 500:
@@ -292,16 +312,16 @@ def uris(provider_id, organization_id, site_id):
     else:
         abort(404)
 
+
 @app.route('/clear_cache/')
 @app.route('/clear_cache/<provider_id>/')
-def clear_cache(provider_id = None):
-    if cache_config['CACHE_TYPE'] == 'redis':
+def clear_cache(provider_id=None):
+    if redis_config:
         if provider_id:
             redis_db_number = generate_redis_db_number(provider_id)
             r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db_number,
                                   password=redis_config.get('password'))
             r.flushdb()
-            cache.clear()
             return 'site cache cleared for: ' + provider_id
         else:
             r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_config['db'],
@@ -309,19 +329,23 @@ def clear_cache(provider_id = None):
             r.flushall()
             return 'complete cache cleared '
     else:
-        cache.clear()
-        return "no redis cache, full cache cleared"
+        return "no redis cache, no cache to clear"
 
-@app.route('/rebuild_site_cache/<provider_id>')
+
+@app.route('/rebuild_site_cache/<provider_id>/')
 def rebuild_site_cache(provider_id=None):
-    sites = generate_site_list_from_csv(base_url, provider_id=provider_id, redis_config=redis_config,
-                                        password=redis_config.get('password'))
-    if sites['status_code'] == 200 and len(sites['list']) >= 1:
-        return 'successfully rebuilt ' + provider_id + ' site cache!'
-    if sites['status_code'] == 500:
-        abort(500)
-    else:
+    providers = generate_provider_list(code_endpoint)['providers']
+    if provider_id not in providers:
         abort(404)
+    redis_db = generate_redis_db_number(provider_id)
+    sites = generate_site_list_from_streamed_tsv(base_url, redis_config=redis_config, provider_id=provider_id,
+                                                 redis_db=redis_db)
+    if sites['cached_count'] > 0:
+        return 'rebuilt site cache for ' + provider_id+' with ' + str(sites['cached_count']) + ' cached and ' + \
+               str(sites['error_count']) + ' errors.'
+
+    else:
+        return str(sites)
 
 
 @app.route('/robots.txt')
