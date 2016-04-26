@@ -31,6 +31,13 @@ SEARCH_QUERY_ENDPOINT = ''
 	
 #points to the public srsnames endpoint you want to use.
 PUBLIC_SRSNAMES_ENDPOINT = ''
+
+# set REDIS Config if it exists.
+REDIS_CONFIG = None
+
+# set the local base url, this deals with the weird way we do wsgi around here, for local development
+# use http://127.0.0.1:5050
+LOCAL_BASE_URL = ''
 ```
 
 
