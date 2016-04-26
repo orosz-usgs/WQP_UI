@@ -1,4 +1,4 @@
-from flask import render_template, request, make_response, redirect, url_for, abort
+from flask import render_template, request, make_response, redirect, url_for, abort, Response
 from . import app
 from .utils import pull_feed, geoserver_proxy_request, generate_provider_list, generate_organization_list, \
     get_site_info, check_org_id,generate_site_list_from_geojson, generate_redis_db_number, \
@@ -8,6 +8,7 @@ import ast
 import requests
 import sys
 import cPickle as pickle
+import ujson
 
 # fix a mysterious encoding issue, see
 # http://stackoverflow.com/questions/21129020/how-to-fix-unicodedecodeerror-ascii-codec-cant-decode-byte
@@ -218,7 +219,8 @@ def uri_organization(provider_id, organization_id):
     org_check = check_org_id(organization_id, code_endpoint)
     if org_check['status_code'] == 200 and org_check['org_exists'] == False:
         abort(404)
-    sites_list = None
+    sites_geojson = None
+    search_endpoint = base_url + "Station/search/"
     if redis_config:
         redis_db_number = generate_redis_db_number(provider_id)
         redis_session = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'],
@@ -226,23 +228,38 @@ def uri_organization(provider_id, organization_id):
         all_sites_key = 'all_sites_' + provider_id + '_' + organization_id
         redis_all_site_data = redis_session.get(all_sites_key)
         if redis_all_site_data:
-            sites_list = pickle.loads(redis_all_site_data)
+            print("getting from cache")
+            sites_geojson = ujson.loads(redis_all_site_data)
         else:
-            sites = generate_site_list_from_geojson(base_url, provider_id, organization_id, redis_config)
-            if sites['status_code'] == 200 and len(sites['list']) >= 1:
-                sites_list = sites['list']
-            else:
+            print ('making request')
+            sites_request = requests.get(search_endpoint, {"organization": organization_id, "providers": provider_id,
+                                       "mimeType": "geojson", "sorted": "no", "uripage": "yes"})
+            if sites_request.status_code == 200:
+                if sites_request.text == ']}':
+                    abort(404)
+                else:
+                    sites_geojson = ujson.loads(sites_request.text)
+                    redis_session.set(all_sites_key, sites_request.text)
+            elif sites_request.status_code == 500:
+                abort(500)
+            elif sites_request.status_code == 400:
                 abort(404)
     else:
-        sites = generate_site_list_from_geojson(base_url, provider_id, organization_id, redis_config)
-        if sites['status_code'] == 200 and len(sites['list']) >= 1:
-            sites_list = sites['list']
-        else:
+        sites_request = requests.get(search_endpoint, {"organization": organization_id, "providers": provider_id,
+                                                       "mimeType": "geojson", "sorted": "no", "uripage": "yes"})
+        if sites_request.status_code == 200:
+            if sites_request.text == ']}':
+                abort(404)
+            else:
+                sites_geojson = ujson.loads(sites_request.text)
+        elif sites_request.status_code == 500:
+            abort(500)
+        elif sites_request.status_code == 400:
             abort(404)
-    if sites_list:
-        return render_template('sites.html', provider=provider_id, organization=organization_id, site_list=sites_list)
-    else:
-        abort(404)
+    if 'mimetype' in request.args and request.args.get("mimetype") == 'json':
+        return Response(ujson.dumps(sites_geojson), mimetype="application/json")
+    return render_template('sites.html', provider=provider_id, organization=organization_id, sites_geojson=sites_geojson)
+
 
 
 @app.route('/provider/<provider_id>/<organization_id>/<site_id>/', endpoint='uri_site')
