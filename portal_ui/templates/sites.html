@@ -12,7 +12,8 @@
     <a href="{{ url_for('home-canonical') }}">WQP Home</a> > <a href="{{ url_for('uri_base') }}">Providers</a> > <a href="{{ url_for('uri_provider',provider_id=provider) }}">{{ provider }}</a> > <a href="{{ url_for('uri_organization',provider_id=provider, organization_id=organization) }}">{{ organization }}</a>
     <h1>Water Quality Portal Data Sites for {{ organization }}</h1>
 
-    <div id="map" style="width: 100%; height: 600px;"></div>
+    <div id="sites_map"></div>
+    </br>
 
     {% for site in sites_geojson['features'] %}
         <a href="{{ url_for('uri_site', organization_id = organization, provider_id = provider, site_id=site['properties']['MonitoringLocationIdentifier']) }}">- {{ site['properties']['MonitoringLocationName'] }} - {{ site['properties']['MonitoringLocationIdentifier'] }} ({{ site['properties']['ResolvedMonitoringLocationTypeName'] }})</a></br>
@@ -23,16 +24,12 @@
     <script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet/dist/leaflet.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet-providers/leaflet-providers.js') }}"></script>
     <script type="text/javascript">
-    var provider = "{{ provider }}";
-    //var pageURL = "{{ config.LOCAL_BASE_URL }}{{ request.path }}";
-    //var sitesData= $.getJSON(pageURL, {"mimetype":"json"});
-
 
 
 
 
     //This example uses leaflet to render maps.  Learn more about leaflet at http://leafletjs.com/
-    var map = L.map('map');
+    var map = L.map('sites_map');
     // leaflet providers is a simple way to add a variety of free basemaps to a map.
     // learn more here: https://github.com/leaflet-extras/leaflet-providers
     var basemapTiles = L.tileLayer.provider('Esri.WorldTopoMap');
