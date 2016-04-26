@@ -69,7 +69,11 @@ PORTAL.queryServices = (function () {
 	 * @returns {String} - the url and query params to download data
 	 */
 	self.getFormUrl = function (resultType, queryParams) {
-		return Config.QUERY_URLS[resultType] + "?" + queryParams;
+		var result = Config.QUERY_URLS[resultType];
+		if (queryParams) {
+			result = result + '?' + queryParams;
+		}
+		return result;
 	};
 
 	return self;
