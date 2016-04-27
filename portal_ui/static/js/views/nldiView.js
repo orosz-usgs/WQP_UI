@@ -333,7 +333,8 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		{
 			layers : 'nhdplus:nhdflowline_network',
 			format : 'image/png',
-			transparent : true
+			transparent : true,
+			opacity : 0.5
 		}
 	);
 
@@ -382,7 +383,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		map = new MapWithSingleClickHandler(options.mapDivId, {
 			center: [37.0, -100.0],
 			zoom : 3,
-			layers : [baseLayers['World Gray'], hydroLayer],
+			layers : [baseLayers['World Gray'], hydroLayer, nhdlPlusFlowlineLayer],
 			zoomControl : false
 		});
 		map.addControl(collapseControl);

@@ -24,7 +24,7 @@
 {% block page_content %}
 	<div id="page-content">
 		<form role="form" id="params" name="params" autocomplete="off"
-			  method="get" action="{{ config.SEARCH_QUERY_ENDPOINT }}Station/search">
+			  method="post" action="{{ config.SEARCH_QUERY_ENDPOINT }}Station/search">
 			<div class="panel" id="location-parameters">
 				<div class="panel-heading">
 					LOCATION
@@ -187,8 +187,8 @@
 							</div>
 							<button type="button" class="help-link popover-help" id="hucHelp" data-help="huc">?</button>
 						</div>
-						<div class="form-group" id="nldi-container">
-							<label class="control-label" for="nldi-picker">Search Upstream and Downstream</label>
+						<div id="nldi-container">
+							<label for="nldi-picker">Search Upstream and Downstream</label>
 							<button type="button" class="help-link popover-help" id="nldiHelp" data-help="nldi">?</button>
 						</div>
 						<div id="nldi-sites-container"></div>
