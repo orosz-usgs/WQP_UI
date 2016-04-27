@@ -3,16 +3,24 @@
 {% block title %}Water Quality Portal Data Sites for {{ organization }}{% endblock %}
 
 {% block page_style %}
-<link rel="stylesheet" type="text/css"
+{% if total_site_count < 60000 %}
+    <link rel="stylesheet" type="text/css"
 		  href="{{ url_for('bower.static', filename='leaflet/dist/leaflet.css') }}" />
+    <link rel="stylesheet" type="text/css"
+		  href="{{ url_for('bower.static', filename='leaflet.markercluster/dist/MarkerCluster.Default.css') }}"/>
+{% endif %}
 {% endblock %}
 
 
 {% block page_content %}
     <a href="{{ url_for('home-canonical') }}">WQP Home</a> > <a href="{{ url_for('uri_base') }}">Providers</a> > <a href="{{ url_for('uri_provider',provider_id=provider) }}">{{ provider }}</a> > <a href="{{ url_for('uri_organization',provider_id=provider, organization_id=organization) }}">{{ organization }}</a>
     <h1>Water Quality Portal Data Sites for {{ organization }}</h1>
-
-    <div id="sites_map"></div>
+    {% if total_site_count >= 60000 %}
+        <p>This organization has over {{ total_site_count }} sites, and their locations are not mapped</p>
+    {% else %}
+        <div id="sites_map"></div>
+        <p>This organization has {{ total_site_count }} sites. Click on a grouped icon to zoom and expand</p>
+    {% endif %}
     </br>
 
     {% for site in sites_geojson['features'] %}
@@ -21,8 +29,10 @@
 {% endblock %}
 
 {% block body_page_script %}
+    {% if total_site_count < 60000 %}
     <script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet/dist/leaflet.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet-providers/leaflet-providers.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet.markercluster/dist/leaflet.markercluster.js') }}"></script>
     <script type="text/javascript">
 
 
@@ -69,9 +79,14 @@
                     +'<br>Station Details:  <a href="{{ config.LOCAL_BASE_URL }}{{ request.path }}' + feature.properties.MonitoringLocationIdentifier + '/">Go to station page.</a>';
                 layer.bindPopup(popupText);
                 }
+
+
+
+
     // actually adding the data to the map.
     //learn more about this here:
     function addDataToMap(data, map) {
+        var markers = L.markerClusterGroup({chunkedLoading:true, spiderfyDistanceMultiplier:3});
         var dataLayer = L.geoJson(data, {
             onEachFeature: setPopupValue,
             pointToLayer: function (feature, latlng) {
@@ -86,15 +101,14 @@
                     });
             }
             });
-        dataLayer.addTo(map);
+        markers.addLayer(dataLayer);
+        map.addLayer(markers);
         map.fitBounds(L.geoJson(data).getBounds());
     }
 
-    var pageURL = "{{ config.LOCAL_BASE_URL }}{{ request.path }}";
-    $.getJSON( pageURL, {
-        "mimetype": "json"
-        },
-        function(data) { addDataToMap(data, map); });
+    var siteData = {{ sites_geojson|tojson }};
+    addDataToMap(siteData, map);
 
     </script>
+    {% endif %}
 {% endblock %}

@@ -3,7 +3,6 @@ from . import app
 from .utils import pull_feed, geoserver_proxy_request, generate_provider_list, generate_organization_list, \
     get_site_info, check_org_id, generate_redis_db_number, generate_site_list_from_streamed_tsv
 import redis
-import ast
 import requests
 import sys
 import cPickle as pickle
@@ -227,16 +226,20 @@ def uri_organization(provider_id, organization_id):
         all_sites_key = 'all_sites_' + provider_id + '_' + organization_id
         redis_all_site_data = redis_session.get(all_sites_key)
         if redis_all_site_data:
-            sites_geojson = ujson.loads(redis_all_site_data)
+            rendered_site_template = pickle.loads(redis_all_site_data)
         else:
             sites_request = requests.get(search_endpoint, {"organization": organization_id, "providers": provider_id,
                                        "mimeType": "geojson", "sorted": "no", "uripage": "yes"})
             if sites_request.status_code == 200:
+                total_site_count = int(sites_request.headers['Total-Site-Count'])
                 if sites_request.text == ']}':
                     abort(404)
                 else:
                     sites_geojson = ujson.loads(sites_request.text)
-                    redis_session.set(all_sites_key, sites_request.text)
+                    rendered_site_template = render_template('sites.html', provider=provider_id,
+                                                             organization=organization_id, sites_geojson=sites_geojson,
+                                                             total_site_count=total_site_count)
+                    redis_session.set(all_sites_key, pickle.dumps(rendered_site_template, 2))
             elif sites_request.status_code == 500:
                 abort(500)
             elif sites_request.status_code == 400:
@@ -245,17 +248,21 @@ def uri_organization(provider_id, organization_id):
         sites_request = requests.get(search_endpoint, {"organization": organization_id, "providers": provider_id,
                                                        "mimeType": "geojson", "sorted": "no", "uripage": "yes"})
         if sites_request.status_code == 200:
+            total_site_count = int(sites_request.headers['Total-Site-Count'])
             if sites_request.text == ']}':
                 abort(404)
             else:
                 sites_geojson = ujson.loads(sites_request.text)
+                rendered_site_template = render_template('sites.html', provider=provider_id,
+                                                         organization=organization_id, sites_geojson=sites_geojson,
+                                                         total_site_count=total_site_count)
         elif sites_request.status_code == 500:
             abort(500)
         elif sites_request.status_code == 400:
             abort(404)
     if 'mimetype' in request.args and request.args.get("mimetype") == 'json':
         return Response(ujson.dumps(sites_geojson), mimetype="application/json")
-    return render_template('sites.html', provider=provider_id, organization=organization_id, sites_geojson=sites_geojson)
+    return Response(rendered_site_template)
 
 
 
