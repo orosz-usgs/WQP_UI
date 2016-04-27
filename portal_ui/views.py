@@ -217,7 +217,7 @@ def uri_organization(provider_id, organization_id):
     org_check = check_org_id(organization_id, code_endpoint)
     if org_check['status_code'] == 200 and org_check['org_exists'] == False:
         abort(404)
-    sites_geojson = None
+    rendered_site_template = None
     search_endpoint = base_url + "Station/search/"
     if redis_config:
         redis_db_number = generate_redis_db_number(provider_id)
@@ -260,9 +260,10 @@ def uri_organization(provider_id, organization_id):
             abort(500)
         elif sites_request.status_code == 400:
             abort(404)
-    if 'mimetype' in request.args and request.args.get("mimetype") == 'json':
-        return Response(ujson.dumps(sites_geojson), mimetype="application/json")
-    return Response(rendered_site_template)
+    if rendered_site_template:
+        return Response(rendered_site_template)
+    else:
+        abort(404)
 
 
 
