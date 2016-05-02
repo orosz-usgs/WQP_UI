@@ -1,11 +1,9 @@
 
 import feedparser
 import requests
-
 from bs4 import BeautifulSoup
 from flask import request, make_response
 import tablib
-import ujson
 import redis
 import csv
 import cPickle as pickle
