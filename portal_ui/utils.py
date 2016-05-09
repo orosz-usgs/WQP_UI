@@ -72,12 +72,13 @@ def generate_provider_list(endpoint):
     provider_list = None
     if status_code == 200:
         codes = r.json().get('codes')
-        provider_list = [code['value'] for code in codes]
+        provider_list = sorted([code['value'] for code in codes])
     return {"status_code": status_code, "providers": provider_list}
 
 
 def check_org_id(org_id, code_endpoint):
     org_exists = False
+    org_name = None
     org_endpoint = code_endpoint + '/Organization'
     r = requests.get(org_endpoint, {"mimeType": "json", "text": org_id})
     status_code = r.status_code
@@ -86,8 +87,9 @@ def check_org_id(org_id, code_endpoint):
         for code in codes:
             if code['value'] == org_id:
                 org_exists = True
+                org_name = code['desc']
                 break
-    return {"org_exists": org_exists, "status_code": status_code}
+    return {"org_exists": org_exists, "status_code": status_code, "org_name": org_name}
 
 
 def generate_organization_list(endpoint, provider):
