@@ -266,8 +266,7 @@ def uri_organization(provider_id, organization_id):
         abort(404)
 
 
-
-@app.route('/provider/<provider_id>/<organization_id>/<site_id>/', endpoint='uri_site')
+@app.route('/provider/<provider_id>/<organization_id>/<path:site_id>/', endpoint='uri_site')
 def uris(provider_id, organization_id, site_id):
     providers = generate_provider_list(code_endpoint)['providers']
     if provider_id not in providers:
@@ -288,6 +287,9 @@ def uris(provider_id, organization_id, site_id):
             service_site_data = get_site_info(base_url, provider_id, site_id, organization_id)
             if service_site_data['status_code'] == 200 and service_site_data['site_data']:
                 site_data = service_site_data['site_data']
+                site_key = 'sites_' + provider_id + '_' + str(site_data['OrganizationIdentifier']) + "_" + \
+                           str(site_data['MonitoringLocationIdentifier'])
+                r.set(site_key, pickle.dumps(site_data, protocol=2))
             elif service_site_data['status_code'] == 500:
                 abort(500)
     else:
