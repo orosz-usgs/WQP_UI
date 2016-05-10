@@ -10,7 +10,7 @@ class RedisDbNumberTestCase(unittest.TestCase):
         assert generate_redis_db_number('NWIS') == 1
 
     def test_will_storet_return_2(self):
-        """will NWIS give back a db value of 2?"""
+        """will STORET give back a db value of 2?"""
         assert generate_redis_db_number('STORET') == 2
 
     def test_will_stewards_return_3(self):
@@ -83,5 +83,3 @@ class CheckGenerateProviderListTestCase(unittest.TestCase):
                            status_code=500)
         response = generate_provider_list('http://www.wqp-mock.gov/Codes')
         assert response == {'status_code': 500, "providers": None}
-
-
