@@ -1,0 +1,33 @@
+nav {
+    .make-row();
+    .navbar-default;
+    @media (min-width : @screen-sm-min) {
+        font-size : @font-size-small;
+    }
+    @media (min-width : @screen-md-min) {
+        font-size : @font-size-base;
+    }
+}
+nav.navbar {
+    @media(max-width: @screen-xs-max) {
+        margin-bottom: 10px;
+    }
+}
+
+#wqp-navbar-header button {
+    float: left;
+    color : white;
+    &:hover {
+        color: @navbar-default-link-hover-color;
+    }
+}
+#wqp-navbar-header a {
+    .navbar-brand;
+}
+
+
+     
+
+    
+
+
