@@ -43,3 +43,6 @@ PROVIDER_PAGES = False
 
 # set the local base url, this deals with the weird way we do wsgi around here
 LOCAL_BASE_URL = ''
+
+#Allow for setting an announcement banner without having to release code
+ANNOUNCEMENT_BANNER = None
