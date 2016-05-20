@@ -134,7 +134,12 @@
 				    </div>          
 				</nav>				
 			{% endblock %}
-			
+			{% if config.ANNOUNCEMENT_BANNER %}
+            <div id="announcement"></div>
+            <script>
+                document.getElementById("announcement").innerHTML = '{{ config.ANNOUNCEMENT_BANNER|safe }}';
+            </script>
+            {% endif %}
 			{% block page_content %}{% endblock %}
 			
 			<div id="footer-content">
