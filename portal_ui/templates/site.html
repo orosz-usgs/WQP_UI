@@ -2,7 +2,14 @@
 
 {% block title %}{{ site['MonitoringLocationName'] }} ({{ site['MonitoringLocationIdentifier'] }}) site data in the Water Quality Portal{% endblock %}
 
-
+{% block page_style %}
+    <link rel="stylesheet" type="text/css"
+		  href="{{ url_for('bower.static', filename='leaflet/dist/leaflet.css') }}" />
+    <link rel="stylesheet" type="text/css"
+		  href="{{ url_for('bower.static', filename='leaflet.markercluster/dist/MarkerCluster.Default.css') }}"/>
+    <link rel="stylesheet" type="text/css"
+		  href="{{ url_for('bower.static', filename='leaflet.markercluster/dist/MarkerCluster.css') }}"/>
+{% endblock %}
 {% block page_content %}
 
     <p><a href="{{ url_for('home-canonical') }}">WQP Home</a> > <a href="{{ url_for('uri_base') }}">Providers</a> > <a href="{{ url_for('uri_provider',provider_id=provider) }}">{{ provider }}</a> > <a href="{{ url_for('uri_organization',provider_id=provider, organization_id=organization) }}">{{ organization }}</a>
@@ -13,6 +20,7 @@
 
     <p>Data Provider: <strong>{{ site['ProviderName'] }}</strong> (<a href="{{ url_for('wqp_description-canonical') }}">Learn more about Water Quality Portal Data Providers</a>)</p>
     <p></p>
+    <div id="sites_map"></div>
 <p>
     This {{ site['MonitoringLocationTypeName']|lower }} site, maintained by the {{ site['OrganizationFormalName'] }} (identifier {{ site['OrganizationIdentifier'] }}),
      has the name "{{ site['MonitoringLocationName'] }}" and has the identifier {{ site['MonitoringLocationIdentifier'] }}.
@@ -70,3 +78,138 @@ To download the metadata about this site along with water quality data, go to th
 
 
 {% endblock %}
+
+{% block body_page_script %}
+    <script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet/dist/leaflet.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet-providers/leaflet-providers.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet.markercluster/dist/leaflet.markercluster.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('bower.static', filename='esri-leaflet/dist/esri-leaflet.js') }}"></script>
+
+
+    <script type="text/javascript">
+
+
+
+
+    //This example uses leaflet to render maps.  Learn more about leaflet at http://leafletjs.com/
+    var map = L.map('sites_map');
+    // leaflet providers is a simple way to add a variety of free basemaps to a map.
+    // learn more here: https://github.com/leaflet-extras/leaflet-providers
+    var basemapTiles = L.tileLayer.provider('Esri.WorldGrayCanvas');
+    basemapTiles.addTo(map);
+    //L.esri.tiledMapLayer({
+    //url: "http://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer"
+    //}).addTo(map);
+    L.tileLayer.wms('http://cida.usgs.gov/nwc/geoserver/gwc/service/wms',
+		{
+			layers : 'nhdplus:nhdflowline_network',
+			format : 'image/png',
+			transparent : true,
+			opacity : 0.5
+		}
+	).addTo(map);
+
+
+    map.setView([35.9908385, -78.9005222], 3);
+
+    var all_extents = {
+                    "features": [],
+                    "properties": {
+						"title": "all search pub extents"
+                    },
+                    "type": "FeatureCollection"
+                };
+
+    var geojsonWqpMarkerOptions = {
+    radius: 4,
+    fillColor: "#ff7800",
+    color: "#000",
+    weight: 1,
+    opacity: 1,
+    fillOpacity: 0.8
+    };
+
+
+    function addPointDataToMap(data, map, markerOptions) {
+        var markers = L.markerClusterGroup({chunkedLoading:true, spiderfyDistanceMultiplier:3, maxClusterRadius:15});
+        var pointLayer = L.geoJson(data, {
+        onEachFeature: onEachPointFeature,
+        pointToLayer: function (feature, latlng) {
+        return L.circleMarker(latlng, markerOptions);
+        }
+        });
+        markers.addLayer(pointLayer);
+        map.addLayer(markers);
+    }
+
+    var feature_group = new L.featureGroup();
+
+
+    function onEachPointFeature(feature, layer) {
+            var parser = document.createElement('a');
+            parser.href =  feature.properties.uri;
+            var popupText = "Data Source: " + feature.properties.source
+                + "<br>Data Source Name: " + feature.properties.sourceName
+                + "<br>Station Name: " + feature.properties.name
+                + "<br>Station ID: " + feature.properties.identifier
+                + "<br>Station ComID: " + feature.properties.comid
+                + "<br>Station Data: " + '<a href="{{ config.LOCAL_BASE_URL }}'+parser.pathname+'">click for more info</a>'
+                + "<br>Station Navigation Options: " + "<a href="+feature.properties.navigation+">click for options</a>";
+            layer.bindPopup(popupText);
+            }
+
+
+
+    function onEachLineFeature(feature, layer) {
+            var popupText = "Data Source: NHD+"
+                + "<br>Reach ComID: " + feature.properties.nhdplus_comid
+            layer.bindPopup(popupText);
+            }
+
+    function addLineDataToMap(data, map) {
+
+    var lineLayer = L.geoJson(data, {
+        onEachFeature: onEachLineFeature
+        });
+    lineLayer.addTo(map);
+
+
+     for (feature in data.features ) {
+         //console.log(JSON.stringify(data.features[feature]));
+         all_extents.features.push(data.features[feature]);
+     }
+    map.fitBounds(L.geoJson(all_extents).getBounds());
+}
+
+
+
+    var nldiURL = "{{ config.NLDI_SERVICES_ENDPOINT }}";
+    var f = 'wqp';
+    var e='UT';
+    var g = 'DM';
+    var c='{{ site['MonitoringLocationIdentifier'] }}';
+    var d='8';
+    var wqpURL_UT = nldiURL+f+"/"+c+"/navigate/"+e+"/wqp";
+    var wqpURL_DM = nldiURL+f+"/"+c+"/navigate/"+g+"/wqp";
+    var nhdURL_UT = nldiURL+f+"/"+c+"/navigate/"+e;
+    var nhdURL_DM = nldiURL+f+"/"+c+"/navigate/"+g;
+    console.log(d);
+    console.log(wqpURL_DM);
+    //$.get(wqpURL, {}, function(data) { addPointDataToMap(data, map); };);
+    console.log("getting sites upstream");
+    $.getJSON( wqpURL_UT, {distance:d}, function(data) { addPointDataToMap(data, map, geojsonWqpMarkerOptions); });
+    console.log("sites added, getting streams upstream");
+    $.getJSON( nhdURL_UT, {distance:d}, function(data) { addLineDataToMap(data, map); });
+    console.log("getting sites downstream");
+    $.getJSON( wqpURL_DM, {distance:d}, function(data) { addPointDataToMap(data, map, geojsonWqpMarkerOptions); });
+    console.log("sites added, getting streams downstream");
+    $.getJSON( nhdURL_DM, {distance:d}, function(data) { addLineDataToMap(data, map); });
+
+    //console.log(JSON.stringify(all_extents));
+    //map.fitBounds(L.geoJson(all_extents).getBounds());
+
+
+
+
+    </script>
+{% endblock body_page_script %}
