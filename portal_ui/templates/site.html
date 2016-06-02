@@ -1,8 +1,5 @@
 {% extends "base.html" %}
 
-{% macro site_description() %}
-
-{% endmacro %}
 
 {% block title %}{{ site['MonitoringLocationName'] }} ({{ site['MonitoringLocationIdentifier'] }}) site data in the Water Quality Portal{% endblock %}
 
@@ -180,21 +177,6 @@ To download the metadata about this site along with water quality data, go to th
         map.addLayer(markers);
     }
 
-    function addThisSiteDataToMap(data, map) {
-        L.geoJson(data, {
-        pointToLayer: function (feature, latlng) {
-            return createSquare(latlng, {
-                radius: .01,
-                color: "#000",
-                weight: 1,
-                fillColor: "#0F5",
-                fillOpacity: 0.75
-            });
-        }
-        }).addTo(map);
-        
-    }
-
     function onEachPointFeature(feature, layer) {
             var parser = document.createElement('a');
             parser.href =  feature.properties.uri;
@@ -206,8 +188,6 @@ To download the metadata about this site along with water quality data, go to th
             layer.bindPopup(popupText);
             }
 
-
-
     function onEachLineFeature(feature, layer) {
             var popupText = "Data Source: NHD+"
                 + "<br>Reach ComID: " + feature.properties.nhdplus_comid;
@@ -216,19 +196,18 @@ To download the metadata about this site along with water quality data, go to th
 
     function addLineDataToMap(data, map, style) {
 
-    var lineLayer = L.geoJson(data, {
-        onEachFeature: onEachLineFeature,
-        style: style
-        });
-    lineLayer.addTo(map);
+        var lineLayer = L.geoJson(data, {
+            onEachFeature: onEachLineFeature,
+            style: style
+            });
+        lineLayer.addTo(map);
 
 
-     for (feature in data.features ) {
-         //console.log(JSON.stringify(data.features[feature]));
-         all_extents.features.push(data.features[feature]);
-     }
-    map.fitBounds(L.geoJson(all_extents).getBounds());
-}
+         for (feature in data.features ) {
+             all_extents.features.push(data.features[feature]);
+         }
+        map.fitBounds(L.geoJson(all_extents).getBounds());
+    }
 
 
     var nldiURL = "{{ config.NLDI_SERVICES_ENDPOINT }}";
@@ -260,8 +239,7 @@ To download the metadata about this site along with water quality data, go to th
     console.log("sites added, getting streams downstream");
     $.getJSON( nhdURL_DM, {distance:d}, function(data) { addLineDataToMap(data, map, downstreamLineStyle); });
 
-    //console.log(JSON.stringify(all_extents));
-    //map.fitBounds(L.geoJson(all_extents).getBounds());
+
 
 
 
