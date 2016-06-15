@@ -354,6 +354,8 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		clearClickHandler : clearHandler
 	});
 
+	var searchControl = L.control.searchControl(Config.GEO_SEARCH_API_ENDPOINT);
+
 	var expandControl = L.easyButton('fa-lg fa-expand', showMap, 'Expand NLDI Map', {
 		position : 'topright'
 	});
@@ -386,6 +388,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 			layers : [baseLayers['World Gray'], hydroLayer, nhdlPlusFlowlineLayer],
 			zoomControl : false
 		});
+		map.addControl(searchControl);
 		map.addControl(collapseControl);
 		map.addControl(layerSwitcher);
 		map.addControl(nldiControl);
