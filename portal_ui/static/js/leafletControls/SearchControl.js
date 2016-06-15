@@ -4,6 +4,14 @@
 
 /*
  * Requires jquery and the select2 widget
+ * This code has only been tested with version 1.1 of the Texas Search API Dataservice.
+ * See http://txpub.usgs.gov/DSS/search_api/1.1/web/index.html#tab5?top for more info
+ *
+ * @constructs
+ * @param {String} searchAPIEndpoint - the url to the Texas Search API Dataservice
+ * @param {Object} options
+ * 		@prop {String} position - defaults to topright
+ * 		@prop {Number} zoomToLevel - defaults to 11.
  */
 L.control.SearchControl = L.Control.extend({
 
