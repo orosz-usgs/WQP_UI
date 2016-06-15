@@ -3,7 +3,7 @@
 /* global L */
 /* global $ */
 
-fdescribe('leafletControl/SearchControl', function() {
+describe('leafletControl/SearchControl', function() {
 	"use strict";
 
 	var FAKE_SERVICE = 'http://fakesearchservice.com/api';
