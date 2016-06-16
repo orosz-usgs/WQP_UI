@@ -22,6 +22,8 @@ NLDI_SERVICES_ENDPOINT = ''
 NWIS_SITES_OGC_ENDPOINT = 'http://cida.usgs.gov/nwc/proxygeoserver/NWC/wms'
 NWIS_SITES_LAYER_NAME = 'NWC:gagesII'
 
+GEO_SEARCH_API_ENDPOINT = 'http://txpub.usgs.gov/DSS/search_api/1.1/dataService/dataService.ashx/search'
+
 GA_TRACKING_CODE = ''
 
 # set to false in instance/config.py if you want to turn off the NLDI feature
