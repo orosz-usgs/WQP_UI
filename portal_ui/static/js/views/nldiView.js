@@ -100,11 +100,18 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	 * @param {String} comId
 	 * @param {String} navigate
 	 * @param {String}  distance
-	 * @returns {String{
+	 * @returns {String}
 	 */
 	var getNldiUrl = function(comid, navigate, distance) {
 		return Config.NLDI_SERVICES_ENDPOINT + 'comid/' + comid + '/navigate/' + navigate + '/wqp?distance=' + distance;
 	};
+
+	/*
+	 * @param {String} comId
+	 * @param {String} navigate
+	 * @param {String}  distance
+	 * @returns {jqXHR}
+	 */
 	var fetchNldiSites = function(comid, navigate, distance) {
 		return $.ajax({
 			url : getNldiUrl(comid, navigate, distance),
