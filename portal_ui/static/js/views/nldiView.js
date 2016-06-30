@@ -15,7 +15,7 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
  * @param {Object} options
  * 		@prop {String} insetMapDivId
  * 		@prop {String} mapDivId
- * 		@prop {Jquery element} $siteInputContainer
+ * 		@prop {Jquery element} $inputContainer
  */
 PORTAL.VIEWS.nldiView  = function(options) {
 	"use strict";
@@ -51,16 +51,16 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		}
 
 		siteIds = [];
-		options.$siteInputContainer.html('');
+		options.$inputContainer.html('');
 	};
 
-	var updateNldiSitesInputs = function(newSites) {
-		var addInput = function(memo, siteId) {
-			return memo + '<input type="hidden" name="siteid" value="' + siteId + '" />';
-		};
-		var htmlInputs = _.reduce(newSites, addInput, '');
+	var updateNldiInput = function(url) {
+		var html = '';
+		if (url) {
+			html = '<input type="hidden" name="nldiurl" value="' + url + '" />';
+		}
 
-		options.$siteInputContainer.html(htmlInputs);
+		options.$inputContainer.html(html);
 	};
 
 
@@ -98,16 +98,17 @@ PORTAL.VIEWS.nldiView  = function(options) {
 
 	/*
 	 * @param {String} comId
-	 * @param {String navigate
-	 * @returns $.jqXHR object
+	 * @param {String} navigate
+	 * @param {String}  distance
+	 * @returns {String{
 	 */
+	var getNldiUrl = function(comid, navigate, distance) {
+		return Config.NLDI_SERVICES_ENDPOINT + 'comid/' + comid + '/navigate/' + navigate + '/wqp?distance=' + distance;
+	};
 	var fetchNldiSites = function(comid, navigate, distance) {
 		return $.ajax({
-			url : Config.NLDI_SERVICES_ENDPOINT + 'comid/' + comid + '/navigate/' + navigate + '/wqp',
-			method : 'GET',
-			data : {
-				distance : distance
-			}
+			url : getNldiUrl(comid, navigate, distance),
+			method : 'GET'
 		});
 
 	};
@@ -158,27 +159,16 @@ PORTAL.VIEWS.nldiView  = function(options) {
 					flowlineBounds = nldiFlowlineLayers.getBounds();
 					map.fitBounds(flowlineBounds);
 
-					if (sitesGeojson[0].features.length < 1000) {
-						nldiSiteLayers = siteLayer(sitesGeojson);
-						insetNldiSiteLayers = siteLayer(sitesGeojson);
+					nldiSiteLayers = siteLayer(sitesGeojson);
+					insetNldiSiteLayers = siteLayer(sitesGeojson);
+					map.addLayer(nldiSiteLayers);
+					insetMap.addLayer(insetNldiSiteLayers);
 
-						map.addLayer(nldiSiteLayers);
-						insetMap.addLayer(insetNldiSiteLayers);
-
-						siteIds = _.map(sitesGeojson[0].features, function (feature) {
-							return feature.properties.identifier;
-						});
-
-					}
-					else {
-						map.openPopup('<p>The number of sites exceeds 1000 and can\'t be used to query the WQP. You may want to try searching by HUC',
-							flowlineBounds.getCenter());
-					}
-					updateNldiSitesInputs(siteIds);
+					updateNldiInput(getNldiUrl(comid, navigate, distance));
 				})
 				.fail(function () {
 					map.openPopup('Unable to retrieve NLDI information', map.getCenter());
-					updateNldiSitesInputs(siteIds);
+					updateNldiInput('');
 				})
 				.always(function () {
 					$mapDiv.css('cursor', '');
