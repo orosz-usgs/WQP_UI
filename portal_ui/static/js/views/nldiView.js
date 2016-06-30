@@ -22,8 +22,8 @@ PORTAL.VIEWS.nldiView  = function(options) {
 
 	var self = {};
 
-	var comid = '';
-	var comidLatLng;
+	var huc12 = '';
+	var pourPtLatLng;
 	var navValue = '';
 	var distanceValue = '';
 
@@ -71,29 +71,26 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	 * 			empty string if no features were found.
 	 * 		@reject	- If unable to fetch the comid
 	 */
-	var fetchComid = function(bounds) {
-		var deferred  = $.Deferred();
-
-		L.esri.Tasks.query({
-			url : Config.NLDI_COMID_ENDPOINT
-		})
-			.intersects(bounds)
-			.layer(1)
-			.fields(['COMID'])
-			.run(function(error, featureCollection) {
-				if (error) {
-					deferred.reject();
-					log.error('Unable to retrieve comids from service ' + Config.NLDI_COMID_ENDPOINT);
-				}
-				else {
-					deferred.resolve({
-						totalFeatures : featureCollection.features.length,
-						comid : (featureCollection.features.length > 0) ? featureCollection.features[0].properties.COMID : ''
-					});
-				}
-			});
-
-		return deferred.promise();
+	var fetchHuc12 = function(point) {
+		var mapBounds = map.getBounds();
+		return $.ajax({
+			url : Config.NLDI_POURPT_ENDPOINT,
+			method : 'GET',
+			data : {
+				version: '1.3.0',
+				request: 'GetFeatureInfo',
+				service: 'wms',
+				layers : 'sb:tpp',
+				crs : 'EPSG:4326',
+				bbox : mapBounds.getSouth() + ',' + mapBounds.getWest() + ',' + mapBounds.getNorth() + ',' + mapBounds.getEast(),
+				width : map.getSize().x,
+				height : map.getSize().y,
+				'info_format' : 'application/json',
+				'query_layers' : 'sb:tpp',
+				i : point.x,
+				j : point.y
+			}
+		});
 	};
 
 	/*
@@ -102,8 +99,8 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	 * @param {String}  distance
 	 * @returns {String}
 	 */
-	var getNldiUrl = function(comid, navigate, distance) {
-		return Config.NLDI_SERVICES_ENDPOINT + 'comid/' + comid + '/navigate/' + navigate + '/wqp?distance=' + distance;
+	var getNldiUrl = function(huc12, navigate, distance) {
+		return Config.NLDI_SERVICES_ENDPOINT + 'huc12pp/' + huc12 + '/navigate/' + navigate + '/wqp?distance=' + distance;
 	};
 
 	/*
@@ -112,9 +109,9 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	 * @param {String}  distance
 	 * @returns {jqXHR}
 	 */
-	var fetchNldiSites = function(comid, navigate, distance) {
+	var fetchNldiSites = function(huc12, navigate, distance) {
 		return $.ajax({
-			url : getNldiUrl(comid, navigate, distance),
+			url : getNldiUrl(huc12, navigate, distance),
 			method : 'GET'
 		});
 
@@ -125,9 +122,9 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	 * @param {String navigate
 	 * @returns $.jqXHR object
 	 */
-	var fetchNldiFlowlines = function(comid, navigate, distance) {
+	var fetchNldiFlowlines = function(huc12, navigate, distance) {
 		return $.ajax({
-			url : Config.NLDI_SERVICES_ENDPOINT + 'comid/' + comid + '/navigate/' + navigate,
+			url : Config.NLDI_SERVICES_ENDPOINT + 'huc12pp/' + huc12 + '/navigate/' + navigate,
 			method : 'GET',
 			data : {
 				distance : distance
@@ -135,7 +132,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		});
 	};
 
-	var updateNldiSites = function(comid, navigate, distance) {
+	var updateNldiSites = function(huc12, navigate, distance) {
 		var flowlineLayer = _.partial(L.geoJson);
 		var siteLayer = _.partial(L.geoJson, _, {
 			pointToLayer: function (featureData, latlng) {
@@ -150,9 +147,9 @@ PORTAL.VIEWS.nldiView  = function(options) {
 			}
 		});
 
-		if ((comid) && (navigate)) {
+		if ((huc12) && (navigate)) {
 			$mapDiv.css('cursor', 'progress');
-			$.when(fetchNldiSites(comid, navigate, distance), fetchNldiFlowlines(comid, navigate, distance))
+			$.when(fetchNldiSites(huc12, navigate, distance), fetchNldiFlowlines(huc12, navigate, distance))
 				.done(function (sitesGeojson, flowlinesGeojson) {
 					var flowlineBounds;
 
@@ -171,7 +168,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 					map.addLayer(nldiSiteLayers);
 					insetMap.addLayer(insetNldiSiteLayers);
 
-					updateNldiInput(getNldiUrl(comid, navigate, distance));
+					updateNldiInput(getNldiUrl(huc12, navigate, distance));
 				})
 				.fail(function () {
 					map.openPopup('Unable to retrieve NLDI information', map.getCenter());
@@ -190,40 +187,37 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	 * @param {L.MouseEvent} ev
 	 */
 	var findSitesHandler = function(ev) {
-		var point = ev.layerPoint;
-		var bounds = L.latLngBounds(map.layerPointToLatLng([point.x - 5, point.y + 5 ]),
-			map.layerPointToLatLng([point.x + 5, point.y - 5]));
+		var point = ev.containerPoint;
 
 		if (navValue) {
 			log.debug('Clicked at location: ' + ev.latlng.toString());
 			$mapDiv.css('cursor', 'progress');
-			comid = '';
-			comidLatLng = undefined;
+			huc12 = '';
+			pourPtLatLng = undefined;
 			cleanUpMapsAndSites();
 			map.closePopup();
 
-			fetchComid(bounds)
+			fetchHuc12(point.round())
 				.done(function (result) {
-					log.debug('Got COMID response');
-
-					if (result.totalFeatures === 0) {
-						map.openPopup('<p>No reach has been selected. Please try at a different location.</p>', ev.latlng);
+					log.debug('Got HUC12 response');
+					if (result.features.length === 0) {
+						map.openPopup('<p>No pour point has been selected. Please click on a pour point.</p>', ev.latlng);
 						$mapDiv.css('cursor', '');
 
 					}
-					else if (result.totalFeatures > 2) {
-						map.openPopup('<p>More than one reach has been selected. Please zoom in and try again.</p>', ev.latlng);
+					else if (result.features.length > 1) {
+						map.openPopup('<p>More than one pour point has been selected. Please zoom in and try again.</p>', ev.latlng);
 						$mapDiv.css('cursor', '');
 					}
 					else {
-						comid = result.comid;
-						comidLatLng = ev.latlng;
-						map.openPopup('<p>Successfully retrieved comid ' + result.comid + '. Retrieving sites.</p>', ev.latlng);
-						updateNldiSites(comid, navValue, distanceValue);
+						huc12 = result.features[0].properties.HUC_12;
+						pourPtLatLng = ev.latlng;
+						map.openPopup('<p>Successfully retrieved huc12 ' + huc12 + '. Retrieving sites.</p>', ev.latlng);
+						updateNldiSites(huc12, navValue, distanceValue);
 					}
 				})
 				.fail(function () {
-					map.openPopup('<p>Unable to retrieve comids, service call failed</p>', ev.latlng);
+					map.openPopup('<p>Unable to retrieve pour point, service call failed</p>', ev.latlng);
 					$mapDiv.css('cursor', '');
 				});
 		}
@@ -270,9 +264,9 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		cleanUpMapsAndSites();
 		if (navValue) {
 			showMap();
-			if (comid) {
-				map.openPopup('Retrieving sites at comid ' + comid + '.', comidLatLng);
-				updateNldiSites(comid, navValue, distanceValue);
+			if (huc12) {
+				map.openPopup('Retrieving NLDI sites using huc12 ' + huc12 + '.', pourPtLatLng);
+				updateNldiSites(huc12, navValue, distanceValue);
 			}
 		}
 		else {
@@ -286,9 +280,9 @@ PORTAL.VIEWS.nldiView  = function(options) {
 
 		if (navValue) {
 			showMap();
-			if (comid) {
-				map.openPopup('Retrieving sites at comid ' + comid + '.',  comidLatLng);
-				updateNldiSites(comid, navValue, distanceValue);
+			if (huc12) {
+				map.openPopup('Retrieving NLDI sites using huc12 ' + huc12 + '.',  pourPtLatLng);
+				updateNldiSites(huc12, navValue, distanceValue);
 			}
 		}
 		else {
@@ -297,8 +291,8 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	};
 
 	var clearHandler = function() {
-		comid = '';
-		comidLatLng = undefined;
+		huc12 = '';
+		pourPtLatLng = undefined;
 		navValue = '';
 		distanceValue = '';
 
@@ -335,9 +329,17 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		}
 	);
 
+	var pourPointLayer = L.tileLayer.wms(Config.NLDI_POURPT_ENDPOINT, {
+		layers:'tpp',
+		format : 'image/png',
+		transparent : true,
+		minZoom : 8
+	});
+
 	var layerSwitcher = L.control.layers(baseLayers, {
 		'Hydro Reference' : hydroLayer,
-		'NHDLPlus Flowline Network' : nhdlPlusFlowlineLayer
+		'NHDLPlus Flowline Network' : nhdlPlusFlowlineLayer,
+		'WBD HU12 Pour Points' : pourPointLayer
 	});
 
 	var insetNldiControl = L.control.nldiControl({
@@ -382,7 +384,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		map = new MapWithSingleClickHandler(options.mapDivId, {
 			center: [37.0, -100.0],
 			zoom : 3,
-			layers : [baseLayers['World Gray'], hydroLayer, nhdlPlusFlowlineLayer],
+			layers : [baseLayers['World Gray'], hydroLayer, nhdlPlusFlowlineLayer, pourPointLayer],
 			zoomControl : false
 		});
 		map.addControl(searchControl);
