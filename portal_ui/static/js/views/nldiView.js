@@ -38,7 +38,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	var insetNldiSiteLayers, insetNldiFlowlineLayers;
 
 	var getRetrieveMessage = function() {
-		return '<p>Retrieving sites ' + navValue.text.toLowerCase() + ((distanceValue) ? distanceValue + ' km' : '') + '.</p>';
+		return '<p>Retrieving sites ' + navValue.text.toLowerCase() + ((distanceValue) ? ' ' + distanceValue + ' km' : '') + '.</p>';
 	};
 
 	var cleanUpMaps = function() {
