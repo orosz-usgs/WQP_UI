@@ -153,10 +153,12 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		if ((huc12) && (navigate)) {
 			$mapDiv.css('cursor', 'progress');
 			$.when(fetchNldiSites(huc12, navigate, distance), fetchNldiFlowlines(huc12, navigate, distance))
-				.done(function (sitesGeojson, flowlinesGeojson) {
+				.done(function (sitesResponse, flowlinesResponse) {
 					var flowlineBounds;
+					var sitesGeojson = sitesResponse[0];
+					var flowlinesGeojson = flowlinesResponse[0]
 
-					log.debug('NLDI service has retrieved ' + sitesGeojson[0].features.length + ' sites.')
+					log.debug('NLDI service has retrieved ' + sitesGeojson.features.length + ' sites.')
 					map.closePopup();
 
 					nldiFlowlineLayers = flowlineLayer(flowlinesGeojson);
