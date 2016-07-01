@@ -24,10 +24,11 @@ PORTAL.VIEWS.nldiView  = function(options) {
 
 	var huc12 = '';
 	var pourPtLatLng;
-	var navValue = '';
+	var navValue = {
+		id: '',
+		text : ''
+	};
 	var distanceValue = '';
-
-	var siteIds = [];
 
 	var insetMap, map;
 	var $mapDiv = $('#' + options.mapDivId);
@@ -36,7 +37,11 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	var nldiSiteLayers, nldiFlowlineLayers;
 	var insetNldiSiteLayers, insetNldiFlowlineLayers;
 
-	var cleanUpMapsAndSites = function() {
+	var getRetrieveMessage = function() {
+		return '<p>Retrieving sites ' + navValue.text.toLowerCase() + ((distanceValue) ? distanceValue + ' km' : '') + '.</p>';
+	};
+
+	var cleanUpMaps = function() {
 		if (nldiSiteLayers) {
 			map.removeLayer(nldiSiteLayers);
 		}
@@ -50,7 +55,6 @@ PORTAL.VIEWS.nldiView  = function(options) {
 			insetMap.removeLayer(insetNldiFlowlineLayers);
 		}
 
-		siteIds = [];
 		options.$inputContainer.html('');
 	};
 
@@ -65,13 +69,12 @@ PORTAL.VIEWS.nldiView  = function(options) {
 
 
 	/*
-	 * @param {L.LatLngBounds} bounds - Looking for a com id within bounds
+	 * @param {L.Point} point - This is the containerPoint where we are looking for a feature from the pour point endpoint
 	 * @returns $Deferred.promise
-	 * 		@resolve - Returns {Object} with {Number} totalFeatures property and {String} comid property. The comId will be the first one returned or the
-	 * 			empty string if no features were found.
-	 * 		@reject	- If unable to fetch the comid
+	 * 		@resolve - Returns {Object} - the json data received from the request
+	 * 		@reject	- If unable to fetch the pour point
 	 */
-	var fetchHuc12 = function(point) {
+	var fetchPourPoint = function(point) {
 		var mapBounds = map.getBounds();
 		return $.ajax({
 			url : Config.NLDI_POURPT_ENDPOINT,
@@ -153,6 +156,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 				.done(function (sitesGeojson, flowlinesGeojson) {
 					var flowlineBounds;
 
+					log.debug('NLDI service has retrieved ' + sitesGeojson.features.length + ' sites.')
 					map.closePopup();
 
 					nldiFlowlineLayers = flowlineLayer(flowlinesGeojson);
@@ -187,19 +191,17 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	 * @param {L.MouseEvent} ev
 	 */
 	var findSitesHandler = function(ev) {
-		var point = ev.containerPoint;
-
-		if (navValue) {
+		if (navValue.id) {
 			log.debug('Clicked at location: ' + ev.latlng.toString());
 			$mapDiv.css('cursor', 'progress');
+
 			huc12 = '';
 			pourPtLatLng = undefined;
-			cleanUpMapsAndSites();
+			cleanUpMaps();
 			map.closePopup();
 
-			fetchHuc12(point.round())
+			fetchPourPoint(ev.containerPoint.round())
 				.done(function (result) {
-					log.debug('Got HUC12 response');
 					if (result.features.length === 0) {
 						map.openPopup('<p>No pour point has been selected. Please click on a pour point.</p>', ev.latlng);
 						$mapDiv.css('cursor', '');
@@ -212,8 +214,8 @@ PORTAL.VIEWS.nldiView  = function(options) {
 					else {
 						huc12 = result.features[0].properties.HUC_12;
 						pourPtLatLng = ev.latlng;
-						map.openPopup('<p>Successfully retrieved huc12 ' + huc12 + '. Retrieving sites.</p>', ev.latlng);
-						updateNldiSites(huc12, navValue, distanceValue);
+						map.openPopup(getRetrieveMessage(), ev.latlng);
+						updateNldiSites(huc12, navValue.id, distanceValue);
 					}
 				})
 				.fail(function () {
@@ -232,8 +234,8 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	var showMap = function () {
 		if ($mapDiv.is(':hidden')) {
 			$insetMapDiv.hide();
-			$mapDiv.show();
-			nldiControl.setNavValue(navValue);
+			$mapDiv.parent().show();
+			nldiControl.setNavValue(navValue.id);
 			nldiControl.setDistanceValue(distanceValue);
 			map.invalidateSize();
 			map.setView(insetMap.getCenter(), insetMap.getZoom());
@@ -247,8 +249,8 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	var showInsetMap = function () {
 		if ($insetMapDiv.is(':hidden')) {
 			$insetMapDiv.show();
-			$mapDiv.hide();
-			insetNldiControl.setNavValue(navValue);
+			$mapDiv.parent().hide();
+			insetNldiControl.setNavValue(navValue.id);
 			insetNldiControl.setDistanceValue(distanceValue);
 			insetMap.invalidateSize();
 			insetMap.setView(map.getCenter(), map.getZoom());
@@ -260,29 +262,34 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	 * Handle the change event for the nav selection control.
 	 */
 	var navChangeHandler = function(ev) {
-		navValue = $(ev.target).val();
-		cleanUpMapsAndSites();
-		if (navValue) {
+		navValue = {
+			id : $(ev.target).val(),
+			text : $(ev.target.selectedOptions[0]).html()
+		};
+		cleanUpMaps();
+		if (navValue.id) {
 			showMap();
 			if (huc12) {
-				map.openPopup('Retrieving NLDI sites using huc12 ' + huc12 + '.', pourPtLatLng);
-				updateNldiSites(huc12, navValue, distanceValue);
+				map.openPopup(getRetrieveMessage(), pourPtLatLng);
+				updateNldiSites(huc12, navValue.id, distanceValue);
 			}
 		}
 		else {
+			huc12 = '';
+			pourPtLatLng = undefined;
 			showInsetMap();
 		}
 	};
 
 	var distanceChangeHandler = function(ev) {
 		distanceValue = $(ev.target).val();
-		cleanUpMapsAndSites();
+		cleanUpMaps();
 
-		if (navValue) {
+		if (navValue.id) {
 			showMap();
 			if (huc12) {
-				map.openPopup('Retrieving NLDI sites using huc12 ' + huc12 + '.',  pourPtLatLng);
-				updateNldiSites(huc12, navValue, distanceValue);
+				map.openPopup(getRetrieveMessage(),  pourPtLatLng);
+				updateNldiSites(huc12, navValue.id, distanceValue);
 			}
 		}
 		else {
@@ -293,13 +300,16 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	var clearHandler = function() {
 		huc12 = '';
 		pourPtLatLng = undefined;
-		navValue = '';
+		navValue = {
+			id: '',
+			text : ''
+		};
 		distanceValue = '';
 
-		this.setNavValue(navValue);
+		this.setNavValue(navValue.id);
 		this.setDistanceValue(distanceValue);
 
-		cleanUpMapsAndSites();
+		cleanUpMaps();
 		map.closePopup();
 	};
 
