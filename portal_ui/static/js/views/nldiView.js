@@ -156,7 +156,11 @@ PORTAL.VIEWS.nldiView  = function(options) {
 				.done(function (sitesResponse, flowlinesResponse) {
 					var flowlineBounds;
 					var sitesGeojson = sitesResponse[0];
-					var flowlinesGeojson = flowlinesResponse[0]
+					var flowlinesGeojson = flowlinesResponse[0];
+					var nldiSiteCluster = L.markerClusterGroup({
+						maxClusterRadius : 40,
+					});
+					var insetNldiSiteCluster = L.markerClusterGroup();
 
 					log.debug('NLDI service has retrieved ' + sitesGeojson.features.length + ' sites.')
 					map.closePopup();
@@ -171,8 +175,10 @@ PORTAL.VIEWS.nldiView  = function(options) {
 
 					nldiSiteLayers = siteLayer(sitesGeojson);
 					insetNldiSiteLayers = siteLayer(sitesGeojson);
-					map.addLayer(nldiSiteLayers);
-					insetMap.addLayer(insetNldiSiteLayers);
+					nldiSiteCluster.addLayer(nldiSiteLayers);
+					insetNldiSiteCluster.addLayer(insetNldiSiteLayers);
+					map.addLayer(nldiSiteCluster);
+					insetMap.addLayer(insetNldiSiteCluster);
 
 					updateNldiInput(getNldiUrl(huc12, navigate, distance));
 				})
