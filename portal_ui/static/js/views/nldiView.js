@@ -156,7 +156,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 				.done(function (sitesGeojson, flowlinesGeojson) {
 					var flowlineBounds;
 
-					log.debug('NLDI service has retrieved ' + sitesGeojson.features.length + ' sites.')
+					log.debug('NLDI service has retrieved ' + sitesGeojson[0].features.length + ' sites.')
 					map.closePopup();
 
 					nldiFlowlineLayers = flowlineLayer(flowlinesGeojson);
