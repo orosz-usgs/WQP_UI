@@ -79,7 +79,7 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 		var nldiView = PORTAL.VIEWS.nldiView({
 			insetMapDivId : 'nldi-inset-map',
 			mapDivId : 'nldi-map',
-			$siteInputContainer : options.$form.find('#nldi-sites-container')
+			$inputContainer : options.$form.find('#nldi-param-container')
 		});
 		var samplingParametersInputView = PORTAL.VIEWS.samplingParameterInputView({
 			$container : options.$form.find('#sampling'),
