@@ -158,7 +158,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 					var sitesGeojson = sitesResponse[0];
 					var flowlinesGeojson = flowlinesResponse[0];
 					var nldiSiteCluster = L.markerClusterGroup({
-						maxClusterRadius : 40,
+						maxClusterRadius : 40
 					});
 					var insetNldiSiteCluster = L.markerClusterGroup();
 
