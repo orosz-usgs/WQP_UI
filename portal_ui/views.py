@@ -408,19 +408,21 @@ def generate_site_list_from_streamed_tsv_async(self, base_url, redis_config, pro
                         self.update_state(state='PROGRESS',
                                           meta={'current': counter, 'errors': error_count, 'total': total,
                                                 'status': 'working'})
+                        counter += 1
                     elif len(station_data) != 36:
                         error_count += 1
+
 
     return {"status": status, "cached_count": cached_count, "error_count": error_count}
 
 
-@app.route('/longtask/<provider_id>', methods=['POST'])
-def longtask(provider_id=None):
+@app.route('/sites_cache_task/<provider_id>', methods=['POST'])
+def sitescachetask(provider_id):
     providers = generate_provider_list(code_endpoint)['providers']
     if provider_id not in providers:
         abort(404)
     redis_db = generate_redis_db_number(provider_id)
-    task = generate_site_list_from_streamed_tsv_async.apply_async(base_url=base_url, redis_config=redis_config, provider_id=provider_id, redis_db=redis_db)
+    task = generate_site_list_from_streamed_tsv_async.apply_async(args = [base_url, redis_config, provider_id, redis_db])
     return jsonify({}), 202, {'Location': url_for('taskstatus',
                                                   task_id=task.id)}
 @app.route('/status/<task_id>')

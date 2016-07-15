@@ -33,7 +33,7 @@
             // send ajax POST request to start background job
             $.ajax({
                 type: 'POST',
-                url: '/longtask/BIODATA',
+                url: '{{ url_for('sitescachetask', provider_id='STORET') }}',
                 success: function(data, status, request) {
                     status_url = request.getResponseHeader('Location');
                     update_progress(status_url, nanobar, div[0]);
