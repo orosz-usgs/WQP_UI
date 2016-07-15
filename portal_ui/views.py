@@ -1,4 +1,4 @@
-from flask import render_template, request, make_response, redirect, url_for, abort, Response
+from flask import render_template, request, make_response, redirect, url_for, abort, Response, jsonify
 from . import app
 from .utils import pull_feed, geoserver_proxy_request, generate_provider_list, generate_organization_list, \
     get_site_info, check_org_id, generate_redis_db_number, generate_site_list_from_streamed_tsv
@@ -7,6 +7,12 @@ import requests
 import sys
 import cPickle as pickle
 import ujson
+from celery import Celery
+import csv
+
+# Initialize Celery
+celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
+celery.conf.update(app.config)
 
 # fix a mysterious encoding issue, see
 # http://stackoverflow.com/questions/21129020/how-to-fix-unicodedecodeerror-ascii-codec-cant-decode-byte
@@ -20,6 +26,8 @@ code_endpoint = app.config['CODES_ENDPOINT']
 base_url = app.config['SEARCH_QUERY_ENDPOINT']
 redis_config = app.config['REDIS_CONFIG']
 cache_timeout = app.config['CACHE_TIMEOUT']
+
+
 
 
 @app.route('/index.jsp')
@@ -323,21 +331,14 @@ def uris(provider_id, organization_id, site_id):
         abort(404)
 
 
-@app.route('/clear_cache/')
 @app.route('/clear_cache/<provider_id>/')
 def clear_cache(provider_id=None):
     if redis_config:
-        if provider_id:
-            redis_db_number = generate_redis_db_number(provider_id)
-            r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db_number,
-                                  password=redis_config.get('password'))
-            r.flushdb()
-            return 'site cache cleared for: ' + provider_id
-        else:
-            r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_config['db'],
-                                  password=redis_config.get('password'))
-            r.flushall()
-            return 'complete cache cleared '
+        redis_db_number = generate_redis_db_number(provider_id)
+        r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db_number,
+                              password=redis_config.get('password'))
+        r.flushdb()
+        return 'site cache cleared for: ' + provider_id
     else:
         return "no redis cache, no cache to clear"
 
@@ -357,6 +358,103 @@ def rebuild_site_cache(provider_id=None):
     else:
         return str(sites)
 
+@celery.task(bind=True)
+def generate_site_list_from_streamed_tsv_async(self, base_url, redis_config, provider_id, redis_db, organization_id=None):
+    """
+
+    :param base_url: the base url we are using for the generating the search URL
+    :param organization_id:
+    :param provider_id:
+    :param redis_config:
+    :return: a list of dicts that describe sites that are associated with an organization under a data provider
+    """
+    search_endpoint = base_url + "Station/search/"
+    r = requests.get(search_endpoint, {"organization": organization_id, "providers": provider_id,
+                                       "mimeType": "tsv", "sorted": "no", "uripage": "yes"}, stream=True
+                     )
+
+    status = r.status_code
+    headers = r.headers
+    total = int(headers['Total-Site-Count'])
+    header_line = None
+    redis_session = None
+    if redis_config:
+        redis_session = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db,
+                                          password=redis_config.get('password'))
+
+    error_count = 0
+    cached_count = 0
+    counter = 0
+    for line in r.iter_lines():
+        # filter out keep-alive new lines
+        if line:
+            if counter == 0:
+                header_line = line
+                header_object = csv.reader([header_line], delimiter='\t')
+                for row in header_object:
+                    header = row
+                counter += 1
+            if counter >= 1:
+                station = csv.reader([line], delimiter='\t')
+                for row in station:
+                    station_data = row
+                    if len(station_data) == 36:
+                        station_dict = dict(zip(header, station_data))
+                        site_key = 'sites_' + provider_id + '_' + str(station_dict['OrganizationIdentifier']) + "_" + \
+                                   str(station_dict['MonitoringLocationIdentifier'])
+                        if redis_session:
+                            redis_session.set(site_key, pickle.dumps(station_dict, protocol=2))
+                        cached_count += 1
+                        self.update_state(state='PROGRESS',
+                                          meta={'current': counter, 'errors': error_count, 'total': total,
+                                                'status': 'working'})
+                    elif len(station_data) != 36:
+                        error_count += 1
+
+    return {"status": status, "cached_count": cached_count, "error_count": error_count}
+
+
+@app.route('/longtask/<provider_id>', methods=['POST'])
+def longtask(provider_id=None):
+    providers = generate_provider_list(code_endpoint)['providers']
+    if provider_id not in providers:
+        abort(404)
+    redis_db = generate_redis_db_number(provider_id)
+    task = generate_site_list_from_streamed_tsv_async.apply_async(base_url=base_url, redis_config=redis_config, provider_id=provider_id, redis_db=redis_db)
+    return jsonify({}), 202, {'Location': url_for('taskstatus',
+                                                  task_id=task.id)}
+@app.route('/status/<task_id>')
+def taskstatus(task_id):
+    task = generate_site_list_from_streamed_tsv_async.AsyncResult(task_id)
+    if task.state == 'PENDING':
+        response = {
+            'state': task.state,
+            'current': 0,
+            'total': 1,
+            'status': 'Pending...'
+        }
+    elif task.state != 'FAILURE':
+        response = {
+            'state': task.state,
+            'current': task.info.get('current', 0),
+            'total': task.info.get('total', 1),
+            'status': task.info.get('status', '')
+        }
+        if 'result' in task.info:
+            response['result'] = task.info['result']
+    else:
+        # something went wrong in the background job
+        response = {
+            'state': task.state,
+            'current': 1,
+            'total': 1,
+            'status': str(task.info),  # this is the exception raised
+        }
+    return jsonify(response)
+
+@app.route('/manage_cache')
+def manage_cache():
+    return render_template('cache_manager.html')
 
 @app.route('/robots.txt')
 def robots():
