@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Flask + Celery Examples</title>
+    <title>Manage Cache status</title>
     <style>
         .progress {
             width: 100%;
@@ -11,15 +11,25 @@
   <body>
     <h1>Manage Cache Status</h1>
     <hr>
-    <h2>Example 2: Long running task with progress updates</h2>
-    <!--<button onclick="start_long_task();">Start Long Calculation</button><br><br>-->
-    <button id="start-bg-job">Start Long Calculation</button><br><br>
+    <h2>Rebuild the the site cache for a data provider</h2>
+    <form name="QueryTypeForm">
+        <label>Data Provider</label>
+        <select name="DataProvider" property="data_provider" size="1">
+            <option selected="selected"> </option>
+            <option value="NWIS">NWIS</option>
+            <option value="STORET">STORET</option>
+            <option value="STEWARDS">STEWARDS</option>
+            <option value="BIODATA">BioData</option>
+        </select>
+        <button type="button" onclick="on_submit_action();">Rebuild Cache</button>
+    </form>
+    <br><br>
     <div id="progress"></div>
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/nanobar/0.2.1/nanobar.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script>
-        function start_long_task() {
+        function start_long_task(data_provider) {
             // add task status elements
             div = $('<div class="progress"><div></div><div>0%</div><div>...</div><div>&nbsp;</div></div><hr>');
             $('#progress').append(div);
@@ -33,7 +43,7 @@
             // send ajax POST request to start background job
             $.ajax({
                 type: 'POST',
-                url: '{{ url_for('sitescachetask', provider_id='STORET') }}',
+                url: '{{ url_for('sitescachetask', provider_id = '') }}'+data_provider,
                 success: function(data, status, request) {
                     status_url = request.getResponseHeader('Location');
                     update_progress(status_url, nanobar, div[0]);
@@ -69,9 +79,14 @@
                 }
             });
         }
-        $(function() {
-            $('#start-bg-job').click(start_long_task);
-        });
+
+        function on_submit_action()
+    {
+        var dataProvider=document.getElementsByName("DataProvider")[0];
+        console.log(dataProvider.value);
+        start_long_task(dataProvider.value)
+    }
+
     </script>
   </body>
 </html>
