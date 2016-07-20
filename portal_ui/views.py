@@ -362,7 +362,8 @@ def sitescachetask(provider_id):
     if provider_id not in providers:
         abort(404)
     redis_db = generate_redis_db_number(provider_id)
-    task = generate_site_list_from_streamed_tsv_async.apply_async(args = [base_url, redis_config, provider_id, redis_db])
+    task = generate_site_list_from_streamed_tsv_async.apply_async(args=[base_url, redis_config,
+                                                                          provider_id, redis_db])
     return jsonify({}), 202, {'Location': url_for('taskstatus',
                                                   task_id=task.id)}
 @app.route('/status/<task_id>')

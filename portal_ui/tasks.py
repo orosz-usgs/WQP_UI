@@ -8,6 +8,7 @@ import cPickle as pickle
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
 
+
 @celery.task(bind=True)
 def generate_site_list_from_streamed_tsv_async(self, base_url, redis_config, provider_id, redis_db):
     """
@@ -43,7 +44,7 @@ def generate_site_list_from_streamed_tsv_async(self, base_url, redis_config, pro
                 for row in header_object:
                     header = row
                 counter += 1
-            if counter >= 1:
+            elif counter >= 1:
                 station = csv.reader([line], delimiter='\t')
                 for row in station:
                     station_data = row

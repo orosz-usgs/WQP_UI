@@ -1,4 +1,3 @@
-from . import app
 import feedparser
 import requests
 from bs4 import BeautifulSoup
@@ -201,7 +200,7 @@ def generate_site_list_from_streamed_tsv(base_url, redis_config, provider_id, re
                 for row in header_object:
                     header = row
                 counter += 1
-            if counter >= 1:
+            elif counter >= 1:
                 station = csv.reader([line], delimiter='\t')
                 for row in station:
                     station_data = row
