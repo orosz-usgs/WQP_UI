@@ -1,12 +1,14 @@
-from flask import render_template, request, make_response, redirect, url_for, abort, Response
+from flask import render_template, request, make_response, redirect, url_for, abort, Response, jsonify
 from . import app
 from .utils import pull_feed, geoserver_proxy_request, generate_provider_list, generate_organization_list, \
     get_site_info, check_org_id, generate_redis_db_number, generate_site_list_from_streamed_tsv
+from tasks import generate_site_list_from_streamed_tsv_async
 import redis
 import requests
 import sys
 import cPickle as pickle
 import ujson
+
 
 # fix a mysterious encoding issue, see
 # http://stackoverflow.com/questions/21129020/how-to-fix-unicodedecodeerror-ascii-codec-cant-decode-byte
@@ -20,6 +22,8 @@ code_endpoint = app.config['CODES_ENDPOINT']
 base_url = app.config['SEARCH_QUERY_ENDPOINT']
 redis_config = app.config['REDIS_CONFIG']
 cache_timeout = app.config['CACHE_TIMEOUT']
+
+
 
 
 @app.route('/index.jsp')
@@ -323,21 +327,14 @@ def uris(provider_id, organization_id, site_id):
         abort(404)
 
 
-@app.route('/clear_cache/')
 @app.route('/clear_cache/<provider_id>/')
 def clear_cache(provider_id=None):
     if redis_config:
-        if provider_id:
-            redis_db_number = generate_redis_db_number(provider_id)
-            r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db_number,
-                                  password=redis_config.get('password'))
-            r.flushdb()
-            return 'site cache cleared for: ' + provider_id
-        else:
-            r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_config['db'],
-                                  password=redis_config.get('password'))
-            r.flushall()
-            return 'complete cache cleared '
+        redis_db_number = generate_redis_db_number(provider_id)
+        r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db_number,
+                              password=redis_config.get('password'))
+        r.flushdb()
+        return 'site cache cleared for: ' + provider_id
     else:
         return "no redis cache, no cache to clear"
 
@@ -357,6 +354,50 @@ def rebuild_site_cache(provider_id=None):
     else:
         return str(sites)
 
+
+
+@app.route('/sites_cache_task/<provider_id>', methods=['POST'])
+def sitescachetask(provider_id):
+    providers = generate_provider_list(code_endpoint)['providers']
+    if provider_id not in providers:
+        abort(404)
+    redis_db = generate_redis_db_number(provider_id)
+    task = generate_site_list_from_streamed_tsv_async.apply_async(args=[base_url, redis_config,
+                                                                          provider_id, redis_db])
+    return jsonify({}), 202, {'Location': url_for('taskstatus',
+                                                  task_id=task.id)}
+@app.route('/status/<task_id>')
+def taskstatus(task_id):
+    task = generate_site_list_from_streamed_tsv_async.AsyncResult(task_id)
+    if task.state == 'PENDING':
+        response = {
+            'state': task.state,
+            'current': 0,
+            'total': 1,
+            'status': 'Pending...'
+        }
+    elif task.state != 'FAILURE':
+        response = {
+            'state': task.state,
+            'current': task.info.get('current', 0),
+            'total': task.info.get('total', 1),
+            'status': task.info.get('status', '')
+        }
+        if 'result' in task.info:
+            response['result'] = task.info['result']
+    else:
+        # something went wrong in the background job
+        response = {
+            'state': task.state,
+            'current': 1,
+            'total': 1,
+            'status': str(task.info),  # this is the exception raised
+        }
+    return jsonify(response)
+
+@app.route('/manage_cache')
+def manage_cache():
+    return render_template('cache_manager.html')
 
 @app.route('/robots.txt')
 def robots():

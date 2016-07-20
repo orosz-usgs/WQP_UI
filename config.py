@@ -48,3 +48,7 @@ LOCAL_BASE_URL = ''
 
 #Allow for setting an announcement banner without having to release code
 ANNOUNCEMENT_BANNER = None
+
+# Celery configuration
+CELERY_BROKER_URL = None
+CELERY_RESULT_BACKEND = None
