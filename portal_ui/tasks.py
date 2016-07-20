@@ -13,7 +13,8 @@ celery.conf.update(app.config)
 @celery.task(bind=True)
 def generate_site_list_from_streamed_tsv_async(self, base_url, redis_config, provider_id, redis_db):
     """
-    :param self: self
+
+    :param self: self, allows the task status to be updated
     :param base_url: the base url we are using for the generating the search URL
     :param provider_id: the dientifier of the provider (NWIS, STORET, ETC)
     :param redis_config: redis config variables
@@ -37,6 +38,7 @@ def generate_site_list_from_streamed_tsv_async(self, base_url, redis_config, pro
     cached_count = 0
     counter = 0
     header = None
+    number_of_columns = None
     for line in r.iter_lines():
         # filter out keep-alive new lines
         if line:
@@ -45,12 +47,13 @@ def generate_site_list_from_streamed_tsv_async(self, base_url, redis_config, pro
                 header_object = csv.reader([header_line], delimiter='\t')
                 for row in header_object:
                     header = row
+                    number_of_columns = len(header)
                 counter += 1
             elif counter >= 1:
                 station = csv.reader([line], delimiter='\t')
                 for row in station:
                     station_data = row
-                    if len(station_data) == 36 and header is not None:
+                    if len(station_data) == number_of_columns and header is not None:
                         station_dict = dict(zip(header, station_data))
                         site_key = 'sites_' + provider_id + '_' + str(station_dict['OrganizationIdentifier']) + "_" + \
                                    str(station_dict['MonitoringLocationIdentifier'])
@@ -61,7 +64,7 @@ def generate_site_list_from_streamed_tsv_async(self, base_url, redis_config, pro
                                           meta={'current': counter, 'errors': error_count, 'total': total,
                                                 'status': 'working'})
                         counter += 1
-                    elif len(station_data) != 36:
+                    elif len(station_data) != number_of_columns:
                         error_count += 1
 
     return {"status": status, "cached_count": cached_count, "error_count": error_count}
