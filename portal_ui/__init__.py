@@ -1,6 +1,6 @@
 
-from flask import Flask, request
-from flask.ext.bower import Bower
+from flask import Flask
+from flask_bower import Bower
 from celery import Celery
 
 app = Flask(__name__.split()[0], instance_relative_config=True)
