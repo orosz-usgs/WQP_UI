@@ -1,16 +1,52 @@
-<html>
-  <head>
-    <title>Manage Cache status</title>
+{% extends "base.html" %}
+
+{% block title %}Manage Cache status{% endblock %}
+{% block meta_tags %}
+    <meta http-equiv="Cache-control" content="no-cache">
+{% endblock %}
+
+{% block google_analytics_script %}{% endblock %}
+
+{% block page_style %}
     <style>
-        .progress {
+        .progress_area {
             width: 100%;
             text-align: center;
+
         }
     </style>
-  </head>
+{% endblock %}
+
+{% block page_header_title %}Manage Cache Status{% endblock %}
+
+{% block page_content %}
+
   <body>
     <h1>Manage Cache Status</h1>
-    <hr>
+
+    <h2>Current Cache Status</h2>
+    <table class="table">
+        <tr>
+            <td>Provider</td>
+            <td>Time Loaded (UTC)</td>
+            <td>Time Loaded (human)</td>
+            <td>Total Number of sites</td>
+            <td>Number of sites cached</td>
+            <td>Number of errors</td>
+        </tr>
+        {% for provider in status %}
+            <tr>
+                <td>{{ provider['provider'] }}</td>
+                <td>{{ provider['time_zulu'] }}</td>
+                <td>{{ provider['time_human'] }}</td>
+                <td>{{ "{:,}".format(provider['total_count']) }}</td>
+                <td>{{ "{:,}".format(provider['cached_count']) }}</td>
+                <td>{{ "{:,}".format(provider['error_count']) }}</td>
+            </tr>
+        {% endfor %}
+
+    </table>
+
     <h2>Rebuild the the site cache for a data provider</h2>
     <form name="QueryTypeForm">
         <label>Data Provider</label>
@@ -31,7 +67,7 @@
     <script>
         function start_long_task(data_provider) {
             // add task status elements
-            div = $('<div class="progress"><div></div><div>0%</div><div>...</div><div>&nbsp;</div></div><hr>');
+            div = $('<div class="progress_area"><div></div><div>0%</div><div>...</div><div>&nbsp;</div><div>&nbsp;</div></div><hr>');
             $('#progress').append(div);
 
             // create a progress bar
@@ -62,7 +98,16 @@
                 $(status_div.childNodes[1]).text(percent + '%');
                 $(status_div.childNodes[2]).text(data['status']);
                 if (data['state'] != 'PENDING' && data['state'] != 'PROGRESS') {
-                    if ('result' in data) {
+                    if (data['state'] = 'SUCCESS'){
+                        console.log('success!');
+                        nanobar.go(99.99);
+                        $(status_div.childNodes[1]).text('100%');
+                        $(status_div.childNodes[2]).text('');
+                        $(status_div.childNodes[3]).text(data['state']);
+                        $(status_div.childNodes[4]).text('Reload the page to update the table');
+                        //location.reload(true);
+                      }
+                    else if ('result' in data) {
                         // show result
                         $(status_div.childNodes[3]).text('Result: ' + data['result']);
                     }
@@ -71,11 +116,13 @@
                         $(status_div.childNodes[3]).text('Result: ' + data['state']);
                     }
                 }
+
                 else {
                     // rerun in 2 seconds
                     setTimeout(function() {
                         update_progress(status_url, nanobar, status_div);
                     }, 2000);
+
                 }
             });
         }
@@ -89,4 +136,4 @@
 
     </script>
   </body>
-</html>
+{% endblock %}

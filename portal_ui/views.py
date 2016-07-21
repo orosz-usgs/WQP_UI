@@ -8,7 +8,7 @@ import requests
 import sys
 import cPickle as pickle
 import ujson
-
+import arrow
 
 # fix a mysterious encoding issue, see
 # http://stackoverflow.com/questions/21129020/how-to-fix-unicodedecodeerror-ascii-codec-cant-decode-byte
@@ -397,7 +397,21 @@ def taskstatus(task_id):
 
 @app.route('/manage_cache')
 def manage_cache():
-    return render_template('cache_manager.html')
+    provider_list = ['NWIS','STORET','STEWARDS','BIODATA']
+    status_list = []
+    if redis_config:
+        for provider in provider_list:
+            redis_db_number = generate_redis_db_number(provider)
+            r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db_number,
+                                  password=redis_config.get('password'))
+            provider_site_load_status = r.get(provider+'_sites_load_status')
+            if provider_site_load_status:
+                load_status = pickle.loads(provider_site_load_status)
+                time = arrow.get(load_status['time_utc'])
+                load_status['time_zulu'] = time.format('YYYY-MM-DD HH:mm:ss ZZ')
+                load_status['time_human'] = time.humanize()
+                status_list.append(load_status)
+    return render_template('cache_manager.html', status=status_list)
 
 @app.route('/robots.txt')
 def robots():
