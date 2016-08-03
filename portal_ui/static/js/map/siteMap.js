@@ -72,7 +72,8 @@ PORTAL.MAP.siteMap = function(options) {
 				minZoom : 2,
 				extent : worldExtent
 			}),
-			layers : [overlayLayerGroup, baseLayerGroup],
+			//layers : [overlayLayerGroup, baseLayerGroup],
+			layers : [overlayLayerGroup],
 			controls : controls
 		});
 
@@ -80,7 +81,18 @@ PORTAL.MAP.siteMap = function(options) {
 			visible : false,
 			map : map
 		}).done(function(layer) {
-			overlayLayerGroup.getLayers().push(layer);
+			console.log('L83');
+			overlayLayerGroup.getLayers().insertAt(-1, layer);
+		});
+
+		WQP.ol3.mapUtils.getEsriHydroLayer({
+			isVisible : false,
+			map : map
+		}).done(function(layer) {
+			console.log('L91');
+			overlayLayerGroup.getLayers().insertAt(0, layer);
+			//map.getLayers().insertAt(-1, layer);
+			//console.log(map.getLayers().getArray()[-1]);
 		});
 
 		// Set up event handler for single click identify
