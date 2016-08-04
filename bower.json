@@ -18,21 +18,21 @@
   ],
   "dependencies": {
     "bootstrap": "3.3.6",
-    "jquery": "2.2.3",
+    "jquery": "2.2.4",
     "select2": "4.0.2",
-    "jquery-ui": "1.11.4",
+    "jquery-ui": "1.12.0",
     "numeral": "1.5.3",
     "select2-bootstrap-theme": "0.1.0-beta.4",
     "underscore": "1.8.3",
     "handlebars": "4.0.5",
     "loglevel": "1.4.0",
-    "openlayers": "https://github.com/openlayers/ol3/releases/download/v3.14.2/v3.14.2-dist.zip",
     "ol3-layerswitcher": "1.1.0",
     "font-awesome": "4.6.0",
     "leaflet": "0.7.7",
     "leaflet-providers": "1.1.9",
     "Leaflet.EasyButton": "1.2.0",
     "esri-leaflet": "1.0.3",
-    "leaflet.markercluster": "0.5.0"
+    "leaflet.markercluster": "0.5.0",
+    "ol3": "ol3-bower3.17.1"
   }
 }

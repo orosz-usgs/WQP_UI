@@ -23,7 +23,7 @@ module.exports = function(config) {
         'portal_ui/bower_components/select2/dist/js/select2.min.js',
         'portal_ui/bower_components/handlebars/handlebars.min.js',
         'portal_ui/bower_components/loglevel/dist/loglevel.min.js',
-        'portal_ui/bower_components/openlayers/ol.js',
+        'portal_ui/bower_components/ol3/ol.js',
         'portal_ui/bower_components/ol3-layerswitcher/src/ol3-layerswitcher.js',
         'portal_ui/bower_components/leaflet/dist/leaflet.js',
         'portal_ui/bower_components/leaflet-providers/leaflet-providers.js',
