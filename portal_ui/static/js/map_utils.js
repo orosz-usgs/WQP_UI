@@ -49,7 +49,6 @@ MapUtils.getLayer = function (layer, options) {
  *   layer is returned in the deferred's response
  */
 MapUtils.getNWISSitesLayer = function (options, params) {
-	console.log('In MapUtils.getNWISSitesLayer');
 	options = options ? options : {};
 	params = params ? params : {};
 	var defaultOptions = {

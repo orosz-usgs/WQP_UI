@@ -38,12 +38,13 @@ WQP.ol3.mapUtils = (function() {
 
 	self.getEsriHydroLayer = function(isVisible, map) {
 		var layerDeferred = $.Deferred();
+		var esriHydroURL = 'http://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer/tile/';
 		var hydroTileLayer = new ol.layer.Tile({
 			title : 'ESRI Hydro Layer',
 			map : map,
 			visible : isVisible,
 			source : new ol.source.XYZ({
-				url : 'http://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer/tile/' + '{z}/{y}/{x}'
+				url : esriHydroURL + '{z}/{y}/{x}'
 			})
 		});
 		layerDeferred.resolve(hydroTileLayer);

@@ -23,6 +23,7 @@ PORTAL.MAP.siteMap = function(options) {
 	var self = {};
 
 	var map;
+	var layerZIndices = [];
 	var wqpSitesLayer;
 
 	var boxIdSource;
@@ -37,13 +38,25 @@ PORTAL.MAP.siteMap = function(options) {
 	 * Should be called before any of the other methods in this object.
 	 */
 	self.initialize = function()  {
+		var worldTopoLayer = WQP.ol3.mapUtils.createXYZBaseLayer(WQP.MapConfig.BASE_LAYER_URL.world_topo, true);
+		var worldStreetLayer = WQP.ol3.mapUtils.createXYZBaseLayer(WQP.MapConfig.BASE_LAYER_URL.world_street, false);
+		var worldReliefLayer = WQP.ol3.mapUtils.createXYZBaseLayer(WQP.MapConfig.BASE_LAYER_URL.world_relief, false);
+		var worldImageryLayer = WQP.ol3.mapUtils.createXYZBaseLayer(WQP.MapConfig.BASE_LAYER_URL.world_imagery, false);
+		var topoZIndex = worldTopoLayer.getZIndex();
+		var streetZIndex = worldStreetLayer.getZIndex();
+		var reliefZIndex = worldReliefLayer.getZIndex();
+		var imageryZIndex = worldImageryLayer.getZIndex();
+		layerZIndices.push(topoZIndex);
+		layerZIndices.push(streetZIndex);
+		layerZIndices.push(reliefZIndex);
+		layerZIndices.push(imageryZIndex);
 		var baseLayerGroup = new ol.layer.Group({
 			title: 'Base maps',
 			layers: [
-				WQP.ol3.mapUtils.createXYZBaseLayer(WQP.MapConfig.BASE_LAYER_URL.world_topo, true),
-				WQP.ol3.mapUtils.createXYZBaseLayer(WQP.MapConfig.BASE_LAYER_URL.world_street, false),
-				WQP.ol3.mapUtils.createXYZBaseLayer(WQP.MapConfig.BASE_LAYER_URL.world_relief, false),
-				WQP.ol3.mapUtils.createXYZBaseLayer(WQP.MapConfig.BASE_LAYER_URL.world_imagery, false)
+				worldTopoLayer,
+				worldStreetLayer,
+				worldReliefLayer,
+				worldImageryLayer
 			]
 		});
 		var overlayLayerGroup = new ol.layer.Group({
@@ -80,17 +93,17 @@ PORTAL.MAP.siteMap = function(options) {
 			visible : false,
 			map : map
 		}).done(function(layer) {
-			overlayLayerGroup.getLayers().insertAt(-1, layer);
+			overlayLayerGroup.getLayers().push(layer);
 		});
 
 		WQP.ol3.mapUtils.getEsriHydroLayer({
 			isVisible : false,
 			map : map
 		}).done(function(layer) {
-			layer.setZIndex(10);
-			overlayLayerGroup.getLayers().insertAt(0, layer);
-			//map.getLayers().insertAt(-1, layer);
-			//console.log(map.getLayers().getArray()[-1]);
+			// dynamically set the hydro layer's z index
+			var baseLayerIndexMax = _.max(layerZIndices);
+			layer.setZIndex(baseLayerIndexMax + 1);
+			overlayLayerGroup.getLayers().push(layer);
 		});
 
 		// Set up event handler for single click identify
