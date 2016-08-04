@@ -367,7 +367,7 @@
 							<button type="button" class="btn" id="show-on-map-button">Show sites on map</button>
 						</div>
 						<div id="sld-select-div" class="form-group">
-							<label class="control-label">Style sites:&nbsp;</label>
+							<label>Style sites:&nbsp;</label>
 							<select id="sld-select-input" class="form-control">
 								{% for sld in config.SITE_SLDS %}
 									<option value="{{ sld.id }}" {% if loop.first %}checked{% endif %}>{{ sld.text }}</option>
