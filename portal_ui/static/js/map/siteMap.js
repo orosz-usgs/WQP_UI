@@ -23,7 +23,7 @@ PORTAL.MAP.siteMap = function(options) {
 	var self = {};
 
 	var map;
-	var layerZIndices = [];
+	var baseLayerZIndices = [];
 	var wqpSitesLayer;
 
 	var boxIdSource;
@@ -46,10 +46,10 @@ PORTAL.MAP.siteMap = function(options) {
 		var streetZIndex = worldStreetLayer.getZIndex();
 		var reliefZIndex = worldReliefLayer.getZIndex();
 		var imageryZIndex = worldImageryLayer.getZIndex();
-		layerZIndices.push(topoZIndex);
-		layerZIndices.push(streetZIndex);
-		layerZIndices.push(reliefZIndex);
-		layerZIndices.push(imageryZIndex);
+		baseLayerZIndices.push(topoZIndex);
+		baseLayerZIndices.push(streetZIndex);
+		baseLayerZIndices.push(reliefZIndex);
+		baseLayerZIndices.push(imageryZIndex);
 		var baseLayerGroup = new ol.layer.Group({
 			title: 'Base maps',
 			layers: [
@@ -81,14 +81,14 @@ PORTAL.MAP.siteMap = function(options) {
 		/*
 		 * @param {openlayers 3 layer} - layer
 		 * @param {openlayers 3 layer group} - layerGroup
+		 * @param {integer} - incrementAboveBaseLayers
 		 */
-		var pushLayer = function(layer, layerGroup) {
+		var pushLayer = function(layer, layerGroup, incrementAboveBaseLayers) {
+			var increment = incrementAboveBaseLayers ? incrementAboveBaseLayers : 1;
 			// set the layer's Z to be one increment above the current layers
-			layer.setZIndex(_.max(layerZIndices) + 1);
+			layer.setZIndex(_.max(baseLayerZIndices) + increment);
 			// push the layer to a layer group
 			layerGroup.getLayers().push(layer);
-			// update layerZIndices so subsequent layers can determine their z-indices
-			layerZIndices.push(layer.getZIndex());
 		};
 
 		map = new ol.Map({
@@ -107,14 +107,14 @@ PORTAL.MAP.siteMap = function(options) {
 			isVisible : true,
 			map : map
 		});
-		pushLayer(esriHydroLayer, overlayLayerGroup);
+		pushLayer(esriHydroLayer, overlayLayerGroup, 1);
 
 		// add the NWIS Sites Layer
 		WQP.ol3.mapUtils.getNWISSitesLayer({}, {
 			visible : false,
 			map : map
 		}).done(function(layer) {
-			pushLayer(layer, overlayLayerGroup);
+			pushLayer(layer, overlayLayerGroup, 2);
 		});
 
 		// Set up event handler for single click identify
