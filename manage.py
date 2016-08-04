@@ -1,6 +1,6 @@
-from flask.ext.assets import ManageAssets
-from flask.ext.collect import Collect
-from flask.ext.script import Manager, Command
+from flask_assets import ManageAssets
+from flask_collect import Collect
+from flask_script import Manager, Command
 
 from portal_ui import app
 

@@ -24,6 +24,9 @@ NWIS_SITES_LAYER_NAME = 'NWC:gagesII'
 
 GEO_SEARCH_API_ENDPOINT = 'http://txpub.usgs.gov/DSS/search_api/1.1/dataService/dataService.ashx/search'
 
+# Styles to be used for the site map
+SITE_SLDS = []
+
 GA_TRACKING_CODE = ''
 
 # set to false in instance/config.py if you want to turn off the NLDI feature

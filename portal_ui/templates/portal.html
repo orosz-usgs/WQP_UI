@@ -359,12 +359,20 @@
 			</div>
 			<div id="map-and-query-div" class="panel">
 				<div id="mapping-div" class="panel-body">
-					<div id="map-ops-button-div">
-						<div id="show-on-map-button-div">
+					<div id="map-ops-button-div" class="form-inline">
+						<div id="show-on-map-button-div" class="form-group">
 							<button type="button" class="show-hide-toggle" title="Show subsection">
 								<img src="{{ url_for('static', filename='img/expand.png') }}" alt="show"/>
 							</button>
 							<button type="button" class="btn" id="show-on-map-button">Show sites on map</button>
+						</div>
+						<div id="sld-select-div" class="form-group">
+							<label>Style sites:&nbsp;</label>
+							<select id="sld-select-input" class="form-control">
+								{% for sld in config.SITE_SLDS %}
+									<option value="{{ sld.id }}" {% if loop.first %}checked{% endif %}>{{ sld.text }}</option>
+								{% endfor %}
+							</select>
 						</div>
 					</div>
 					<div id="query-map-container">

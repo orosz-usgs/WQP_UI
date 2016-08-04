@@ -52,7 +52,6 @@
   .control-label {
     text-align: right;
     margin-top: 6px;
-    font-weight: bold;
   }
 
   .help-link {
@@ -271,17 +270,16 @@
 
   #map-ops-button-div {
     .make-row();
-    > div {
-      padding-bottom: 10px;
-    }
 
     #show-on-map-button-div {
-      .make-row();
-      .make-sm-column(4);
       .make-md-column(3);
+      .make-sm-column(4);
       #show-on-map-button {
         .btn-default;
       }
+    }
+    #sld-select-div {
+      .make-sm-column(6);
     }
   }
   #query-map-container {
@@ -308,6 +306,7 @@
     }
 
     #query-results-map .layer-switcher {
+      z-index : 1;
       .panel {
             margin-bottom: 0px;
             box-shadow: none;

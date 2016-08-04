@@ -38,6 +38,7 @@ PORTAL.VIEWS.siteMapView = function(options) {
 			mapDivId : mapId,
 			$loadingIndicator : options.$container.find('#map-loading-indicator'),
 			$legendDiv : options.$container.find('#query-map-legend-div .legend-container'),
+			$sldSelect : options.$container.find('#sld-select-input'),
 			identifyDialog : identifyDialog
 		});
 
