@@ -23,6 +23,7 @@ PORTAL.MAP.siteMap = function(options) {
 	var self = {};
 
 	var map;
+	var baseLayerZIndices = [];
 	var wqpSitesLayer;
 
 	var boxIdSource;
@@ -37,13 +38,25 @@ PORTAL.MAP.siteMap = function(options) {
 	 * Should be called before any of the other methods in this object.
 	 */
 	self.initialize = function()  {
+		var worldTopoLayer = WQP.ol3.mapUtils.createXYZBaseLayer(WQP.MapConfig.BASE_LAYER_URL.world_topo, true);
+		var worldStreetLayer = WQP.ol3.mapUtils.createXYZBaseLayer(WQP.MapConfig.BASE_LAYER_URL.world_street, false);
+		var worldReliefLayer = WQP.ol3.mapUtils.createXYZBaseLayer(WQP.MapConfig.BASE_LAYER_URL.world_relief, false);
+		var worldImageryLayer = WQP.ol3.mapUtils.createXYZBaseLayer(WQP.MapConfig.BASE_LAYER_URL.world_imagery, false);
+		var topoZIndex = worldTopoLayer.getZIndex();
+		var streetZIndex = worldStreetLayer.getZIndex();
+		var reliefZIndex = worldReliefLayer.getZIndex();
+		var imageryZIndex = worldImageryLayer.getZIndex();
+		baseLayerZIndices.push(topoZIndex);
+		baseLayerZIndices.push(streetZIndex);
+		baseLayerZIndices.push(reliefZIndex);
+		baseLayerZIndices.push(imageryZIndex);
 		var baseLayerGroup = new ol.layer.Group({
 			title: 'Base maps',
 			layers: [
-				WQP.ol3.mapUtils.createXYZBaseLayer(WQP.MapConfig.BASE_LAYER_URL.world_topo, true),
-				WQP.ol3.mapUtils.createXYZBaseLayer(WQP.MapConfig.BASE_LAYER_URL.world_street, false),
-				WQP.ol3.mapUtils.createXYZBaseLayer(WQP.MapConfig.BASE_LAYER_URL.world_relief, false),
-				WQP.ol3.mapUtils.createXYZBaseLayer(WQP.MapConfig.BASE_LAYER_URL.world_imagery, false)
+				worldTopoLayer,
+				worldStreetLayer,
+				worldReliefLayer,
+				worldImageryLayer
 			]
 		});
 		var overlayLayerGroup = new ol.layer.Group({
@@ -65,6 +78,19 @@ PORTAL.MAP.siteMap = function(options) {
 		var boxIdLayer;
 		var worldExtent = ol.extent.applyTransform([-179,-89,179,89], ol.proj.getTransform("EPSG:4326", "EPSG:3857"));
 
+		/*
+		 * @param {openlayers 3 layer} - layer
+		 * @param {openlayers 3 layer group} - layerGroup
+		 * @param {integer} - incrementAboveBaseLayers
+		 */
+		var pushLayer = function(layer, layerGroup, zIndexAboveBaseLayers) {
+			var increment = zIndexAboveBaseLayers ? zIndexAboveBaseLayers : 1;
+			// set the layer's Z to be one increment above the current layers
+			layer.setZIndex(_.max(baseLayerZIndices) + increment);
+			// push the layer to a layer group
+			layerGroup.getLayers().push(layer);
+		};
+
 		map = new ol.Map({
 			view : new ol.View({
 				center : ol.proj.fromLonLat([WQP.MapConfig.DEFAULT_CENTER.lon, WQP.MapConfig.DEFAULT_CENTER.lat]),
@@ -76,11 +102,19 @@ PORTAL.MAP.siteMap = function(options) {
 			controls : controls
 		});
 
+		// add the ESRI Hydro Layer
+		var esriHydroLayer = WQP.ol3.mapUtils.getEsriHydroLayer({
+			isVisible : true,
+			map : map
+		});
+		pushLayer(esriHydroLayer, overlayLayerGroup, 1);
+
+		// add the NWIS Sites Layer
 		WQP.ol3.mapUtils.getNWISSitesLayer({}, {
 			visible : false,
 			map : map
 		}).done(function(layer) {
-			overlayLayerGroup.getLayers().push(layer);
+			pushLayer(layer, overlayLayerGroup, 2);
 		});
 
 		// Set up event handler for single click identify
