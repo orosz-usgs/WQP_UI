@@ -96,15 +96,12 @@ PORTAL.MAP.siteMap = function(options) {
 			overlayLayerGroup.getLayers().push(layer);
 		});
 
-		WQP.ol3.mapUtils.getEsriHydroLayer({
+		var esriHydroLayer = WQP.ol3.mapUtils.getEsriHydroLayer({
 			isVisible : false,
 			map : map
-		}).done(function(layer) {
-			// dynamically set the hydro layer's z index
-			var baseLayerIndexMax = _.max(layerZIndices);
-			layer.setZIndex(baseLayerIndexMax + 1);
-			overlayLayerGroup.getLayers().push(layer);
-		});
+		})
+		.setZIndex(_.max(layerZIndices) + 1); // dynamically set the hydro layer's z index
+		overlayLayerGroup.getLayers().push(esriHydroLayer);
 
 		// Set up event handler for single click identify
 		map.on('singleclick', function(ev) {
