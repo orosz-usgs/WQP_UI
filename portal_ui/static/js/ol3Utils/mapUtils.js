@@ -35,6 +35,20 @@ WQP.ol3.mapUtils = (function() {
 	 * @ returns a promise which is resolved when the layer has been created. The
 	 *   layer is returned in the deferred's response
 	 */
+
+	self.getEsriHydroLayer = function(isVisible, map) {
+		var esriHydroURL = 'http://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer/tile/';
+		var hydroTileLayer = new ol.layer.Tile({
+			title : 'ESRI Hydro Layer',
+			map : map,
+			visible : isVisible,
+			source : new ol.source.XYZ({
+				url : esriHydroURL + '{z}/{y}/{x}'
+			})
+		});
+		return hydroTileLayer;
+	};
+
 	self.getNWISSitesLayer = function (wmsParams, layerOptions) {
 		var defaultParams = {
 			LAYERS: Config.NWIS_SITES_LAYER_NAME,
@@ -67,7 +81,6 @@ WQP.ol3.mapUtils = (function() {
 				params : finalWMSParams,
 				url : Config.NWIS_SITES_OGC_ENDPOINT
 			});
-
 			finalLayerOptions.source = layerSource;
 			getLayerDeferred.resolve(new ol.layer.Tile(finalLayerOptions));
 		});
