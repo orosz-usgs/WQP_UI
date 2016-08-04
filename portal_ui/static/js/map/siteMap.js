@@ -78,6 +78,19 @@ PORTAL.MAP.siteMap = function(options) {
 		var boxIdLayer;
 		var worldExtent = ol.extent.applyTransform([-179,-89,179,89], ol.proj.getTransform("EPSG:4326", "EPSG:3857"));
 
+		/*
+		 * @param {openlayers 3 layer} - layer
+		 * @param {openlayers 3 layer group} - layerGroup
+		 */
+		var pushLayer = function(layer, layerGroup) {
+			// set the layer's Z to be one increment above the current layers
+			layer.setZIndex(_.max(layerZIndices) + 1);
+			// push the layer to a layer group
+			layerGroup.getLayers().push(layer);
+			// update layerZIndices so subsequent layers can determine their z-indices
+			layerZIndices.push(layer.getZIndex());
+		};
+
 		map = new ol.Map({
 			view : new ol.View({
 				center : ol.proj.fromLonLat([WQP.MapConfig.DEFAULT_CENTER.lon, WQP.MapConfig.DEFAULT_CENTER.lat]),
@@ -89,19 +102,20 @@ PORTAL.MAP.siteMap = function(options) {
 			controls : controls
 		});
 
+		// add the ESRI Hydro Layer
+		var esriHydroLayer = WQP.ol3.mapUtils.getEsriHydroLayer({
+			isVisible : true,
+			map : map
+		});
+		pushLayer(esriHydroLayer, overlayLayerGroup);
+
+		// add the NWIS Sites Layer
 		WQP.ol3.mapUtils.getNWISSitesLayer({}, {
 			visible : false,
 			map : map
 		}).done(function(layer) {
-			overlayLayerGroup.getLayers().push(layer);
+			pushLayer(layer, overlayLayerGroup);
 		});
-
-		var esriHydroLayer = WQP.ol3.mapUtils.getEsriHydroLayer({
-			isVisible : false,
-			map : map
-		})
-		.setZIndex(_.max(layerZIndices) + 1); // dynamically set the hydro layer's z index
-		overlayLayerGroup.getLayers().push(esriHydroLayer);
 
 		// Set up event handler for single click identify
 		map.on('singleclick', function(ev) {
