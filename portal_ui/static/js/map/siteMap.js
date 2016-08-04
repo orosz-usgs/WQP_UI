@@ -72,8 +72,7 @@ PORTAL.MAP.siteMap = function(options) {
 				minZoom : 2,
 				extent : worldExtent
 			}),
-			//layers : [overlayLayerGroup, baseLayerGroup],
-			layers : [overlayLayerGroup],
+			layers : [overlayLayerGroup, baseLayerGroup],
 			controls : controls
 		});
 
@@ -81,7 +80,6 @@ PORTAL.MAP.siteMap = function(options) {
 			visible : false,
 			map : map
 		}).done(function(layer) {
-			console.log('L83');
 			overlayLayerGroup.getLayers().insertAt(-1, layer);
 		});
 
@@ -89,7 +87,7 @@ PORTAL.MAP.siteMap = function(options) {
 			isVisible : false,
 			map : map
 		}).done(function(layer) {
-			console.log('L91');
+			layer.setZIndex(10);
 			overlayLayerGroup.getLayers().insertAt(0, layer);
 			//map.getLayers().insertAt(-1, layer);
 			//console.log(map.getLayers().getArray()[-1]);
