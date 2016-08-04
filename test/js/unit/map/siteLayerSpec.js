@@ -1,5 +1,5 @@
 /* jslint browser: true */
-/* global describe, beforeEach, afterEach, it, expect, spyOn, jasmine */
+/* global describe, beforeEach, afterEach, it, expect, jasmine */
 /* global sinon */
 /* global PORTAL */
 /* global Config */
@@ -20,7 +20,7 @@ describe('PORTAL.MAP.siteLayer tests', function() {
 		var testLayer;
 
 		var queryParamArray = [{name : 'param1', value: 'value1'}, {name : 'param2', value: 'value2'}];
-		var wmsParams = {'wmsParam' : 'value3'};
+		var wmsParams = {'wmsParam' : 'value3', 'STYLES' : 'thisStyle'};
 		var layerOptions = {'fakeProp' : 'value4'};
 
 
@@ -41,6 +41,7 @@ describe('PORTAL.MAP.siteLayer tests', function() {
 		it('Expects that any additional wmsParams passed in are passed to the source', function() {
 			var source = testLayer.getSource();
 			expect(source.getParams().wmsParam).toEqual('value3');
+			expect(source.getParams().STYLES).toEqual('thisStyle');
 		});
 
 		it('Expects that additional layer options are set as a property on the layer', function() {
@@ -68,11 +69,11 @@ describe('PORTAL.MAP.siteLayer tests', function() {
 
 	});
 
-	describe ('Tests for updateWQPSitesLayer', function() {
+	describe('Tests for updateWQPSitesLayer', function() {
 		var testLayer;
 
 		var queryParamArray = [{name : 'param1', value: 'value1'}, {name : 'param2', value: 'value2'}];
-		var wmsParams = {'wmsParam' : 'value3'};
+		var wmsParams = {'wmsParam' : 'value3', 'STYLES' : 'thisStyle'};
 		var layerOptions = {'fakeProp' : 'value4'};
 
 
@@ -87,6 +88,57 @@ describe('PORTAL.MAP.siteLayer tests', function() {
 			expect(testLayer.getProperties().queryParamArray).toEqual(queryParamArray);
 			expect(testLayer.getSource().getParams().SEARCHPARAMS).toEqual('param1:value1;param2:value2;param3:value3');
 		});
+	});
+
+	describe('Tests for updateWQPSitesSLD', function() {
+		var testLayer;
+
+		var queryParamArray = [{name : 'param1', value: 'value1'}, {name : 'param2', value: 'value2'}];
+		var wmsParams = {'wmsParam' : 'value3', 'STYLES' : 'thisStyle'};
+		var layerOptions = {'fakeProp' : 'value4'};
+
+
+		beforeEach(function() {
+			testLayer = PORTAL.MAP.siteLayer.createWQPSitesLayer(queryParamArray, wmsParams, layerOptions);
+		});
+
+		it('Expects the STYLES parameter to equal the sld passed in', function() {
+			PORTAL.MAP.siteLayer.updateWQPSitesSLD(testLayer, 'thatStyle');
+
+			expect(testLayer.getSource().getParams().STYLES).toEqual('thatStyle');
+		});
+	});
+
+	describe('Tests for getLegendGraphicUrl', function() {
+		var testLayer;
+
+		var queryParamArray = [{name : 'param1', value: 'value1'}, {name : 'param2', value: 'value2'}];
+		var wmsParams = {'wmsParam' : 'value3', 'STYLES' : 'thisStyle'};
+		var layerOptions = {'fakeProp' : 'value4'};
+
+
+		beforeEach(function() {
+			testLayer = PORTAL.MAP.siteLayer.createWQPSitesLayer(queryParamArray, wmsParams, layerOptions);
+		});
+
+		it('Expects the SEARCHPARAMS to be set to reflect the queryParamArray in the returned value', function() {
+			var layerSource = testLayer.getSource();
+			expect(decodeURIComponent(PORTAL.MAP.siteLayer.getLegendGraphicURL(layerSource))).toContain('SEARCHPARAMS=param1:value1;param2:value2');
+
+			queryParamArray.push({name : 'param3', value: 'value3'});
+			PORTAL.MAP.siteLayer.updateWQPSitesLayer(testLayer, queryParamArray);
+			expect(decodeURIComponent(PORTAL.MAP.siteLayer.getLegendGraphicURL(layerSource))).toContain('SEARCHPARAMS=param1:value1;param2:value2;param3:value3');
+		});
+
+		it('Expects the STYLES parameter to reflect the current SLD used', function() {
+			var layerSource = testLayer.getSource();
+			expect(PORTAL.MAP.siteLayer.getLegendGraphicURL(layerSource)).toContain('STYLE=thisStyle');
+
+			PORTAL.MAP.siteLayer.updateWQPSitesSLD(testLayer, 'thatStyle');
+			expect(PORTAL.MAP.siteLayer.getLegendGraphicURL(layerSource)).toContain('STYLE=thatStyle');
+		});
+
+
 	});
 
 	describe('Tests for getWfsGetFeatureUrl', function() {
