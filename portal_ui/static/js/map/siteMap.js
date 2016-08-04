@@ -204,7 +204,9 @@ PORTAL.MAP.siteMap = function(options) {
 
 		// Set up sld switcher
 		options.$sldSelect.change(function() {
-			PORTAL.MAP.siteLayer.updateWQPSitesSLD(wqpSitesLayer, options.$sldSelect.val());
+			if (wqpSitesLayer) {
+				PORTAL.MAP.siteLayer.updateWQPSitesSLD(wqpSitesLayer, options.$sldSelect.val());
+			}
 		});
 	};
 
