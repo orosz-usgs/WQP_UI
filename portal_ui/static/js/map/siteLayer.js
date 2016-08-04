@@ -35,7 +35,6 @@ PORTAL.MAP.siteLayer = (function() {
 		var URL = Config.SITES_GEOSERVER_ENDPOINT + 'wms';
 		var sourceWMSParams = {
 			LAYERS: WQP_SITE_LAYER_NAME,
-			STYLES : 'wqp_sources',
 			FORMAT : 'image/png',
 			TRANSPARENT : true,
 			SEARCHPARAMS : getSearchParams(queryParamArray),
@@ -101,6 +100,16 @@ PORTAL.MAP.siteLayer = (function() {
 		source.updateParams({
 			SEARCHPARAMS : getSearchParams(queryParamArray),
 			cacheId : Date.now() // Needed to prevent a cached layer from being used.
+		});
+	};
+
+	/*
+	 * @param {WQP Sites Layer} layer
+	 * @param {String} sld
+	 */
+	self.updateWQPSitesSLD = function(layer, sld) {
+		layer.getSource().updateParams({
+			STYLES: sld
 		});
 	};
 
