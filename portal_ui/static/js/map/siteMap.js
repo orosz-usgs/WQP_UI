@@ -83,8 +83,8 @@ PORTAL.MAP.siteMap = function(options) {
 		 * @param {openlayers 3 layer group} - layerGroup
 		 * @param {integer} - incrementAboveBaseLayers
 		 */
-		var pushLayer = function(layer, layerGroup, incrementAboveBaseLayers) {
-			var increment = incrementAboveBaseLayers ? incrementAboveBaseLayers : 1;
+		var pushLayer = function(layer, layerGroup, zIndexAboveBaseLayers) {
+			var increment = zIndexAboveBaseLayers ? zIndexAboveBaseLayers : 1;
 			// set the layer's Z to be one increment above the current layers
 			layer.setZIndex(_.max(baseLayerZIndices) + increment);
 			// push the layer to a layer group
