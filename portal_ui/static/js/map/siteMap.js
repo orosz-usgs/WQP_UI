@@ -7,9 +7,10 @@ PORTAL.MAP = PORTAL.MAP || {};
 /*
  * Manages the site map and its controls
  * @param {Object} options
- * 		@prop {String} - mapDivId
- * 		@prop {Jquery element} - $loadingIndicator
- * 		@prop {Jquery element - $legendDiv
+ * 		@prop {String} mapDivId
+ * 		@prop {Jquery element} $loadingIndicator
+ * 		@prop {Jquery element} $legendDiv
+ * 		@prop {Jquery element} $sldSelect
  * 		@prop {Object instance of PORTAL.VIEWS.identifyDialog} identifyDialog
  * @return {Object}
  * 		@func initialize
@@ -200,6 +201,13 @@ PORTAL.MAP.siteMap = function(options) {
 		});
 		map.addInteraction(boxDrawInteraction);
 		map.addControl(boxIdControl);
+
+		// Set up sld switcher
+		options.$sldSelect.change(function() {
+			if (wqpSitesLayer) {
+				PORTAL.MAP.siteLayer.updateWQPSitesSLD(wqpSitesLayer, options.$sldSelect.val());
+			}
+		});
 	};
 
 	/*
@@ -225,7 +233,9 @@ PORTAL.MAP.siteMap = function(options) {
 			else {
 				wqpSitesLayer = PORTAL.MAP.siteLayer.createWQPSitesLayer(
 					queryParamArray,
-					{},
+					{
+						STYLES : options.$sldSelect.val()
+					},
 					{
 						visible: true,
 						map: map

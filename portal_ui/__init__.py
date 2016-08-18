@@ -1,5 +1,5 @@
 
-from flask import Flask
+from flask import Flask, request
 from flask_bower import Bower
 from celery import Celery
 
