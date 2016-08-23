@@ -77,19 +77,19 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	var fetchPourPoint = function(point) {
 		var mapBounds = map.getBounds();
 		return $.ajax({
-			url : Config.NLDI_POURPT_ENDPOINT,
+			url : Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wms',
 			method : 'GET',
 			data : {
 				version: '1.3.0',
 				request: 'GetFeatureInfo',
 				service: 'wms',
-				layers : 'sb:tpp',
-				crs : 'EPSG:4326',
+				layers : 'qw_portal_map:fpp',
+				srs : 'EPSG:4326',
 				bbox : mapBounds.getSouth() + ',' + mapBounds.getWest() + ',' + mapBounds.getNorth() + ',' + mapBounds.getEast(),
 				width : map.getSize().x,
 				height : map.getSize().y,
 				'info_format' : 'application/json',
-				'query_layers' : 'sb:tpp',
+				'query_layers' : 'qw_portal_map:fpp',
 				i : point.x,
 				j : point.y
 			}
@@ -347,8 +347,9 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		}
 	);
 
-	var pourPointLayer = L.tileLayer.wms(Config.NLDI_POURPT_ENDPOINT, {
-		layers:'tpp',
+	var pourPointLayer = L.tileLayer.wms(Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wms', {
+		layers:'fpp',
+		styles : 'pour_points',
 		format : 'image/png',
 		transparent : true,
 		minZoom : 8

@@ -50,6 +50,9 @@ def geoserver_proxy_request(target_url):
         # This fixed an an ERR_INVALID_CHUNKED_ENCODING when the app was run on the deployment server.
         if 'transfer-encoding' in resp.headers:
             del resp.headers['transfer-encoding']
+        # This fixed an net::ERR_CONTENT_DECODING_FAILED
+        if 'content-encoding' in resp.headers:
+            del resp.headers['content-encoding']
             
     else:
         resp = requests.post(target_url, data=request.data, headers=request.headers)
