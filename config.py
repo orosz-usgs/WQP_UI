@@ -9,14 +9,13 @@ COLLECT_STATIC_ROOT = 'static/'
 ASSETS_DEBUG = False #To not compress the js and css set this to True
 
 # Application defined config variables
-COVERAGE_MAP_GEOSERVER_ENDPOINT = ''
+WQP_GEOSERVER_ENDPOINT = ''
 SITES_MAP_GEOSERVER_ENDPOINT = ''
 SLD_ENDPOINT = ''
 CODES_ENDPOINT = ''
 SEARCH_QUERY_ENDPOINT = ''
 PUBLIC_SRSNAMES_ENDPOINT = ''
 
-NLDI_POURPT_ENDPOINT = 'https://www.sciencebase.gov/catalogMaps/mapping/ows/57336b02e4b0dae0d5dd619a'
 NLDI_SERVICES_ENDPOINT = ''
 
 NWIS_SITES_OGC_ENDPOINT = 'http://cida.usgs.gov/nwc/proxygeoserver/NWC/wms'

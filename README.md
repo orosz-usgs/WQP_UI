@@ -14,7 +14,7 @@ ASSETS_DEBUG = True # This will disable minimizing js and css assets but less fi
 SECRET_KEY = 'local_secret_key'
 
 # points to the geoserver endpoint you want to use. 
-COVERAGE_MAP_GEOSERVER_ENDPOINT = ''
+WQP_MAP_GEOSERVER_ENDPOINT = ''
 SITES_MAP_GEOSERVER_ENDPOINT = ''
 	
 #points to the sld endpoint you want to use.

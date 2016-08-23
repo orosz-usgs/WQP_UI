@@ -139,9 +139,9 @@ def public_srsnames():
     return render_template('public_srsnames.html')
     
 
-@app.route('/coverage_geoserver/<op>', methods=['GET', 'POST'])
-def coverage_geoserverproxy(op):
-    target_url = app.config['COVERAGE_MAP_GEOSERVER_ENDPOINT'] + '/' + op
+@app.route('/wqp_geoserver/<op>', methods=['GET', 'POST'])
+def wqp_geoserverproxy(op):
+    target_url = app.config['WQP_MAP_GEOSERVER_ENDPOINT'] + '/' + op
     return geoserver_proxy_request(target_url)
     
 

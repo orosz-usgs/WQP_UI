@@ -111,7 +111,7 @@ CoverageMap.init = function (divId) {
 	// Default to states and all sources with no styling
 	CoverageMap.dataLayer = new OpenLayers.Layer.WMS(
 		"Data",
-		Config.COVERAGE_MAP_GEOSERVER_ENDPOINT + 'wms',
+		Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wms',
 		{
 			layers: CoverageMapConfig.LAYER_PARAM.states,
 			format: 'image/png',
@@ -173,7 +173,7 @@ CoverageMap.updateLegend = function (imgEl, display_by, date_filter, source) {
 	"use strict";
 	imgEl.attr(
 		'src',
-		Config.COVERAGE_MAP_GEOSERVER_ENDPOINT + 'wms?request=GetLegendGraphic&format=image/png&layer=' + CoverageMapConfig.LAYER_PARAM[display_by] +
+		Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wms?request=GetLegendGraphic&format=image/png&layer=' + CoverageMapConfig.LAYER_PARAM[display_by] +
 		'&legend_options=fontName:Verdana;fontAntiAliasing:true;' +
 		'&sld=' + encodeURIComponent(CoverageMapConfig.get_sld_param(display_by, date_filter, source)));
 };
