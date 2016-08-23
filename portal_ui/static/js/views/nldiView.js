@@ -34,22 +34,24 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	var $mapDiv = $('#' + options.mapDivId);
 	var $insetMapDiv = $('#' + options.insetMapDivId);
 
-	var nldiSiteLayers, nldiFlowlineLayers;
-	var insetNldiSiteLayers, insetNldiFlowlineLayers;
+	var nldiSiteCluster, nldiFlowlineLayers;
+	var insetNldiSiteCluster, insetNldiFlowlineLayers;
 
 	var getRetrieveMessage = function() {
 		return '<p>Retrieving sites ' + navValue.text.toLowerCase() + ((distanceValue) ? ' ' + distanceValue + ' km' : '') + '.</p>';
 	};
 
 	var cleanUpMaps = function() {
-		if (nldiSiteLayers) {
-			map.removeLayer(nldiSiteLayers);
+		if (nldiSiteCluster) {
+			nldiSiteCluster.clearLayers();
+			map.removeLayer(nldiSiteCluster);
 		}
 		if (nldiFlowlineLayers) {
 			map.removeLayer(nldiFlowlineLayers);
 		}
-		if (insetNldiSiteLayers) {
-			insetMap.removeLayer(insetNldiSiteLayers);
+		if (insetNldiSiteCluster) {
+			insetNldiSiteCluster.clearLayers();
+			insetMap.removeLayer(insetNldiSiteCluster);
 		}
 		if (insetNldiFlowlineLayers) {
 			insetMap.removeLayer(insetNldiFlowlineLayers);
@@ -157,10 +159,8 @@ PORTAL.VIEWS.nldiView  = function(options) {
 					var flowlineBounds;
 					var sitesGeojson = sitesResponse[0];
 					var flowlinesGeojson = flowlinesResponse[0];
-					var nldiSiteCluster = L.markerClusterGroup({
-						maxClusterRadius : 40
-					});
-					var insetNldiSiteCluster = L.markerClusterGroup();
+					var nldiSiteLayers = siteLayer(sitesGeojson);
+					var insetNldiSiteLayers = siteLayer(sitesGeojson);
 
 					log.debug('NLDI service has retrieved ' + sitesGeojson.features.length + ' sites.')
 					map.closePopup();
@@ -173,8 +173,11 @@ PORTAL.VIEWS.nldiView  = function(options) {
 					flowlineBounds = nldiFlowlineLayers.getBounds();
 					map.fitBounds(flowlineBounds);
 
-					nldiSiteLayers = siteLayer(sitesGeojson);
-					insetNldiSiteLayers = siteLayer(sitesGeojson);
+					nldiSiteCluster = L.markerClusterGroup({
+						maxClusterRadius : 40
+					});
+					insetNldiSiteCluster = L.markerClusterGroup();
+
 					nldiSiteCluster.addLayer(nldiSiteLayers);
 					insetNldiSiteCluster.addLayer(insetNldiSiteLayers);
 					map.addLayer(nldiSiteCluster);
