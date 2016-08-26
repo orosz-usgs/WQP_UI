@@ -1,0 +1,12 @@
+include .bowerrc
+include *.json
+include config.py
+include manage.py
+include *.md
+include *.txt
+recursive-include portal_ui/static *
+recursive-include test *
+recursive-include docs *
+recursive-include portal_ui/templates/ *
+recursive-include static *
+recursive-exclude portal_ui *.pyc
