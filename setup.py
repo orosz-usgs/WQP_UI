@@ -45,9 +45,9 @@ setup(name='usgs_flask_wqp_ui',
       packages=find_packages(),
       include_package_data=True,
       long_description=read('README.md'),
-      data_files=[('instance', [])],
       install_requires=read_requirements(),
       tests_require=read_requirements(),
       platforms='any',
-      test_suite='nose.collector'
+      test_suite='nose.collector',
+      zip_safe=False
       )
