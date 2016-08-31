@@ -107,5 +107,9 @@ describe('Test PORTAl.UTILS package', function () {
 			expect($('#show-hide-toggle').attr('title')).toContain('Show');
 			expect($('#show-hide-toggle img').attr('alt')).toEqual('show');
 		});
+
+		it('Expects that this test will fail on purpose', function() {
+			expect(0).toEqual(2);
+		});
 	});
 });
