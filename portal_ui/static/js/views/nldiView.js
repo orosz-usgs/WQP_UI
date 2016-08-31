@@ -214,12 +214,12 @@ PORTAL.VIEWS.nldiView  = function(options) {
 			fetchPourPoint(ev.containerPoint.round())
 				.done(function (result) {
 					if (result.features.length === 0) {
-						map.openPopup('<p>No pour point has been selected. Please click on a pour point.</p>', ev.latlng);
+						map.openPopup('<p>No query point has been selected. Please click on a point to query from.</p>', ev.latlng);
 						$mapDiv.css('cursor', '');
 
 					}
 					else if (result.features.length > 1) {
-						map.openPopup('<p>More than one pour point has been selected. Please zoom in and try again.</p>', ev.latlng);
+						map.openPopup('<p>More than one query point has been selected. Please zoom in and try again.</p>', ev.latlng);
 						$mapDiv.css('cursor', '');
 					}
 					else {
@@ -230,7 +230,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 					}
 				})
 				.fail(function () {
-					map.openPopup('<p>Unable to retrieve pour point, service call failed</p>', ev.latlng);
+					map.openPopup('<p>Unable to retrieve points, service call failed</p>', ev.latlng);
 					$mapDiv.css('cursor', '');
 				});
 		}
