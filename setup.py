@@ -3,9 +3,20 @@ Created on Aug 26, 2016
 
 @author: ayan
 """
+import ConfigParser
 import os
 import sys
 from setuptools import setup, find_packages
+
+
+BUMPVERSION_CFG = '.bumpversion.cfg'
+
+
+def get_package_version():
+    config = ConfigParser.ConfigParser()
+    config.read(BUMPVERSION_CFG)
+    current_version = config.get('bumpversion', 'current_version')
+    return current_version
 
 
 def read_requirements():
@@ -32,13 +43,14 @@ if sys.argv[-1] == 'karma':
 def static_file_collect():
     os.system('python manage.py collect')
 
+
 if sys.argv[-1] == 'collect':
     static_file_collect()
     sys.exit()
 
 
 setup(name='usgs_flask_wqp_ui',
-      version='1.0',
+      version=get_package_version(),
       description='USGS Flask Water Quality Portal User Interface',
       author='Mary Bucknell, James Kreft, Andrew Yan',
       author_email='jkreft@usgs.gov',
