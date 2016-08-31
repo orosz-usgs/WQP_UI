@@ -26,7 +26,6 @@
     "karma-firefox-launcher": "^0.1.7",
     "karma-jasmine": "^0.3.7",
     "karma-js-coverage": "^0.4.0",
-    "less": "^2.6.1",
-    "phantomjs" : "^2.1.7"
+    "less": "^2.6.1"
   }
 }
