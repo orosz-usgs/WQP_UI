@@ -19,7 +19,12 @@ describe('PORTAL.MAP.siteLayer tests', function() {
 	describe('Tests for createWQPSitesLayer', function() {
 		var testLayer;
 
-		var queryParamArray = [{name : 'param1', value: 'value1'}, {name : 'param2', value: 'value2'}];
+		var queryParamArray = [
+			{name : 'param1', value : 'value1'},
+			{name : 'param2', value : 'value2'},
+			{name : 'param2', value : 'value3'},
+			{name : 'param3', value : 'http://fakeservice.com/fetch?tparam=10&zparam=50'}
+		];
 		var wmsParams = {'wmsParam' : 'value3', 'STYLES' : 'thisStyle'};
 		var layerOptions = {'fakeProp' : 'value4'};
 
@@ -31,7 +36,7 @@ describe('PORTAL.MAP.siteLayer tests', function() {
 		it('Expects that a WMS tile source has been created and that the SEARCHPARAMS property is set', function() {
 			var source = testLayer.getSource();
 			expect(source.getUrls()[0]).toContain(Config.SITES_GEOSERVER_ENDPOINT);
-			expect(source.getParams().SEARCHPARAMS).toEqual('param1:value1;param2:value2');
+			expect(source.getParams().SEARCHPARAMS).toEqual('param1:value1;param2:value2|value3;param3:http://fakeservice.com/fetch?tparam=10&zparam=50');
 		});
 
 		it('Expects that the queryParamArray is defined as a property on the layer', function() {
@@ -203,7 +208,7 @@ describe('PORTAL.MAP.siteLayer tests', function() {
 			expect(failedSpy).toHaveBeenCalled();
 		});
 
-		it('Expects a failed response to rejct the promise', function() {
+		it('Expects a failed response to reject the promise', function() {
 			fakeServer.respondWith([500, {"Content-Type" : "text"}, 'Bad server']);
 			fakeServer.respond();
 			expect(successSpy).not.toHaveBeenCalled();
