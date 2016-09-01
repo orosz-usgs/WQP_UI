@@ -143,7 +143,10 @@ PORTAL.MODELS.help = {
 		placement: 'auto',
 		title: 'NLDI Help',
 		content: '\
-			<div>Select a navigation direction and click on a location on the map to select sites in a watershed\
+			<div><p>Select a navigation direction and distance and click on a query location on the map to display sites upstream or downstream of that point. \
+			The list of sites will be passed to the water quality portal query.</p>\
+			<p>Use a distance with upstream tributaries to restrict the query size and ensure that the result does not crash the page</p>\
+			<p>This tool uses the <a href="https://cida.usgs.gov/nldi/about"  target="_blank" title="Go to the Network Linked Data Index about page" >Network Linked Data Index</a> to navigate.</p>\
 			</div>'
 	},
 	sampleMedia: {
@@ -204,8 +207,8 @@ PORTAL.MODELS.help = {
 		placement : 'auto',
 		title : 'Minimum results per site Help',
 		content: '\
-        	<div>This limits the data returned to data from sites where at least a minimum number of samples have been \
-        	taken that conform to the rest of the query parameters.  For example, if you are looking for stream sites in \
+        	<div>This limits the data returned to data from sites where at least a minimum number of results have been \
+        	reported that conform to the rest of the query parameters.  For example, if you are looking for stream sites in \
         	Wisconsin that have nutrient samples taken beween 2010 and 2015, entering 10 in this box would return only results \
         	from sites where at least 10 nutrient result values have been reported</div>'
 	},
