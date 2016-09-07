@@ -4,8 +4,6 @@ Created on Aug 26, 2016
 @author: ayan
 """
 import ConfigParser
-import os
-import sys
 from setuptools import setup, find_packages
 
 
@@ -13,6 +11,16 @@ BUMPVERSION_CFG = '.bumpversion.cfg'
 
 
 def get_package_version():
+    """
+    Read the .bumpversion.cfg file return
+    the current version number listed therein.
+    Version number only needs to be maintained
+    in the .bumpversion.cfg file.
+
+    :return: current package version
+    :rtype: str
+
+    """
     config = ConfigParser.ConfigParser()
     config.read(BUMPVERSION_CFG)
     current_version = config.get('bumpversion', 'current_version')
@@ -20,6 +28,14 @@ def get_package_version():
 
 
 def read_requirements():
+    """
+    Get application requirements from
+    the requirements.txt file.
+
+    :return: portal_ui Python requirements
+    :rtype: list
+
+    """
     with open('requirements.txt', 'r') as req:
         requirements = req.readlines()
     install_requires = [r.strip() for r in requirements]
@@ -27,26 +43,17 @@ def read_requirements():
 
 
 def read(filepath):
+    """
+    Read the contents from a file.
+
+    :param str filepath: path to the file to be read
+    :return: file contents
+    :rtype: str
+
+    """
     with open(filepath, 'r') as f:
         content = f.read()
     return content
-
-
-def run_karma_tests():
-    os.system('karma start test/js/karma.conf.js --no-single-run --browsers "" --reporters progress')
-
-if sys.argv[-1] == 'karma':
-    run_karma_tests()
-    sys.exit()
-
-
-def static_file_collect():
-    os.system('python manage.py collect')
-
-
-if sys.argv[-1] == 'collect':
-    static_file_collect()
-    sys.exit()
 
 
 setup(name='usgs_flask_wqp_ui',
