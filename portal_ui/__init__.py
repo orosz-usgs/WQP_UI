@@ -1,15 +1,15 @@
 
-from flask import Flask, request
+from flask import Flask
 from flask_bower import Bower
 from celery import Celery
 
-app = Flask(__name__.split()[0], instance_relative_config=True)
+app = Flask(__name__.split()[0], instance_relative_config=False)
 
 Bower(app)
 
 # Loads configuration information from config.py and instance/config.py
 app.config.from_object('config')
-app.config.from_pyfile('config.py')
+app.config.from_pyfile('instance/config.py')
 
 import assets
 import views
