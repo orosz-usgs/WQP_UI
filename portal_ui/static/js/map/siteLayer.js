@@ -17,10 +17,16 @@ PORTAL.MAP.siteLayer = (function() {
 	var WQP_SITE_LAYER_NAME = 'wqp_sites';
 	var WFS_VERSION = '1.1.0';
 
-	var getSearchParams = function (queryParamArray) {
-		var queryString = PORTAL.UTILS.getQueryString(queryParamArray, ['mimeType', 'zip'], true);
-		var result = decodeURIComponent(queryString.replace(/\+/g, '%20'));
-		return result.replace(/=/g, ':').replace(/;/g, '|').replace(/&/g, ';');
+	var getSearchParams = function(queryParamArray) {
+		var queryJson = PORTAL.UTILS.getQueryParamJson(queryParamArray);
+		var resultJson = _.omit(queryJson, ['mimeType', 'zip']);
+		resultJson = _.mapObject(resultJson, function(value) {
+			return value.join('|');
+		});
+		var resultArray =  _.map(resultJson, function(value, name) {
+			return name + ':' + value;
+		});
+		return resultArray.join(';');
 	};
 
 	/*
