@@ -5,13 +5,17 @@ if [ ! -s instance/config.py ]; then
    echo "Please create a instance/config.py file before proceeding. See the README.md for what's required"
    return
 fi
-if [ "$1" == "--clean" ]; then
-   echo "Cleaning the project, installing the javascript dependencies and running the javascript tests"
-   mvn clean test
+
+if [ "$1" == '--update' ]; then
+	echo "Updating npm and bower dependencies";
+	npm update;
+	bower update;
 else
-    echo "Installing the javascript dependencies and running the javascript tests"
-    mvn test
+	echo "Installing npm and bower dependencies";
+	npm install;
+	bower build;
 fi
+
 echo "Creating the virtualenv env and installing python requirements"
 if [ ! -s env ]; then
     virtualenv --python=python2.7 env
