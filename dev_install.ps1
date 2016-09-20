@@ -1,6 +1,6 @@
 param([String]$update="")
 
-Write-Output "You must have node, Python 2.7, and virtualenv installed."
+Write-Output "You must have node, karma, Python 2.7, and virtualenv installed and available via the system path."
 
 $configExists = Test-Path instance/config.py
 if (-Not $configExists) {
@@ -18,6 +18,9 @@ else {
 	npm install
 	bower install
 }
+
+Write-Output "Running Javascript tests."
+karma start test/js/karma.conf.js
 
 Write-Output "Creating the virtualenv and installing Python requirements"
 $envExists = Test-Path env

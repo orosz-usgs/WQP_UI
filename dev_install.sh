@@ -16,6 +16,10 @@ else
 	bower install;
 fi
 
+echo "Running Javascript tests";
+node_modules/karma/bin/karma start test/js/karma.conf.js;
+
+
 echo "Creating the virtualenv env and installing python requirements"
 if [ ! -s env ]; then
 	virtualenv --python=python2.7 env
