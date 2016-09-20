@@ -1,4 +1,4 @@
-param([String]$update="--update")
+param([String]$update="")
 
 Write-Output "You must have node, karma, Python 2.7, and virtualenv installed and available via the system path."
 

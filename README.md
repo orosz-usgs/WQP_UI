@@ -42,16 +42,16 @@ LOCAL_BASE_URL = ''
 
 ## Setup on Linux or MacOS
 To build this application on a linux or Mac OS you can use the dev_install.sh script. If you want a fresh install type in:
-`source dev_install.sh --clean`
-This will remove the previous javascript and python dependencies. If you don't want to install from scratch, type in:
 `source dev_install.sh`
+This will remove the previous javascript and python dependencies. If you don't want to install from scratch, type in:
+`source dev_install.sh --update`
 This will update your javascript and python dependencies. Both commands will run the jasmine tests.
 
 ## Setup on Windows
 To build on Windows, you can use the dev_install.ps1 script. If you want a fresh install type in:
-`.\dev_install.ps1 --clean`
-This will remove previous javascript and python dependencies. If you don't want to install from scratch, type in:
 `.\dev_install.ps1`
+This will remove previous javascript and python dependencies. If you don't want to install from scratch, type in:
+`.\dev_install.ps1 --update`
 This will update javascript and python dependencies. Both commands will run the jasmine tests on Windows.
 
 ## Manual Setup
