@@ -42,20 +42,20 @@ LOCAL_BASE_URL = ''
 
 ## Setup on Linux or MacOS
 To build this application on a linux or Mac OS you can use the dev_install.sh script. If you want a fresh install type in:
-`source dev_install.sh`
+`source dev_install.sh --clean`
 This will remove the previous javascript and python dependencies. If you don't want to install from scratch, type in:
-`source dev_install.sh --update`
+`source dev_install.sh --update` or `source dev_install.sh`
 This will update your javascript and python dependencies. Both commands will run the jasmine tests.
 
 ## Setup on Windows
-To build on Windows, you can use the dev_install.ps1 script. If you want a fresh install type in:
-`.\dev_install.ps1`
+To build on Windows, you can use the dev_install.ps1 script. If you want a fresh install, open Powershell and type in:
+`.\dev_install.ps1 --clean`
 This will remove previous javascript and python dependencies. If you don't want to install from scratch, type in:
-`.\dev_install.ps1 --update`
+`.\dev_install.ps1 --update` or `.\dev_install.ps1`
 This will update javascript and python dependencies. Both commands will run the jasmine tests on Windows.
 
 ## Manual Setup
-If you don't have maven installed, you can do the following steps:
+If you prefer to go through the setup manually:
 1. If you want to clean, remove the env, node, node_modules, portal_ui/bower_components, portal_ui/static/gen, and portal_ui/static/.webassets-cache directories
 2. Install node (if you don't already have it installed.
 3. Run `npm install`
