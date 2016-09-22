@@ -37,4 +37,4 @@ if [ ! -s env ]; then
 fi
 env/bin/pip install -r requirements.txt
 
-echo "Finished setting up WQP-UI"
+echo "Finished setting up WQP_UI"

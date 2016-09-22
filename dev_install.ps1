@@ -41,4 +41,4 @@ else {
 }
 env\Scripts\pip install -r requirements.txt
 
-Write-Output "Finished setting up WQP-UI."
+Write-Output "Finished setting up WQP_UI."
