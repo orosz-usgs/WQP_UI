@@ -58,7 +58,7 @@ def read(filepath):
 
 setup(name='usgs_flask_wqp_ui',
       version=get_package_version(),
-      description='USGS Flask Water Quality Portal User Interface',
+      description='USGS Water Quality Portal User Interface',
       author='Mary Bucknell, James Kreft, Andrew Yan',
       author_email='jkreft@usgs.gov',
       packages=find_packages(),
