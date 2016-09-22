@@ -1,6 +1,6 @@
 param([String]$arg1="--update")
 
-Write-Output "You must have node, karma, Python 2.7, and virtualenv installed and available via the system path."
+Write-Output "You must have node, Python 2.7, and virtualenv installed and available via the system path."
 
 $configExists = Test-Path instance\config.py
 if (-Not $configExists) {
@@ -39,6 +39,6 @@ if (-Not $envExists) {
 else {
 	Write-Output "Virtualenv already exists."
 }
-env/Scripts/pip install -r requirements.txt
+env\Scripts\pip install -r requirements.txt
 
 Write-Output "Finished setting up WQP-UI."
