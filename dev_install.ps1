@@ -33,7 +33,7 @@ if ($arg1 -eq "--clean") {
 
 $envExists = Test-Path env
 if (-Not $envExists) {
-	Write-Output "Creating a virtualenv."
+	Write-Output "Creating a new virtualenv."
 	virtualenv env
 }
 else {
