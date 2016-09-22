@@ -39,6 +39,6 @@ if (-Not $envExists) {
 else {
 	Write-Output "Virtualenv already exists."
 }
-env/Scripts/pip install -r requirements.txt
+env\Scripts\pip install -r requirements.txt
 
 Write-Output "Finished setting up WQP-UI."
