@@ -12,7 +12,6 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-/portal_ui/bower_components
 env/
 build/
 develop-eggs/
@@ -63,3 +62,4 @@ target/
 .project
 .pydevproject
 /static/
+/wqp/bower_components/
