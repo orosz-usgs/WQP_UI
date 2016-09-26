@@ -31,7 +31,7 @@ if [ "$ARG1" == '--clean' ]; then
 fi
 
 echo "Running Javascript tests";
-#node_modules/karma/bin/karma start test/js/karma.conf.js;
+node_modules/karma/bin/karma start test/js/karma.conf.js;
 
 if [ ! -s env ]; then
     echo "Creating the virtualenv env";
