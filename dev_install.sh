@@ -40,4 +40,7 @@ fi
 echo "Installing python requirements";
 env/bin/pip install -r requirements.txt;
 
+echo "Running Python tests";
+env/bin/nosetests
+
 echo "Finished setting up WQP-UI";

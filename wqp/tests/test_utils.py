@@ -1,4 +1,4 @@
-from portal_ui.utils import generate_redis_db_number, check_org_id, generate_provider_list
+from wqp.utils import generate_redis_db_number, check_org_id, generate_provider_list
 import unittest
 import requests_mock
 

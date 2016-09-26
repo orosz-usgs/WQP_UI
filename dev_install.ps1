@@ -48,4 +48,7 @@ else {
 Write-Output "Installing python requirements."
 env\Scripts\pip install -r requirements.txt
 
+Write-Output "Running Python tests"
+env\Scripts\nosetests
+
 Write-Output "Finished setting up WQP-UI."
