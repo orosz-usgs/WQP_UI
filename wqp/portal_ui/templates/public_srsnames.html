@@ -38,7 +38,7 @@
             width: 100%;
         }          
     </style>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/ng-grid/ng-grid.css') }}" /> 
+    <link rel="stylesheet" type="text/css" href="{{ url_for('portal_ui.static', filename='vendor/ng-grid/ng-grid.css') }}" />
 {% endblock %}
 
 {% block google_analytics_script %}{% endblock %}
@@ -59,10 +59,10 @@
 
 {% block body_page_script %}
 	{% include "partials/hide_non_usgs_epa_logos.html" %}
-	<script type="text/javascript" src="{{ url_for('static', filename='vendor/angular.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='vendor/ng-grid/ng-grid-2.0.3.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/angular/modules/qwApp.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/angular/controllers/srsnames.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('portal_ui.static', filename='vendor/angular.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('portal_ui.static', filename='vendor/ng-grid/ng-grid-2.0.3.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('portal_ui.static', filename='js/angular/modules/qwApp.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('portal_ui.static', filename='js/angular/controllers/srsnames.js') }}"></script>
     
     <script type="text/javascript">
     	$(document).ready(function() {

@@ -15,7 +15,7 @@
 
 
 {% block page_content %}
-    <a href="{{ url_for('home-canonical') }}">WQP Home</a> > <a href="{{ url_for('uri_base') }}">Providers</a> > <a href="{{ url_for('uri_provider',provider_id=provider) }}">{{ provider }}</a> > <a href="{{ url_for('uri_organization',provider_id=provider, organization_id=organization) }}">{{ organization }}</a>
+    <a href="{{ url_for('portal_ui.home-canonical') }}">WQP Home</a> > <a href="{{ url_for('portal_ui.uri_base') }}">Providers</a> > <a href="{{ url_for('portal_ui.uri_provider',provider_id=provider) }}">{{ provider }}</a> > <a href="{{ url_for('portal_ui.uri_organization',provider_id=provider, organization_id=organization) }}">{{ organization }}</a>
     <h1>Water Quality Portal Data Sites for {{ organization }}</h1>
     {% if total_site_count >= 60000 %}
         <p>This organization has over {{ total_site_count }} sites, and their locations are not mapped</p>
@@ -26,7 +26,7 @@
     <br/>
 
     {% for site in sites_geojson['features'] %}
-        <a href="{{ url_for('uri_site', organization_id = organization, provider_id = provider, site_id=site['properties']['MonitoringLocationIdentifier']) }}">- {{ site['properties']['MonitoringLocationName'] }} - {{ site['properties']['MonitoringLocationIdentifier'] }} ({{ site['properties']['ResolvedMonitoringLocationTypeName'] }})</a><br/>
+        <a href="{{ url_for('portal_ui.uri_site', organization_id = organization, provider_id = provider, site_id=site['properties']['MonitoringLocationIdentifier']) }}">- {{ site['properties']['MonitoringLocationName'] }} - {{ site['properties']['MonitoringLocationIdentifier'] }} ({{ site['properties']['ResolvedMonitoringLocationTypeName'] }})</a><br/>
     {% endfor %}
 {% endblock %}
 

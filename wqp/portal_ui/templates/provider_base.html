@@ -4,13 +4,13 @@
 
 
 {% block page_content %}
-    <a href="{{ url_for('home-canonical') }}">WQP Home</a> > <a href="{{ url_for('uri_base') }}">Providers</a>
+    <a href="{{ url_for('portal_ui.home-canonical') }}">WQP Home</a> > <a href="{{ url_for('portal_ui.uri_base') }}">Providers</a>
     <h1>Water Quality Portal Data Providers</h1>
 
-    <p>Learn more about Water Quality Portal Data Providers <a href="{{ url_for('wqp_description-canonical') }}">here</a>.</p>
+    <p>Learn more about Water Quality Portal Data Providers <a href="{{ url_for('portal_ui.wqp_description-canonical') }}">here</a>.</p>
 
     {% for provider in providers %}
-        <a href="{{ url_for('uri_provider', provider_id = provider) }}">{{ provider }}</a></br>
+        <a href="{{ url_for('portal_ui.uri_provider', provider_id = provider) }}">{{ provider }}</a></br>
     {% endfor %}
 {% endblock %}
 

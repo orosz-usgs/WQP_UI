@@ -79,7 +79,7 @@
             // send ajax POST request to start background job
             $.ajax({
                 type: 'POST',
-                url: '{{ url_for('sitescachetask', provider_id = '') }}'+data_provider,
+                url: '{{ url_for('portal_ui.sitescachetask', provider_id = '') }}'+data_provider,
                 success: function(data, status, request) {
                     status_url = request.getResponseHeader('Location');
                     update_progress(status_url, nanobar, div[0]);
