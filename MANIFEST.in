@@ -4,10 +4,10 @@ include *.json
 include manage.py
 include *.md
 include *.txt
-recursive-include portal_ui/static *
-recursive-include portal_ui/bower_components *
+recursive-include wqp/portal_ui/static *
+recursive-include wqp/bower_components *
 recursive-include test *
 recursive-include docs *
-recursive-include portal_ui/templates *
-recursive-exclude portal_ui *.pyc
+recursive-include wqp/portal_ui/templates *
+recursive-exclude wqp *.pyc
 prune instance

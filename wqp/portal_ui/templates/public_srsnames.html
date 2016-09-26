@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}NWIS Public SRS Names{% endblock %}
+
+{% block page_header_title %}&nbsp;{% endblock %}
+
+{% block page_style %}
+	<style type="text/css" media="screen">
+        .header-image {
+            margin-left: 25px;
+            margin-right: auto;
+        }
+        .page-content h1 {
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        .page-content {
+            position: absolute;
+            top: 130px;
+            bottom: 220px;
+            right: 25px;
+            left: 25px;
+            margin-right: 25px;
+            margin-left: 25px;
+        }
+        #csv-download {
+            font-size: medium;
+            margin-top: 5px;
+        }
+        #footer-content {
+            position: absolute;
+            bottom: 1px;
+            width: 100%;
+            background-color: #e9e3d5;
+        }
+        .gridStyle {
+            height: 100%;
+            width: 100%;
+        }          
+    </style>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('portal_ui.static', filename='vendor/ng-grid/ng-grid.css') }}" />
+{% endblock %}
+
+{% block google_analytics_script %}{% endblock %}
+
+{% block nav_bar %}{% endblock %}
+
+{% block page_content %}
+	{% raw %}
+		<div ng-app="qwApp">
+			<div class="page-content" ng-controller="srsnames">
+		        <h1>NWIS Public SRS Names: {{maxLastRevDate}}</h1>
+		        <div class="gridStyle" ng-grid="gridData"></div>
+		        <div id="csv-download"><a href={{downloadUrl}}>Download as csv</a></div>
+		    </div>
+		</div>
+	{% endraw %}	
+{% endblock %}
+
+{% block body_page_script %}
+	{% include "partials/hide_non_usgs_epa_logos.html" %}
+	<script type="text/javascript" src="{{ url_for('portal_ui.static', filename='vendor/angular.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('portal_ui.static', filename='vendor/ng-grid/ng-grid-2.0.3.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('portal_ui.static', filename='js/angular/modules/qwApp.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('portal_ui.static', filename='js/angular/controllers/srsnames.js') }}"></script>
+    
+    <script type="text/javascript">
+    	$(document).ready(function() {
+    		$('body').attr('id', 'public-srsnames-page'); // Needed for page specific styling
+    	});
+    </script>
+{% endblock %}
