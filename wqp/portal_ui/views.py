@@ -16,8 +16,7 @@ from ..tasks import generate_site_list_from_streamed_tsv_async
 portal_ui = Blueprint('portal_ui', __name__,
                       template_folder='templates',
                       static_folder='static',
-                      static_url_path='/portal_ui/static/')
-
+                      static_url_path='/portal_ui/static')
 # fix a mysterious encoding issue, see
 # http://stackoverflow.com/questions/21129020/how-to-fix-unicodedecodeerror-ascii-codec-cant-decode-byte
 # this is a great reason to update to python 3,
