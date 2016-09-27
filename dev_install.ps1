@@ -25,10 +25,7 @@ if ($arg1 -eq "--update") {
 }
 
 if ($arg1 -eq "--clean") {
-	Write-Output "Clearing old dependencies."
-	Remove-Item node_modules -Force -Recurse
-	Remove-Item portal_ui\bower_components -Force -Recurse
-	Write-Output "Installing dependencies"
+	Write-Output "Installing npm and bower dependencies"
 	npm install
 	bower install
 }
@@ -38,12 +35,11 @@ node node_modules\karma\bin\karma start test\js\karma.conf.js
 
 Write-Output "Creating the virtualenv and installing Python requirements"
 if ($arg1 -eq "--clean") {
-	Remove-Item env -Force -Recurse
 }
 
 $envExists = Test-Path env
 if (-Not $envExists) {
-	Write-Output "Creating a new virtualenv."
+	Write-Output "Creating a virtualenv."
 	virtualenv env
 }
 else {
@@ -55,4 +51,4 @@ env\Scripts\pip install -r requirements.txt
 Write-Output "Running Python tests"
 env\Scripts\nosetests
 
-Write-Output "Finished setting up WQP_UI."
+Write-Output "Finished setting up WQP-UI."
