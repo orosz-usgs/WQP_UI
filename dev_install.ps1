@@ -8,6 +8,16 @@ if (-Not $configExists) {
 	Exit
 }
 
+if ($arg1 -eq "--clean") {
+	Write-Output "Clearing old dependencies."
+	Remove-Item env -Force -Recurse
+	Remove-Item node_modules -Force -Recurse
+	Remove-Item portal_ui\bower_components -Force -Recurse
+	Remove-Item portal_ui/static/.webassets-cache -Force -Recurse
+	Remove-Item portal_ui/static/gen -Force -Recurse
+
+}
+
 if ($arg1 -eq "--update") {
 	Write-Output "Updating npm and bower dependencies"
 	npm update
@@ -39,6 +49,10 @@ if (-Not $envExists) {
 else {
 	Write-Output "Virtualenv already exists."
 }
+Write-Output "Installing python requirements."
 env\Scripts\pip install -r requirements.txt
+
+Write-Output "Running Python tests"
+env\Scripts\nosetests
 
 Write-Output "Finished setting up WQP_UI."
