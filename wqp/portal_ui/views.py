@@ -31,6 +31,11 @@ redis_config = app.config['REDIS_CONFIG']
 cache_timeout = app.config['CACHE_TIMEOUT']
 
 
+# TODO: Temporarily in here for debugging
+@portal_ui.route('/debug/')
+def debug():
+    return render_template('debug.html');
+
 
 
 @portal_ui.route('/index.jsp')
