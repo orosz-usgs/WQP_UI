@@ -1,6 +1,5 @@
 
 import os
-import logging
 
 PROJECT_HOME = os.path.dirname(__file__)
 #Config for Flask-Collect
@@ -8,6 +7,7 @@ COLLECT_STATIC_ROOT = 'static/'
 
 #Config for Flask-Assets
 ASSETS_DEBUG = False #To not compress the js and css set this to True
+ASSETS_AUTO_BUILD = False #Local developers will typically set this to True in their instance/config.py.
 
 # Application defined config variables
 WQP_GEOSERVER_ENDPOINT = ''
@@ -32,7 +32,7 @@ GA_TRACKING_CODE = ''
 # set to false in instance/config.py if you want to turn off the NLDI feature
 NLDI_ENABLED = True
 
-#LESS_BIN = os.path.join(PROJECT_HOME, 'node_modules', 'less', 'bin', 'lessc')
+LESS_BIN = os.path.join(PROJECT_HOME, 'node_modules', 'less', 'bin', 'lessc')
 
 # set REDIS Config if it exists
 REDIS_CONFIG = None
@@ -55,6 +55,3 @@ ANNOUNCEMENT_BANNER = None
 # Celery configuration
 CELERY_BROKER_URL = None
 CELERY_RESULT_BACKEND = None
-
-LOGGING_LOCATION = 'wqp_error.log'
-LOGGING_LEVEL = logging.DEBUG

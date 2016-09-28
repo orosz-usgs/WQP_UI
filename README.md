@@ -9,6 +9,7 @@ You will need to create a config.py file in the `instance` directory. It should 
 DEBUG = True
 
 ASSETS_DEBUG = True # This will disable minimizing js and css assets but less files will still compile.
+ASSETS_AUTO_BUILD = True # Typically local developers will not be using precompiled assets.
 	
 # Do not use the same key as any of the deployment servers
 SECRET_KEY = 'local_secret_key'
