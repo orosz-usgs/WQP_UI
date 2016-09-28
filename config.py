@@ -20,6 +20,7 @@ PUBLIC_SRSNAMES_ENDPOINT = ''
 NLDI_SERVICES_ENDPOINT = ''
 
 NWIS_SITES_SERVICE_ENDPOINT = 'http://waterservices.usgs.gov/nwis/site/'
+NWIS_SITES_INVENTORY_ENDPOINT = 'http://waterservices.usgs.gov/nwis/inventory'
 NWIS_SITES_OGC_ENDPOINT = 'http://cida.usgs.gov/nwc/proxygeoserver/NWC/wms'
 NWIS_SITES_LAYER_NAME = 'NWC:gagesII'
 

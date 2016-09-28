@@ -20,7 +20,7 @@ def nwis_sites():
     response = None
     params = {'format': 'rdb'}
     # If none of the required service arguments are used, we will retrieve the entire
-    if not any(k in REQUIRED_SERVICE_ARGUMENTS for k in param_keys):
+    if not any(k.lower() in REQUIRED_SERVICE_ARGUMENTS for k in param_keys):
         response = 'Returning all hucs. Not yet implemented'
 
     # Check for limits on the number of huc2s and huc8s. If it exceeds NWIS limitation, then
