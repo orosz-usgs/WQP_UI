@@ -12,13 +12,6 @@ from ..utils import pull_feed, geoserver_proxy_request, generate_provider_list, 
     get_site_info, check_org_id, generate_redis_db_number, generate_site_list_from_streamed_tsv
 from ..tasks import generate_site_list_from_streamed_tsv_async
 
-from ..assets import assets
-
-import logging
-
-handler = logging.FileHandler(app.config['LOGGING_LOCATION'])
-handler.setLevel(app.config['LOGGING_LEVEL'])
-app.logger.addHandler(handler)
 
 # Create blueprint
 portal_ui = Blueprint('portal_ui', __name__,
@@ -37,14 +30,6 @@ code_endpoint = app.config['CODES_ENDPOINT']
 base_url = app.config['SEARCH_QUERY_ENDPOINT']
 redis_config = app.config['REDIS_CONFIG']
 cache_timeout = app.config['CACHE_TIMEOUT']
-
-
-# TODO: Temporarily in here for debugging
-@portal_ui.route('/debug/')
-def debug():
-    app.logger.error(str(assets['custom_less'].urls()))
-    return render_template('debug.html', urls=assets['custom_less'].urls())
-
 
 
 @portal_ui.route('/index.jsp')

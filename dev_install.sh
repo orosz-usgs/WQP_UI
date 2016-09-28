@@ -14,8 +14,8 @@ if [ "$ARG1" == '--clean' ]; then
     rm -rf node_modules;
 	rm -rf portal_ui/bower_components;
 	rm -rf env;
-	rm -rf portal_ui/static/.webassets-cache;
-	rm -rf portal_ui/static/gen;
+	rm -rf wqp/static/.webassets-cache;
+	rm -rf wqp/static/gen;
 fi
 
 if [ "$ARG1" == '--update' ]; then

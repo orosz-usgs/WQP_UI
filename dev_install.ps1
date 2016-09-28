@@ -12,9 +12,9 @@ if ($arg1 -eq "--clean") {
 	Write-Output "Clearing old dependencies."
 	Remove-Item env -Force -Recurse
 	Remove-Item node_modules -Force -Recurse
-	Remove-Item portal_ui\bower_components -Force -Recurse
-	Remove-Item portal_ui/static/.webassets-cache -Force -Recurse
-	Remove-Item portal_ui/static/gen -Force -Recurse
+	Remove-Item wqp\bower_components -Force -Recurse
+	Remove-Item wqp\static\.webassets-cache -Force -Recurse
+	Remove-Item wqp\static\gen -Force -Recurse
 
 }
 
