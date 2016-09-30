@@ -46,7 +46,7 @@ class TestGetSiteFeature(TestCase):
             'hucCode' : '03120312',
             'SiteTypeCode' : 'ST',
             'SiteType' : 'Stream',
-            'url': 'http://waterservices.usgs.gov/nwis/inventory?agencyCode=USGS&site_no=12345'
+            'url': 'http://waterdata.usgs.gov/nwis/inventory?agency_code=USGS&site_no=12345'
         }
         result = geojson.loads(geojson.dumps(get_site_feature(station)))
 
@@ -93,32 +93,3 @@ class TestSiteGeneratorTestCase(TestCase):
         result = tuple(site_feature_generator(iter_lines))
         self.assertEqual(len(result), 2)
 
-
-class TestSiteGeojsonGeneator(TestCase):
-
-    HEADERS = '\t'.join(['agency_cd', 'site_no', 'station_nm', 'site_tp_cd', 'dec_lat_va', 'dec_long_va',
-                         'coord_acy_cd', 'dec_coord_datum_cd', 'alt_va', 'alt_acy_va', 'alt_datum_cd',
-                         'huc_cd'])
-
-    def test_empty_iter_list(self):
-        result = geojson.loads(''.join(tuple(site_geojson_generator([]))))
-        self.assertEqual(result.type, 'FeatureCollection')
-        self.assertEqual(len(result.features), 0)
-
-    def test_with_iter_lists(self):
-        site1 = '\t'.join(['USGS', '00336840', 'BISCUIT BROOK NTN SITE', 'AT', '41.9942589', '-74.5032094',
-                           'S', 'NAD83', '2087', '4.3', 'NAVD88', '02040104'])
-        site2 = '\t'.join(['USGS', '01300450', 'BEAVER SWAMP BROOK AT RYE NY	ST', '40.98', '-73.7019444',
-                           'S', 'NAD83', '49', '4.3', 'NAVD88', '02030102'])
-        site_lines1 = [self.HEADERS, 'line to skip', site1, site2]
-        iter_lines1 = (line for line in site_lines1)
-
-        site3 = '\t'.join(['USGS', '01301000', 'MAMARONECK', 'ST', '40.95', '-73.73',
-                          'S', 'NAD83', '208', '4.3', 'NAVD88', '02030102'])
-        site_lines2 = [self.HEADERS, 'line to skip', site3]
-        iter_lines2 = (line for line in site_lines2)
-
-        result = geojson.loads(''.join(tuple(site_geojson_generator([iter_lines1, iter_lines2]))))
-
-        self.assertEqual(result.type, 'FeatureCollection')
-        self.assertEqual(len(result.features), 3)
