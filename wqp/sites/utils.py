@@ -1,5 +1,5 @@
 
-from geojson import Feature, Point
+from geojson import Feature, Point, dumps as geojson_dumps
 from pyproj import Proj, transform
 
 from .. import app
@@ -106,5 +106,60 @@ def get_site_feature(station):
         #TODO: Add some logging so we know when we get a bad response from NWIS
 
     return feature
+
+
+def site_feature_generator(iter_lines):
+    '''
+    Generator which yields a geosjon Feature object for each line representing a station in rdb_text
+    :param iter_lines: Generator which yields a line. The lines are assumed to represent an rdb formatted NWIS site file.
+    :yield: geojson Feature object for each station in rdb_text
+    '''
+    found_header = False
+    while not found_header:
+        line = iter_lines.next()
+        if line[0] != '#':
+            headers = line.split('\t')
+            try:
+                iter_lines.next() #Skip the line after the header
+                found_header = True
+            except StopIteration:
+                return
+
+    for site_line in iter_lines:
+        site_values = site_line.split('\t')
+        yield get_site_feature(dict(zip(headers, site_values)))
+
+
+def site_geojson_generator(iter_lines_generator_list):
+    '''
+    Based on https://blog.al4.co.nz/2016/01/streaming-json-with-flask/ .
+    Uses a generator to stream JSON so we don't have to hold everything in memory
+    This is a little tricky, as we need to omit the last comma to make valid JSON,
+    thus we use a lagging generator, similar to http://stackoverflow.com/questions/1630320/
+
+    :param iter_lines_generator_list: list of generators. Each generator yields a line of rdb formatted NWIS site info
+    :yield: A line of a geojson FeatureCollection. The first line will start a FeatureCollection geojson object with the
+            crs defined. After than a Feature will be yielded. The last line yielded will be the closing parenthesis
+            and bracket for the geojson object
+    '''
+    yield '{"crs":{"type": "name","properties": {"name": "urn:ogc:def:crs:EPSG::4326"}},' \
+          '"type": "FeatureCollection","features": [\n'
+
+    prev_feature = None
+    for iter_lines in iter_lines_generator_list:
+        for feature in site_feature_generator(iter_lines):
+            if prev_feature:
+                yield geojson_dumps(prev_feature) + ', \n'
+            prev_feature = feature
+
+    # Got all of the features so yield the last one closing the geojson object
+    if prev_feature:
+        yield geojson_dumps(prev_feature) + ']}'
+    else:
+        yield ']}'
+
+
+
+
 
 

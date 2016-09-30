@@ -1,17 +1,11 @@
 
+from unittest import TestCase
 
 import geojson
 
-from flask_testing import TestCase
-
-from ... import app
-from ..utils import get_site_feature
+from ..utils import get_site_feature, site_feature_generator, site_geojson_generator
 
 class TestGetSiteFeature(TestCase):
-
-    def create_app(self):
-        app.config['NWIS_SITES_INVENTORY_ENDPOINT'] = 'http://fakewaterservices/inventory'
-        return app
 
     def test_invalid_lat_lon(self):
         station = {
@@ -59,3 +53,72 @@ class TestGetSiteFeature(TestCase):
 
         self.assertEqual(result['properties'], expectedProperties)
         self.assertEqual(result['geometry']['type'], 'Point')
+
+
+class TestSiteGeneratorTestCase(TestCase):
+
+    HEADERS = '\t'.join(['agency_cd', 'site_no', 'station_nm', 'site_tp_cd', 'dec_lat_va', 'dec_long_va',
+               'coord_acy_cd', 'dec_coord_datum_cd', 'alt_va', 'alt_acy_va', 'alt_datum_cd',
+               'huc_cd'])
+
+    def test_empty_rdb(self):
+        site_lines = []
+        iter_lines = (line for line in site_lines)
+        self.assertEqual(tuple(site_feature_generator(iter_lines)),())
+
+    def test_rdb_with_only_comments(self):
+        site_lines = ['#comment1', '#comment2', '#comment3']
+        iter_lines = (line for line in site_lines)
+        self.assertEqual(tuple(site_feature_generator(iter_lines)), ())
+
+
+    def test_rdb_with_only_headers(self):
+        site_lines = ['#comment1', '#comment2', '#comment3', self.HEADERS]
+        iter_lines = (line for line in site_lines)
+        self.assertEqual(tuple(site_feature_generator(iter_lines)), ())
+
+    def test_rdb_with_headers_but_no_data(self):
+        site_lines = ['#comment1', '#comment2', '#comment3', self.HEADERS, 'line to skip']
+        iter_lines = (line for line in site_lines)
+        self.assertEqual(tuple(site_feature_generator(iter_lines)), ())
+
+    def test_rdb_with_data(self):
+        site1 = '\t'.join(['USGS', '00336840', 'BISCUIT BROOK NTN SITE', 'AT', '41.9942589', '-74.5032094',
+                           'S', 'NAD83', '2087', '4.3', 'NAVD88', '02040104'])
+        site2 = '\t'.join(['USGS', '01300450', 'BEAVER SWAMP BROOK AT RYE NY	ST', '40.98', '-73.7019444',
+                          'S', 'NAD83',	'49', '4.3', 'NAVD88', '02030102'])
+        site_lines = ['#comment1', '#comment2', '#comment3', self.HEADERS, 'line to skip', site1, site2]
+        iter_lines = (line for line in site_lines)
+
+        result = tuple(site_feature_generator(iter_lines))
+        self.assertEqual(len(result), 2)
+
+
+class TestSiteGeojsonGeneator(TestCase):
+
+    HEADERS = '\t'.join(['agency_cd', 'site_no', 'station_nm', 'site_tp_cd', 'dec_lat_va', 'dec_long_va',
+                         'coord_acy_cd', 'dec_coord_datum_cd', 'alt_va', 'alt_acy_va', 'alt_datum_cd',
+                         'huc_cd'])
+
+    def test_empty_iter_list(self):
+        result = geojson.loads(''.join(tuple(site_geojson_generator([]))))
+        self.assertEqual(result.type, 'FeatureCollection')
+        self.assertEqual(len(result.features), 0)
+
+    def test_with_iter_lists(self):
+        site1 = '\t'.join(['USGS', '00336840', 'BISCUIT BROOK NTN SITE', 'AT', '41.9942589', '-74.5032094',
+                           'S', 'NAD83', '2087', '4.3', 'NAVD88', '02040104'])
+        site2 = '\t'.join(['USGS', '01300450', 'BEAVER SWAMP BROOK AT RYE NY	ST', '40.98', '-73.7019444',
+                           'S', 'NAD83', '49', '4.3', 'NAVD88', '02030102'])
+        site_lines1 = [self.HEADERS, 'line to skip', site1, site2]
+        iter_lines1 = (line for line in site_lines1)
+
+        site3 = '\t'.join(['USGS', '01301000', 'MAMARONECK', 'ST', '40.95', '-73.73',
+                          'S', 'NAD83', '208', '4.3', 'NAVD88', '02030102'])
+        site_lines2 = [self.HEADERS, 'line to skip', site3]
+        iter_lines2 = (line for line in site_lines2)
+
+        result = geojson.loads(''.join(tuple(site_geojson_generator([iter_lines1, iter_lines2]))))
+
+        self.assertEqual(result.type, 'FeatureCollection')
+        self.assertEqual(len(result.features), 3)
