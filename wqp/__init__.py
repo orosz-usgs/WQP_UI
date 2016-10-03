@@ -17,4 +17,7 @@ celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
 
 from portal_ui.views import portal_ui
-app.register_blueprint(portal_ui)
+from sites.views import sites
+app.register_blueprint(portal_ui, url_prefix='')
+app.register_blueprint(sites,
+                       url_prefix='/sites')
