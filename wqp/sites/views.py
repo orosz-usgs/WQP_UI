@@ -58,7 +58,7 @@ def nwis_sites():
     # Make a head request to validate the parameters. If it fails, don't proceed, just return the error
     head_response = requests_head(NWIS_SITES_SERVICE_ENDPOINT, params=params_list[0])
     if head_response.status_code != 200:
-        response = make_response(head_response.content, head_response.status_code)
+        response = make_response(head_response.reason, head_response.status_code)
 
     else:
         response = Response(site_geojson_generator(params_list), content_type='application/json')
