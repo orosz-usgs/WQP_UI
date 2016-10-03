@@ -138,7 +138,6 @@ def site_feature_generator(iter_lines):
         site file.
     :yield: geojson Feature object for each station in rdb_text
     """
-    print('Start feature generation')
     found_header = False
     headers = []
     while not found_header:
