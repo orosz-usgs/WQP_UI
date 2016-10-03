@@ -164,6 +164,11 @@ def site_geojson_generator(params_list):
     Feature with a comma at the end of the line. The last line omitted will be the last feature (if any)
     and the closing brace and bracket for the geojson object.
 
+    This is a little tricky, as we need to omit the last comma to make valid JSON,
+    thus we use a lagging generator, similar to http://stackoverflow.com/questions/1630320/
+
+    Based on https://blog.al4.co.nz/2016/01/streaming-json-with-flask/
+
     :param params_list:
     :yield String:
     """
