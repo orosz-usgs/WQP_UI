@@ -1,7 +1,8 @@
 
 from unittest import TestCase
 
-import geojson
+from geojson import loads as geojson_loads, dumps as geojson_dumps
+from requests_mock import Mocker as Requests_Mocker, ANY
 
 from ..utils import get_site_feature, site_feature_generator, site_geojson_generator
 
@@ -48,7 +49,7 @@ class TestGetSiteFeature(TestCase):
             'SiteType' : 'Stream',
             'url': 'http://waterdata.usgs.gov/nwis/inventory?agency_code=USGS&site_no=12345'
         }
-        result = geojson.loads(geojson.dumps(get_site_feature(station)))
+        result = geojson_loads(geojson_dumps(get_site_feature(station)))
 
 
         self.assertEqual(result['properties'], expectedProperties)
@@ -93,3 +94,47 @@ class TestSiteGeneratorTestCase(TestCase):
         result = tuple(site_feature_generator(iter_lines))
         self.assertEqual(len(result), 2)
 
+
+@Requests_Mocker()
+class TestSiteGeoJsonGeneatorTestCase(TestCase):
+    HEADERS = '\t'.join(['agency_cd', 'site_no', 'station_nm', 'site_tp_cd', 'dec_lat_va', 'dec_long_va',
+                         'coord_acy_cd', 'dec_coord_datum_cd', 'alt_va', 'alt_acy_va', 'alt_datum_cd',
+                         'huc_cd'])
+
+    def test_empty_params_list(self, m):
+        result = tuple(site_geojson_generator([]))
+        feature = geojson_loads(''.join(result).replace('\n', ''))
+
+        self.assertEqual(feature['type'], 'FeatureCollection')
+        self.assertEqual(len(feature['features']), 0)
+
+    def test_one_params_list(self, m):
+        HEADERS = '\t'.join(['agency_cd', 'site_no', 'station_nm', 'site_tp_cd', 'dec_lat_va', 'dec_long_va',
+                             'coord_acy_cd', 'dec_coord_datum_cd', 'alt_va', 'alt_acy_va', 'alt_datum_cd',
+                             'huc_cd'])
+        site1 = '\t'.join(['USGS', '00336840', 'BISCUIT BROOK NTN SITE', 'AT', '41.9942589', '-74.5032094',
+                           'S', 'NAD83', '2087', '4.3', 'NAVD88', '02040104'])
+
+        m.get('http://waterservices.usgs.gov/nwis/site/', text='\n'.join([HEADERS, 'skip this line', site1]))
+
+        result = tuple(site_geojson_generator([{'hucCd': '01'}]))
+        feature = geojson_loads(''.join(result).replace('\n', ''))
+
+        self.assertEqual(len(feature['features']), 1)
+
+    def test_two_params_in_list(self, m):
+        HEADERS = '\t'.join(['agency_cd', 'site_no', 'station_nm', 'site_tp_cd', 'dec_lat_va', 'dec_long_va',
+                             'coord_acy_cd', 'dec_coord_datum_cd', 'alt_va', 'alt_acy_va', 'alt_datum_cd',
+                             'huc_cd'])
+        site1 = '\t'.join(['USGS', '00336840', 'BISCUIT BROOK NTN SITE', 'AT', '41.9942589', '-74.5032094',
+                           'S', 'NAD83', '2087', '4.3', 'NAVD88', '02040104'])
+        site2 = '\t'.join(['USGS', '01300450', 'BEAVER SWAMP BROOK AT RYE NY	ST', '40.98', '-73.7019444',
+                           'S', 'NAD83', '49', '4.3', 'NAVD88', '02030102'])
+
+        m.get('http://waterservices.usgs.gov/nwis/site/', [{'text': '\n'.join([HEADERS, 'skip this line', site1])},
+                                                           {'text': '\n'.join([HEADERS, 'skip this line', site2])}])
+
+        result = tuple(site_geojson_generator([{'hucCd': '02'}, {'hucCd' : '01'}]))
+        feature = geojson_loads(''.join(result).replace('\n', ''))
+
+        self.assertEqual(len(feature['features']), 2)
