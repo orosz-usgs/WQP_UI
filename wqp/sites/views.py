@@ -28,7 +28,7 @@ def nwis_sites():
     if not any(k.lower() in REQUIRED_SERVICE_ARGUMENTS for k in request.args.keys()):
         huc_values = US_HUC2s
 
-    elif 'huc' in site_request_params.keys():
+    elif 'huc' in [key.lower() for key in site_request_params.keys()]:
         huc_values = request.args['huc'].split(',')
 
     # Check for limits on the number of huc2s and huc8s. If it exceeds NWIS limitation, then
@@ -40,15 +40,16 @@ def nwis_sites():
         huc8_count = len(huc8s)
 
         if huc2_count > MAX_HUC2 or huc8_count > MAX_HUC8:
-            # Make a requests.get for each huc2 and for groups of 10 huc8s
+            # Make a requests.get for each huc2 and for groups of 10 huc8s.
+            # We add these as a one element array because that's the way we get them from requests.args
             for huc2 in huc2s:
                 new_params = dict(site_request_params)
-                new_params['huc'] = huc2
+                new_params['huc'] = [huc2]
                 params_list.append(new_params)
 
             for index in range(((huc8_count - 1) / MAX_HUC8) + 1):
                 new_params = dict(site_request_params)
-                new_params['huc'] = ','.join(huc8s[index * MAX_HUC8:min(huc8_count, (index + 1) * MAX_HUC8)])
+                new_params['huc'] = [','.join(huc8s[index * MAX_HUC8:min(huc8_count, (index + 1) * MAX_HUC8)])]
                 params_list.append(new_params)
 
     # If we don't have to make multiple requests just add the site_request_params received to params_list
