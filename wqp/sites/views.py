@@ -1,4 +1,5 @@
 
+from flasgger.utils import swag_from
 from flask import Blueprint, request, make_response, Response
 from requests import head as requests_head
 
@@ -17,8 +18,10 @@ MAX_HUC8 = 10
 sites = Blueprint('sites', __name__)
 
 
-@sites.route('/')
+@sites.route('/', methods=['GET'])
+@swag_from('swagger_yml/sites.yml')
 def nwis_sites():
+
     site_request_params = dict(request.args)
     site_request_params['format'] = 'rdb'
     params_list = []
