@@ -1,11 +1,26 @@
 
 from celery import Celery
+from flasgger import Swagger
 from flask import Flask
 from flask_bower import Bower
 
 app = Flask(__name__.split()[0], instance_relative_config=True)
 
 Bower(app)
+
+app.config['SWAGGER'] = {
+    'swagger_version': '2.0',
+    'specs': [
+        {
+            'version' : '1.0',
+            'title' : 'NWIS site API',
+            'description': 'Streaming NWIS Site service',
+            'endpoint' : 'sites',
+            'route': '/api/'
+        }
+    ]
+}
+Swagger(app)
 
 # Loads configuration information from config.py and instance/config.py
 app.config.from_object('config')
