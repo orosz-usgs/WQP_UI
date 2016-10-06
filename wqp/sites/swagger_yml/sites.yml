@@ -118,4 +118,8 @@ responses:
                 SiteTypeCode: ST
                 SiteType: Stream
                 url: 'http://waterdata.usgs.gov/nwis/inventory?agency_code=USGS&site_no=00336840'
-
+  400:
+    description: Bad Request
+    schema:
+      type: string
+    example: 'siteTypeCd: not found, server=[sdas01]'
