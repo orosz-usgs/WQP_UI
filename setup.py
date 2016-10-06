@@ -89,6 +89,10 @@ setup(name='usgs_flask_wqp_ui',
       platforms='any',
       test_suite='nose.collector',
       zip_safe=False,
-      py_modules=['config'],  # include the tier agnostic configuration file in the distributable
+      # include the tier agnostic configuration file in the distributable
+      # the file gets placed in site-packages upon dist installation
+      py_modules=['config'],
+      # include static files in the distributable
+      # they will appear in the root of the virtualenv upon dist installation
       data_files=identify_data_files('static')
       )
