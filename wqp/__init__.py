@@ -1,6 +1,6 @@
 
 from celery import Celery
-from flask import Flask, jsonify
+from flask import Flask, jsonify, url_for
 from flask_bower import Bower
 from flask_swagger import swagger
 from flask_swagger_ui import get_swaggerui_blueprint
