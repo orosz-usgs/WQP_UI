@@ -1,5 +1,4 @@
 
-from flasgger.utils import swag_from
 from flask import Blueprint, request, make_response, Response
 from requests import head as requests_head
 
@@ -19,8 +18,13 @@ sites = Blueprint('sites', __name__)
 
 
 @sites.route('/', methods=['GET'])
-@swag_from('swagger_yml/sites.yml')
 def nwis_sites():
+    """
+    Provides a streaming service to retrieve NWIS sites
+    :return: HttpResponse
+
+    swagger_from_file: wqp/sites/swagger_yml/sites.yml
+    """
 
     site_request_params = dict(request.args)
     site_request_params['format'] = 'rdb'
@@ -68,3 +72,4 @@ def nwis_sites():
         response = Response(site_geojson_generator(params_list), content_type='application/json')
 
     return response
+
