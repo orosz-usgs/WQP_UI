@@ -7,7 +7,7 @@ def get_swaggerui_blueprint(api_url=None, api_view_func=None, config=None):
 
     swagger_ui = Blueprint('swagger_ui',
                            __name__,
-                           static_folder='dist',
+                           static_folder='static',
                            template_folder='templates')
 
     default_config = {
