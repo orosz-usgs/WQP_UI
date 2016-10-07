@@ -39,8 +39,9 @@ def read_requirements():
     """
     with open('requirements.txt', 'r') as req:
         requirements = req.readlines()
-    install_requires = [r.strip() for r in requirements]
-    return install_requires
+    install_requires = [r.strip() for r in requirements if r.find('git+') != 0]
+    dependency_links = [r.strip() for r in requirements if r.find('git+') == 0]
+    return {'install_requires' : install_requires, 'dependency_links' : dependency_links}
 
 
 def read(filepath):
@@ -55,7 +56,6 @@ def read(filepath):
     with open(filepath, 'r') as f:
         content = f.read()
     return content
-
 
 def identify_data_files(directory_name):
     """
@@ -75,6 +75,7 @@ def identify_data_files(directory_name):
         directory_data_files.append(data_file_element)
     return directory_data_files
 
+parsed_requirements = read_requirements()
 
 setup(name='usgs_flask_wqp_ui',
       version=get_package_version(),
@@ -84,11 +85,12 @@ setup(name='usgs_flask_wqp_ui',
       packages=find_packages(),
       include_package_data=True,
       long_description=read('README.md'),
-      install_requires=read_requirements(),
-      tests_require=read_requirements(),
+      install_requires=parsed_requirements['install_requires'],
+      tests_require=parsed_requirements['install_requires'],
       platforms='any',
       test_suite='nose.collector',
       zip_safe=False,
+      dependency_links=parsed_requirements['dependency_links'],
       # include the tier agnostic configuration file in the distributable
       # the file gets placed in site-packages upon dist installation
       py_modules=['config'],
