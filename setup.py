@@ -76,7 +76,8 @@ def identify_data_files(directory_name):
     return directory_data_files
 
 parsed_requirements = read_requirements()
-
+data_files = identify_data_files('static')
+print data_files
 setup(name='usgs_flask_wqp_ui',
       version=get_package_version(),
       description='USGS Water Quality Portal User Interface',
@@ -96,5 +97,5 @@ setup(name='usgs_flask_wqp_ui',
       py_modules=['config'],
       # include static files in the distributable
       # they will appear in the root of the virtualenv upon dist installation
-      data_files=identify_data_files('static').append('swagger_yml')
+      data_files=data_files
       )
