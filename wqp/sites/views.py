@@ -23,7 +23,7 @@ def nwis_sites():
     Provides a streaming service to retrieve NWIS sites
     :return: HttpResponse
 
-    swagger_from_file: wqp/sites/swagger_yml/sites.yml
+    swagger_from_file: swagger_yml/sites.yml
     """
 
     site_request_params = dict(request.args)
