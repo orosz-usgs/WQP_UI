@@ -17,8 +17,15 @@ MAX_HUC8 = 10
 sites = Blueprint('sites', __name__)
 
 
-@sites.route('/')
+@sites.route('/', methods=['GET'])
 def nwis_sites():
+    """
+    Provides a streaming service to retrieve NWIS sites
+    :return: HttpResponse
+
+    swagger_from_file: wqp/sites/swagger_yml/sites.yml
+    """
+
     site_request_params = dict(request.args)
     site_request_params['format'] = 'rdb'
     params_list = []
@@ -65,3 +72,4 @@ def nwis_sites():
         response = Response(site_geojson_generator(params_list), content_type='application/json')
 
     return response
+
