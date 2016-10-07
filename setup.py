@@ -77,7 +77,7 @@ def identify_data_files(directory_names):
     return directory_data_files
 
 parsed_requirements = read_requirements()
-data_files = identify_data_files(['static', 'swagger_yml'])
+data_files = identify_data_files(['static'])
 print data_files
 setup(name='usgs_flask_wqp_ui',
       version=get_package_version(),
