@@ -11,4 +11,6 @@ recursive-include test *
 recursive-include docs *
 recursive-include wqp/portal_ui/templates *
 recursive-exclude wqp *.pyc
+recursive-include swagger_yml *
+recursive-include static *
 prune instance

@@ -40,16 +40,6 @@ app.register_blueprint(portal_ui, url_prefix='')
 app.register_blueprint(sites,
                        url_prefix='/sites')
 
-# Create swagger ui blueprint
-SWAGGER_URL = '/apidocs'
-API_URL = '/spec'
-
-swaggerui_blueprint = get_swaggerui_blueprint(
-    SWAGGER_URL,
-    API_URL
-)
-app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
-
 # Set up swagger endpoints
 @app.route('/spec')
 def spec():
@@ -61,3 +51,14 @@ def spec():
                                    "title": "WQP Sites service"
                                }
                            }))
+
+# Create swagger ui blueprint
+SWAGGER_URL = '/apidocs'
+API_VIEW_FUNC= 'spec'
+
+swaggerui_blueprint = get_swaggerui_blueprint(
+    api_view_func=API_VIEW_FUNC
+)
+app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
+
+
