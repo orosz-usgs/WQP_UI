@@ -57,6 +57,7 @@ def read(filepath):
         content = f.read()
     return content
 
+
 def identify_data_files(directory_names):
     """
     Recursively introspect the contents
