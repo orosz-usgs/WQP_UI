@@ -48,7 +48,7 @@ PORTAL.validators = function () {
                 isValid : true,
             };
         }
-        else if (value.match(/^[1-9]\d+$/g)) {
+        else if (value.match(/^[1-9]\d*$/g)) {
             result = {
                 isValid : true
             };

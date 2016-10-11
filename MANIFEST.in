@@ -10,7 +10,9 @@ recursive-include wqp/bower_components *
 recursive-include test *
 recursive-include docs *
 recursive-include wqp/portal_ui/templates *
+recursive-include wqp/flask_swagger_ui/templates *
+recursive-include wqp/flask_swagger_ui/static *
+
 recursive-exclude wqp *.pyc
-recursive-include swagger_yml *
 recursive-include static *
 prune instance
