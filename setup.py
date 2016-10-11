@@ -57,6 +57,7 @@ def read(filepath):
         content = f.read()
     return content
 
+
 def identify_data_files(directory_names):
     """
     Recursively introspect the contents
@@ -76,9 +77,9 @@ def identify_data_files(directory_names):
             directory_data_files.append(data_file_element)
     return directory_data_files
 
+
 parsed_requirements = read_requirements()
 data_files = identify_data_files(['static'])
-print data_files
 setup(name='usgs_flask_wqp_ui',
       version=get_package_version(),
       description='USGS Water Quality Portal User Interface',
@@ -92,7 +93,6 @@ setup(name='usgs_flask_wqp_ui',
       platforms='any',
       test_suite='nose.collector',
       zip_safe=False,
-      dependency_links=parsed_requirements['dependency_links'],
       # include the tier agnostic configuration file in the distributable
       # the file gets placed in site-packages upon dist installation
       py_modules=['config'],
