@@ -76,9 +76,9 @@ def identify_data_files(directory_names):
             directory_data_files.append(data_file_element)
     return directory_data_files
 
+
 parsed_requirements = read_requirements()
 data_files = identify_data_files(['static'])
-print data_files
 setup(name='usgs_flask_wqp_ui',
       version=get_package_version(),
       description='USGS Water Quality Portal User Interface',
