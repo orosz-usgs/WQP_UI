@@ -93,7 +93,6 @@ setup(name='usgs_flask_wqp_ui',
       platforms='any',
       test_suite='nose.collector',
       zip_safe=False,
-      dependency_links=parsed_requirements['dependency_links'],
       # include the tier agnostic configuration file in the distributable
       # the file gets placed in site-packages upon dist installation
       py_modules=['config'],
