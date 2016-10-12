@@ -155,14 +155,6 @@ def wqp_geoserverproxy(op):
 def sites_geoserverproxy(op):
     target_url = app.config['SITES_MAP_GEOSERVER_ENDPOINT'] + '/' + op
     return geoserver_proxy_request(target_url)
-   
- 
-@portal_ui.route('/nwis_site_sld/')
-def nwis_site_sld():
-    resp = app.make_response(render_template('style_sheets/nwis_sites.sld')) 
-    resp.headers['Content-Type'] = 'text/xml; charset=utf-8'
-    return resp
- 
 
 @portal_ui.route('/crossdomain.xml')
 def crossdomain():
