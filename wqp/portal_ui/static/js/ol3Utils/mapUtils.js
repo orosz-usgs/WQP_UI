@@ -1,9 +1,7 @@
 /* jslint browser: true */
 /* global ol */
 /* global Config */
-/* global $ */
 /* global _ */
-/* global log */
 
 var WQP = WQP || {};
 
@@ -51,7 +49,7 @@ WQP.ol3.mapUtils = (function() {
 
 	self.getNWISSitesLayer = function (wmsParams, layerOptions) {
 		var defaultParams = {
-			LAYERS: Config.NWIS_SITES_LAYER_NAME,
+			LAYERS: 'qw_portal_map:nwis_sites',
 			VERSION: '1.1.1',
 			FORMAT: 'image/png',
 			TRANSPARENT: true
@@ -63,6 +61,13 @@ WQP.ol3.mapUtils = (function() {
 		var finalWMSParams = _.extend({}, defaultParams, wmsParams);
 		var finalLayerOptions = _.extend({}, defaultLayerOptions, layerOptions);
 
+		var layerSource = new ol.source.TileWMS({
+			params: finalWMSParams,
+			url : Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wms'
+		});
+		finalLayerOptions.source = layerSource;
+		return new ol.layer.Tile(finalLayerOptions);
+/*
 		var sldDeferred = $.Deferred();
 		var getLayerDeferred = $.Deferred();
 		$.ajax({
@@ -85,6 +90,7 @@ WQP.ol3.mapUtils = (function() {
 			getLayerDeferred.resolve(new ol.layer.Tile(finalLayerOptions));
 		});
 		return getLayerDeferred.promise();
+		*/
 	};
 
 	return self;

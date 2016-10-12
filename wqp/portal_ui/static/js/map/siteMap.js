@@ -1,6 +1,7 @@
 /* jslint browser: true */
 /* global ol */
 /* global WQP */
+/* global _ */
 
 var PORTAL = PORTAL || {};
 PORTAL.MAP = PORTAL.MAP || {};
@@ -111,13 +112,19 @@ PORTAL.MAP.siteMap = function(options) {
 		pushLayer(esriHydroLayer, overlayLayerGroup, 1);
 
 		// add the NWIS Sites Layer
+		var nwisSitesLayer = WQP.ol3.mapUtils.getNWISSitesLayer({}, {
+			visible : false,
+			map : map
+		});
+		pushLayer(nwisSitesLayer, overlayLayerGroup, 2);
+		/*
 		WQP.ol3.mapUtils.getNWISSitesLayer({}, {
 			visible : false,
 			map : map
 		}).done(function(layer) {
 			pushLayer(layer, overlayLayerGroup, 2);
 		});
-
+*/
 		// Set up event handler for single click identify
 		map.on('singleclick', function(ev) {
 			if (wqpSitesLayer && !boxDrawInteraction.getActive()) {
