@@ -46,7 +46,7 @@ def spec():
     return jsonify(swagger(app,
                            from_file_keyword="swagger_from_file",
                            template={
-                               "hosts": request.url_root,
+                               "host": request.url_root,
                                "info": {
                                    "version": "1.0",
                                    "title": "WQP Sites service"
