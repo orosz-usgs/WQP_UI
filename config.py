@@ -22,9 +22,6 @@ NLDI_SERVICES_ENDPOINT = ''
 NWIS_SITES_SERVICE_ENDPOINT = 'http://waterservices.usgs.gov/nwis/site/'
 NWIS_SITES_INVENTORY_ENDPOINT = 'http://waterdata.usgs.gov/nwis/inventory'
 
-NWIS_SITES_OGC_ENDPOINT = 'http://cida.usgs.gov/nwc/proxygeoserver/NWC/wms'
-NWIS_SITES_LAYER_NAME = 'NWC:gagesII'
-
 GEO_SEARCH_API_ENDPOINT = 'http://txpub.usgs.gov/DSS/search_api/1.1/dataService/dataService.ashx/search'
 
 # Styles to be used for the site map

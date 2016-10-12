@@ -1,8 +1,6 @@
 /* jslint browser: true */
 /* global WQP */
 /* global OpenLayers */
-/* global $ */
-/* global Config */
 
 var MapUtils = {};
 
@@ -29,6 +27,7 @@ MapUtils.MAP_OPTIONS = {
 		new OpenLayers.Control.MousePosition({
 			// Defined formatOutput because the displayProjection was not working.
 			formatOutput: function (lonLat) {
+				"use strict";
 				lonLat.transform(MapUtils.MERCATOR_PROJECTION, MapUtils.WGS84_PROJECTION);
 				return lonLat.toShortString();
 			}
@@ -41,57 +40,8 @@ MapUtils.MAP_OPTIONS = {
 // Returns an OpenLayers layer described by layer which has at least type and name properties. A url property
 // should be defined if necessary. The layer is created with the options.
 MapUtils.getLayer = function (layer, options) {
+	"use strict";
 	return new OpenLayers.Layer.XYZ(layer.name, layer.url + MapUtils.XYZ_URL_POSTFIX, options);
 };
 
-/*
- * @ returns a promise which is resolved when the layer has been created. The
- *   layer is returned in the deferred's response
- */
-MapUtils.getNWISSitesLayer = function (options, params) {
-	options = options ? options : {};
-	params = params ? params : {};
-	var defaultOptions = {
-		layers: 'NWC:gagesII',
-		version: '1.1.1',
-		format: 'image/png',
-		transparent: true,
-		tiled: true
-	};
-	var defaultParams = {
-		isBaseLayer: false,
-		displayInLayerSwitcher: true,
-		visibility: false,
-		singleTile: true // If sending an SLD_BODY parameter it must be a single tile.
-	};
-
-	var finalParams = $.extend({}, defaultParams, params);
-	var finalOptions = $.extend({}, defaultOptions, options);
-
-	var sldDeferred = $.Deferred();
-	$.ajax({
-		url: Config.NWIS_SITE_SLD_URL,
-		dataType: 'text',
-		success: function (data) {
-			finalOptions.sld_body = data;
-			sldDeferred.resolve(new OpenLayers.Layer.WMS(
-				'NWIS Stream Gages',
-				'http://cida.usgs.gov/nwc/proxygeoserver/NWC/wms',
-				finalOptions,
-				finalParams
-				)
-			);
-		},
-		error: function () {
-			sldDeferred.resolve(new OpenLayers.Layer.WMS(
-				'NWIS Stream Gages',
-				'http://cida.usgs.gov/nwc/proxygeoserver/NWC/wms',
-				finalOptions,
-				finalParams
-				)
-			);
-		}
-	});
-	return sldDeferred;
-};
 
