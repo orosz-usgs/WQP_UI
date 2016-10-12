@@ -43,10 +43,11 @@ app.register_blueprint(sites,
 # Set up swagger endpoints
 @app.route('/spec')
 def spec():
+    host = request.url_root.rstrip('/')
     return jsonify(swagger(app,
                            from_file_keyword="swagger_from_file",
                            template={
-                               "host": request.url_root,
+                               "host": host.replace('http://', ''),
                                "info": {
                                    "version": "1.0",
                                    "title": "WQP Sites service"
