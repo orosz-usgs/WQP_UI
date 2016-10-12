@@ -41,7 +41,7 @@ def read_requirements():
         requirements = req.readlines()
     install_requires = [r.strip() for r in requirements if r.find('git+') != 0]
     dependency_links = [r.strip() for r in requirements if r.find('git+') == 0]
-    return {'install_requires' : install_requires, 'dependency_links' : dependency_links}
+    return {'install_requires': install_requires, 'dependency_links': dependency_links}
 
 
 def read(filepath):
@@ -64,6 +64,7 @@ def identify_data_files(directory_names):
     of a directory. Once the contents have been
     introspected, generate a list directories and
     sub-directories with their contents as lists.
+
     :param str directory_name: absolute or relative name to a directory
     :return: all contents of a directory as a list of tuples
     :rtype: list
