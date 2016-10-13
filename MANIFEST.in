@@ -1,9 +1,5 @@
-include .bowerrc
-include .bumpversion.cfg
 include *.json
-include manage.py
 include *.md
-include *.txt
 recursive-include wqp/static *
 recursive-include wqp/portal_ui/static *
 recursive-include wqp/bower_components *
@@ -12,7 +8,5 @@ recursive-include docs *
 recursive-include wqp/portal_ui/templates *
 recursive-include wqp/flask_swagger_ui/templates *
 recursive-include wqp/flask_swagger_ui/static *
-
-recursive-exclude wqp *.pyc
 recursive-include static *
 prune instance
