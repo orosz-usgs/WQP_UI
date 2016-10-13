@@ -1,4 +1,3 @@
-include *.json
 include *.md
 recursive-include wqp/static *
 recursive-include wqp/portal_ui/static *
