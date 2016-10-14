@@ -1,6 +1,6 @@
 
 from celery import Celery
-from flask import Flask, jsonify, url_for
+from flask import Flask, jsonify, request
 from flask_bower import Bower
 from flask_swagger import swagger
 from flask_swagger_ui import get_swaggerui_blueprint
@@ -43,9 +43,11 @@ app.register_blueprint(sites,
 # Set up swagger endpoints
 @app.route('/spec')
 def spec():
+    host = request.url_root.rstrip('/')
     return jsonify(swagger(app,
                            from_file_keyword="swagger_from_file",
                            template={
+                               "host": host.replace('http://', ''),
                                "info": {
                                    "version": "1.0",
                                    "title": "WQP Sites service"

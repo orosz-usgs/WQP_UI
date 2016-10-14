@@ -1,9 +1,7 @@
 /* jslint browser: true */
 /* global ol */
 /* global Config */
-/* global $ */
 /* global _ */
-/* global log */
 
 var WQP = WQP || {};
 
@@ -31,11 +29,10 @@ WQP.ol3.mapUtils = (function() {
 	};
 
 	/*
-	 * @param {Object} params - Overrides for WMS parameters
-	 * @ returns a promise which is resolved when the layer has been created. The
-	 *   layer is returned in the deferred's response
+	 * @param {Boolean} isVisible - True if layer should be visible initially
+	 * @param {ol3.map} map - Map where layer will be displayed
+	 * @returns ol.layer.Tile
 	 */
-
 	self.getEsriHydroLayer = function(isVisible, map) {
 		var esriHydroURL = 'http://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer/tile/';
 		var hydroTileLayer = new ol.layer.Tile({
@@ -49,9 +46,14 @@ WQP.ol3.mapUtils = (function() {
 		return hydroTileLayer;
 	};
 
+	/*
+	 * @param {Object} - wms parameter overrides
+	 * @param {Object} - wms layer option overrides
+	 * @returns ol.layer.Tile
+	 */
 	self.getNWISSitesLayer = function (wmsParams, layerOptions) {
 		var defaultParams = {
-			LAYERS: Config.NWIS_SITES_LAYER_NAME,
+			LAYERS: 'qw_portal_map:nwis_sites',
 			VERSION: '1.1.1',
 			FORMAT: 'image/png',
 			TRANSPARENT: true
@@ -63,28 +65,12 @@ WQP.ol3.mapUtils = (function() {
 		var finalWMSParams = _.extend({}, defaultParams, wmsParams);
 		var finalLayerOptions = _.extend({}, defaultLayerOptions, layerOptions);
 
-		var sldDeferred = $.Deferred();
-		var getLayerDeferred = $.Deferred();
-		$.ajax({
-			url: Config.NWIS_SITE_SLD_URL,
-			dataType: 'text',
-			success: function (data) {
-				finalWMSParams.SLD_BODY = data;
-				sldDeferred.resolve();
-			},
-			error: function () {
-				sldDeferred.resolve();
-			}
+		var layerSource = new ol.source.TileWMS({
+			params: finalWMSParams,
+			url : Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wms'
 		});
-		sldDeferred.done(function() {
-			var layerSource = new ol.source.TileWMS({
-				params : finalWMSParams,
-				url : Config.NWIS_SITES_OGC_ENDPOINT
-			});
-			finalLayerOptions.source = layerSource;
-			getLayerDeferred.resolve(new ol.layer.Tile(finalLayerOptions));
-		});
-		return getLayerDeferred.promise();
+		finalLayerOptions.source = layerSource;
+		return new ol.layer.Tile(finalLayerOptions);
 	};
 
 	return self;

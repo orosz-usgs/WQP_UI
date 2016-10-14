@@ -41,7 +41,7 @@ def read_requirements():
         requirements = req.readlines()
     install_requires = [r.strip() for r in requirements if r.find('git+') != 0]
     dependency_links = [r.strip() for r in requirements if r.find('git+') == 0]
-    return {'install_requires' : install_requires, 'dependency_links' : dependency_links}
+    return {'install_requires': install_requires, 'dependency_links': dependency_links}
 
 
 def read(filepath):
@@ -57,14 +57,16 @@ def read(filepath):
         content = f.read()
     return content
 
+
 def identify_data_files(directory_names):
     """
     Recursively introspect the contents
     of a directory. Once the contents have been
     introspected, generate a list directories and
     sub-directories with their contents as lists.
-    :param str directory_name: absolute or relative name to a directory
-    :return: all contents of a directory as a list of tuples
+
+    :param list directory_names: absolute or relative name to directories
+    :return: all contents of the directories as a list of tuples
     :rtype: list
 
     """
@@ -76,9 +78,9 @@ def identify_data_files(directory_names):
             directory_data_files.append(data_file_element)
     return directory_data_files
 
+
 parsed_requirements = read_requirements()
-data_files = identify_data_files(['static', 'swagger_yml'])
-print data_files
+data_files = identify_data_files(['static'])
 setup(name='usgs_flask_wqp_ui',
       version=get_package_version(),
       description='USGS Water Quality Portal User Interface',
@@ -92,7 +94,6 @@ setup(name='usgs_flask_wqp_ui',
       platforms='any',
       test_suite='nose.collector',
       zip_safe=False,
-      dependency_links=parsed_requirements['dependency_links'],
       # include the tier agnostic configuration file in the distributable
       # the file gets placed in site-packages upon dist installation
       py_modules=['config'],
