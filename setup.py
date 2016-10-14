@@ -65,8 +65,8 @@ def identify_data_files(directory_names):
     introspected, generate a list directories and
     sub-directories with their contents as lists.
 
-    :param str directory_name: absolute or relative name to a directory
-    :return: all contents of a directory as a list of tuples
+    :param list directory_names: absolute or relative name to directories
+    :return: all contents of the directories as a list of tuples
     :rtype: list
 
     """
