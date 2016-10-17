@@ -30,7 +30,6 @@ app.register_blueprint(sites,
 @app.route('/spec')
 def spec():
     host = request.url_root.rstrip('/').replace(app.config['WSGI_STR'], '')
-    print host
     return jsonify(swagger(app,
                            from_file_keyword="swagger_from_file",
                            template={
