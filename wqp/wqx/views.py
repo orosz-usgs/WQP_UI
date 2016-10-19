@@ -9,7 +9,7 @@ wqx = Blueprint('wqx',
                 )
 
 
-@wqx.route('/WQX-Outbound/2_0/index.xsd')
+@wqx.route('/WQX-Outbound/2_0/index.xsd', endpoint='wqx-index')
 def wqx_index_xsd():
     xml = render_template('wqx/index.xsd')
     response = make_response(xml)
@@ -22,6 +22,6 @@ def wqx_index_html():
     return render_template('wqx/index.html')
 
 
-@wqx.route('/WQX-Outbound/2_0/docs/index.html')
+@wqx.route('/WQX-Outbound/2_0/docs/index.html', endpoint='wqx-doc-index')
 def wqp_docs_index_html():
     return render_template('wqx/docs/index.html')
