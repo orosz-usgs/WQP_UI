@@ -4,28 +4,7 @@ Created on Aug 26, 2016
 @author: ayan
 """
 import os
-import ConfigParser
 from setuptools import setup, find_packages
-
-
-BUMPVERSION_CFG = '.bumpversion.cfg'
-
-
-def get_package_version():
-    """
-    Read the .bumpversion.cfg file return
-    the current version number listed therein.
-    Version number only needs to be maintained
-    in the .bumpversion.cfg file.
-
-    :return: current package version
-    :rtype: str
-
-    """
-    config = ConfigParser.ConfigParser()
-    config.read(BUMPVERSION_CFG)
-    current_version = config.get('bumpversion', 'current_version')
-    return current_version
 
 
 def read_requirements():
@@ -82,7 +61,7 @@ def identify_data_files(directory_names):
 parsed_requirements = read_requirements()
 data_files = identify_data_files(['static'])
 setup(name='usgs_flask_wqp_ui',
-      version=get_package_version(),
+      version='4.0.2dev',
       description='USGS Water Quality Portal User Interface',
       author='Mary Bucknell, James Kreft, Andrew Yan',
       author_email='jkreft@usgs.gov',

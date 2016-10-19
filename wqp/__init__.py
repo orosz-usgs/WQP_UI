@@ -6,6 +6,9 @@ from flask_swagger import swagger
 from flask_swagger_ui import get_swaggerui_blueprint
 
 
+__version__ = '4.0.2dev'
+
+
 app = Flask(__name__.split()[0], instance_relative_config=True)
 
 Bower(app)
