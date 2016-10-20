@@ -15,4 +15,4 @@ before_script:
 
 script:
   - nosetests
-  - node_modules/karma/bin/karma start test/js/karma.conf.js --no-colors --log-level debug
+  - node_modules/karma/bin/karma start test/js/karma.conf.js --no-colors
