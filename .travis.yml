@@ -1,0 +1,18 @@
+language: python
+
+env:
+  - PYTHON="2.7"
+
+install:
+  - pip install -r requirements.txt
+  - npm install
+  - node_modules/bower/bin/bower install
+
+before_script:
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  - echo "SECRET_KEY = 'key-for-testing'" > instance/config.py
+
+script:
+  - nosetests
+  - node_modules/karma/bin/karma start test/js/karma.conf.js --no-colors --log-level debug
