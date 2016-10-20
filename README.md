@@ -1,4 +1,7 @@
 # WQP_UI
+===================
+[![Build Status](https://travis-ci.org/USGS-CIDA/WQP_UI.svg?branch=master)](https://travis-ci.org/USGS-CIDA/WQP_UI)
+
 Water Quality Portal User Interface
 
 This application should be built using python 2.7.x. You also should have node installed on your development machine.
