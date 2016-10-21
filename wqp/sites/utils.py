@@ -173,9 +173,8 @@ def site_geojson_generator(params_list):
     :param params_list:
     :yield String:
     """
-    yield '{"type" : "FeatureCollection", "features" : [\n'
-    #yield '{"crs":{"type": "name","properties": {"name": "urn:ogc:def:crs:EPSG::4326"}},' \
-    #      '"type": "FeatureCollection","features": [\n'
+    yield '{"crs":{"type": "name","properties": {"name": "urn:ogc:def:crs:EPSG::4326"}},' \
+          '"type": "FeatureCollection","features": [\n'
     prev_feature = None
     with Session() as session:
         for params in params_list:
