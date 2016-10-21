@@ -48,6 +48,7 @@ class TestGetSiteFeature(TestCase):
             'hucCode': '03120312',
             'SiteTypeCode': 'ST',
             'SiteType': 'Stream',
+            'siteId' : 'USGS-12345',
             'url': 'http://waterdata.usgs.gov/nwis/inventory?agency_code=USGS&site_no=12345'
         }
         result = geojson_loads(geojson_dumps(get_site_feature(station)))

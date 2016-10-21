@@ -115,9 +115,11 @@ def get_site_feature(station):
                 'hucCode': station.get('huc_cd', ''),
                 'SiteTypeCode': station.get('site_tp_cd', ''),
             }
+            properties['siteId'] = '{0}-{1}'.format(properties['agencyCode'], properties['siteNumber'])
             properties['SiteType'] = SITE_TYPES_MAPPING.get(properties['SiteTypeCode'], '')
-            properties['url'] = NWIS_SITES_INVENTORY_ENDPOINT + \
-                '?agency_code=' + properties['agencyCode'] + '&site_no=' + properties['siteNumber']
+            properties['url'] = '{0}?agency_code={1}&site_no={2}'.format(NWIS_SITES_INVENTORY_ENDPOINT,
+                                                                     properties['agencyCode'],
+                                                                     properties['siteNumber'])
 
             feature = Feature(geometry=Point((x2, y2)), properties=properties)
     else:
