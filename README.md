@@ -58,6 +58,8 @@ This will remove previous javascript and python dependencies. If you don't want 
 `.\dev_install.ps1 --update` or `.\dev_install.ps1`
 This will update javascript and python dependencies. Both commands will run the jasmine tests on Windows.
 
+As this runs npm, bower, and pip installs, you will want to make sure your certificate stores are all good to go.
+
 ## Manual Setup
 If you prefer to go through the setup manually:
 1. If you want to clean, remove the env, node, node_modules, portal_ui/bower_components, portal_ui/static/gen, and portal_ui/static/.webassets-cache directories
