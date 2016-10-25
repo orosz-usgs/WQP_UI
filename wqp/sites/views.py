@@ -141,7 +141,6 @@ def nwis_sites():
         description: Bad Request
         schema:
           type: string
-        example: 'siteTypeCd: not found, server=[sdas01]'
     """
 
     site_request_params = dict(request.args)

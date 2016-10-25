@@ -22,7 +22,9 @@ NLDI_SERVICES_ENDPOINT = ''
 NWIS_SITES_SERVICE_ENDPOINT = 'http://waterservices.usgs.gov/nwis/site/'
 NWIS_SITES_INVENTORY_ENDPOINT = 'http://waterdata.usgs.gov/nwis/inventory'
 
-GEO_SEARCH_API_ENDPOINT = 'http://txpub.usgs.gov/DSS/search_api/1.1/dataService/dataService.ashx/search'
+GEO_SEARCH_API_ENDPOINT = 'https://txpub.usgs.gov/DSS/search_api/1.1/dataService/dataService.ashx/search'
+
+WSGI_STR = '' # When using real urls this is the string that should be removed from url's to get the correct mapping
 
 # Styles to be used for the site map
 SITE_SLDS = []

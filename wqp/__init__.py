@@ -6,23 +6,12 @@ from flask_swagger import swagger
 from flask_swagger_ui import get_swaggerui_blueprint
 
 
+__version__ = '4.1.0dev'
+
+
 app = Flask(__name__.split()[0], instance_relative_config=True)
 
 Bower(app)
-
-app.config['SWAGGER'] = {
-    'swagger_version': '2.0',
-    'specs': [
-        {
-            'version' : '1.0',
-            'title' : 'NWIS site API',
-            'description': 'Streaming NWIS Site service',
-            'endpoint' : 'sites',
-            'route': '/sites/'
-        }
-    ],
-    'url_prefix' : '/wsgi/wqp_ui'
-}
 
 # Loads configuration information from config.py and instance/config.py
 app.config.from_object('config')
@@ -35,15 +24,17 @@ celery.conf.update(app.config)
 
 from portal_ui.views import portal_ui
 from sites.views import sites
+from wqx.views import wqx
 
 app.register_blueprint(portal_ui, url_prefix='')
 app.register_blueprint(sites,
                        url_prefix='/sites')
+app.register_blueprint(wqx, url_prefix='/portal/schemas')
 
 # Set up swagger endpoints
 @app.route('/spec')
 def spec():
-    host = request.url_root.rstrip('/')
+    host = request.url_root.rstrip('/').replace(app.config['WSGI_STR'], '')
     return jsonify(swagger(app,
                            from_file_keyword="swagger_from_file",
                            template={

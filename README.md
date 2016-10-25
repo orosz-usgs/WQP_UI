@@ -1,4 +1,7 @@
 # WQP_UI
+===================
+[![Build Status](https://travis-ci.org/USGS-CIDA/WQP_UI.svg?branch=master)](https://travis-ci.org/USGS-CIDA/WQP_UI)
+
 Water Quality Portal User Interface
 
 This application should be built using python 2.7.x. You also should have node installed on your development machine.
@@ -54,6 +57,8 @@ To build on Windows, you can use the dev_install.ps1 script. If you want a fresh
 This will remove previous javascript and python dependencies. If you don't want to install from scratch, type in:
 `.\dev_install.ps1 --update` or `.\dev_install.ps1`
 This will update javascript and python dependencies. Both commands will run the jasmine tests on Windows.
+
+As this runs npm, bower, and pip installs, you will want to make sure your certificate stores are all good to go.
 
 ## Manual Setup
 If you prefer to go through the setup manually:
