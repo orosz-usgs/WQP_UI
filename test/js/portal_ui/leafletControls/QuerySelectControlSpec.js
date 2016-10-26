@@ -1,14 +1,15 @@
 /* jslint browser: true */
-/* global describe, beforeEach, afterEach, it, expect, spyOn */
+/* global describe, beforeEach, afterEach, it, expect, jasmine, spyOn */
 /* global L */
 
 
-fdescribe('leafletControl/QuerySelectControl', function() {
+describe('leafletControl/QuerySelectControl', function() {
 	"use strict";
 
 	var map;
 	var testControl;
 	var layer1, layer2;
+	var changeHandlerSpy;
 
 	beforeEach(function() {
 		document.body.innerHTML = '<div id="test-div" style="height: 30px; width: 30px;"></div>';
@@ -19,10 +20,12 @@ fdescribe('leafletControl/QuerySelectControl', function() {
 
 		layer1 = L.circleMarker([43.1, -100.1]);
 		layer2 = L.circleMarker([43.2, -100.2]);
+		changeHandlerSpy = jasmine.createSpy('changeHandlerSpy');
 		testControl = L.control.querySelectControl({
+			changeHandler : changeHandlerSpy,
 			queryOptions: [
-				{id: 'query1', text: 'Text1', layer: layer1},
-				{id: 'query2', text: 'Text2', layer: layer2}
+				{id: 'query1', text: 'Text1', mapLayer: layer1},
+				{id: 'query2', text: 'Text2', mapLayer: layer2}
 			]
 		});
 		map.addControl(testControl);
@@ -54,6 +57,16 @@ fdescribe('leafletControl/QuerySelectControl', function() {
 
 		select.value = 'query1';
 		expect(testControl.getValue()).toEqual('query1');
+	});
+
+	it('Expects that a change event calls the changeHandler', function() {
+		var select = document.getElementsByClassName('leaflet-nldi-query-picker')[0];
+		var event = document.createEvent('HTMLEvents');
+		select.value='query1';
+		event.initEvent('change', true, false);
+		select.dispatchEvent(event);
+
+		expect(changeHandlerSpy).toHaveBeenCalled();
 	});
 
 	it('Expects that the change handler adds the selected layer to the map', function() {
