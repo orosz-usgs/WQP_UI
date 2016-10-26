@@ -4,6 +4,7 @@
 L.control.NldiControl = L.Control.extend({
 	options : {
 		position : 'topleft',
+		navOptions : [],
 		navChangeHandler : null,
 		distanceChangeHandler : null,
 		clearClickHandler : null
@@ -32,18 +33,17 @@ L.control.NldiControl = L.Control.extend({
 		}
 	},
 
-	onAdd : function(map) {
+	onAdd : function() {
 		"use strict";
 
 		var container = L.DomUtil.create('div', 'leaflet-nldi-input-div');
+		var addOption = function(optionsString, option) {
+			return optionsString + '<option value="' + option.id + '">' + option.text + '</option>';
+		};
 
 		this._navSelectEl = L.DomUtil.create('select', 'leaflet-nldi-nav-picker', container);
 		this._navSelectEl.title = 'Pick navigation type';
-		this._navSelectEl.innerHTML = '<option value="">Select navigation type</option>' +
-				'<option value="UM">Upstream main</option>' +
-				'<option value="DM">Downstream main</option>' +
-				'<option value="UT">Upstream with tributaries</option>' +
-				'<option value="DD">Downstream with diversions</option>';
+		this._navSelectEl.innerHTML = this.options.navOptions.reduce(addOption, '<option value="">Select navigation type</option>');
 		L.DomEvent.addListener(this._navSelectEl, 'change', this.options.navChangeHandler, this);
 		L.DomEvent.disableClickPropagation(this._navSelectEl);
 
@@ -65,7 +65,7 @@ L.control.NldiControl = L.Control.extend({
 		return container;
 	},
 
-	onRemove : function(map) {
+	onRemove : function() {
 		"use strict";
 		L.DomEvent.removeListener(this._navSelectEl, 'change', this.options.navChangeHandler);
 		L.DomEvent.removeListener(this._distanceInput, 'change', this.options.distanceChangeHandler);

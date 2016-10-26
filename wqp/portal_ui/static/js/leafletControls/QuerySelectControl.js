@@ -5,16 +5,19 @@
  * @constructs
  * @param {Object} options
  * 		@prop {String} position - optional defaults to topright
+ * 		@prop {Function} changeHandler - function which will be passed the change event. The context will
+ *			be the context of the control.
  * 		@prop {Array of Object} queryOptions - each object in the array represents a NLDI query option.
  * 			Each object should have three properties:
  *	 		@prop {String} id - the string to be used as the featureSource in the NLDI query
  *	 		@prop {String} text - The text to be shown in the selection menu for this featureSource
- *			@prop {String} layer - The layer to be shown on the map when this featureSource is selected.
+ *			@prop {String} mapLayer - The layer to be shown on the map when this featureSource is selected.
  */
 
 L.control.QuerySelectControl = L.Control.extend({
 	options: {
 		position: 'topright',
+		changeHandler : null,
 		queryOptions : []
 	},
 	initialize : function(options) {
@@ -25,7 +28,7 @@ L.control.QuerySelectControl = L.Control.extend({
 		this._selectEl = undefined;
 	},
 
-	onAdd : function(map) {
+	onAdd : function() {
 		"use strict";
 		var container = L.DomUtil.create('div', 'leaflet-nldi-query-control-div');
 		var addOption = function(optionsString, option) {
@@ -72,7 +75,7 @@ L.control.QuerySelectControl = L.Control.extend({
 			var layer;
 			for (var i = 0; i < queryOptions.length; i++) {
 				if (queryId === queryOptions[i].id) {
-					layer = queryOptions[i].layer;
+					layer = queryOptions[i].mapLayer;
 					break;
 				}
 			}
@@ -87,6 +90,10 @@ L.control.QuerySelectControl = L.Control.extend({
 		this._queryLayer = newQueryLayer;
 		if (this._queryLayer) {
 			this._map.addLayer(this._queryLayer);
+		}
+
+		if (this.options.changeHandler) {
+			this.options.changeHandler(ev);
 		}
 	}
 });

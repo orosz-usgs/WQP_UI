@@ -22,23 +22,33 @@ PORTAL.VIEWS.nldiView  = function(options) {
 
 	var self = {};
 
-	var huc12 = '';
-	var pourPtLatLng;
-	var navValue = {
-		id: '',
-		text : ''
-	};
-	var distanceValue = '';
-
 	var insetMap, map;
 	var $mapDiv = $('#' + options.mapDivId);
 	var $insetMapDiv = $('#' + options.insetMapDivId);
 
+	var lastLatLngClicked;
+
 	var nldiSiteCluster, nldiFlowlineLayers;
 	var insetNldiSiteCluster, insetNldiFlowlineLayers;
 
+	/* Functions return a geoJson layer with predefined options for flowLine and site layers respectively */
+	var flowlineLayer = _.partial(L.geoJson);
+	var siteLayer = _.partial(L.geoJson, _, {
+		pointToLayer: function (featureData, latlng) {
+			return L.circleMarker(latlng, {
+				radius: 5,
+				fillColor: "#ff3300",
+				color: "#000",
+				weight: 1,
+				opacity: 1,
+				fillOpacity: 0.8
+			});
+		}
+	});
+
 	var getRetrieveMessage = function() {
-		return '<p>Retrieving sites ' + navValue.text.toLowerCase() + ((distanceValue) ? ' ' + distanceValue + ' km' : '') + '.</p>';
+		var nldiData = PORTAL.MODELS.nldiModel.getData();
+		return '<p>Retrieving sites ' + nldiData.navigation.text.toLowerCase() + ((nldiData.distance) ? ' ' + nldiData.distance + ' km' : '') + '.</p>';
 	};
 
 	var cleanUpMaps = function() {
@@ -69,100 +79,65 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		options.$inputContainer.html(html);
 	};
 
-
 	/*
 	 * @param {L.Point} point - This is the containerPoint where we are looking for a feature from the pour point endpoint
 	 * @returns $Deferred.promise
 	 * 		@resolve - Returns {Object} - the json data received from the request
 	 * 		@reject	- If unable to fetch the pour point
 	 */
-	var fetchPourPoint = function(point) {
+	var fetchFeatureId = function(point) {
 		var mapBounds = map.getBounds();
+		var nldiFeatureSource = PORTAL.MODELS.nldiModel.getData().featureSource.getFeatureInfoSource;
 		return $.ajax({
-			url : Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wms',
+			url : nldiFeatureSource.endpoint,
 			method : 'GET',
 			data : {
 				version: '1.3.0',
 				request: 'GetFeatureInfo',
 				service: 'wms',
-				layers : 'qw_portal_map:fpp',
+				layers : nldiFeatureSource.layerName,
 				srs : 'EPSG:4326',
 				bbox : mapBounds.getSouth() + ',' + mapBounds.getWest() + ',' + mapBounds.getNorth() + ',' + mapBounds.getEast(),
 				width : map.getSize().x,
 				height : map.getSize().y,
 				'info_format' : 'application/json',
-				'query_layers' : 'qw_portal_map:fpp',
+				'query_layers' : nldiFeatureSource.layerName,
 				i : point.x,
 				j : point.y
 			}
 		});
 	};
 
-	/*
-	 * @param {String} comId
-	 * @param {String} navigate
-	 * @param {String}  distance
-	 * @returns {String}
-	 */
-	var getNldiUrl = function(huc12, navigate, distance) {
-		return Config.NLDI_SERVICES_ENDPOINT + 'huc12pp/' + huc12 + '/navigate/' + navigate + '/wqp?distance=' + distance;
-	};
 
-	/*
-	 * @param {String} comId
-	 * @param {String} navigate
-	 * @param {String}  distance
-	 * @returns {jqXHR}
-	 */
-	var fetchNldiSites = function(huc12, navigate, distance) {
-		return $.ajax({
-			url : getNldiUrl(huc12, navigate, distance),
-			method : 'GET'
-		});
+	var updateNldiSites = function() {
+		var nldiSiteUrl = PORTAL.MODELS.nldiModel.getUrl('wqp');
+		var nldiFlowlinesUrl = PORTAL.MODELS.nldiModel.getUrl();
 
-	};
-
-	/*
-	 * @param {String} comId
-	 * @param {String navigate
-	 * @returns $.jqXHR object
-	 */
-	var fetchNldiFlowlines = function(huc12, navigate, distance) {
-		return $.ajax({
-			url : Config.NLDI_SERVICES_ENDPOINT + 'huc12pp/' + huc12 + '/navigate/' + navigate,
-			method : 'GET',
-			data : {
-				distance : distance
-			}
-		});
-	};
-
-	var updateNldiSites = function(huc12, navigate, distance) {
-		var flowlineLayer = _.partial(L.geoJson);
-		var siteLayer = _.partial(L.geoJson, _, {
-			pointToLayer: function (featureData, latlng) {
-				return L.circleMarker(latlng, {
-					radius: 5,
-					fillColor: "#ff3300",
-					color: "#000",
-					weight: 1,
-					opacity: 1,
-					fillOpacity: 0.8
-				});
-			}
-		});
-
-		if ((huc12) && (navigate)) {
+		var fetchNldiSites = function() {
+			return $.ajax({
+				url : nldiSiteUrl,
+				method : 'GET'
+			});
+		};
+		var fetchNldiFlowlines = function() {
+			return $.ajax({
+				url : nldiFlowlinesUrl,
+				method : 'GET'
+			});
+		};
+		if (nldiSiteUrl) {
 			$mapDiv.css('cursor', 'progress');
-			$.when(fetchNldiSites(huc12, navigate, distance), fetchNldiFlowlines(huc12, navigate, distance))
+			$.when(fetchNldiSites(), fetchNldiFlowlines())
 				.done(function (sitesResponse, flowlinesResponse) {
 					var flowlineBounds;
 					var sitesGeojson = sitesResponse[0];
 					var flowlinesGeojson = flowlinesResponse[0];
+
+					// These layers go into the siteCluster layer
 					var nldiSiteLayers = siteLayer(sitesGeojson);
 					var insetNldiSiteLayers = siteLayer(sitesGeojson);
 
-					log.debug('NLDI service has retrieved ' + sitesGeojson.features.length + ' sites.')
+					log.debug('NLDI service has retrieved ' + sitesGeojson.features.length + ' sites.');
 					map.closePopup();
 
 					nldiFlowlineLayers = flowlineLayer(flowlinesGeojson);
@@ -183,7 +158,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 					map.addLayer(nldiSiteCluster);
 					insetMap.addLayer(insetNldiSiteCluster);
 
-					updateNldiInput(getNldiUrl(huc12, navigate, distance));
+					updateNldiInput(PORTAL.MODELS.nldiModel.getUrl('wqp'));
 				})
 				.fail(function () {
 					map.openPopup('Unable to retrieve NLDI information', map.getCenter());
@@ -202,16 +177,17 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	 * @param {L.MouseEvent} ev
 	 */
 	var findSitesHandler = function(ev) {
-		if (navValue.id) {
+		var nldiModel = PORTAL.MODELS.nldiModel.getData();
+		if (nldiModel.navigation) {
 			log.debug('Clicked at location: ' + ev.latlng.toString());
 			$mapDiv.css('cursor', 'progress');
 
-			huc12 = '';
-			pourPtLatLng = undefined;
+			PORTAL.MODELS.nldiModel.setData('featureId', '');
+			lastLatLngClicked = undefined;
 			cleanUpMaps();
 			map.closePopup();
 
-			fetchPourPoint(ev.containerPoint.round())
+			fetchFeatureId(ev.containerPoint.round())
 				.done(function (result) {
 					if (result.features.length === 0) {
 						map.openPopup('<p>No query point has been selected. Please click on a point to query from.</p>', ev.latlng);
@@ -223,10 +199,11 @@ PORTAL.VIEWS.nldiView  = function(options) {
 						$mapDiv.css('cursor', '');
 					}
 					else {
-						huc12 = result.features[0].properties.HUC_12;
-						pourPtLatLng = ev.latlng;
+						PORTAL.MODELS.nldiModel.setData('featureId',
+							result.features[0].properties[nldiModel.featureSource.getFeatureInfoSource.featureIdProperty]);
+						lastLatLngClicked= ev.latlng;
 						map.openPopup(getRetrieveMessage(), ev.latlng);
-						updateNldiSites(huc12, navValue.id, distanceValue);
+						updateNldiSites();
 					}
 				})
 				.fail(function () {
@@ -243,11 +220,13 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	 * Show the full size map and set it's navigation select value. Hide the inset map
 	 */
 	var showMap = function () {
+		var nldiModel;
 		if ($mapDiv.is(':hidden')) {
+			nldiModel = PORTAL.MODELS.nldiModel.getData();
 			$insetMapDiv.hide();
 			$mapDiv.parent().show();
-			nldiControl.setNavValue(navValue.id);
-			nldiControl.setDistanceValue(distanceValue);
+			nldiControl.setNavValue(nldiModel.navigation.id);
+			nldiControl.setDistanceValue(nldiModel.distance);
 			map.invalidateSize();
 			map.setView(insetMap.getCenter(), insetMap.getZoom());
 		}
@@ -258,11 +237,13 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	 * Show the inset map and set it's navigation select value. Hide the full size map
 	 */
 	var showInsetMap = function () {
+		var nldiModel;
 		if ($insetMapDiv.is(':hidden')) {
+			nldiModel = PORTAL.MODELS.nldiModel.getData();
 			$insetMapDiv.show();
 			$mapDiv.parent().hide();
-			insetNldiControl.setNavValue(navValue.id);
-			insetNldiControl.setDistanceValue(distanceValue);
+			insetNldiControl.setNavValue(nldiModel.navigation.id);
+			insetNldiControl.setDistanceValue(nldiModel.distance);
 			insetMap.invalidateSize();
 			insetMap.setView(map.getCenter(), map.getZoom());
 		}
@@ -273,34 +254,36 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	 * Handle the change event for the nav selection control.
 	 */
 	var navChangeHandler = function(ev) {
-		navValue = {
+		var navValue = {
 			id : $(ev.target).val(),
 			text : $(ev.target.selectedOptions[0]).html()
 		};
+		PORTAL.MODELS.nldiModel.setData('navigation', navValue);
 		cleanUpMaps();
 		if (navValue.id) {
 			showMap();
-			if (huc12) {
-				map.openPopup(getRetrieveMessage(), pourPtLatLng);
-				updateNldiSites(huc12, navValue.id, distanceValue);
+			if (PORTAL.MODELS.nldiModel.getData().featureId) {
+				map.openPopup(getRetrieveMessage(), lastLatLngClicked);
+				updateNldiSites();
 			}
 		}
 		else {
-			huc12 = '';
-			pourPtLatLng = undefined;
+			PORTAL.MODELS.nldiModel.setData('featureId', '');
+			lastLatLngClicked = undefined;
 			showInsetMap();
 		}
 	};
 
 	var distanceChangeHandler = function(ev) {
-		distanceValue = $(ev.target).val();
+		var nldiData = PORTAL.MODELS.nldiModel.getData();
+		PORTAL.MODELS.nldiModel.setData('distance', $(ev.target).val());
 		cleanUpMaps();
 
-		if (navValue.id) {
+		if (nldiData.navigation.id) {
 			showMap();
-			if (huc12) {
-				map.openPopup(getRetrieveMessage(),  pourPtLatLng);
-				updateNldiSites(huc12, navValue.id, distanceValue);
+			if (nldiData.featureId) {
+				map.openPopup(getRetrieveMessage(),  lastLatLngClicked);
+				updateNldiSites();
 			}
 		}
 		else {
@@ -308,17 +291,18 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		}
 	};
 
-	var clearHandler = function() {
-		huc12 = '';
-		pourPtLatLng = undefined;
-		navValue = {
-			id: '',
-			text : ''
-		};
-		distanceValue = '';
+	var queryChangeHandler = function(ev) {
+		lastLatLngClicked = undefined;
+		cleanUpMaps();
+		map.closePopup();
+		PORTAL.MODELS.nldiModel.setFeatureSource($(ev.currentTarget).val());
+	};
 
-		this.setNavValue(navValue.id);
-		this.setDistanceValue(distanceValue);
+	var clearHandler = function() {
+		PORTAL.MODELS.nldiModel.reset();
+
+		this.setNavValue('');
+		this.setDistanceValue('');
 
 		cleanUpMaps();
 		map.closePopup();
@@ -350,29 +334,27 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		}
 	);
 
-	var pourPointLayer = L.tileLayer.wms(Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wms', {
-		layers:'fpp',
-		styles : 'pour_points',
-		format : 'image/png',
-		transparent : true,
-		minZoom : 8
-	});
-
 	var layerSwitcher = L.control.layers(baseLayers, {
 		'Hydro Reference' : hydroLayer,
-		'NHDLPlus Flowline Network' : nhdlPlusFlowlineLayer,
-		'WBD HU12 Pour Points' : pourPointLayer
+		'NHDLPlus Flowline Network' : nhdlPlusFlowlineLayer
 	});
 
 	var insetNldiControl = L.control.nldiControl({
+		navOptions : PORTAL.MODELS.nldiModel.NAVIGATION_MODES,
 		navChangeHandler : navChangeHandler,
 		distanceChangeHandler : distanceChangeHandler,
 		clearClickHandler : clearHandler
 	});
 	var nldiControl = L.control.nldiControl({
+		navOptions : PORTAL.MODELS.nldiModel.NAVIGATION_MODES,
 		navChangeHandler : navChangeHandler,
 		distanceChangeHandler : distanceChangeHandler,
 		clearClickHandler : clearHandler
+	});
+
+	var querySelectControl = L.control.querySelectControl({
+		changeHandler : queryChangeHandler,
+		queryOptions : PORTAL.MODELS.nldiModel.QUERY_SOURCES
 	});
 
 	var searchControl = L.control.searchControl(Config.GEO_SEARCH_API_ENDPOINT);
@@ -406,10 +388,11 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		map = new MapWithSingleClickHandler(options.mapDivId, {
 			center: [37.0, -100.0],
 			zoom : 3,
-			layers : [baseLayers['World Gray'], hydroLayer, nhdlPlusFlowlineLayer, pourPointLayer],
+			layers : [baseLayers['World Gray'], hydroLayer, nhdlPlusFlowlineLayer],
 			zoomControl : false
 		});
 		map.addControl(searchControl);
+		map.addControl(querySelectControl);
 		map.addControl(collapseControl);
 		map.addControl(layerSwitcher);
 		map.addControl(nldiControl);
