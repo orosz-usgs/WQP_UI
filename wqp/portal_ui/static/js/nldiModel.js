@@ -13,7 +13,7 @@ PORTAL.MODELS.nldiModel = (function() {
 
 	var huc12FeatureSource = {
 		id : 'huc12pp',
-		text : 'HUC 12 pour point',
+		text : 'HUC 12 pour points',
 		mapLayer : L.tileLayer.wms(Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wms', {
 			layers:'fpp',
 			styles : 'pour_points',
@@ -31,7 +31,7 @@ PORTAL.MODELS.nldiModel = (function() {
 
 	var nwisSitesFeatureSource = {
 		id : 'nwissite',
-		text : 'NWIS site',
+		text : 'Active NWIS stream gages',
 		mapLayer : L.tileLayer.wms(Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wms', {
 			layers: 'qw_portal_map:nwis_sites',
 			format : 'image/png',
