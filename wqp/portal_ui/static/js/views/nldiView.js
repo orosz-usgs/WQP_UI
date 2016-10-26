@@ -178,7 +178,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	 */
 	var findSitesHandler = function(ev) {
 		var nldiModel = PORTAL.MODELS.nldiModel.getData();
-		if (nldiModel.navigation) {
+		if (nldiModel.navigation && nldiModel.featureSource) {
 			log.debug('Clicked at location: ' + ev.latlng.toString());
 			$mapDiv.css('cursor', 'progress');
 
@@ -212,7 +212,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 				});
 		}
 		else {
-			map.openPopup('<p>Please select a navigation direction</p>', ev.latlng);
+			map.openPopup('<p>Please select a navigation direction and a query source</p>', ev.latlng);
 		}
 	};
 
