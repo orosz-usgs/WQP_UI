@@ -76,6 +76,3 @@ Now you can run the application within the virtualenv by executing:
 `python run.py`
 
 The application can be accessed at 127.0.0.1:5050/index.
-
-For developer level testing, you can use the npm test script to run in no-single-step mode. Note that this
-script will have to modified for Windows users.
