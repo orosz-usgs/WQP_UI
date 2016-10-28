@@ -61,7 +61,7 @@ def identify_data_files(directory_names):
 parsed_requirements = read_requirements()
 data_files = identify_data_files(['static'])
 setup(name='usgs_flask_wqp_ui',
-      version='4.1.0',
+      version='4.2.0dev',
       description='USGS Water Quality Portal User Interface',
       author='Mary Bucknell, James Kreft, Andrew Yan',
       author_email='jkreft@usgs.gov',

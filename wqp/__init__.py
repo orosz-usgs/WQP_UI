@@ -6,7 +6,7 @@ from flask_swagger import swagger
 from flask_swagger_ui import get_swaggerui_blueprint
 
 
-__version__ = '4.1.0'
+__version__ = '4.2.0dev'
 
 
 app = Flask(__name__.split()[0], instance_relative_config=True)
