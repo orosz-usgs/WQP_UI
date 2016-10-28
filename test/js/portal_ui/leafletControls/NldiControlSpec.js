@@ -24,6 +24,10 @@ describe('leafletControl/NldiControl', function() {
 			zoom : 4
 		});
 		testControl = L.control.nldiControl({
+			navOptions: [
+				{id : 'UM', text : 'Upstream main'},
+				{id : 'DM', text : 'Downstream main'}
+			],
 			navChangeHandler : navChangeHandlerSpy,
 			distanceChangeHandler : distanceChangeHandlerSpy,
 			clearClickHandler : clearClickHandlerSpy
@@ -44,9 +48,9 @@ describe('leafletControl/NldiControl', function() {
 		var navEl;
 		map.addControl(testControl);
 		navEl = document.getElementsByClassName('leaflet-nldi-nav-picker')[0];
-		testControl.setNavValue('UT');
+		testControl.setNavValue('UM');
 
-		expect(navEl.value).toEqual('UT');
+		expect(navEl.value).toEqual('UM');
 
 		testControl.setNavValue('');
 		expect(navEl.value).toEqual('');
