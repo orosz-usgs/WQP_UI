@@ -20,6 +20,6 @@ script:
   - node_modules/karma/bin/karma start test/js/karma.conf.js --no-colors
 
 after_success:
-  coveralls-lcov -v -n "coverage/Firefox 31.0.0 (Linux 0.0.0)/lcov.info" > "coverage/Firefox 31.0.0 (Linux 0.0.0)/coverage.json";
-  ls -al "coverage/Firefox 31.0.0 (Linux 0.0.0)";
-  coveralls --merge="coverage/Firefox 31.0.0 (Linux 0.0.0)/coverage.json";
+  find coverage/ -mindepth 2 -iname '*.info' -exec cp -t coverage/ '{}' +;
+  coveralls-lcov -v -n coverage/lcov.info > coverage/coverage.json;
+  coveralls --merge=coverage/coverage.json;
