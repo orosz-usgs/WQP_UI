@@ -7,7 +7,6 @@ install:
   - pip install -r requirements.txt
   - pip install coveralls
   - npm install
-  - npm install grunt-coveralls --save-dev
   - node_modules/bower/bin/bower install
   - gem install coveralls-lcov
 
