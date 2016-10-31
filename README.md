@@ -1,6 +1,7 @@
 # WQP_UI
 ===================
 [![Build Status](https://travis-ci.org/USGS-CIDA/WQP_UI.svg?branch=master)](https://travis-ci.org/USGS-CIDA/WQP_UI)
+[![Coverage Status](https://coveralls.io/repos/github/USGS-CIDA/WQP_UI/badge.svg?branch=master)](https://coveralls.io/github/USGS-CIDA/WQP_UI?branch=master)
 
 Water Quality Portal User Interface
 
@@ -76,3 +77,6 @@ Now you can run the application within the virtualenv by executing:
 `python run.py`
 
 The application can be accessed at 127.0.0.1:5050/index.
+
+For developer level testing, you can use the npm test script to run in no-single-step mode. Note that this
+script will have to modified for Windows users.
