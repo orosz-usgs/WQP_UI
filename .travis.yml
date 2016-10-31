@@ -9,6 +9,7 @@ install:
   - npm install
   - npm install grunt-coveralls --save-dev
   - node_modules/bower/bin/bower install
+  - gem install coveralls-lcov
 
 before_script:
   - export DISPLAY=:99.0
@@ -20,5 +21,6 @@ script:
   - node_modules/karma/bin/karma start test/js/karma.conf.js --no-colors
 
 after_success:
+  coveralls-lcov -v -n "coverage/Firefox 31.0.0 (Linux 0.0.0)/lcov.info" > "coverage/Firefox 31.0.0 (Linux 0.0.0)/coverage.json";
   ls -al "coverage/Firefox 31.0.0 (Linux 0.0.0)";
-  coveralls debug --merge="coverage/Firefox 31.0.0 (Linux 0.0.0)/lcov.info";
+  coveralls --merge="coverage/Firefox 31.0.0 (Linux 0.0.0)/coverage.json";
