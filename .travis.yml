@@ -5,8 +5,10 @@ env:
 
 install:
   - pip install -r requirements.txt
+  - pip install coveralls
   - npm install
   - node_modules/bower/bin/bower install
+  - gem install coveralls-lcov
 
 before_script:
   - export DISPLAY=:99.0
@@ -14,5 +16,10 @@ before_script:
   - echo "SECRET_KEY = 'key-for-testing'" > instance/config.py
 
 script:
-  - nosetests
+  - nosetests --with-coverage --cover-package=wqp
   - node_modules/karma/bin/karma start test/js/karma.conf.js --no-colors
+
+after_success:
+  find coverage/ -mindepth 2 -iname '*.info' -exec cp -t coverage/ '{}' +;
+  coveralls-lcov -v -n coverage/lcov.info > coverage/coverage.json;
+  coveralls --merge=coverage/coverage.json;
