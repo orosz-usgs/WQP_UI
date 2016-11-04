@@ -29,10 +29,13 @@
     "ol3-layerswitcher": "1.1.0",
     "font-awesome": "4.6.0",
     "leaflet": "1.0.1",
-    "leaflet-providers": "1.1.9",
-    "Leaflet.EasyButton": "1.2.0",
-    "esri-leaflet": "1.0.3",
-    "leaflet.markercluster": "0.5.0",
+    "leaflet-providers": "1.1.15",
+    "Leaflet.EasyButton": "2.0.0",
+    "esri-leaflet": "2.0.4",
+    "leaflet.markercluster": "1.0.0",
     "ol3": "ol3-bower#3.17.1"
+  },
+  "resolutions": {
+    "leaflet": ">= 1.0.0"
   }
 }
