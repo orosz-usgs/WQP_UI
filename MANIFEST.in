@@ -11,3 +11,4 @@ recursive-include wqp/wqx/templates *
 recursive-include wqp/wqx/static *
 recursive-include static *
 prune instance
+recursive-exclude * .gitignore
