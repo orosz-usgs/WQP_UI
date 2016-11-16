@@ -37,7 +37,7 @@ def read(filepath):
     return content
 
 
-def identify_data_files(directory_names, exclusions=('.gitignore',)):
+def identify_data_files(directory_names, exclusions=('.gitignore', '.webassets-cache')):
     """
     Recursively introspect the contents of a directory. Once the contents
     have been introspected, generate a list directories and sub-directories
@@ -51,7 +51,7 @@ def identify_data_files(directory_names, exclusions=('.gitignore',)):
     going to be in the distributable.
 
     :param list directory_names: absolute or relative name to directories
-    :param tuple exclusions: tuple of all the files NOT to include as a data file
+    :param tuple exclusions: tuple of all the files or directories NOT to include as a data file
     :return: all contents of the directories as a list of tuples
     :rtype: list
 
@@ -60,9 +60,10 @@ def identify_data_files(directory_names, exclusions=('.gitignore',)):
     for directory_name in directory_names:
         for root, dirs, files in os.walk(directory_name):
             pathnames = [os.path.abspath(os.path.join(root, filename))
-                         for filename in files if filename not in exclusions]
-            data_file_element = (root, pathnames)
-            directory_data_files.append(data_file_element)
+                         for filename in files if not any(ex in os.path.join(root, filename) for ex in exclusions)]
+            if len(pathnames) > 0:
+                data_file_element = (root, pathnames)
+                directory_data_files.append(data_file_element)
     return directory_data_files
 
 
