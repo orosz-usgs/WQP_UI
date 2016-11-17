@@ -312,7 +312,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		'World Gray' : L.esri.basemapLayer('Gray')
 	};
 	var insetHydroLayer = L.esri.tiledMapLayer({
-		url : "https://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer"
+		url : "http://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer"
 	});
 
 	var baseLayers = {
@@ -323,7 +323,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		'World Imagery' : L.tileLayer.provider('Esri.WorldImagery')
 	};
 	var hydroLayer = L.esri.tiledMapLayer({
-		url : "https://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer"
+		url : "http://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer"
 	});
 	var nhdlPlusFlowlineLayer = L.tileLayer.wms('https://cida.usgs.gov/nwc/geoserver/gwc/service/wms',
 		{

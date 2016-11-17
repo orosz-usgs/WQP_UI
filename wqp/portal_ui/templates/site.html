@@ -35,7 +35,7 @@
     <a href="https://cfpub.epa.gov/surf/huc.cfm?huc_code={{ site['HUCEightDigitCode'] }}" title="go to the EPA's site about this HUC" target="_blank"> EPA's Surf Your Watershed site</a> or at the <a target="_blank" href="http://water.usgs.gov/lookup/getwatershed?{{ site['HUCEightDigitCode']  }}" title="Go to the USGS Science in Your watershed site">USGS Science In Your Watershed site</a>.
         To learn more about water use in this watershed, you can go to the <a target="_blank" title="Go to the National Water Census Water Use Data Portal " href="http://cida.usgs.gov/nwc/#!waterbudget/huc/{{ site['HUCEightDigitCode'] }}">National Water Census Data Portal</a>. {% endif %}
     {% if site['ProviderName'] == 'NWIS' %}See more details of this site the the <a target="_blank" title="Go to the USGS NWIS site summary page" href="http://waterdata.usgs.gov/nwis/inventory?agency_code={{ site_data_additional['NWISOrg'] }}&site_no={{ site_data_additional['NWISNumber'] }}">USGS NWIS Web page for this site</a>. {% endif %}
-    {% if site['DrainageAreaMeasure/MeasureValue'] %} This site has a drainage area of {{ site['DrainageAreaMeasure/MeasureValue'] }} {{ site['DrainageAreaMeasure/MeasureUnitCode'] }}{% if site['ContributingDrainageAreaMeasure/MeasureValue'] %} and the contributing drainage area is {{ site['ContributingDrainageAreaMeasure/MeasureValue'] }} {{ site['ContributingDrainageAreaMeasure/MeasureUnitCode'] }}{% endif %}.{% endif %}
+    {% if site['DrainageAreaMeasure/MeasureValue'] %} This site has a drainage area of {{ site['DrainageAgit preaMeasure/MeasureValue'] }} {{ site['DrainageAreaMeasure/MeasureUnitCode'] }}{% if site['ContributingDrainageAreaMeasure/MeasureValue'] %} and the contributing drainage area is {{ site['ContributingDrainageAreaMeasure/MeasureValue'] }} {{ site['ContributingDrainageAreaMeasure/MeasureUnitCode'] }}{% endif %}.{% endif %}
 </p>
 
     <p>
@@ -111,7 +111,7 @@ To download the metadata about this site along with water quality data, go to th
     var basemapTiles = L.tileLayer.provider('Esri.WorldGrayCanvas');
     basemapTiles.addTo(map);
     L.esri.tiledMapLayer({
-    url: "https://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer"
+    url: "http://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer"
     }).addTo(map);
     L.tileLayer.wms('https://cida.usgs.gov/nwc/geoserver/gwc/service/wms',
 		{

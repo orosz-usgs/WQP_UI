@@ -34,7 +34,7 @@ WQP.ol3.mapUtils = (function() {
 	 * @returns ol.layer.Tile
 	 */
 	self.getEsriHydroLayer = function(isVisible, map) {
-		var esriHydroURL = 'https://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer/tile/';
+		var esriHydroURL = 'http://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer/tile/';
 		var hydroTileLayer = new ol.layer.Tile({
 			title : 'ESRI Hydro Layer',
 			map : map,
