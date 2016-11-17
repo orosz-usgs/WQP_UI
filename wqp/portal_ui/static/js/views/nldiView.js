@@ -325,7 +325,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	var hydroLayer = L.esri.tiledMapLayer({
 		url : "http://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer"
 	});
-	var nhdlPlusFlowlineLayer = L.tileLayer.wms('http://cida.usgs.gov/nwc/geoserver/gwc/service/wms',
+	var nhdlPlusFlowlineLayer = L.tileLayer.wms('https://cida.usgs.gov/nwc/geoserver/gwc/service/wms',
 		{
 			layers : 'nhdplus:nhdflowline_network',
 			format : 'image/png',
