@@ -48,7 +48,7 @@ PORTAL.MAP.siteMap = function(options) {
 			'World Imagery': L.tileLayer.provider('Esri.WorldImagery')
 		};
 		var esriHydroLayer = L.esri.tiledMapLayer({
-			url: 'http://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer'
+			url: Config.HYDRO_LAYER_ENDPOINT
 		});
 		var nwisSitesLayer = L.tileLayer.wms(Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wms', {
 			layers: 'qw_portal_map:nwis_sites',
@@ -69,63 +69,8 @@ PORTAL.MAP.siteMap = function(options) {
 		map.addControl(L.control.scale());
 	};
 /*
-		var overlayLayerGroup = new ol.layer.Group({
-			title: 'Overlays',
-			layers : []
-		});
-		var controls = ol.control.defaults().extend([
-			new ol.control.LayerSwitcher({
-				tipLabel: 'Switch base layers'
-			}),
-			new ol.control.ScaleLine(),
-			new ol.control.MousePosition({
-				coordinateFormat : function(coordinate) {
-					var lonLat = ol.proj.toLonLat(coordinate);
-					return lonLat[0] + ', ' + lonLat[1];
-				}
-			})
-		]);
 		var boxIdLayer;
 		var worldExtent = ol.extent.applyTransform([-179,-89,179,89], ol.proj.getTransform("EPSG:4326", "EPSG:3857"));
-
-		/*
-		 * @param {openlayers 3 layer} - layer
-		 * @param {openlayers 3 layer group} - layerGroup
-		 * @param {integer} - incrementAboveBaseLayers
-		 */
-/*
-		var pushLayer = function(layer, layerGroup, zIndexAboveBaseLayers) {
-			var increment = zIndexAboveBaseLayers ? zIndexAboveBaseLayers : 1;
-			// set the layer's Z to be one increment above the current layers
-			layer.setZIndex(_.max(baseLayerZIndices) + increment);
-			// push the layer to a layer group
-			layerGroup.getLayers().push(layer);
-		};
-/*
-		map = new ol.Map({
-			view : new ol.View({
-				center : ol.proj.fromLonLat([WQP.MapConfig.DEFAULT_CENTER.lon, WQP.MapConfig.DEFAULT_CENTER.lat]),
-				zoom : 3,
-				minZoom : 2,
-				extent : worldExtent
-			}),
-			layers : [overlayLayerGroup, baseLayerGroup],
-			controls : controls
-		});
-
-		// add the ESRI Hydro Layer
-		var esriHydroLayer = WQP.ol3.mapUtils.getEsriHydroLayer({
-			isVisible : true,
-			map : map
-		});
-		pushLayer(esriHydroLayer, overlayLayerGroup, 1);
-
-		// add the NWIS Sites Layer
-		var nwisSitesLayer = WQP.ol3.mapUtils.getNWISSitesLayer({}, {
-			visible : false,
-			map : map
-		});
-		pushLayer(nwisSitesLayer, overlayLayerGroup, 2);
 
 		// Set up event handler for single click identify
 		map.on('singleclick', function(ev) {

@@ -323,7 +323,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		'World Imagery' : L.tileLayer.provider('Esri.WorldImagery')
 	};
 	var hydroLayer = L.esri.tiledMapLayer({
-		url : "http://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer"
+		url : Config.HYDRO_LAYER_ENDPOINT
 	});
 	var nhdlPlusFlowlineLayer = L.tileLayer.wms('http://cida.usgs.gov/nwc/geoserver/gwc/service/wms',
 		{
