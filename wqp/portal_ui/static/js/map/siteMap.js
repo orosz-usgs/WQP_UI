@@ -1,5 +1,6 @@
 /* jslint browser: true */
-/* global ol */
+/* global L */
+/* global Config */
 /* global WQP */
 /* global _ */
 
@@ -32,35 +33,42 @@ PORTAL.MAP.siteMap = function(options) {
 	var boxDrawInteraction;
 	var boxIdControl;
 
-	// The GetFeature request is sent back with the project, http://www.opengis.net/gml/srs/epsg.xml#900913
-	ol.proj.addEquivalentProjections([ol.proj.get('EPSG:900913'), new ol.proj.Projection({code: 'http://www.opengis.net/gml/srs/epsg.xml#900913'})]);
-
 	/*
 	 * Create the site map, with the base layers, overlay layers, and identify controls and event handlers.
 	 * Should be called before any of the other methods in this object.
 	 */
-	self.initialize = function()  {
-		var worldTopoLayer = WQP.ol3.mapUtils.createXYZBaseLayer(WQP.MapConfig.BASE_LAYER_URL.world_topo, true);
-		var worldStreetLayer = WQP.ol3.mapUtils.createXYZBaseLayer(WQP.MapConfig.BASE_LAYER_URL.world_street, false);
-		var worldReliefLayer = WQP.ol3.mapUtils.createXYZBaseLayer(WQP.MapConfig.BASE_LAYER_URL.world_relief, false);
-		var worldImageryLayer = WQP.ol3.mapUtils.createXYZBaseLayer(WQP.MapConfig.BASE_LAYER_URL.world_imagery, false);
-		var topoZIndex = worldTopoLayer.getZIndex();
-		var streetZIndex = worldStreetLayer.getZIndex();
-		var reliefZIndex = worldReliefLayer.getZIndex();
-		var imageryZIndex = worldImageryLayer.getZIndex();
-		baseLayerZIndices.push(topoZIndex);
-		baseLayerZIndices.push(streetZIndex);
-		baseLayerZIndices.push(reliefZIndex);
-		baseLayerZIndices.push(imageryZIndex);
-		var baseLayerGroup = new ol.layer.Group({
-			title: 'Base maps',
-			layers: [
-				worldTopoLayer,
-				worldStreetLayer,
-				worldReliefLayer,
-				worldImageryLayer
-			]
+	self.initialize = function() {
+		var MapWithSingleClickHandler = L.Map.extend({
+			includes: L.SingleClickEventMixin
 		});
+		var baseLayers = {
+			'World Topo': L.tileLayer.provider('Esri.WorldTopoMap'),
+			'World Street': L.tileLayer.provider('Esri.WorldStreetMap'),
+			'World Relief': L.tileLayer.provider('Esri.WorldShadedRelief'),
+			'World Imagery': L.tileLayer.provider('Esri.WorldImagery')
+		};
+		var esriHydroLayer = L.esri.tiledMapLayer({
+			url: 'http://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer'
+		});
+		var nwisSitesLayer = L.tileLayer.wms(Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wms', {
+			layers: 'qw_portal_map:nwis_sites',
+			format: 'image/png',
+    		transparent: true
+		});
+
+		map = new MapWithSingleClickHandler(options.mapDivId, {
+			center: [37.0, -100.0],
+			zoom: 3,
+			layers: [baseLayers['World Topo'], esriHydroLayer]
+		});
+
+		map.addControl(L.control.layers(baseLayers, {
+			'ESRI Hyro Layer' : esriHydroLayer,
+			'NWIS Stream Gages' : nwisSitesLayer
+		}));
+		map.addControl(L.control.scale());
+	};
+/*
 		var overlayLayerGroup = new ol.layer.Group({
 			title: 'Overlays',
 			layers : []
@@ -85,6 +93,7 @@ PORTAL.MAP.siteMap = function(options) {
 		 * @param {openlayers 3 layer group} - layerGroup
 		 * @param {integer} - incrementAboveBaseLayers
 		 */
+/*
 		var pushLayer = function(layer, layerGroup, zIndexAboveBaseLayers) {
 			var increment = zIndexAboveBaseLayers ? zIndexAboveBaseLayers : 1;
 			// set the layer's Z to be one increment above the current layers
@@ -92,7 +101,7 @@ PORTAL.MAP.siteMap = function(options) {
 			// push the layer to a layer group
 			layerGroup.getLayers().push(layer);
 		};
-
+/*
 		map = new ol.Map({
 			view : new ol.View({
 				center : ol.proj.fromLonLat([WQP.MapConfig.DEFAULT_CENTER.lon, WQP.MapConfig.DEFAULT_CENTER.lat]),
@@ -210,12 +219,14 @@ PORTAL.MAP.siteMap = function(options) {
 		});
 	};
 
+
 	/*
 	 * Renders the map options.mapDivId if initialize has been called
 	 */
 	self.render = function() {
-		if ((map) && (!map.getTarget())) {
-			map.setTarget(options.mapDivId);
+		if (map) {
+			map.invalidateSize();
+			map.setView(map.getCenter(), map.getZoom())
 		}
 	};
 
