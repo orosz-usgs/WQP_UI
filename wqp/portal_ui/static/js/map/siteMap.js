@@ -171,7 +171,7 @@ PORTAL.MAP.siteMap = function(options) {
 	self.render = function() {
 		if (map) {
 			map.invalidateSize();
-			map.setView(map.getCenter(), map.getZoom())
+			map.setView(map.getCenter(), map.getZoom());
 		}
 	};
 
@@ -188,20 +188,14 @@ PORTAL.MAP.siteMap = function(options) {
 			}
 			else {
 				wqpSitesLayer = PORTAL.MAP.siteLayer.createWQPSitesLayer(
-					queryParamArray,
-					{
-						STYLES : options.$sldSelect.val()
-					},
-					{
-						visible: true,
-						map: map
-					}
+					queryParamArray, options.$sldSelect.val()
 				);
-				wqpSitesLayer.getSource().on('sourceloaded', function () {
-					options.$loadingIndicator.hide();
-					options.$legendDiv.html('<img  src="' + PORTAL.MAP.siteLayer.getLegendGraphicURL(wqpSitesLayer.getSource()) + '" />');
-
-				});
+				map.addLayer(wqpSitesLayer);
+				//wqpSitesLayer.getSource().on('sourceloaded', function () {
+				//	options.$loadingIndicator.hide();
+				//	options.$legendDiv.html('<img  src="' + PORTAL.MAP.siteLayer.getLegendGraphicURL(wqpSitesLayer.getSource()) + '" />');
+//
+//				});
 			}
 
 		}

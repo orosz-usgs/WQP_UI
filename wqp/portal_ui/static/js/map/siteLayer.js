@@ -1,5 +1,5 @@
 /* jslint browser: true */
-/* global ol */
+/* global L */
 /* global Config */
 /* global _ */
 /* global $ */
@@ -31,67 +31,22 @@ PORTAL.MAP.siteLayer = (function() {
 
 	/*
 	 * @param {Array of Object with name and value properties} queryParamArray - query parameters to be used to retrieve the sites
-	 * @param {Object} wmsParams - WMS GetMap parameters. These will be extended by the parameters defined in this function
-	 * @param {Object} layerOptions - ol.Layer.Tile options. These will be extended by the options defined in this function
-	 * @return {ol.Layer.Tile} - The source for the tile adds an additional event, 'sourceloaded', which is fired after
+	 * 	 * @return {L.tileLayer.wms} - The source for the tile adds an additional event, 'sourceloaded', which is fired after
 	 * 		all tiles have been loaded. The layer has an additional property queryParamArray which are the query parameters
 	 * 		used to retrieve the sites and is passed into this method.
 	 */
-	self.createWQPSitesLayer = function(queryParamArray, wmsParams, layerOptions) {
-		var URL = Config.SITES_GEOSERVER_ENDPOINT + 'wms';
-		var sourceWMSParams = {
-			LAYERS: WQP_SITE_LAYER_NAME,
-			FORMAT : 'image/png',
-			TRANSPARENT : true,
-			SEARCHPARAMS : getSearchParams(queryParamArray),
-			VERSION: '1.1.0'
-		};
-		var source = new ol.source.TileWMS({
-			params : _.extend({}, wmsParams, sourceWMSParams),
-			url : URL
+	self.createWQPSitesLayer = function(queryParamArray, style) {
+		var layer =  L.tileLayer.wms(Config.SITES_GEOSERVER_ENDPOINT + 'wms', {
+			layers: WQP_SITE_LAYER_NAME,
+			format : 'image/png',
+			transparent : true,
+			styles : style,
+			version : '1.1.0'
 		});
-		var siteLayerOptions = {
-			title : 'WQP Sites',
-			queryParamArray : queryParamArray,
-			visible : true,
-			source : source
-		};
-
-		// The loadingCount and loadedCount properties are used when loading new tiles, along with the tileloadstart and
-		// tileloadend events. The source emits a 'sourceloaded' event
-		// when the last tile in a set is loaded or returned an error.
-		source.setProperties({
-			loadingCount : 0,
-			loadedCount : 0
+		layer.setParams({
+			SEARCHPARAMS : getSearchParams(queryParamArray)
 		});
-		source.on('tileloadstart', function() {
-			this.setProperties({
-				loadingCount : this.getProperties().loadingCount + 1
-			});
-		});
-		source.on('tileloadend', function() {
-			var props = this.getProperties();
-			props.loadedCount = props.loadedCount + 1;
-			this.setProperties({
-				loadedCount : props.loadedCount
-			});
-			if (props.loadedCount === props.loadingCount) {
-				source.dispatchEvent('sourceloaded');
-			}
-		});
-		source.on('tileloaderror', function() {
-			var props = this.getProperties();
-			props.loadedCount = props.loadedCount + 1;
-			this.setProperties({
-				loadedCount : props.loadedCount
-			});
-			if (props.loadedCount === props.loadingCount) {
-				source.dispatchEvent('sourceloaded');
-			}
-		});
-
-
-		return new ol.layer.Tile(_.extend({}, layerOptions, siteLayerOptions));
+		return layer;
 	};
 
 	/*
@@ -99,11 +54,7 @@ PORTAL.MAP.siteLayer = (function() {
 	 * @param {Array of Object with name and value properties} queryParamArray - query to be used to retrieve site layer
 	 */
 	self.updateWQPSitesLayer = function(layer, queryParamArray) {
-		var source = layer.getSource();
-		layer.setProperties({
-			queryParamArray : queryParamArray
-		});
-		source.updateParams({
+		layer.setParams({
 			SEARCHPARAMS : getSearchParams(queryParamArray),
 			cacheId : Date.now() // Needed to prevent a cached layer from being used.
 		});
@@ -114,8 +65,8 @@ PORTAL.MAP.siteLayer = (function() {
 	 * @param {String} sld
 	 */
 	self.updateWQPSitesSLD = function(layer, sld) {
-		layer.getSource().updateParams({
-			STYLES: sld
+		layer.setParams({
+			styles : sld
 		});
 	};
 
