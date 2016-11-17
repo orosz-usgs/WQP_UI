@@ -11,7 +11,7 @@ You will need to create a config.py file in the `instance` directory. It should 
 ```python
 
 DEBUG = True
-VERIFY_CERT = True
+VERIFY_CERT = True or False
 
 ASSETS_DEBUG = True # This will disable minimizing js and css assets but less files will still compile.
 ASSETS_AUTO_BUILD = True # Typically local developers will not be using precompiled assets.
