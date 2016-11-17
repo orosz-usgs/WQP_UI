@@ -225,7 +225,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 			nldiModel = PORTAL.MODELS.nldiModel.getData();
 			$insetMapDiv.hide();
 			$mapDiv.parent().show();
-			nldiControl.setNavValue(nldiModel.navigation.id);
+			nldiControl.setNavValue(_.has(nldiModel.navigation, 'id') ? nldiModel.navigation.id : '');
 			nldiControl.setDistanceValue(nldiModel.distance);
 			map.invalidateSize();
 			map.setView(insetMap.getCenter(), insetMap.getZoom());
@@ -334,11 +334,6 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		}
 	);
 
-	var layerSwitcher = L.control.layers(baseLayers, {
-		'Hydro Reference' : hydroLayer,
-		'NHDLPlus Flowline Network' : nhdlPlusFlowlineLayer
-	});
-
 	var insetNldiControl = L.control.nldiControl({
 		navOptions : PORTAL.MODELS.nldiModel.NAVIGATION_MODES,
 		navChangeHandler : navChangeHandler,
@@ -391,10 +386,14 @@ PORTAL.VIEWS.nldiView  = function(options) {
 			layers : [baseLayers['World Gray'], hydroLayer, nhdlPlusFlowlineLayer],
 			zoomControl : false
 		});
+
 		map.addControl(searchControl);
 		map.addControl(querySelectControl);
 		map.addControl(collapseControl);
-		map.addControl(layerSwitcher);
+		map.addControl(L.control.layers(baseLayers, {
+			'Hydro Reference' : hydroLayer,
+			'NHDLPlus Flowline Network' : nhdlPlusFlowlineLayer
+		}));
 		map.addControl(nldiControl);
 		map.addControl(L.control.zoom());
 
