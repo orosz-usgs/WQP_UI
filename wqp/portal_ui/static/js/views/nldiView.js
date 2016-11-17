@@ -225,7 +225,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 			nldiModel = PORTAL.MODELS.nldiModel.getData();
 			$insetMapDiv.hide();
 			$mapDiv.parent().show();
-			nldiControl.setNavValue(nldiModel.navigation.id);
+			nldiControl.setNavValue(_.has(nldiModel.navigation, 'id') ? nldiModel.navigation.id : '');
 			nldiControl.setDistanceValue(nldiModel.distance);
 			map.invalidateSize();
 			map.setView(insetMap.getCenter(), insetMap.getZoom());
