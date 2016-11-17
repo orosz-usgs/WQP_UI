@@ -2,9 +2,8 @@ import csv
 import cPickle as pickle
 from celery import Celery
 import arrow
-import requests
 import redis
-from . import app
+from . import app, session
 
 
 
@@ -24,9 +23,13 @@ def generate_site_list_from_streamed_tsv_async(self, base_url, redis_config, pro
     :return: a list of dicts that describe sites that are associated with an organization under a data provider
     """
     search_endpoint = base_url + "Station/search/"
-    r = requests.get(search_endpoint, {"providers": provider_id,
-                                       "mimeType": "tsv", "sorted": "no", "uripage": "yes"}, stream=True
-                     )
+    r = session.get(search_endpoint, params={"providers": provider_id,
+                                             "mimeType": "tsv",
+                                             "sorted": "no",
+                                             "uripage": "yes"
+                                             },
+                    stream=True
+                    )
 
     status = r.status_code
     headers = r.headers
@@ -77,7 +80,6 @@ def generate_site_list_from_streamed_tsv_async(self, base_url, redis_config, pro
             status_content = {'time_utc': time_utc, "cached_count": cached_count, "error_count": error_count,
                               'total_count': total, 'provider': provider_id}
             redis_session.set(status_key, pickle.dumps(status_content, protocol=2))
-
 
     else:
         self.update_state(state='FAILURE', meta={'status': status})
