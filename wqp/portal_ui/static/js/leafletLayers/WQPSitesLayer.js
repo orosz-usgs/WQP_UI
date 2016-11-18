@@ -4,6 +4,7 @@
 /* global PORTAL */
 /* global Config */
 /* global _ */
+/* global $ */
 
 /*
  * @constructs - extends L.TileLayer.WMS
@@ -48,6 +49,20 @@ L.WQPSitesLayer = L.TileLayer.WMS.extend({
 			SEARCHPARAMS : this._getSearchParams(queryParamArray),
 			cacheId : Date.now() // Needed to prevent a cached layer from being used.
 		});
+	},
+
+	getLegendGraphicURL : function() {
+		"use strict";
+
+		var queryParams = {
+			request : 'GetLegendGraphic',
+			format : 'image/png',
+			layer : this.wmsParams.layers,
+			style : this.wmsParams.styles,
+			SEARCHPARAMS : this.wmsParams.SEARCHPARAMS,
+			legend_options : 'fontStyle:bold'
+		};
+		return Config.SITES_GEOSERVER_ENDPOINT + 'wms?' + $.param(queryParams);
 	}
 });
 

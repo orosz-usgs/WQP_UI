@@ -190,19 +190,13 @@ PORTAL.MAP.siteMap = function(options) {
 					styles : options.$sldSelect.val()
 				});
 				wqpSitesLayer.on('loading', function() {
-					console.log('Start loading');
 					options.$loadingIndicator.show();
 				});
 				wqpSitesLayer.on('load', function() {
-					console.log('Finished loading');
 					options.$loadingIndicator.hide();
+					options.$legendDiv.html('<img  src="' + wqpSitesLayer.getLegendGraphicURL() + '" />');
 				});
 				map.addLayer(wqpSitesLayer);
-				//wqpSitesLayer.getSource().on('sourceloaded', function () {
-				//	options.$loadingIndicator.hide();
-				//	options.$legendDiv.html('<img  src="' + PORTAL.MAP.siteLayer.getLegendGraphicURL(wqpSitesLayer.getSource()) + '" />');
-//
-//				});
 			}
 
 		}
