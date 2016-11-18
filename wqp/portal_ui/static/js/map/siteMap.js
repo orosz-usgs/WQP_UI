@@ -1,8 +1,6 @@
 /* jslint browser: true */
 /* global L */
 /* global Config */
-/* global WQP */
-/* global _ */
 
 var PORTAL = PORTAL || {};
 PORTAL.MAP = PORTAL.MAP || {};
@@ -191,6 +189,7 @@ PORTAL.MAP.siteMap = function(options) {
 	 * on the map. The loading indicator should be removed once the layer has been completely loaded.
 	 * @param {Array of Object with name and value properties} queryParamArray - query parameters to be used to retrieve the sites
 	 */
+
 	self.updateSitesLayer = function(queryParamArray) {
 		if (map) {
 			//options.$loadingIndicator.show();
@@ -218,10 +217,12 @@ PORTAL.MAP.siteMap = function(options) {
 	/*
 	 * Clear the box from the box id layer.
 	 */
+	/*
 	self.clearBoxIdFeature = function() {
 		if (map) {
 			boxIdSource.clear();
 		}
 	};
+	*/
 	return self;
 };
