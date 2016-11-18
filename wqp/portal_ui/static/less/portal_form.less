@@ -298,6 +298,10 @@
       height: 750px;
     }
 
+    #query-results-map {
+      z-index : 0;
+    }
+
     #query-results-map, #map-loading-indicator {
       position: absolute;
       height: 100%;
@@ -307,6 +311,7 @@
     #map-loading-indicator {
       display: none;
       text-align: center;
+      z-index : 50;
     }
 
     #query-results-map .layer-switcher {
@@ -375,6 +380,7 @@
       right: 10px;
     }
     background-color : white;
+    z-index : 20;
 
     .legend-header {
       text-align: center;

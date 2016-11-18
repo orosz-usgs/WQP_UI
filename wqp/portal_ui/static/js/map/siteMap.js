@@ -189,6 +189,14 @@ PORTAL.MAP.siteMap = function(options) {
 				wqpSitesLayer = L.wqpSitesLayer(queryParamArray, {
 					styles : options.$sldSelect.val()
 				});
+				wqpSitesLayer.on('loading', function() {
+					console.log('Start loading');
+					options.$loadingIndicator.show();
+				});
+				wqpSitesLayer.on('load', function() {
+					console.log('Finished loading');
+					options.$loadingIndicator.hide();
+				});
 				map.addLayer(wqpSitesLayer);
 				//wqpSitesLayer.getSource().on('sourceloaded', function () {
 				//	options.$loadingIndicator.hide();
