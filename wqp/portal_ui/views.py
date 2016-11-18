@@ -4,10 +4,9 @@ import sys
 
 from flask import render_template, request, make_response, redirect, url_for, abort, Response, jsonify, Blueprint
 import redis
-import requests
 import ujson
 
-from .. import app
+from .. import app, session
 from ..utils import pull_feed, geoserver_proxy_request, generate_provider_list, generate_organization_list, \
     get_site_info, check_org_id, generate_redis_db_number, generate_site_list_from_streamed_tsv
 from ..tasks import generate_site_list_from_streamed_tsv_async
@@ -230,8 +229,12 @@ def uri_organization(provider_id, organization_id):
         if redis_all_site_data:
             rendered_site_template = pickle.loads(redis_all_site_data)
         else:
-            sites_request = requests.get(search_endpoint, {"organization": organization_id, "providers": provider_id,
-                                       "mimeType": "geojson", "sorted": "no", "uripage": "yes"})
+            sites_request = session.get(search_endpoint, params={"organization": organization_id,
+                                                                 "providers": provider_id,
+                                                                 "mimeType": "geojson",
+                                                                 "sorted": "no",
+                                                                 "uripage": "yes"}
+                                        )
             if sites_request.status_code == 200:
                 total_site_count = int(sites_request.headers['Total-Site-Count'])
                 if sites_request.text == ']}':
@@ -247,8 +250,13 @@ def uri_organization(provider_id, organization_id):
             elif sites_request.status_code == 400:
                 abort(404)
     else:
-        sites_request = requests.get(search_endpoint, {"organization": organization_id, "providers": provider_id,
-                                                       "mimeType": "geojson", "sorted": "no", "uripage": "yes"})
+        sites_request = session.get(search_endpoint, params={"organization": organization_id,
+                                                             "providers": provider_id,
+                                                             "mimeType": "geojson",
+                                                             "sorted": "no",
+                                                             "uripage": "yes"
+                                                             }
+                                    )
         if sites_request.status_code == 200:
             total_site_count = int(sites_request.headers['Total-Site-Count'])
             if sites_request.text == ']}':
@@ -305,8 +313,11 @@ def uris(provider_id, organization_id, site_id):
         if site_data.get('CountryCode') == 'US' and site_data.get('StateCode') and site_data.get('CountyCode'):
             statecode = 'US:' + site_data['StateCode']
             search_string = statecode + ':' + site_data['CountyCode']
-            county_request = requests.get(code_endpoint + "/countycode", {"statecode": statecode, "mimeType": "json",
-                                                                          "text": search_string})
+            county_request = session.get(code_endpoint + "/countycode", params={"statecode": statecode,
+                                                                                "mimeType": "json",
+                                                                                "text": search_string
+                                                                                }
+                                         )
             if county_request.status_code == 200:
                 county_info = county_request.json()
                 if county_info.get('recordCount') == 1:

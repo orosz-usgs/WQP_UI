@@ -1,11 +1,12 @@
 import feedparser
-import requests
 from bs4 import BeautifulSoup
 from flask import request, make_response
 import tablib
 import redis
 import csv
 import cPickle as pickle
+
+from . import session
 
 
 def pull_feed(feed_url):
@@ -46,7 +47,7 @@ def geoserver_proxy_request(target_url):
     :return:
     """
     if request.method == 'GET':
-        resp = requests.get(target_url + '?' + request.query_string)
+        resp = session.get(target_url + '?' + request.query_string)
         # This fixed an an ERR_INVALID_CHUNKED_ENCODING when the app was run on the deployment server.
         if 'transfer-encoding' in resp.headers:
             del resp.headers['transfer-encoding']
@@ -55,7 +56,7 @@ def geoserver_proxy_request(target_url):
             del resp.headers['content-encoding']
             
     else:
-        resp = requests.post(target_url, data=request.data, headers=request.headers)
+        resp = session.post(target_url, data=request.data, headers=request.headers)
         if 'content-encoding' in resp.headers: 
             del resp.headers['content-encoding']
         
@@ -69,7 +70,7 @@ def generate_provider_list(endpoint):
     :return: a list of provider names
     """
     provider_endpoint = endpoint + '/providers'
-    r = requests.get(provider_endpoint, {"mimeType": "json"})
+    r = session.get(provider_endpoint, params={"mimeType": "json"})
     status_code = r.status_code
     provider_list = None
     if status_code == 200:
@@ -82,7 +83,7 @@ def check_org_id(org_id, code_endpoint):
     org_exists = False
     org_name = None
     org_endpoint = code_endpoint + '/Organization'
-    r = requests.get(org_endpoint, {"mimeType": "json", "text": org_id})
+    r = session.get(org_endpoint, params={"mimeType": "json", "text": org_id})
     status_code = r.status_code
     if status_code == 200:
         codes = r.json().get('codes')
@@ -102,7 +103,7 @@ def generate_organization_list(endpoint, provider):
     :return: a list of dicts of organizations and organization IDs for a specific provider
     """
     provider_endpoint = endpoint + '/organizations'
-    r = requests.get(provider_endpoint, {"mimeType": "json"})
+    r = session.get(provider_endpoint, params={"mimeType": "json"})
     status_code = r.status_code
     organization_list = None
     if status_code == 200:
@@ -129,8 +130,14 @@ def get_site_info(base_url, provider_id, site_id, organization_id):
     :return:
     """
     search_endpoint = base_url + "Station/search/"
-    r = requests.get(search_endpoint, {"providers": provider_id, "siteid": site_id, "mimeType": "csv", "sorted": "no",
-                                       "organization": organization_id, "uripage": "yes"})
+    r = session.get(search_endpoint, params={"providers": provider_id,
+                                             "siteid": site_id,
+                                             "mimeType": "csv",
+                                             "sorted": "no",
+                                             "organization": organization_id,
+                                             "uripage": "yes"
+                                             }
+                    )
     status_code = r.status_code
     site_data = None
     if status_code == 200 and r.text:
@@ -181,9 +188,14 @@ def generate_site_list_from_streamed_tsv(base_url, redis_config, provider_id, re
     :return: a list of dicts that describe sites that are associated with an organization under a data provider
     """
     search_endpoint = base_url+"Station/search/"
-    r = requests.get(search_endpoint, {"organization": organization_id, "providers": provider_id,
-                                       "mimeType": "tsv", "sorted": "no", "uripage": "yes"}, stream=True
-                     )
+    r = session.get(search_endpoint, params={"organization": organization_id,
+                                             "providers": provider_id,
+                                             "mimeType": "tsv",
+                                             "sorted": "no",
+                                             "uripage": "yes"
+                                             },
+                    stream=True
+                    )
 
     status = r.status_code
     header_line = None

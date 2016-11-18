@@ -5,6 +5,8 @@ PROJECT_HOME = os.path.dirname(__file__)
 #Config for Flask-Collect
 COLLECT_STATIC_ROOT = 'static/'
 
+VERIFY_CERT = True  # verify SSL certs during web service calls by requests, can be a path to a cert bundle
+
 #Config for Flask-Assets
 ASSETS_DEBUG = False #To not compress the js and css set this to True
 ASSETS_AUTO_BUILD = False #Local developers will typically set this to True in their instance/config.py.
