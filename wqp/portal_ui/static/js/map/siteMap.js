@@ -26,7 +26,6 @@ PORTAL.MAP.siteMap = function(options) {
 	var self = {};
 
 	var map;
-	var baseLayerZIndices = [];
 	var wqpSitesLayer;
 
 	var boxIdSource;
@@ -182,14 +181,14 @@ PORTAL.MAP.siteMap = function(options) {
 	 */
 	self.updateSitesLayer = function(queryParamArray) {
 		if (map) {
-			options.$loadingIndicator.show();
+			//options.$loadingIndicator.show();
 			if (wqpSitesLayer) {
-				PORTAL.MAP.siteLayer.updateWQPSitesLayer(wqpSitesLayer, queryParamArray);
+				wqpSitesLayer.updateQueryParams(queryParamArray);
 			}
 			else {
-				wqpSitesLayer = PORTAL.MAP.siteLayer.createWQPSitesLayer(
-					queryParamArray, options.$sldSelect.val()
-				);
+				wqpSitesLayer = L.wqpSitesLayer(queryParamArray, {
+					styles : options.$sldSelect.val()
+				});
 				map.addLayer(wqpSitesLayer);
 				//wqpSitesLayer.getSource().on('sourceloaded', function () {
 				//	options.$loadingIndicator.hide();

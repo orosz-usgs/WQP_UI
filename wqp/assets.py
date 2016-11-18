@@ -29,7 +29,7 @@ bundles = {
         'portal_ui/js/LeafletMixins/SingleClickEventHandlerMixin.js',
         'portal_ui/js/ol3Utils/mapUtils.js',
         'portal_ui/js/map/ToggleControl.js',
-        'portal_ui/js/map/siteLayer.js',
+        'portal_ui/js/leafletLayers/WQPSitesLayer.js',
         'portal_ui/js/map/siteMap.js',
         'portal_ui/js/views/portalViews.js',
         'portal_ui/js/portalOnReady.js',
