@@ -25,6 +25,12 @@ PORTAL.MAP.siteMap = function(options) {
 
 	var self = {};
 
+	var BASE_LAYER_Z_INDEX = 1;
+	var HYDRO_LAYER_Z_INDEX = 2;
+	var NWIS_SITES_LAYER_Z_INDEX = 3;
+	var WQP_SITES_LAYER_Z_INDEX = 4;
+
+
 	var map;
 	var wqpSitesLayer;
 
@@ -41,18 +47,20 @@ PORTAL.MAP.siteMap = function(options) {
 			includes: L.SingleClickEventMixin
 		});
 		var baseLayers = {
-			'World Topo': L.tileLayer.provider('Esri.WorldTopoMap'),
-			'World Street': L.tileLayer.provider('Esri.WorldStreetMap'),
-			'World Relief': L.tileLayer.provider('Esri.WorldShadedRelief'),
-			'World Imagery': L.tileLayer.provider('Esri.WorldImagery')
+			'World Topo': L.tileLayer.provider('Esri.WorldTopoMap', {zIndex : BASE_LAYER_Z_INDEX}),
+			'World Street': L.tileLayer.provider('Esri.WorldStreetMap', {zIndex : BASE_LAYER_Z_INDEX}),
+			'World Relief': L.tileLayer.provider('Esri.WorldShadedRelief', {zIndex : BASE_LAYER_Z_INDEX}),
+			'World Imagery': L.tileLayer.provider('Esri.WorldImagery', {zIndex : BASE_LAYER_Z_INDEX})
 		};
 		var esriHydroLayer = L.esri.tiledMapLayer({
-			url: Config.HYDRO_LAYER_ENDPOINT
+			url: Config.HYDRO_LAYER_ENDPOINT,
+			zIndex : HYDRO_LAYER_Z_INDEX
 		});
 		var nwisSitesLayer = L.tileLayer.wms(Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wms', {
 			layers: 'qw_portal_map:nwis_sites',
 			format: 'image/png',
-    		transparent: true
+    		transparent: true,
+			zIndex : NWIS_SITES_LAYER_Z_INDEX
 		});
 
 		map = new MapWithSingleClickHandler(options.mapDivId, {
@@ -64,8 +72,19 @@ PORTAL.MAP.siteMap = function(options) {
 		map.addControl(L.control.layers(baseLayers, {
 			'ESRI Hyro Layer' : esriHydroLayer,
 			'NWIS Stream Gages' : nwisSitesLayer
+		}, {
+			autoZIndex : false
 		}));
 		map.addControl(L.control.scale());
+
+		//Set up sld switcher
+		options.$sldSelect.change(function() {
+			if (wqpSitesLayer) {
+				wqpSitesLayer.setParams({
+					styles: options.$sldSelect.val()
+				});
+			}
+		});
 	};
 /*
 		var boxIdLayer;
@@ -154,13 +173,6 @@ PORTAL.MAP.siteMap = function(options) {
 		});
 		map.addInteraction(boxDrawInteraction);
 		map.addControl(boxIdControl);
-
-		// Set up sld switcher
-		options.$sldSelect.change(function() {
-			if (wqpSitesLayer) {
-				PORTAL.MAP.siteLayer.updateWQPSitesSLD(wqpSitesLayer, options.$sldSelect.val());
-			}
-		});
 	};
 
 
@@ -187,7 +199,8 @@ PORTAL.MAP.siteMap = function(options) {
 			}
 			else {
 				wqpSitesLayer = L.wqpSitesLayer(queryParamArray, {
-					styles : options.$sldSelect.val()
+					styles : options.$sldSelect.val(),
+					zIndex : WQP_SITES_LAYER_Z_INDEX
 				});
 				wqpSitesLayer.on('loading', function() {
 					options.$loadingIndicator.show();
