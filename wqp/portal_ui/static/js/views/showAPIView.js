@@ -1,5 +1,7 @@
 /* jslint browser: true */
 
+/* global L */
+
 var PORTAL = PORTAL || {};
 
 PORTAL.VIEWS = PORTAL.VIEWS || {};
@@ -29,7 +31,7 @@ PORTAL.VIEWS.showAPIView = function(options) {
 			$apiQueryDiv.show();
 			$sitesText.html(PORTAL.queryServices.getFormUrl('Station', queryString));
 			$resultsText.html(PORTAL.queryServices.getFormUrl('Result', queryString));
-			$wfsText.html(PORTAL.MAP.siteLayer.getWfsGetFeatureUrl(queryParamArray));
+			$wfsText.html(L.WQPSitesLayer.getWfsGetFeatureUrl(queryParamArray));
 		});
 	};
 

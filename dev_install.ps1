@@ -21,17 +21,14 @@ if ($arg1 -eq "--clean") {
 if ($arg1 -eq "--update") {
 	Write-Output "Updating npm and bower dependencies"
 	npm update
-	bower update
+	node_modules\bower\bin\bower update
 }
 
 if ($arg1 -eq "--clean") {
 	Write-Output "Installing npm and bower dependencies"
 	npm install
-	bower install
+	node_modules\bower\bin\bower install
 }
-
-Write-Output "Running Javascript tests."
-node node_modules\karma\bin\karma start test\js\karma.conf.js
 
 Write-Output "Creating the virtualenv and installing Python requirements"
 if ($arg1 -eq "--clean") {
@@ -47,6 +44,9 @@ else {
 }
 Write-Output "Installing python requirements."
 env\Scripts\pip install -r requirements.txt
+
+Write-Output "Running Javascript tests."
+node node_modules\karma\bin\karma start test\js\karma.conf.js
 
 Write-Output "Running Python tests"
 env\Scripts\nosetests
