@@ -6,25 +6,14 @@
 /* global _ */
 /* global $ */
 
-/*
- * @constructs - extends L.TileLayer.WMS
- * The url should not be passed into the constructor. The layers, format, transparent, and version options are
- * defaulted.
- * @param {Array of Object with name and value properties representing a WQP site query} queryParamArray}
- * @param {Object} options - Can be any L.TileLayer.WMS
- */
-L.WQPSitesLayer = L.TileLayer.WMS.extend({
-	defaultWmsParams : {
-		SEARCHPARAMS : '',
-		layers : 'wqp_sites',
-		format : 'image/png',
-		transparent : true,
-		version : '1.1.0',
-		request : 'GetMap'
-	},
+(function() {
+	"use strict";
 
-	_getSearchParams : function(queryParamArray) {
-		"use strict";
+	var LAYER_NAME = 'wqp_sites';
+	var WMS_VERSION = '1.1.0';
+	var WFS_VERSION = '1.1.0';
+
+	var getSearchParams = function(queryParamArray) {
 		var queryJson = PORTAL.UTILS.getQueryParamJson(queryParamArray);
 		var resultJson = _.omit(queryJson, ['mimeType', 'zip']);
 		resultJson = _.mapObject(resultJson, function(value) {
@@ -34,39 +23,73 @@ L.WQPSitesLayer = L.TileLayer.WMS.extend({
 			return name + ':' + value;
 		});
 		return resultArray.join(';');
-	},
+	};
 
-	initialize : function(queryParamArray, options) {
-		"use strict";
-		L.TileLayer.WMS.prototype.initialize.call(this, Config.SITES_GEOSERVER_ENDPOINT + 'wms', options);
+	/*
+	 * @constructs - extends L.TileLayer.WMS
+	 * The url should not be passed into the constructor. The layers, format, transparent, and version options are
+	 * defaulted.
+	 * @param {Array of Object with name and value properties representing a WQP site query} queryParamArray}
+	 * @param {Object} options - Can be any L.TileLayer.WMS
+	 */
+	L.WQPSitesLayer = L.TileLayer.WMS.extend({
 
-		this.wmsParams.SEARCHPARAMS = this._getSearchParams((queryParamArray));
-	},
-
-	updateQueryParams : function(queryParamArray) {
-		"use strict";
-		this.setParams({
-			SEARCHPARAMS : this._getSearchParams(queryParamArray),
-			cacheId : Date.now() // Needed to prevent a cached layer from being used.
-		});
-	},
-
-	getLegendGraphicURL : function() {
-		"use strict";
-
-		var queryParams = {
-			request : 'GetLegendGraphic',
+		defaultWmsParams : {
+			SEARCHPARAMS : '',
+			layers : LAYER_NAME,
 			format : 'image/png',
-			layer : this.wmsParams.layers,
-			style : this.wmsParams.styles,
-			SEARCHPARAMS : this.wmsParams.SEARCHPARAMS,
-			legend_options : 'fontStyle:bold'
-		};
-		return Config.SITES_GEOSERVER_ENDPOINT + 'wms?' + $.param(queryParams);
-	}
-});
+			transparent : true,
+			version : WMS_VERSION,
+			request : 'GetMap'
+		},
 
-L.wqpSitesLayer = function(queryParamArray, options) {
-	"use strict";
-	return new L.WQPSitesLayer(queryParamArray, options);
-};
+		initialize : function(queryParamArray, options) {
+			L.TileLayer.WMS.prototype.initialize.call(this, Config.SITES_GEOSERVER_ENDPOINT + 'wms', options);
+
+			this.wmsParams.SEARCHPARAMS = getSearchParams((queryParamArray));
+		},
+
+		updateQueryParams : function(queryParamArray) {
+			this.setParams({
+				SEARCHPARAMS : getSearchParams(queryParamArray),
+				cacheId : Date.now() // Needed to prevent a cached layer from being used.
+			});
+		},
+
+		getLegendGraphicURL : function() {
+
+			var queryParams = {
+				request : 'GetLegendGraphic',
+				format : 'image/png',
+				layer : this.wmsParams.layers,
+				style : this.wmsParams.styles,
+				SEARCHPARAMS : this.wmsParams.SEARCHPARAMS,
+				legend_options : 'fontStyle:bold'
+			};
+			return Config.SITES_GEOSERVER_ENDPOINT + 'wms?' + $.param(queryParams);
+		}
+	});
+
+	L.extend(L.WQPSitesLayer, {
+		/*
+		 * @static
+		 * @returns {String} - Url which can be used to retrieve json feature information using WFS GetFeature.
+		 */
+		getWfsGetFeatureUrl : function(queryParamArray) {
+			var queryData = {
+				request : 'GetFeature',
+				service : 'wfs',
+				version : WFS_VERSION,
+				typeName : LAYER_NAME,
+				searchParams : getSearchParams(queryParamArray),
+				outputFormat : 'application/json'
+			};
+			return Config.SITES_GEOSERVER_ENDPOINT + 'wfs/?' + $.param(queryData);
+		}
+	});
+
+	L.wqpSitesLayer = function(queryParamArray, options) {
+		return new L.WQPSitesLayer(queryParamArray, options);
+	};
+
+})();

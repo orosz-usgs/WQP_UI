@@ -28,7 +28,7 @@
     "loglevel": "1.4.0",
     "ol3-layerswitcher": "1.1.0",
     "font-awesome": "4.6.0",
-    "leaflet": "1.0.1",
+    "leaflet": "Leaflet#1.0.2",
     "leaflet-providers": "1.1.15",
     "Leaflet.EasyButton": "2.0.0",
     "esri-leaflet": "2.0.4",
