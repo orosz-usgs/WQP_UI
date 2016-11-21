@@ -29,6 +29,7 @@ code_endpoint = app.config['CODES_ENDPOINT']
 base_url = app.config['SEARCH_QUERY_ENDPOINT']
 redis_config = app.config['REDIS_CONFIG']
 cache_timeout = app.config['CACHE_TIMEOUT']
+proxy_cert_verification = app.config.get('PROXY_CERT_VERIFY', False)
 
 
 @portal_ui.route('/index.jsp')
@@ -147,13 +148,13 @@ def public_srsnames():
 @portal_ui.route('/wqp_geoserver/<op>', methods=['GET', 'POST'])
 def wqp_geoserverproxy(op):
     target_url = app.config['WQP_MAP_GEOSERVER_ENDPOINT'] + '/' + op
-    return geoserver_proxy_request(target_url)
+    return geoserver_proxy_request(target_url, proxy_cert_verification)
     
 
 @portal_ui.route('/sites_geoserver/<op>', methods=['GET', 'POST'])
 def sites_geoserverproxy(op):
     target_url = app.config['SITES_MAP_GEOSERVER_ENDPOINT'] + '/' + op
-    return geoserver_proxy_request(target_url)
+    return geoserver_proxy_request(target_url, proxy_cert_verification)
 
 @portal_ui.route('/crossdomain.xml')
 def crossdomain():
