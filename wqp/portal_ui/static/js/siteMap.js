@@ -28,13 +28,8 @@ PORTAL.MAP.siteMap = function(options) {
 	var NWIS_SITES_LAYER_Z_INDEX = 3;
 	var WQP_SITES_LAYER_Z_INDEX = 4;
 
-
 	var map;
 	var wqpSitesLayer;
-
-	var boxIdSource;
-	var boxDrawInteraction;
-	var boxIdControl;
 
 	/*
 	 * Create the site map, with the base layers, overlay layers, and identify controls and event handlers.
@@ -84,95 +79,6 @@ PORTAL.MAP.siteMap = function(options) {
 			}
 		});
 	};
-/*
-		var boxIdLayer;
-		var worldExtent = ol.extent.applyTransform([-179,-89,179,89], ol.proj.getTransform("EPSG:4326", "EPSG:3857"));
-
-		// Set up event handler for single click identify
-		map.on('singleclick', function(ev) {
-			if (wqpSitesLayer && !boxDrawInteraction.getActive()) {
-				var lowerLeft = map.getCoordinateFromPixel([ev.pixel[0] - 5, ev.pixel[1] + 5]);
-				var upperRight = map.getCoordinateFromPixel([ev.pixel[0] + 5, ev.pixel[1] - 5]);
-				var boundingBox =[lowerLeft[0], lowerLeft[1], upperRight[0], upperRight[1]];
-				var queryParamArray = wqpSitesLayer.getProperties().queryParamArray;
-
-				PORTAL.MAP.siteLayer.getWQPSitesFeature(queryParamArray, boundingBox)
-					.done(function(resp) {
-						options.identifyDialog.showDialog({
-							features : resp,
-							queryParamArray : queryParamArray,
-							boundingBox : ol.proj.transformExtent(boundingBox, 'EPSG:900913', 'EPSG:4326'),
-							usePopover : PORTAL.UTILS.isExtraSmallBrowser()
-						});
-					});
-			}
-		});
-
-		// Create source and vector layer to show identify box. Set up event handler to retrieve the features
-		boxIdSource = new ol.source.Vector({
-			wrapX : false
-		});
-		boxIdSource.on('addfeature', function() {
-			if (wqpSitesLayer) {
-				var boundingBox = this.getExtent();
-				var queryParamArray = wqpSitesLayer.getProperties().queryParamArray;
-
-				PORTAL.MAP.siteLayer.getWQPSitesFeature(queryParamArray, boundingBox)
-					.done(function(resp) {
-						options.identifyDialog.showDialog({
-							features : resp,
-							queryParamArray : queryParamArray,
-							boundingBox : ol.proj.transformExtent(boundingBox, 'EPSG:900913', 'EPSG:4326'),
-							usePopover : PORTAL.UTILS.isExtraSmallBrowser()
-						});
-					});
-			}
-		});
-
-		boxIdLayer = new ol.layer.Vector({
-			source : boxIdSource,
-			style: new ol.style.Style({
-				fill: new ol.style.Fill({
-				  color: 'rgba(255, 165, 0, 0.2)'
-				}),
-				stroke: new ol.style.Stroke({
-				  color: 'rgb(255, 165, 0',
-				  width: 1
-				})
-			})
-		});
-		map.addLayer(boxIdLayer);
-
-		// Create interactions to draw identify box.
-		boxDrawInteraction  = new ol.interaction.Draw({
-			source : boxIdSource,
-			type : 'LineString',
-			maxPoints : 2,
-			geometryFunction : function(coordinates, geometry) {
-				var start = coordinates[0];
-				var end = coordinates[1];
-				if (!geometry) {
-					geometry = new ol.geom.Polygon(null);
-				}
-				geometry.setCoordinates([
-					[start, [start[0], end[1]], end, [end[0], start[1]], start]
-				]);
-				return geometry;
-			}
-		});
-		boxDrawInteraction.on('drawstart', function() {
-			boxIdSource.clear();
-		});
-
-		// Create the control which will turn on/off the box identify interaction.
-		boxIdControl = new PORTAL.MAP.ToggleControl({
-			interaction : boxDrawInteraction,
-			tooltip : 'Toggle to enable box identify. Click on a point and then move the mouse to the opposite corner of desired area of interest.'
-		});
-		map.addInteraction(boxDrawInteraction);
-		map.addControl(boxIdControl);
-	};
-
 
 	/*
 	 * Renders the map options.mapDivId if initialize has been called
@@ -214,15 +120,5 @@ PORTAL.MAP.siteMap = function(options) {
 		}
 	};
 
-	/*
-	 * Clear the box from the box id layer.
-	 */
-	/*
-	self.clearBoxIdFeature = function() {
-		if (map) {
-			boxIdSource.clear();
-		}
-	};
-	*/
 	return self;
 };
