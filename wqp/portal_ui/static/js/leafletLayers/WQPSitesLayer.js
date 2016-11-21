@@ -49,6 +49,11 @@
 			this.wmsParams.SEARCHPARAMS = getSearchParams((queryParamArray));
 		},
 
+		/*
+		 * Updates the layer to show the sites represented by queryParamArray
+		 * @param {Array of Objects with name and value properties} queryParamArray - This represents the query
+		 * 		parameters for the sites that we want to see.
+		 */
 		updateQueryParams : function(queryParamArray) {
 			this.setParams({
 				SEARCHPARAMS : getSearchParams(queryParamArray),
@@ -56,8 +61,11 @@
 			});
 		},
 
+		/*
+		 * Returns a url string which can be used to retrieve an legend image that represents the layer.
+		 * @returns {String}
+		 */
 		getLegendGraphicURL : function() {
-
 			var queryParams = {
 				request : 'GetLegendGraphic',
 				format : 'image/png',
@@ -81,7 +89,7 @@
 				service : 'wfs',
 				version : WFS_VERSION,
 				typeName : LAYER_NAME,
-				searchParams : getSearchParams(queryParamArray),
+				SEARCHPARAMS : getSearchParams(queryParamArray),
 				outputFormat : 'application/json'
 			};
 			return Config.SITES_GEOSERVER_ENDPOINT + 'wfs/?' + $.param(queryData);
