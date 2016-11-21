@@ -57,7 +57,7 @@ def geoserver_proxy_request(target_url, cert_verification):
             del resp.headers['content-encoding']
             
     else:
-        resp = session.post(target_url, data=request.data, headers=request.headers)
+        resp = session.post(target_url, data=request.data, headers=request.headers, verify=cert_verification)
         if 'content-encoding' in resp.headers: 
             del resp.headers['content-encoding']
         
