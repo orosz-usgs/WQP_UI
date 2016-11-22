@@ -1,6 +1,7 @@
 /* jslint browser: true */
 /* global L */
 /* global Config */
+/* global WQP */
 
 var PORTAL = PORTAL || {};
 PORTAL.MAP = PORTAL.MAP || {};
@@ -56,6 +57,30 @@ PORTAL.MAP.siteMap = function(options) {
 			zIndex : NWIS_SITES_LAYER_Z_INDEX
 		});
 
+		var singleClickHandler = function(ev) {
+			var southwestPoint = L.point(ev.layerPoint.x - 5, ev.layerPoint.y - 5);
+			var northeastPoint = L.point(ev.layerPoint.x + 5, ev.layerPoint.y + 5);
+			var bounds = L.latLngBounds(
+				map.layerPointToLatLng(southwestPoint),
+				map.layerPointToLatLng(northeastPoint)
+			);
+
+			if (wqpSitesLayer) {
+				wqpSitesLayer.fetchSitesInBBox(bounds)
+					.done(function(resp) {
+						options.identifyDialog.showDialog({
+							features: resp.features,
+							queryParamArray : wqpSitesLayer.getQueryParamArray(),
+							boundingBox : WQP.L.Util.toBBoxString(bounds),
+							usePopover : PORTAL.UTILS.isExtraSmallBrowser()
+						});
+					})
+					.fail(function() {
+						console.log('Failed to fetch bbox');
+					});
+			}
+		}
+
 		map = new MapWithSingleClickHandler(options.mapDivId, {
 			center: [37.0, -100.0],
 			zoom: 3,
@@ -69,6 +94,8 @@ PORTAL.MAP.siteMap = function(options) {
 			autoZIndex : false
 		}));
 		map.addControl(L.control.scale());
+
+		map.addSingleClickHandler(singleClickHandler);
 
 		//Set up sld switcher
 		options.$sldSelect.change(function() {

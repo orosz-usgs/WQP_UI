@@ -2,6 +2,7 @@
 
 /* global L */
 /* global PORTAL */
+/* global WQP */
 /* global Config */
 /* global _ */
 /* global $ */
@@ -44,9 +45,14 @@
 		},
 
 		initialize : function(queryParamArray, options) {
+			this.queryParamArray = queryParamArray;
 			L.TileLayer.WMS.prototype.initialize.call(this, Config.SITES_GEOSERVER_ENDPOINT + 'wms', options);
 
 			this.wmsParams.SEARCHPARAMS = getSearchParams((queryParamArray));
+		},
+
+		getQueryParamArray : function() {
+			return this.queryParamArray;
 		},
 
 		/*
@@ -78,12 +84,10 @@
 		},
 
 		fetchSitesInBBox : function(bounds) {
-
-			var deferred = $.Deferred();
-			$.ajax({
-				url : Config.SITES_GEOSERVER_ENDPOINT + 'wms',
-
-			})
+			return $.ajax({
+				url : L.WQPSitesLayer.getWfsGetFeatureUrl(this.queryParamArray) + '&bbox=' + WQP.L.Util.toBBoxString(bounds),
+				method : 'GET'
+			});
 		}
 	});
 
@@ -101,6 +105,7 @@
 				SEARCHPARAMS : getSearchParams(queryParamArray),
 				outputFormat : 'application/json'
 			};
+
 			return Config.SITES_GEOSERVER_ENDPOINT + 'wfs/?' + $.param(queryData);
 		}
 	});
