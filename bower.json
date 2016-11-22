@@ -31,7 +31,7 @@
     "leaflet-providers": "1.1.15",
     "Leaflet.EasyButton": "2.0.0",
     "esri-leaflet": "2.0.4",
-    "leaflet.markercluster": "1.0.0"
+    "leaflet.markercluster": "1.0.0",
   },
   "resolutions": {
     "leaflet": ">= 1.0.0"

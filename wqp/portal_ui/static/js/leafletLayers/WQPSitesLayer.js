@@ -75,6 +75,15 @@
 				legend_options : 'fontStyle:bold'
 			};
 			return Config.SITES_GEOSERVER_ENDPOINT + 'wms?' + $.param(queryParams);
+		},
+
+		fetchSitesInBBox : function(bounds) {
+
+			var deferred = $.Deferred();
+			$.ajax({
+				url : Config.SITES_GEOSERVER_ENDPOINT + 'wms',
+
+			})
 		}
 	});
 
