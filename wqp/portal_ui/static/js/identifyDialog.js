@@ -3,7 +3,6 @@
 /* global Config */
 /* global _gaq */
 /* global _ */
-/* global $ */
 
 var PORTAL = PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
@@ -97,7 +96,6 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
 			var exceedsFeatureLimit = showOptions.features.length > FEATURE_LIMIT;
 			var $detailDiv = options.$dialog.find('#map-info-details-div');
 			var $hiddenFormInputDiv = options.$dialog.find('#map-id-hidden-input-div');
-			var $popover = $('#map-popover');
 
 			var context = {
 				features: showOptions.features,

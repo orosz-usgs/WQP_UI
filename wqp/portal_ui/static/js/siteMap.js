@@ -1,7 +1,7 @@
 /* jslint browser: true */
 /* global L */
 /* global Config */
-/* global WQP */
+/* global $ */
 
 var PORTAL = PORTAL || {};
 PORTAL.MAP = PORTAL.MAP || {};
@@ -60,7 +60,9 @@ PORTAL.MAP.siteMap = function(options) {
 		var drawIdentifyBoxControl;
 
 		var updateIdentifyDialog = function(bounds) {
+			var mapEl = $('#' + options.mapDivId);
 			if (wqpSitesLayer) {
+				options.$loadingIndicator.show();
 				wqpSitesLayer.fetchSitesInBBox(bounds)
 					.done(function(resp) {
 						options.identifyDialog.showDialog({
@@ -72,6 +74,9 @@ PORTAL.MAP.siteMap = function(options) {
 					})
 					.fail(function() {
 						console.log('Failed to fetch bbox');
+					})
+					.always(function() {
+						options.$loadingIndicator.hide();
 					});
 			}
 		};
