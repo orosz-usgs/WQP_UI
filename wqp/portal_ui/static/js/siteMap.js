@@ -93,6 +93,8 @@ PORTAL.MAP.siteMap = function(options) {
 		};
 
 		drawnIdentifyBoxFeature = L.featureGroup();
+		L.drawLocal.draw.toolbar.buttons.rectangle = 'Click to identify sites in a box';
+		L.drawLocal.edit.toolbar.buttons.edit = 'Click to modify identify box';
 		drawIdentifyBoxControl = new L.Control.Draw({
 			draw : {
 				polyline : false,
