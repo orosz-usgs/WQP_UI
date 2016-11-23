@@ -17,6 +17,8 @@
 		  href="{{ url_for('bower.static', filename='leaflet.markercluster/dist/MarkerCluster.css') }}" />
 	<link rel="stylesheet" type="text/css"
 		  href="{{ url_for('bower.static', filename='leaflet.markercluster/dist/MarkerCluster.Default.css') }}" />
+	<link rel="stylesheet" type="text/css"
+		  href="{{ url_for('bower.static', filename='leaflet-draw/dist/leaflet.draw.css') }}" />
 {% endblock %}
 
 {% block page_header_title %}Water Quality Data{% endblock %}
@@ -555,6 +557,7 @@
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='esri-leaflet/dist/esri-leaflet.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='Leaflet.EasyButton/src/easy-button.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet.markercluster/dist/leaflet.markercluster.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet-draw/dist/leaflet.draw.js') }}"></script>
 	{% assets "portal_js" %}
 		<script type="text/javascript" src="{{ ASSET_URL }}"></script>
 	{% endassets %}

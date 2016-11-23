@@ -31,6 +31,7 @@ PORTAL.MAP.siteMap = function(options) {
 
 	var map;
 	var wqpSitesLayer;
+	var drawnIdentifyBoxFeature;
 
 	/*
 	 * Create the site map, with the base layers, overlay layers, and identify controls and event handlers.
@@ -56,22 +57,16 @@ PORTAL.MAP.siteMap = function(options) {
     		transparent: true,
 			zIndex : NWIS_SITES_LAYER_Z_INDEX
 		});
+		var drawIdentifyBoxControl;
 
-		var singleClickHandler = function(ev) {
-			var southwestPoint = L.point(ev.layerPoint.x - 5, ev.layerPoint.y - 5);
-			var northeastPoint = L.point(ev.layerPoint.x + 5, ev.layerPoint.y + 5);
-			var bounds = L.latLngBounds(
-				map.layerPointToLatLng(southwestPoint),
-				map.layerPointToLatLng(northeastPoint)
-			);
-
+		var updateIdentifyDialog = function(bounds) {
 			if (wqpSitesLayer) {
 				wqpSitesLayer.fetchSitesInBBox(bounds)
 					.done(function(resp) {
 						options.identifyDialog.showDialog({
 							features: resp.features,
 							queryParamArray : wqpSitesLayer.getQueryParamArray(),
-							boundingBox : WQP.L.Util.toBBoxString(bounds),
+							boundingBox : bounds.toBBoxString(),
 							usePopover : PORTAL.UTILS.isExtraSmallBrowser()
 						});
 					})
@@ -79,7 +74,40 @@ PORTAL.MAP.siteMap = function(options) {
 						console.log('Failed to fetch bbox');
 					});
 			}
-		}
+		};
+
+		var identifySitesAtPointHandler = function(ev) {
+			var southwestPoint = L.point(ev.layerPoint.x - 5, ev.layerPoint.y - 5);
+			var northeastPoint = L.point(ev.layerPoint.x + 5, ev.layerPoint.y + 5);
+			var bounds = L.latLngBounds(
+				map.layerPointToLatLng(southwestPoint),
+				map.layerPointToLatLng(northeastPoint)
+			);
+			updateIdentifyDialog(bounds);
+		};
+
+		var drawIdentifyBox = function(layer) {
+			drawnIdentifyBoxFeature.clearLayers();
+			drawnIdentifyBoxFeature.addLayer(layer);
+			updateIdentifyDialog(layer.getBounds());
+		};
+
+		drawnIdentifyBoxFeature = L.featureGroup();
+		drawIdentifyBoxControl = new L.Control.Draw({
+			draw : {
+				polyline : false,
+				polygon : false,
+				rectangle : {
+					repeatMode : false
+				},
+				circle : false,
+				marker : false
+			},
+			edit : {
+				featureGroup : drawnIdentifyBoxFeature,
+				remove : false
+			}
+		});
 
 		map = new MapWithSingleClickHandler(options.mapDivId, {
 			center: [37.0, -100.0],
@@ -94,8 +122,19 @@ PORTAL.MAP.siteMap = function(options) {
 			autoZIndex : false
 		}));
 		map.addControl(L.control.scale());
+		map.addLayer(drawnIdentifyBoxFeature);
+		map.addControl(drawIdentifyBoxControl);
 
-		map.addSingleClickHandler(singleClickHandler);
+		// Set up the map event handlers for the draw control to retrieve the sites.
+		map.on(L.Draw.Event.CREATED, function(ev) {
+			drawIdentifyBox(ev.layer);
+		});
+		map.on(L.Draw.Event.EDITED, function(ev) {
+			drawIdentifyBox(ev.layers.getLayers()[0]);
+		});
+
+		// Set up click handler for the identify click event
+		map.addSingleClickHandler(identifySitesAtPointHandler);
 
 		//Set up sld switcher
 		options.$sldSelect.change(function() {
@@ -145,6 +184,10 @@ PORTAL.MAP.siteMap = function(options) {
 			}
 
 		}
+	};
+
+	self.clearBoxIdFeature = function() {
+		drawnIdentifyBoxFeature.clearLayers();
 	};
 
 	return self;
