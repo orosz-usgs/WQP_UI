@@ -12,7 +12,7 @@
 
 	var LAYER_NAME = 'wqp_sites';
 	var WMS_VERSION = '1.1.0';
-	var WFS_VERSION = '1.1.0';
+	var WFS_VERSION = '2.0.0';
 
 	var getSearchParams = function(queryParamArray) {
 		var queryJson = PORTAL.UTILS.getQueryParamJson(queryParamArray);
@@ -101,12 +101,12 @@
 				request : 'GetFeature',
 				service : 'wfs',
 				version : WFS_VERSION,
-				typeName : LAYER_NAME,
+				typeNames : LAYER_NAME,
 				SEARCHPARAMS : getSearchParams(queryParamArray),
 				outputFormat : 'application/json'
 			};
 
-			return Config.SITES_GEOSERVER_ENDPOINT + 'wfs/?' + $.param(queryData);
+			return Config.SITES_GEOSERVER_ENDPOINT  + 'wfs/?' + $.param(queryData);
 		}
 	});
 
