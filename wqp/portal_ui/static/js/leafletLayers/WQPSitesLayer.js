@@ -61,6 +61,7 @@
 		 * 		parameters for the sites that we want to see.
 		 */
 		updateQueryParams : function(queryParamArray) {
+			this.queryParamArray = queryParamArray;
 			this.setParams({
 				SEARCHPARAMS : getSearchParams(queryParamArray),
 				cacheId : Date.now() // Needed to prevent a cached layer from being used.

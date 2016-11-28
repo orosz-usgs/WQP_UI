@@ -71,6 +71,38 @@ describe('leafletLayers.WQPSitesLayer', function() {
 		});
 	});
 
+	describe('Test for getQueryParamArray', function() {
+		it('Expects getQueryParamArray to return the layer\'s current queryParamArray', function() {
+			var queryParamArray = [
+				{
+					name: 'statecode',
+					value : 'US:55'
+				}, {
+					name: 'countycode',
+					value : 'US:55:025'
+				}, {
+					name: 'countycode',
+					value : 'US:55:001'
+				}
+			];
+			var testLayer = L.wqpSitesLayer(queryParamArray, {});
+
+			expect(testLayer.getQueryParamArray()).toEqual(queryParamArray);
+
+			queryParamArray = [
+				{
+					name: 'statecode',
+					value : 'US:55'
+				}, {
+					name: 'countycode',
+					value : 'US:55:002'
+				}
+			];
+			testLayer.updateQueryParams(queryParamArray);
+			expect(testLayer.getQueryParamArray()).toEqual(queryParamArray);
+		});
+	});
+
 	describe('Tests for updateQueryParams', function() {
 
 		var testLayer;
