@@ -5,7 +5,7 @@ from flask_bower import Bower
 from flask_swagger import swagger
 from flask_swagger_ui import get_swaggerui_blueprint
 from requests import Session
-
+from flask_sslify import SSLify
 
 __version__ = '4.3.0dev'
 
@@ -13,7 +13,7 @@ __version__ = '4.3.0dev'
 app = Flask(__name__.split()[0], instance_relative_config=True)
 
 Bower(app)
-
+sslify = SSLify(app, permanent=True)
 # Loads configuration information from config.py and instance/config.py
 app.config.from_object('config')
 app.config.from_pyfile('config.py')
