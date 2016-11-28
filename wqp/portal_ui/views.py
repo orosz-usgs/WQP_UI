@@ -4,10 +4,9 @@ import sys
 
 from flask import render_template, request, make_response, redirect, url_for, abort, Response, jsonify, Blueprint
 import redis
-import requests
 import ujson
 
-from .. import app
+from .. import app, session
 from ..utils import pull_feed, geoserver_proxy_request, generate_provider_list, generate_organization_list, \
     get_site_info, check_org_id, generate_redis_db_number, generate_site_list_from_streamed_tsv
 from ..tasks import generate_site_list_from_streamed_tsv_async
@@ -30,6 +29,7 @@ code_endpoint = app.config['CODES_ENDPOINT']
 base_url = app.config['SEARCH_QUERY_ENDPOINT']
 redis_config = app.config['REDIS_CONFIG']
 cache_timeout = app.config['CACHE_TIMEOUT']
+proxy_cert_verification = app.config.get('PROXY_CERT_VERIFY', False)
 
 
 @portal_ui.route('/index.jsp')
@@ -148,13 +148,13 @@ def public_srsnames():
 @portal_ui.route('/wqp_geoserver/<op>', methods=['GET', 'POST'])
 def wqp_geoserverproxy(op):
     target_url = app.config['WQP_MAP_GEOSERVER_ENDPOINT'] + '/' + op
-    return geoserver_proxy_request(target_url)
+    return geoserver_proxy_request(target_url, proxy_cert_verification)
     
 
 @portal_ui.route('/sites_geoserver/<op>', methods=['GET', 'POST'])
 def sites_geoserverproxy(op):
     target_url = app.config['SITES_MAP_GEOSERVER_ENDPOINT'] + '/' + op
-    return geoserver_proxy_request(target_url)
+    return geoserver_proxy_request(target_url, proxy_cert_verification)
 
 @portal_ui.route('/crossdomain.xml')
 def crossdomain():
@@ -230,8 +230,12 @@ def uri_organization(provider_id, organization_id):
         if redis_all_site_data:
             rendered_site_template = pickle.loads(redis_all_site_data)
         else:
-            sites_request = requests.get(search_endpoint, {"organization": organization_id, "providers": provider_id,
-                                       "mimeType": "geojson", "sorted": "no", "uripage": "yes"})
+            sites_request = session.get(search_endpoint, params={"organization": organization_id,
+                                                                 "providers": provider_id,
+                                                                 "mimeType": "geojson",
+                                                                 "sorted": "no",
+                                                                 "uripage": "yes"}
+                                        )
             if sites_request.status_code == 200:
                 total_site_count = int(sites_request.headers['Total-Site-Count'])
                 if sites_request.text == ']}':
@@ -247,8 +251,13 @@ def uri_organization(provider_id, organization_id):
             elif sites_request.status_code == 400:
                 abort(404)
     else:
-        sites_request = requests.get(search_endpoint, {"organization": organization_id, "providers": provider_id,
-                                                       "mimeType": "geojson", "sorted": "no", "uripage": "yes"})
+        sites_request = session.get(search_endpoint, params={"organization": organization_id,
+                                                             "providers": provider_id,
+                                                             "mimeType": "geojson",
+                                                             "sorted": "no",
+                                                             "uripage": "yes"
+                                                             }
+                                    )
         if sites_request.status_code == 200:
             total_site_count = int(sites_request.headers['Total-Site-Count'])
             if sites_request.text == ']}':
@@ -305,8 +314,11 @@ def uris(provider_id, organization_id, site_id):
         if site_data.get('CountryCode') == 'US' and site_data.get('StateCode') and site_data.get('CountyCode'):
             statecode = 'US:' + site_data['StateCode']
             search_string = statecode + ':' + site_data['CountyCode']
-            county_request = requests.get(code_endpoint + "/countycode", {"statecode": statecode, "mimeType": "json",
-                                                                          "text": search_string})
+            county_request = session.get(code_endpoint + "/countycode", params={"statecode": statecode,
+                                                                                "mimeType": "json",
+                                                                                "text": search_string
+                                                                                }
+                                         )
             if county_request.status_code == 200:
                 county_info = county_request.json()
                 if county_info.get('recordCount') == 1:

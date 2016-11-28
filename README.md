@@ -1,6 +1,7 @@
 # WQP_UI
 ===================
 [![Build Status](https://travis-ci.org/USGS-CIDA/WQP_UI.svg?branch=master)](https://travis-ci.org/USGS-CIDA/WQP_UI)
+[![Coverage Status](https://coveralls.io/repos/github/USGS-CIDA/WQP_UI/badge.svg?branch=master)](https://coveralls.io/github/USGS-CIDA/WQP_UI?branch=master)
 
 Water Quality Portal User Interface
 
@@ -10,6 +11,7 @@ You will need to create a config.py file in the `instance` directory. It should 
 ```python
 
 DEBUG = True
+VERIFY_CERT = True or False
 
 ASSETS_DEBUG = True # This will disable minimizing js and css assets but less files will still compile.
 ASSETS_AUTO_BUILD = True # Typically local developers will not be using precompiled assets.

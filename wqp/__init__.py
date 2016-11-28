@@ -4,9 +4,10 @@ from flask import Flask, jsonify, request
 from flask_bower import Bower
 from flask_swagger import swagger
 from flask_swagger_ui import get_swaggerui_blueprint
+from requests import Session
 
 
-__version__ = '4.1.0dev'
+__version__ = '4.3.0dev'
 
 
 app = Flask(__name__.split()[0], instance_relative_config=True)
@@ -22,9 +23,14 @@ import assets
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
 
+
+session = Session()
+session.verify = app.config.get('VERIFY_CERT', True)
+
 from portal_ui.views import portal_ui
 from sites.views import sites
 from wqx.views import wqx
+
 
 app.register_blueprint(portal_ui, url_prefix='')
 app.register_blueprint(sites,

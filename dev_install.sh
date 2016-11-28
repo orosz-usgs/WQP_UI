@@ -21,17 +21,14 @@ fi
 if [ "$ARG1" == '--update' ]; then
 	echo "Updating npm and bower dependencies";
 	npm update;
-	bower update;
+	node_modules/bower/bin/bower update;
 fi
 
 if [ "$ARG1" == '--clean' ]; then
     echo "Installing npm and bower dependencies";
 	npm install;
-	bower install;
+	node_modules/bower/bin/bower install;
 fi
-
-echo "Running Javascript tests";
-node_modules/karma/bin/karma start test/js/karma.conf.js;
 
 if [ ! -s env ]; then
     echo "Creating the virtualenv env";
@@ -39,6 +36,9 @@ if [ ! -s env ]; then
 fi
 echo "Installing python requirements";
 env/bin/pip install -r requirements.txt;
+
+echo "Running Javascript tests";
+node_modules/karma/bin/karma start test/js/karma.conf.js;
 
 echo "Running Python tests";
 env/bin/nosetests

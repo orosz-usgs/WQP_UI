@@ -5,6 +5,8 @@ PROJECT_HOME = os.path.dirname(__file__)
 #Config for Flask-Collect
 COLLECT_STATIC_ROOT = 'static/'
 
+VERIFY_CERT = True  # verify SSL certs during web service calls by requests, can be a path to a cert bundle
+
 #Config for Flask-Assets
 ASSETS_DEBUG = False #To not compress the js and css set this to True
 ASSETS_AUTO_BUILD = False #Local developers will typically set this to True in their instance/config.py.
@@ -17,6 +19,9 @@ CODES_ENDPOINT = ''
 SEARCH_QUERY_ENDPOINT = ''
 PUBLIC_SRSNAMES_ENDPOINT = ''
 
+HYDRO_LAYER_ENDPOINT = 'http://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer'
+NHDPLUS_FLOWLINE_ENDPOINT = 'https://cida.usgs.gov/nwc/geoserver/gwc/service/wms'
+NHDPLUS_FLOWLINE_LAYER_NAME = 'nhdplus:nhdflowline_network'
 NLDI_SERVICES_ENDPOINT = ''
 
 NWIS_SITES_SERVICE_ENDPOINT = 'http://waterservices.usgs.gov/nwis/site/'
