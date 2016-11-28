@@ -83,6 +83,13 @@
 			return Config.SITES_GEOSERVER_ENDPOINT + 'wms?' + $.param(queryParams);
 		},
 
+		/*
+		 * @param {L.LatLngBounds} bounds
+		 * @returns {Jquery.Promise}
+		 * 		@resolve: Returns the received json data for the features within bounds for the
+		 * 			currently displayed layer.
+		 *		@reject: Returns the jqXHR response.
+		 */
 		fetchSitesInBBox : function(bounds) {
 			return $.ajax({
 				url : L.WQPSitesLayer.getWfsGetFeatureUrl(this.queryParamArray) + '&bbox=' + WQP.L.Util.toBBoxString(bounds),

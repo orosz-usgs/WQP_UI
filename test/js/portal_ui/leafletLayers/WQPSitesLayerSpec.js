@@ -2,6 +2,7 @@
 
 /* global describe, it, expect, beforeEach, spyOn */
 /* global L */
+/* global $ */
 
 describe('leafletLayers.WQPSitesLayer', function() {
 	"use strict";
@@ -165,10 +166,31 @@ describe('leafletLayers.WQPSitesLayer', function() {
 		});
 	});
 
+	describe('Tests for fetchSitesInBBox', function() {
+		var testLayer;
+
+		beforeEach(function() {
+			spyOn($, 'ajax');
+
+			var queryParamArray = [{name : 'statecode', value : 'US:50'}];
+			testLayer = L.wqpSitesLayer(queryParamArray);
+		});
+
+		it('Expects that a GetFeature request is made for the current layer using the bbox parameter to limit the area of the returned responses', function() {
+			var url;
+			testLayer.fetchSitesInBBox(L.latLngBounds(L.latLng(42, -99), L.latLng(43, -98)));
+
+			expect($.ajax).toHaveBeenCalled();
+			url = $.ajax.calls.argsFor(0)[0].url;
+			expect(url).toContain('SEARCHPARAMS=' + encodeURIComponent('statecode:US:50'));
+			expect(url).toContain('bbox=42,-99,43,-98');
+		});
+	});
+
 	describe('Tests for getWFSGetFeatureUrl', function() {
 		it('Expects that the SEARCHPARAMS query parameter reflects the queryParamArray', function() {
 			var queryParamArray = [{name : 'statecode', value : 'US:50'}];
-			var url = L.WQPSitesLayer.getWfsGetFeatureUrl(queryParamArray)
+			var url = L.WQPSitesLayer.getWfsGetFeatureUrl(queryParamArray);
 			expect(url).toContain('SEARCHPARAMS=' + encodeURIComponent('statecode:US:50'));
 		});
 	});
