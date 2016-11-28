@@ -63,7 +63,7 @@ describe('Test identifyDialog', function () {
 	});
 
 	describe('showDialog tests', function() {
-		var features = [{name: 'Site1'}, {name: 'Site2'}];
+		var features = [{properties :{name: 'Site1'}}, {properties: {name: 'Site2'}}];
 
 		var queryParamArray = [
 			{
