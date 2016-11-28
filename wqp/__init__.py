@@ -5,7 +5,6 @@ from flask_bower import Bower
 from flask_swagger import swagger
 from flask_swagger_ui import get_swaggerui_blueprint
 from requests import Session
-from flask_sslify import SSLify
 
 __version__ = '4.3.0dev'
 
@@ -18,8 +17,6 @@ Bower(app)
 app.config.from_object('config')
 app.config.from_pyfile('config.py')
 
-# Force SSL
-sslify = SSLify(app, permanent=True)
 
 import assets
 
