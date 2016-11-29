@@ -28,6 +28,7 @@ bundles = {
         'portal_ui/js/leafletControls/QuerySelectControl.js',
         'portal_ui/js/LeafletMixins/SingleClickEventHandlerMixin.js',
         'portal_ui/js/leafletLayers/WQPSitesLayer.js',
+        'portal_ui/js/leafletUtils.js',
         'portal_ui/js/siteMap.js',
         'portal_ui/js/views/portalViews.js',
         'portal_ui/js/portalOnReady.js',

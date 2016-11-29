@@ -2,6 +2,7 @@
 
 /* global L */
 /* global PORTAL */
+/* global WQP */
 /* global Config */
 /* global _ */
 /* global $ */
@@ -11,7 +12,7 @@
 
 	var LAYER_NAME = 'wqp_sites';
 	var WMS_VERSION = '1.1.0';
-	var WFS_VERSION = '1.1.0';
+	var WFS_VERSION = '2.0.0';
 
 	var getSearchParams = function(queryParamArray) {
 		var queryJson = PORTAL.UTILS.getQueryParamJson(queryParamArray);
@@ -44,9 +45,14 @@
 		},
 
 		initialize : function(queryParamArray, options) {
+			this.queryParamArray = queryParamArray;
 			L.TileLayer.WMS.prototype.initialize.call(this, Config.SITES_GEOSERVER_ENDPOINT + 'wms', options);
 
 			this.wmsParams.SEARCHPARAMS = getSearchParams((queryParamArray));
+		},
+
+		getQueryParamArray : function() {
+			return this.queryParamArray;
 		},
 
 		/*
@@ -55,6 +61,7 @@
 		 * 		parameters for the sites that we want to see.
 		 */
 		updateQueryParams : function(queryParamArray) {
+			this.queryParamArray = queryParamArray;
 			this.setParams({
 				SEARCHPARAMS : getSearchParams(queryParamArray),
 				cacheId : Date.now() // Needed to prevent a cached layer from being used.
@@ -75,6 +82,20 @@
 				legend_options : 'fontStyle:bold'
 			};
 			return Config.SITES_GEOSERVER_ENDPOINT + 'wms?' + $.param(queryParams);
+		},
+
+		/*
+		 * @param {L.LatLngBounds} bounds
+		 * @returns {Jquery.Promise}
+		 * 		@resolve: Returns the received json data for the features within bounds for the
+		 * 			currently displayed layer.
+		 *		@reject: Returns the jqXHR response.
+		 */
+		fetchSitesInBBox : function(bounds) {
+			return $.ajax({
+				url : L.WQPSitesLayer.getWfsGetFeatureUrl(this.queryParamArray) + '&bbox=' + WQP.L.Util.toBBoxString(bounds),
+				method : 'GET'
+			});
 		}
 	});
 
@@ -88,10 +109,11 @@
 				request : 'GetFeature',
 				service : 'wfs',
 				version : WFS_VERSION,
-				typeName : LAYER_NAME,
+				typeNames : LAYER_NAME,
 				SEARCHPARAMS : getSearchParams(queryParamArray),
 				outputFormat : 'application/json'
 			};
+
 			return Config.SITES_GEOSERVER_ENDPOINT + 'wfs/?' + $.param(queryData);
 		}
 	});
