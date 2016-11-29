@@ -114,7 +114,7 @@
 				outputFormat : 'application/json'
 			};
 
-			return Config.SITES_GEOSERVER_ENDPOINT  + 'wfs/?' + $.param(queryData);
+			return Config.SITES_GEOSERVER_ENDPOINT + 'wfs/?' + $.param(queryData);
 		}
 	});
 

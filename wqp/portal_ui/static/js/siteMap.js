@@ -53,7 +53,7 @@ PORTAL.MAP.siteMap = function(options) {
 		var nwisSitesLayer = L.tileLayer.wms(Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wms', {
 			layers: 'qw_portal_map:nwis_sites',
 			format: 'image/png',
-    		transparent: true,
+			transparent: true,
 			zIndex : NWIS_SITES_LAYER_Z_INDEX
 		});
 		var drawIdentifyBoxControl;
