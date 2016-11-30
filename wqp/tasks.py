@@ -1,14 +1,8 @@
 import csv
 import cPickle as pickle
-from celery import Celery
 import arrow
 import redis
-from . import app, session
-
-
-
-celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
-celery.conf.update(app.config)
+from . import session, celery
 
 
 @celery.task(bind=True)
