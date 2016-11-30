@@ -26,14 +26,13 @@
     "underscore": "1.8.3",
     "handlebars": "4.0.5",
     "loglevel": "1.4.0",
-    "ol3-layerswitcher": "1.1.0",
     "font-awesome": "4.6.0",
-    "leaflet": "1.0.1",
+    "leaflet": "Leaflet#1.0.2",
     "leaflet-providers": "1.1.15",
     "Leaflet.EasyButton": "2.0.0",
     "esri-leaflet": "2.0.4",
     "leaflet.markercluster": "1.0.0",
-    "ol3": "ol3-bower#3.17.1"
+    "leaflet-draw": "0.4.3"
   },
   "resolutions": {
     "leaflet": ">= 1.0.0"

@@ -10,10 +10,6 @@
 	<link rel="stylesheet" type="text/css"
 		  href="{{ url_for('bower.static', filename='select2-bootstrap-theme/dist/select2-bootstrap.min.css') }}"/>
 	<link rel="stylesheet" type="text/css"
-		  href="{{  url_for('bower.static', filename='ol3/ol.css') }}" />
-	<link rel="stylesheet" type="text/css"
-		  href="{{ url_for('bower.static', filename='ol3-layerswitcher/src/ol3-layerswitcher.css') }}" />
-	<link rel="stylesheet" type="text/css"
 		  href="{{ url_for('bower.static', filename='leaflet/dist/leaflet.css') }}" />
 	<link rel="stylesheet" type="text/css"
 		  href="{{ url_for('bower.static', filename='Leaflet.EasyButton/src/easy-button.css') }}" />
@@ -21,6 +17,8 @@
 		  href="{{ url_for('bower.static', filename='leaflet.markercluster/dist/MarkerCluster.css') }}" />
 	<link rel="stylesheet" type="text/css"
 		  href="{{ url_for('bower.static', filename='leaflet.markercluster/dist/MarkerCluster.Default.css') }}" />
+	<link rel="stylesheet" type="text/css"
+		  href="{{ url_for('bower.static', filename='leaflet-draw/dist/leaflet.draw.css') }}" />
 {% endblock %}
 
 {% block page_header_title %}Water Quality Data{% endblock %}
@@ -554,13 +552,12 @@
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='jquery-ui/jquery-ui.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='numeral/min/numeral.min.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='handlebars/handlebars.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('bower.static', filename='ol3/ol.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('bower.static', filename='ol3-layerswitcher/src/ol3-layerswitcher.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet/dist/leaflet.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet-providers/leaflet-providers.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='esri-leaflet/dist/esri-leaflet.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='Leaflet.EasyButton/src/easy-button.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet.markercluster/dist/leaflet.markercluster.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet-draw/dist/leaflet.draw.js') }}"></script>
 	{% assets "portal_js" %}
 		<script type="text/javascript" src="{{ ASSET_URL }}"></script>
 	{% endassets %}

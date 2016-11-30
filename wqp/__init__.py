@@ -6,8 +6,7 @@ from flask_swagger import swagger
 from flask_swagger_ui import get_swaggerui_blueprint
 from requests import Session
 
-
-__version__ = '4.3.0dev'
+__version__ = '4.4.0dev'
 
 
 app = Flask(__name__.split()[0], instance_relative_config=True)
@@ -17,6 +16,7 @@ Bower(app)
 # Loads configuration information from config.py and instance/config.py
 app.config.from_object('config')
 app.config.from_pyfile('config.py')
+
 
 import assets
 

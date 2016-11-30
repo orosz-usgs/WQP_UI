@@ -242,7 +242,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 			nldiModel = PORTAL.MODELS.nldiModel.getData();
 			$insetMapDiv.show();
 			$mapDiv.parent().hide();
-			insetNldiControl.setNavValue(nldiModel.navigation.id);
+			insetNldiControl.setNavValue(_.has(nldiModel.navigation, 'id') ? nldiModel.navigation.id : '');
 			insetNldiControl.setDistanceValue(nldiModel.distance);
 			insetMap.invalidateSize();
 			insetMap.setView(map.getCenter(), map.getZoom());
@@ -312,7 +312,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		'World Gray' : L.esri.basemapLayer('Gray')
 	};
 	var insetHydroLayer = L.esri.tiledMapLayer({
-		url : "http://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer"
+		url : Config.HYDRO_LAYER_ENDPOINT
 	});
 
 	var baseLayers = {
@@ -323,11 +323,11 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		'World Imagery' : L.tileLayer.provider('Esri.WorldImagery')
 	};
 	var hydroLayer = L.esri.tiledMapLayer({
-		url : "http://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer"
+		url : Config.HYDRO_LAYER_ENDPOINT
 	});
-	var nhdlPlusFlowlineLayer = L.tileLayer.wms('https://cida.usgs.gov/nwc/geoserver/gwc/service/wms',
+	var nhdlPlusFlowlineLayer = L.tileLayer.wms(Config.NHDPLUS_FLOWLINE_ENDPOINT,
 		{
-			layers : 'nhdplus:nhdflowline_network',
+			layers : Config.NHDPLUS_FLOWLINE_LAYER_NAME,
 			format : 'image/png',
 			transparent : true,
 			opacity : 0.5

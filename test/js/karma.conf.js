@@ -23,8 +23,6 @@ module.exports = function(config) {
         'wqp/bower_components/select2/dist/js/select2.min.js',
         'wqp/bower_components/handlebars/handlebars.min.js',
         'wqp/bower_components/loglevel/dist/loglevel.min.js',
-        'wqp/bower_components/ol3/ol.js',
-        'wqp/bower_components/ol3-layerswitcher/src/ol3-layerswitcher.js',
         'wqp/bower_components/leaflet/dist/leaflet.js',
         'wqp/bower_components/leaflet-providers/leaflet-providers.js',
         'wqp/bower_components/esri-leaflet/dist/esri-leaflet.js',

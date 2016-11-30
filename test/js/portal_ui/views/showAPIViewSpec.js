@@ -40,7 +40,7 @@ describe('Tests for PORTAL.VIEWS.showAPIViewSpec', function() {
 		$('#show-queries-button').trigger('click');
 		expect($('#sites-query-div textarea').html()).toContain('Station?Testparam1=value1&amp;Testparam2=value2');
 		expect($('#results-query-div textarea').html()).toContain('Result?Testparam1=value1&amp;Testparam2=value2');
-		expect($('#getfeature-query-div textarea').html()).toContain('searchParams=' + encodeURIComponent('Testparam1:value1;Testparam2:value2'));
+		expect($('#getfeature-query-div textarea').html()).toContain('SEARCHPARAMS=' + encodeURIComponent('Testparam1:value1;Testparam2:value2'));
 	});
 });
 
