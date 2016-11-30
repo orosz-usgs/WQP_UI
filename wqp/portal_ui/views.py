@@ -156,6 +156,7 @@ def sites_geoserverproxy(op):
     target_url = app.config['SITES_MAP_GEOSERVER_ENDPOINT'] + '/' + op
     return geoserver_proxy_request(target_url, proxy_cert_verification)
 
+
 @portal_ui.route('/crossdomain.xml')
 def crossdomain():
     xml = render_template('crossdomain.xml')
@@ -405,6 +406,7 @@ def taskstatus(task_id):
         }
     return jsonify(response)
 
+
 @portal_ui.route('/manage_cache')
 def manage_cache():
     provider_list = ['NWIS','STORET','STEWARDS','BIODATA']
@@ -422,6 +424,7 @@ def manage_cache():
                 load_status['time_human'] = time.humanize()
                 status_list.append(load_status)
     return render_template('cache_manager.html', status=status_list)
+
 
 @portal_ui.route('/robots.txt')
 def robots():
