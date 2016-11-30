@@ -374,7 +374,7 @@ def sitescachetask(provider_id):
     redis_db = generate_redis_db_number(provider_id)
     task = generate_site_list_from_streamed_tsv_async.apply_async(args=[base_url, redis_config,
                                                                           provider_id, redis_db])
-    return jsonify({}), 202, {'Location': url_for('taskstatus',
+    return jsonify({}), 202, {'Location': url_for('portal_ui.taskstatus',
                                                   task_id=task.id)}
 @portal_ui.route('/status/<task_id>')
 def taskstatus(task_id):
