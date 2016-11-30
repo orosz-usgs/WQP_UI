@@ -45,7 +45,7 @@ def home():
 @portal_ui.route('/contact_us/', endpoint='contact_us-canonical')
 def contact_us():
     if request.path == '/contact_us.jsp':
-        return redirect(url_for('contact_us-canonical')), 301
+        return redirect(url_for('portal_ui.contact_us-canonical')), 301
     return render_template('contact_us.html')
 
 
@@ -53,7 +53,7 @@ def contact_us():
 @portal_ui.route('/portal/', endpoint='portal-canonical')
 def portal():
     if request.path == '/portal.jsp':
-        return redirect(url_for('portal-canonical')), 301
+        return redirect(url_for('portal_ui.portal-canonical')), 301
     return render_template('portal.html')
 
 
@@ -61,7 +61,7 @@ def portal():
 @portal_ui.route('/portal_userguide/', endpoint='portal_userguide-canonical')
 def portal_userguide():
     if request.path == '/portal_userguide.jsp':
-        return redirect(url_for('portal_userguide-canonical')), 301
+        return redirect(url_for('portal_ui.portal_userguide-canonical')), 301
     feed_url = "https://my.usgs.gov/confluence/createrssfeed.action?types=page&spaces=qwdp&title=myUSGS+4.0+RSS+Feed&labelString=wqp_user_guide&excludedSpaceKeys%3D&sort=modified&maxResults=1&timeSpan=3650&showContent=true&confirm=Create+RSS+Feed"
     return render_template('portal_userguide.html', feed_content=pull_feed(feed_url))
 
@@ -70,7 +70,7 @@ def portal_userguide():
 @portal_ui.route('/webservices_documentation/', endpoint='webservices_documentation-canonical')
 def webservices_documentation():
     if request.path == '/webservices_documentation.jsp':
-        return redirect(url_for('webservices_documentation-canonical')), 301
+        return redirect(url_for('portal_ui.webservices_documentation-canonical')), 301
     feed_url = "https://my.usgs.gov/confluence/createrssfeed.action?types=page&spaces=qwdp&title=myUSGS+4.0+RSS+Feed&labelString=wqp_web_services_guide&excludedSpaceKeys%3D&sort=modified&maxResults=1&timeSpan=3650&showContent=true&confirm=Create+RSS+Feed"
     return render_template('webservices_documentation.html', feed_content=pull_feed(feed_url))
 
@@ -79,7 +79,7 @@ def webservices_documentation():
 @portal_ui.route('/faqs/', endpoint='faqs-canonical')
 def faqs():
     if request.path == '/faqs.jsp':
-        return redirect(url_for('faqs-canonical')), 301
+        return redirect(url_for('portal_ui.faqs-canonical')), 301
     feed_url = "https://my.usgs.gov/confluence/createrssfeed.action?types=page&spaces=qwdp&title=myUSGS+4.0+RSS+Feed&labelString=wqp_faqs&excludedSpaceKeys%3D&sort=modified&maxResults=1&timeSpan=3650&showContent=true&confirm=Create+RSS+Feed"
     return render_template('faqs.html', feed_content=pull_feed(feed_url))
 
@@ -88,7 +88,7 @@ def faqs():
 @portal_ui.route('/upload_data/', endpoint='upload_data-canonical')
 def upload_data():
     if request.path == '/upload_data.jsp':
-        return redirect(url_for('upload_data-canonical')), 301
+        return redirect(url_for('portal_ui.upload_data-canonical')), 301
     feed_url = "https://my.usgs.gov/confluence/createrssfeed.action?types=page&spaces=qwdp&title=myUSGS+4.0+RSS+Feed&labelString=wqp_upload_data&excludedSpaceKeys%3D&sort=modified&maxResults=1&timeSpan=3650&showContent=true&confirm=Create+RSS+Feed"
     return render_template('upload_data.html', feed_content=pull_feed(feed_url))
 
@@ -97,7 +97,7 @@ def upload_data():
 @portal_ui.route('/coverage/', endpoint='coverage-canonical')
 def coverage():
     if request.path == '/coverage.jsp':
-        return redirect(url_for('coverage-canonical')), 301
+        return redirect(url_for('portal_ui.coverage-canonical')), 301
     return render_template('coverage.html')
 
 
@@ -105,7 +105,7 @@ def coverage():
 @portal_ui.route('/wqp_description/', endpoint='wqp_description-canonical')
 def wqp_description():
     if request.path == '/wqp_description.jsp':
-        return redirect(url_for('wqp_description-canonical')), 301
+        return redirect(url_for('portal_ui.wqp_description-canonical')), 301
     feed_url = "https://my.usgs.gov/confluence/createrssfeed.action?types=page&spaces=qwdp&title=myUSGS+4.0+RSS+Feed&labelString=wqp_about&excludedSpaceKeys%3D&sort=modified&maxResults=1&timeSpan=3650&showContent=true&confirm=Create+RSS+Feed"
     return render_template('wqp_description.html', feed_content=pull_feed(feed_url))
 
@@ -114,7 +114,7 @@ def wqp_description():
 @portal_ui.route('/orgs/', endpoint='orgs-canonical')
 def orgs():
     if request.path == '/orgs.jsp':
-        return redirect(url_for('orgs-canonical')), 301
+        return redirect(url_for('portal_ui.orgs-canonical')), 301
     feed_url = "https://my.usgs.gov/confluence/createrssfeed.action?types=page&spaces=qwdp&title=myUSGS+4.0+RSS+Feed&labelString=contributing_orgs&excludedSpaceKeys%3D&sort=modified&maxResults=1&timeSpan=3650&showContent=true&confirm=Create+RSS+Feed"
     return render_template('orgs.html', feed_content=pull_feed(feed_url))
 
@@ -123,7 +123,7 @@ def orgs():
 @portal_ui.route('/apps_using_portal/', endpoint='apps_using_portal-canonical')
 def apps_using_portal():
     if request.path == '/apps_using_portal.jsp':
-        return redirect(url_for('apps_using_portal-canonical')), 301
+        return redirect(url_for('portal_ui.apps_using_portal-canonical')), 301
     feed_url = "https://my.usgs.gov/confluence/createrssfeed.action?types=page&spaces=qwdp&title=myUSGS+4.0+RSS+Feed&labelString=wqp_applications&excludedSpaceKeys%3D&sort=modified&maxResults=10&timeSpan=600&showContent=true&confirm=Create+RSS+Feed"
     return render_template('apps_using_portal.html', feed_content=pull_feed(feed_url))
 
@@ -132,7 +132,7 @@ def apps_using_portal():
 @portal_ui.route('/other_portal_links/', endpoint='other_portal_links-canonical')
 def other_portal_links():
     if request.path == '/other_portal_links.jsp':
-        return redirect(url_for('other_portal_links-canonical')), 301
+        return redirect(url_for('portal_ui.other_portal_links-canonical')), 301
     feed_url = "https://my.usgs.gov/confluence/createrssfeed.action?types=page&spaces=qwdp&title=myUSGS+4.0+RSS+Feed&labelString=other_portal_links&excludedSpaceKeys%3D&sort=modified&maxResults=1&timeSpan=3650&showContent=true&confirm=Create+RSS+Feed"
     return render_template('other_portal_links.html', feed_content=pull_feed(feed_url))
 
@@ -141,7 +141,7 @@ def other_portal_links():
 @portal_ui.route('/public_srsnames/', endpoint='public_srsnames-canonical')
 def public_srsnames():
     if request.path == '/public_srsnames.jsp':
-        return redirect(url_for('public_srsnames-canonical')), 301
+        return redirect(url_for('portal_ui.public_srsnames-canonical')), 301
     return render_template('public_srsnames.html')
     
 
@@ -155,6 +155,7 @@ def wqp_geoserverproxy(op):
 def sites_geoserverproxy(op):
     target_url = app.config['SITES_MAP_GEOSERVER_ENDPOINT'] + '/' + op
     return geoserver_proxy_request(target_url, proxy_cert_verification)
+
 
 @portal_ui.route('/crossdomain.xml')
 def crossdomain():
@@ -365,7 +366,6 @@ def rebuild_site_cache(provider_id=None):
         return str(sites)
 
 
-
 @portal_ui.route('/sites_cache_task/<provider_id>', methods=['POST'])
 def sitescachetask(provider_id):
     providers = generate_provider_list(code_endpoint)['providers']
@@ -406,6 +406,7 @@ def taskstatus(task_id):
         }
     return jsonify(response)
 
+
 @portal_ui.route('/manage_cache')
 def manage_cache():
     provider_list = ['NWIS','STORET','STEWARDS','BIODATA']
@@ -423,6 +424,7 @@ def manage_cache():
                 load_status['time_human'] = time.humanize()
                 status_list.append(load_status)
     return render_template('cache_manager.html', status=status_list)
+
 
 @portal_ui.route('/robots.txt')
 def robots():
