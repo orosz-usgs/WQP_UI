@@ -1,11 +1,15 @@
 /* jslint browser: true */
 /* global L */
+/* global $ */
 /* global Config */
+/* global WQP */
 
 (function() {
 	"use strict";
 
 	var WMS_VERSION = '1.1.0';
+	var WFS_VERSION = '2.0.0';
+
 	var NAMESPACE = 'qw_portal_map';
 
 	var LAYER_NAME = {
@@ -73,7 +77,7 @@
 			format: 'image/png',
 			version: WMS_VERSION,
 			request : 'GetMap',
-			transparent: true,
+			transparent: true
 		},
 
 		initialize : function(layerParams, options) {
@@ -98,6 +102,26 @@
 				VIEWPARAMS : this.wmsParams.VIEWPARAMS
 			};
 			return Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wms?' + $.param(queryParams);
+		},
+
+		/*
+		 * @returns {Jquery.Promise}
+		 */
+		fetchFeatureInBBox : function(bounds) {
+			return $.ajax({
+				url : Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wfs',
+				method: 'GET',
+				data: {
+					request: 'GetFeature',
+					service: 'wfs',
+					version: WFS_VERSION,
+					typeNames: this.wmsParams.layers,
+					VIEWPARAMS: this.wmsParams.VIEWPARAMS,
+					outputFormat: 'application/json',
+					bbox: WQP.L.Util.toBBoxString(bounds),
+					count: 1
+				}
+			});
 		}
 	});
 

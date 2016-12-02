@@ -1,5 +1,6 @@
 /* jslint browser: true */
 /* global L */
+/* global Handlebars */
 
 var COVERAGE = COVERAGE || {};
 
@@ -20,9 +21,24 @@ COVERAGE.coverageMap = function(options) {
 	var BASE_LAYER_Z_INDEX = 1;
 	var DATA_LAYER_Z_INDEX = 3;
 
+	var BY_DISPLAY_FEATURE_PROP = {
+		'states': 'STATE',
+		'counties': 'COUNTY_NAME',
+		'huc8': 'CAT_NUM'
+	};
+
 	var MapWithSingleClickHandler = L.Map.extend({
 		includes: L.SingleClickEventMixin
 	});
+
+	var DIALOG_TEMPLATE = Handlebars.compile('<div id=coverage-map-popup' +
+		 	'<div id="coverage-map-id-title">{{title}}</div>' +
+			'<button type="button" class="btn">Zoom to feature</button><br/>' +
+			'<p><b>Total discrete samples: </b>{{discreteSampleCount}}</p>' +
+			'{{#if minDate }}<p>Samples taken from {{minDate}} to {{maxDate}}</p>{{/if}}' +
+			'{{#if epaDiscreteSample}}<p><b>EPA STORET discrete samples: </b>{{epaDiscreteSample}}</p>' +
+			'{{#if nwisDiscreteSample}}<p><b>USGS NWIS discrete samples: </b>{{nwisDiscreteSample}}</p>'
+	)
 
 
 	var baseLayers = {
@@ -54,11 +70,24 @@ COVERAGE.coverageMap = function(options) {
 		layers: [baseLayers['World Gray'], dataLayer]
 	});
 
-
 	map.addControl(L.control.layers(baseLayers), {}, {
 		autoZIndex : false
 	});
 	updateLegend();
+
+	map.addSingleClickHandler(function(ev) {
+		var southwestPoint = L.point(ev.layerPoint.x - 5, ev.layerPoint.y - 5);
+		var northeastPoint = L.point(ev.layerPoint.x + 5, ev.layerPoint.y + 5);
+		var bounds = L.latLngBounds(
+			map.layerPointToLatLng(southwestPoint),
+			map.layerPointToLatLng(northeastPoint)
+		);
+		var popup = L.popup().setLatLng(ev.latlng);
+		dataLayer.fetchFeatureInBBox(bounds)
+			.done(function(resp) {
+				console.log('Got response');
+			});
+	});
 
 
 	self.updateDataLayer = function(layerParams) {
