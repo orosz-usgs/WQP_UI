@@ -46,7 +46,7 @@ describe('leafletLayers.WQPSitesLayer', function() {
 			expect(testLayer.wmsParams.SEARCHPARAMS).toEqual('statecode:US:55;countycode:US:55:025|US:55:001');
 		});
 
-		it('Expects that a query param value which contains semicolon separated strings is transfored to pipe delimited', function() {
+		it('Expects that a query param value which contains semicolon separated strings is transformed to pipe delimited', function() {
 			var queryParamArray = [
 				{
 					name: 'huc',
