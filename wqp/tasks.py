@@ -11,7 +11,7 @@ def generate_site_list_from_streamed_tsv_async(self, base_url, redis_config, pro
 
     :param self: self, allows the task status to be updated
     :param base_url: the base url we are using for the generating the search URL
-    :param provider_id: the dientifier of the provider (NWIS, STORET, ETC)
+    :param provider_id: the identifier of the provider (NWIS, STORET, ETC)
     :param redis_config: redis config variables
     :param redis_db: the db number that we are pushing the cached info to
     :return: a list of dicts that describe sites that are associated with an organization under a data provider
