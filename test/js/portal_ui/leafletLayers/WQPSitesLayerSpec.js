@@ -46,6 +46,18 @@ describe('leafletLayers.WQPSitesLayer', function() {
 			expect(testLayer.wmsParams.SEARCHPARAMS).toEqual('statecode:US:55;countycode:US:55:025|US:55:001');
 		});
 
+		it('Expects that a query param value which contains semicolon separated strings is transfored to pipe delimited', function() {
+			var queryParamArray = [
+				{
+					name: 'huc',
+					value: '0701*;0702*'
+				}
+			];
+			var testLayer = L.wqpSitesLayer(queryParamArray, {});
+
+			expect(testLayer.wmsParams.SEARCHPARAMS).toEqual('huc:0701*|0702*');
+		});
+
 		it('Expects that mimeType and zip are removed from the parameters encoded in SEARCHPARAMS', function() {
 			var queryParamArray = [
 				{
