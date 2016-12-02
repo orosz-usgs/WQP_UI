@@ -7,6 +7,7 @@ var COVERAGE = COVERAGE || {};
  * @param {Object} options
  * 		@prop {String} mapDivId - Div where map will be rendered
  * 	    @prop {Jquery element} $legendImg - image element which will contain the legend
+ * 	    @prop {Jquery element} $loadingIndicator - element then will be shown while the data layer is loaded.
  * 		@prop {Object} layerParams -
  * 	 		@prop {String} displayBy - spatial feature
  *	 		@prop {String} timeSpan - Allowed values: past_12_months, past_60_months, all_time
@@ -38,7 +39,16 @@ COVERAGE.coverageMap = function(options) {
 		options.$legendImg.attr('src', dataLayer.getLegendGraphicURL());
 	};
 
-	var map = new MapWithSingleClickHandler(options.mapDivId, {
+	var map;
+
+	dataLayer.on('loading', function() {
+		options.$loadingIndicator.show();
+	});
+	dataLayer.on('load', function() {
+		options.$loadingIndicator.hide();
+	});
+
+	map = new MapWithSingleClickHandler(options.mapDivId, {
 		center: [37.0, -100.0],
 		zoom: 3,
 		layers: [baseLayers['World Gray'], dataLayer]
@@ -49,6 +59,7 @@ COVERAGE.coverageMap = function(options) {
 		autoZIndex : false
 	});
 	updateLegend();
+
 
 	self.updateDataLayer = function(layerParams) {
 		dataLayer.updateLayerParams(layerParams);

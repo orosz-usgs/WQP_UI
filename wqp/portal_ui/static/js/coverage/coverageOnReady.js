@@ -24,6 +24,7 @@ $(document).ready(function() {
 
 	var map = COVERAGE.coverageMap({
 		mapDivId: 'coverage-map-area',
+		$loadingIndicator : $('.map-loading-indicator'),
 		$legendImg: $('#legend-img'),
 		layerParams : getLayerParams()
 	});
