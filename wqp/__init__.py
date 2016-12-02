@@ -53,7 +53,7 @@ def spec():
 
 # Create swagger ui blueprint
 SWAGGER_URL = '/apidocs'
-API_VIEW_FUNC= 'spec'
+API_VIEW_FUNC = 'spec'
 
 swaggerui_blueprint = get_swaggerui_blueprint(
     api_view_func=API_VIEW_FUNC
