@@ -38,11 +38,29 @@ PORTAL.UTILS = function() {
 		}
 		return $.param(resultArray);
 	};
-	
+
+	/*
+	 * @param {Array of Object containing name and value properties} queryParamArray
+	 * @returns {Object} where the properties are the name property from queryParamArray. If the same name
+	 * property appears in queryParamArray, it's values are concatenated in the property value. If a value contains
+	 * semicolon separated values, these are also concatenated in the property value.
+	 */
 	self.getQueryParamJson = function(queryParamArray) {
+		var resultArray = [];
 		var result = {};
 
-		_.chain(queryParamArray) 
+		// Handles splitting semicolon separated values into separate name-value pairs
+		_.each(queryParamArray, function(param) {
+			var values = param.value.split(';');
+			_.each(values, function(value) {
+				resultArray.push({
+					name: param.name,
+					value : value
+				});
+			});
+		});
+
+		_.chain(resultArray)
 			.groupBy(function(param) {
 				return param.name;
 			})
