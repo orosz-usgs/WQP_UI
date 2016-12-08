@@ -90,7 +90,7 @@ describe ('Tests for PORTAL.VIEWS.siteMapView', function() {
 		expect(siteMapRenderSpy).toHaveBeenCalled();
 	});
 
-	it('Expects that the legend container visibility is toggled whent the show-hide-toggle is clicked', function() {
+	it('Expects that the legend container visibility is toggled when the show-hide-toggle is clicked', function() {
 		var $legendContainer = $testDiv.find('#query-map-legend-div');
 		expect($legendContainer.is(':visible')).toBe(false);
 

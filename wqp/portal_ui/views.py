@@ -156,6 +156,7 @@ def sites_geoserverproxy(op):
     target_url = app.config['SITES_MAP_GEOSERVER_ENDPOINT'] + '/' + op
     return geoserver_proxy_request(target_url, proxy_cert_verification)
 
+
 @portal_ui.route('/crossdomain.xml')
 def crossdomain():
     xml = render_template('crossdomain.xml')
@@ -365,7 +366,6 @@ def rebuild_site_cache(provider_id=None):
         return str(sites)
 
 
-
 @portal_ui.route('/sites_cache_task/<provider_id>', methods=['POST'])
 def sitescachetask(provider_id):
     providers = generate_provider_list(code_endpoint)['providers']
@@ -374,8 +374,9 @@ def sitescachetask(provider_id):
     redis_db = generate_redis_db_number(provider_id)
     task = generate_site_list_from_streamed_tsv_async.apply_async(args=[base_url, redis_config,
                                                                           provider_id, redis_db])
-    return jsonify({}), 202, {'Location': url_for('portal_ui.taskstatus',
-                                                  task_id=task.id)}
+    return jsonify(Location=url_for('portal_ui.taskstatus', task_id=task.id)), 202
+
+
 @portal_ui.route('/status/<task_id>')
 def taskstatus(task_id):
     task = generate_site_list_from_streamed_tsv_async.AsyncResult(task_id)
@@ -405,6 +406,7 @@ def taskstatus(task_id):
         }
     return jsonify(response)
 
+
 @portal_ui.route('/manage_cache')
 def manage_cache():
     provider_list = ['NWIS','STORET','STEWARDS','BIODATA']
@@ -422,6 +424,7 @@ def manage_cache():
                 load_status['time_human'] = time.humanize()
                 status_list.append(load_status)
     return render_template('cache_manager.html', status=status_list)
+
 
 @portal_ui.route('/robots.txt')
 def robots():

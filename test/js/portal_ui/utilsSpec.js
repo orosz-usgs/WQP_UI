@@ -66,17 +66,18 @@ describe('Test PORTAl.UTILS package', function () {
 		var testArray = [
 			{name : 'statecode', value : 'US:55'},
 			{name : 'statecode', value : 'US:54'},
+			{name : 'huc', value: '0701*;0702*'},
 			{name : 'siteType', value : 'Well'},
 			{name : 'mimeType', value : 'csv'}
 		];
 
 		it('Expects that the calling the function produces the currently encoded json object', function() {
 			var result = PORTAL.UTILS.getQueryParamJson(testArray);
-			expect(result).toEqual({
-				statecode : ['US:55', 'US:54'],
-				siteType : ['Well'],
-				mimeType : ['csv']
-			});
+
+			expect(result.statecode).toEqual(['US:55', 'US:54']);
+			expect(result.siteType).toEqual(['Well']);
+			expect(result.mimeType).toEqual(['csv']);
+			expect(result.huc).toEqual(['0701*', '0702*']);
 		});
 
 	});
