@@ -85,6 +85,13 @@
 			$.extend(this.wmsParams, getWMSParams(layerParams));
 		},
 
+		/*
+		 * Redraws the layer to match the new layerParams
+		 * @param {Object} layerParams -
+	 	 * 		@prop {String} displayBy - spatial feature
+	 	 * 		@prop {String} timeSpan - Allowed values: past_12_months, past_60_months, all_time
+	 	 * 		@prop {String} dataSource - Allowed values: storet, nwis, all.
+		 */
 		updateLayerParams : function(layerParams) {
 			this.setParams(getWMSParams(layerParams));
 		},
@@ -105,7 +112,11 @@
 		},
 
 		/*
+		 * Retrieves using GetFeature service, the feature located at atLatLng
+		 * @param {L.LatLng} atLatLng
 		 * @returns {Jquery.Promise}
+		 * 		@resolve - If the GetFeature request succeeds resolve with the standard $.ajax success parameters.
+		 * 	 	@reject - If the request fails, reject with the standard $.ajax error parameters
 		 */
 		fetchFeatureAtLocation : function(atLatLng) {
 			return $.ajax({

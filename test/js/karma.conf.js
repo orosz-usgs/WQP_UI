@@ -27,7 +27,6 @@ module.exports = function(config) {
         'wqp/bower_components/leaflet-providers/leaflet-providers.js',
         'wqp/bower_components/esri-leaflet/dist/esri-leaflet.js',
         'wqp/bower_components/Leaflet.EasyButton/src/easy-button.js',
-        'wqp/portal_ui/static/vendor/OpenLayers/OpenLayers.js',
         'test/js/vendor/sinon-1.17.2.js',
         'test/resources/testConfig.js',
         'wqp/portal_ui/static/js/**/*.js',
@@ -38,6 +37,7 @@ module.exports = function(config) {
     // list of files to exclude
     exclude: [
         'wqp/portal_ui/static/js/portalOnReady.js',
+        'wqp/portal_ui/static/js/coverage/coverageOnReady.js',
         'wqp/portal_ui/static/js/angular/**/*.js'
     ],
 
