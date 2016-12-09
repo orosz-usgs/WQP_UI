@@ -107,7 +107,7 @@
 		/*
 		 * @returns {Jquery.Promise}
 		 */
-		fetchFeatureInBBox : function(bounds) {
+		fetchFeatureAtLocation : function(atLatLng) {
 			return $.ajax({
 				url : Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wfs',
 				method: 'GET',
@@ -118,8 +118,7 @@
 					typeNames: this.wmsParams.layers,
 					VIEWPARAMS: this.wmsParams.VIEWPARAMS,
 					outputFormat: 'application/json',
-					bbox: WQP.L.Util.toBBoxString(bounds),
-					count: 1
+					cql_filter : 'CONTAINS(GEOM, POINT (' + atLatLng.lat + ' ' + atLatLng.lng + '))'
 				}
 			});
 		}
