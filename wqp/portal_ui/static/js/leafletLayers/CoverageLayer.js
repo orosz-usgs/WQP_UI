@@ -2,7 +2,6 @@
 /* global L */
 /* global $ */
 /* global Config */
-/* global WQP */
 
 (function() {
 	"use strict";
@@ -115,11 +114,13 @@
 		 * Retrieves using GetFeature service, the feature located at atLatLng
 		 * @param {L.LatLng} atLatLng
 		 * @returns {Jquery.Promise}
-		 * 		@resolve - If the GetFeature request succeeds resolve with the standard $.ajax success parameters.
+		 * 		@resolve - If the GetFeature request succeeds resolve with response. If only EPA or NWIS are
+		 * 			requested, the response will only contain the DISCRETE_SAMPLE_COUNT.
 		 * 	 	@reject - If the request fails, reject with the standard $.ajax error parameters
 		 */
 		fetchFeatureAtLocation : function(atLatLng) {
-			return $.ajax({
+			var deferred = $.Deferred();
+			$.ajax({
 				url : Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wfs',
 				method: 'GET',
 				data: {
@@ -130,8 +131,25 @@
 					VIEWPARAMS: this.wmsParams.VIEWPARAMS,
 					outputFormat: 'application/json',
 					cql_filter : 'CONTAINS(GEOM, POINT (' + atLatLng.lat + ' ' + atLatLng.lng + '))'
-				}
+				},
+				success : function(resp) {
+					if ((this.wmsParams.VIEWPARAMS.search(VIEWPARAMS_SOURCE.nwis) !== -1) ||
+						(this.wmsParams.VIEWPARAMS.search(VIEWPARAMS_SOURCE.storet) !== -1)) {
+						resp.features = _.map(resp.features, function(feature) {
+							delete feature.properties.EPA_DISCRETE_SAMPLE_COUNT;
+							delete feature.properties.NWIS_DISCRETE_SAMPLE_COUNT;
+							return feature;
+						});
+					}
+					deferred.resolve(resp);
+				},
+				error : function(jqXHR, status, error) {
+					deferred.reject(jqXHR, status, error);
+				},
+				context : this
 			});
+
+			return deferred.promise();
 		}
 	});
 
