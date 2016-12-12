@@ -9,8 +9,8 @@ var COVERAGE = COVERAGE || {};
 /*
  * @param {Object} options
  * 		@prop {String} mapDivId - Div where map will be rendered
- * 	    @prop {Jquery element} $legendImg - image element which will contain the legend
- * 	    @prop {Jquery element} $loadingIndicator - element then will be shown while the data layer is loaded.
+ * 		@prop {Jquery element} $legendImg - image element which will contain the legend
+ * 		@prop {Jquery element} $loadingIndicator - element then will be shown while the data layer is loaded.
  * 		@prop {Object} layerParams -
  * 	 		@prop {String} displayBy - spatial feature
  *	 		@prop {String} timeSpan - Allowed values: past_12_months, past_60_months, all_time
