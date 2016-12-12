@@ -102,7 +102,6 @@ COVERAGE.coverageMap = function(options) {
 				if (resp.features.length > 0) {
 					context = resp.features[0].properties;
 					context.title = getTitle(resp.features[0].properties);
-					context.showOnlyDiscrete =
 					content = DIALOG_TEMPLATE(context);
 				}
 				else {
