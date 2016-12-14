@@ -37,7 +37,7 @@ proxy_cert_verification = app.config.get('PROXY_CERT_VERIFY', False)
 @portal_ui.route('/', endpoint='home-canonical')
 def home():
     if request.path == '/index.jsp' or request.path == '/index/':
-        return redirect(url_for('home-canonical')), 301
+        return redirect(url_for('portal_ui.home-canonical')), 301
     return render_template('index.html')
  
 
@@ -374,7 +374,9 @@ def sitescachetask(provider_id):
     redis_db = generate_redis_db_number(provider_id)
     task = generate_site_list_from_streamed_tsv_async.apply_async(args=[base_url, redis_config,
                                                                           provider_id, redis_db])
-    return jsonify(Location=url_for('portal_ui.taskstatus', task_id=task.id)), 202
+    response_content = {'Location': url_for('portal_ui.taskstatus', task_id=task.id)}
+    # passing the content after the response code sets a custom header, which the task status javascript needs
+    return jsonify(response_content), 202, response_content
 
 
 @portal_ui.route('/status/<task_id>')
