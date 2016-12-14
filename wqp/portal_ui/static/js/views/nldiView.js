@@ -383,7 +383,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		map = new MapWithSingleClickHandler(options.mapDivId, {
 			center: [37.0, -100.0],
 			zoom : 3,
-			layers : [baseLayers['World Gray'], hydroLayer, nhdlPlusFlowlineLayer],
+			layers : [baseLayers['World Topo'], hydroLayer, nhdlPlusFlowlineLayer],
 			zoomControl : false
 		});
 

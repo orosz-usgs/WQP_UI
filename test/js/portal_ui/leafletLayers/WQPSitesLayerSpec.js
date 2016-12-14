@@ -14,7 +14,7 @@ describe('leafletLayers.WQPSitesLayer', function() {
 		});
 
 		it('Expects that the layer created is an extension of L.TileLayer.WMS', function() {
-			var queryParamArray = [{name : 'staticode', value : 'US:55'}];
+			var queryParamArray = [{name : 'statecode', value : 'US:55'}];
 			L.wqpSitesLayer(queryParamArray, {});
 
 			expect(L.TileLayer.WMS.prototype.initialize).toHaveBeenCalled();

@@ -57,10 +57,10 @@ bundles = {
         filters='jsmin',
         output='gen/portal.js'),
     'coverage_js' : Bundle(
-        'portal_ui/js/MapConfig.js',
-        'portal_ui/js/map_utils.js',
-        'portal_ui/js/coverage_map_config.js',
-        'portal_ui/js/coverage_map.js',
+        'portal_ui/js/LeafletMixins/SingleClickEventHandlerMixin.js',
+        'portal_ui/js/leafletLayers/CoverageLayer.js',
+        'portal_ui/js/coverage/coverageMap.js',
+        'portal_ui/js/coverage/coverageOnReady.js',
         filters='jsmin',
         output='gen/coverage.js')
 }
