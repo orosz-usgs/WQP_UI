@@ -6,6 +6,7 @@
 
 //This example uses leaflet to render maps.  Learn more about leaflet at http://leafletjs.com/
 var map = L.map('sites_map');
+console.log(map);
 // leaflet providers is a simple way to add a variety of free basemaps to a map.
 // learn more here: https://github.com/leaflet-extras/leaflet-providers
 var basemapTiles = L.tileLayer.provider('Esri.WorldGrayCanvas');
@@ -23,7 +24,7 @@ L.tileLayer.wms('https://cida.usgs.gov/nwc/geoserver/gwc/service/wms',
 ).addTo(map);
 
 
-map.setView([{{ site['LatitudeMeasure'] }} , {{ site['LongitudeMeasure'] }}], 10);
+map.setView([site['LatitudeMeasure'], site['LongitudeMeasure']], 10);
 
 var all_extents = {
                 "features": [],
@@ -110,11 +111,11 @@ function addLineDataToMap(data, map, style) {
 }
 
 
-var nldiURL = "{{ config.NLDI_SERVICES_ENDPOINT }}";
+var nldiURL = config.NLDI_SERVICES_ENDPOINT;
 var f = 'wqp';
 var e='UT';
 var g = 'DM';
-var c='{{ site['MonitoringLocationIdentifier'] }}';
+var c=site['MonitoringLocationIdentifier'];
 var d='16.1';
 var wqpURL_UT = nldiURL+f+"/"+c+"/navigate/"+e+"/wqp";
 var wqpURL_DM = nldiURL+f+"/"+c+"/navigate/"+g+"/wqp";
