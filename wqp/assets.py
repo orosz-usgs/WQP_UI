@@ -33,6 +33,8 @@ bundles = {
         'portal_ui/js/views/portalViews.js',
         'portal_ui/js/portalOnReady.js',
         'portal_ui/js/providers.js',
+        'portal_ui/js/providerSiteMap.js',
+        'portal_ui/js/providerSitesMap.js',
         'portal_ui/js/portalModels.js',
         'portal_ui/js/nldiModel.js',
         'portal_ui/js/views/downloadFormView.js',
