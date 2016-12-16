@@ -1,12 +1,13 @@
 /* jslint browser: true */
 /* global L */
 /* global Handlebars */
+/* global Config */
 /* global _ */
 /* global $ */
 
 //This example uses leaflet to render maps.  Learn more about leaflet at http://leafletjs.com/
 var map = L.map('sites_map');
-console.log(map);
+var site = $.parseJSON(Config.site);
 // leaflet providers is a simple way to add a variety of free basemaps to a map.
 // learn more here: https://github.com/leaflet-extras/leaflet-providers
 var basemapTiles = L.tileLayer.provider('Esri.WorldGrayCanvas');
@@ -22,9 +23,8 @@ L.tileLayer.wms('https://cida.usgs.gov/nwc/geoserver/gwc/service/wms',
 		opacity : 0.5
 	}
 ).addTo(map);
-
-
-map.setView([site['LatitudeMeasure'], site['LongitudeMeasure']], 10);
+console.log(Config);
+map.setView([site.LatitudeMeasure, site.LongitudeMeasure], 10);
 
 var all_extents = {
                 "features": [],
@@ -78,14 +78,40 @@ function addPointDataToMap(data, map, markerOptions) {
     map.addLayer(markers);
 }
 
+
+var getParametersFromPath = function() {
+    var pathname;
+    var parameters;
+    var provider;
+    var organization;
+    var siteId;
+
+    pathname = window.location.pathname.split('/');
+    console.log(pathname)
+    provider = pathname[2];
+    organization = pathname[3];
+    siteId = pathname[4];
+    parameters = {
+        providers : provider,
+        siteid : siteId,
+        organization : organization
+        };
+    console.log(parameters);
+    return parameters;
+};
+
+
 function onEachPointFeature(feature, layer) {
         var parser = document.createElement('a');
         parser.href =  feature.properties.uri;
+        var localBaseUrl = Config.localBaseUrl;
+        console.log(localBaseUrl);
         var popupText = "Data Source: " + feature.properties.source
             + "<br>Data Source Name: " + feature.properties.sourceName
             + "<br>Station Name: " + feature.properties.name
             + "<br>Station ID: " + feature.properties.identifier
-            + "<br>More Station Data: " + '<a href="{{ config.LOCAL_BASE_URL }}'+parser.pathname+'">Go to site page</a>';
+            + "<br>More Station Data: " + '<a href="' + localBaseUrl + parser.pathname + '">Go to site page</a>';;
+        console.log(popupText);
         layer.bindPopup(popupText);
         }
 
@@ -111,7 +137,7 @@ function addLineDataToMap(data, map, style) {
 }
 
 
-var nldiURL = config.NLDI_SERVICES_ENDPOINT;
+var nldiURL = Config.NLDI_SERVICES_ENDPOINT;
 var f = 'wqp';
 var e='UT';
 var g = 'DM';
