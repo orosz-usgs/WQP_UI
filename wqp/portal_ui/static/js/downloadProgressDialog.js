@@ -38,8 +38,6 @@ PORTAL.VIEWS.downloadProgressDialog = function (el) {
 		}
 	};
 
-	var opKind;
-
 	var countsHbTemplate = Handlebars.compile('Your query will return ' +
 		'{{#if total.results}} <b>{{total.results}}</b> sample results from {{/if}}' +
 		'{{#if total.activities }} <b>{{total.activities}}</b> activity results from {{/if}}' +
@@ -54,6 +52,8 @@ PORTAL.VIEWS.downloadProgressDialog = function (el) {
 	var buttonHtml = function (id, label) {
 		return '<button id="' + id + '" type="button" class="btn btn-default">' + label + '</button>';
 	};
+
+	var opKind; // Will hold the current state of the type of download requested.
 
 	that.show = function (thisOpKind, dialogMessage) {
 		var message = (dialogMessage) ? dialogMessage : 'Validating query ... Please wait.';
