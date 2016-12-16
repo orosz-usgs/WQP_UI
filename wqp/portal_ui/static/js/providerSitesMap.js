@@ -1,6 +1,7 @@
 /* jslint browser: true */
 /* global L */
 /* global Handlebars */
+/* global Config */
 /* global _ */
 /* global $ */
 
@@ -11,9 +12,6 @@ var map = L.map('sites_map');
 var basemapTiles = L.tileLayer.provider('Esri.WorldTopoMap');
 basemapTiles.addTo(map);
 map.setView([35.9908385, -78.9005222], 3);
-
-
-
 
 
 //function to return a color based on a value associated with each feature.
@@ -52,6 +50,7 @@ function setPopupValue(feature, layer) {
 // actually adding the data to the map.
 //learn more about this here:
 function addDataToMap(data, map) {
+	console.log("Adding data to map");
     var markers = L.markerClusterGroup({chunkedLoading:true, spiderfyDistanceMultiplier:3});
     var dataLayer = L.geoJson(data, {
         onEachFeature: setPopupValue,
@@ -72,5 +71,33 @@ function addDataToMap(data, map) {
     map.fitBounds(L.geoJson(data).getBounds());
 }
 
-var siteData = {{ sites_geojson|tojson }};
-addDataToMap(siteData, map);
+var siteEndpoint = Config.SEARCH_QUERY_ENDPOINT;
+console.log(siteEndpoint);
+
+var generateMap = function(search_endpoint, parameters) {
+	var requestUrl;
+
+	parameters.mimeType = 'geojson';
+	parameters.sorted = 'no';
+	parameters.urlpage = 'yes';
+	requestUrl = search_endpoint + "Station/search/";
+	$.getJSON(requestUrl, parameters, function(siteData){
+		console.log('Generating Map!');
+		addDataToMap(siteData, map);
+	});
+};
+
+var parsePath = function() {
+	var pathname = window.location.pathname;
+	var splitPath = pathname.split('/');
+	var providerName = splitPath[2];
+	var orgName = splitPath[3];
+	return {providers : providerName, organization : orgName};
+}
+
+var parameters = parsePath();
+console.log(parameters);
+generateMap(siteEndpoint, parameters);
+
+//var siteData = {{ sites_geojson|tojson }};
+//addDataToMap(siteData, map);

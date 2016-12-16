@@ -35,10 +35,8 @@
     <script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet/dist/leaflet.js') }}"></script>
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet-providers/leaflet-providers.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet.markercluster/dist/leaflet.markercluster.js') }}"></script>
-    <script type="text/javascript"
-			src="{{ url_for('bower.static', filename='esri-leaflet/dist/esri-leaflet.js') }}"></script>
 
-    {% assets "portal_js" %}
+    {% assets "sites_map" %}
 		<script type="text/javascript" src="{{ ASSET_URL }}"></script>
 	{% endassets %}
 

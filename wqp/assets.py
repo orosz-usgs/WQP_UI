@@ -33,8 +33,6 @@ bundles = {
         'portal_ui/js/views/portalViews.js',
         'portal_ui/js/portalOnReady.js',
         'portal_ui/js/providers.js',
-        'portal_ui/js/providerSiteMap.js',
-        'portal_ui/js/providerSitesMap.js',
         'portal_ui/js/portalModels.js',
         'portal_ui/js/nldiModel.js',
         'portal_ui/js/views/downloadFormView.js',
@@ -64,7 +62,15 @@ bundles = {
         'portal_ui/js/coverage/coverageMap.js',
         'portal_ui/js/coverage/coverageOnReady.js',
         filters='jsmin',
-        output='gen/coverage.js')
+        output='gen/coverage.js'),
+    'sites_map': Bundle(
+        'portal_ui/js/providerSitesMap.js',
+        filters='jsmin',
+        output='gen/sitesMap.js'),
+    'site_map': Bundle(
+        'portal_ui/js/providerSiteMap.js',
+        filters='jsmin',
+        output='gen/siteMap.js')
 }
     
 assets = Environment(app)

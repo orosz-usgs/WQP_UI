@@ -98,7 +98,7 @@ To download the metadata about this site along with water quality data, go to th
     <script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet.markercluster/dist/leaflet.markercluster.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('bower.static', filename='esri-leaflet/dist/esri-leaflet.js') }}"></script>
 
-	{% assets "portal_js" %}
+	{% assets "site_map" %}
 		<script type="text/javascript" src="{{ ASSET_URL }}"></script>
 	{% endassets %}
 {% endblock body_page_script %}
