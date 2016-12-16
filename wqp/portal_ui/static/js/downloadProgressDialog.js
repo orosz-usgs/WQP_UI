@@ -14,7 +14,7 @@ PORTAL.VIEWS.downloadProgressDialog = function(el) {
     var totalCountProp = {
     	'Station' : 'sites',
 		'Result' : 'results',
-		'Activity' : 'activites'
+		'Activity' : 'activities'
 	};
 
     // constants for the two different download statuses
@@ -32,7 +32,7 @@ PORTAL.VIEWS.downloadProgressDialog = function(el) {
             title : 'Download Status',
             continueMessage : 'download the data',
             cancelDownload : function(counts, fileFormat) {
-                 return (fileFormat === 'xlsx') &&  (parseInt(counts.split(',').join('')) > 1048575);
+				return (counts !== 0) && (fileFormat === 'xlsx') &&  (parseInt(counts.split(',').join('')) > 1048575);
             },
             cancelMessage : 'Your query is returning more than 1,048,575 results which exceeds Excel\'s limit.'
         }
