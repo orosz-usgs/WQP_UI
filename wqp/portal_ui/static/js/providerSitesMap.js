@@ -36,11 +36,13 @@ function getValue(x) {
 //The text is rendered as html and style with CSS3, so you can do pretty much anything to want in here-
 //this example is a very simple list.
 function setPopupValue(feature, layer) {
+			var localBaseUrl = window.location.href;
+			console.log(localBaseUrl);
             var popupText = "Organization Name: " + feature.properties.OrganizationFormalName
                 + "<br>Station Name: " + feature.properties.MonitoringLocationName
                 + "<br>Station ID: " + feature.properties.MonitoringLocationIdentifier
                 + "<br>Station Type: " + feature.properties.ResolvedMonitoringLocationTypeName
-                +'<br>Station Details:  <a href="{{ config.LOCAL_BASE_URL }}{{ request.path }}' + feature.properties.MonitoringLocationIdentifier + '/">Go to station page.</a>';
+                +'<br>Station Details:  <a href="' + localBaseUrl + feature.properties.MonitoringLocationIdentifier + '/">Go to station page.</a>';
             layer.bindPopup(popupText);
             }
 
