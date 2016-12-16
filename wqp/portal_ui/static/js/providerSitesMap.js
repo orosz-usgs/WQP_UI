@@ -97,9 +97,12 @@ var parsePath = function() {
 	return {providers : providerName, organization : orgName};
 }
 
-var parameters = parsePath();
-console.log(parameters);
-generateMap(siteEndpoint, parameters);
+//var parameters = parsePath();
+//console.log(parameters);
+// generateMap(siteEndpoint, parameters);
 
-//var siteData = {{ sites_geojson|tojson }};
-//addDataToMap(siteData, map);
+console.log(Config.siteData);
+console.log(Config.siteData.slice(12116680, 12116880));
+var siteData = $.parseJSON(Config.siteData);
+
+addDataToMap(siteData, map);
