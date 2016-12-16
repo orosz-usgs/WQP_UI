@@ -1,3 +1,8 @@
+/* jslint browser: true */
+/* global Handlebars */
+/* global _ */
+/* global $ */
+
 var PORTAL = PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 
@@ -5,6 +10,12 @@ PORTAL.VIEWS.downloadProgressDialog = function(el) {
 	"use strict";
 
     var that = {};
+
+    var totalCountProp = {
+    	'Station' : 'sites',
+		'Result' : 'results',
+		'Activity' : 'activites'
+	};
 
     // constants for the two different download statuses
     var DIALOG = {
@@ -29,12 +40,23 @@ PORTAL.VIEWS.downloadProgressDialog = function(el) {
 
     var opKind;
 
+    var countsHbTemplate = Handlebars.compile('Your query will return ' +
+		'{{#if total.results}} <b>{{total.results}}</b> sample results from {{/if}}' +
+		'{{#if total.activities }} <b>{{total.activities}}</b> activity results from {{/if}}' +
+		' <b>{{total.sites}}</b> sites:<br />' +
+		'{{#each providers}} From {{id}}: ' +
+		'{{#if ../total.results}}{{counts.results}} sample results from {{/if}}' +
+		'{{#if ../total.activities}}{{counts.activities}} activity results from {{/if}}' +
+		'{{counts.sites}} sites <br/>' +
+		'{{/each}}'
+	);
+
     var buttonHtml = function(id, label) {
         return '<button id="' + id + '" type="button" class="btn btn-default">' + label + '</button>';
     };
 
     that.show = function(thisOpKind, dialogMessage) {
-		var message = (dialogMessage) ? dialogMessage : 'Validating query ... Please wait.'
+		var message = (dialogMessage) ? dialogMessage : 'Validating query ... Please wait.';
         opKind = thisOpKind;
         
         el.find('.modal-footer').html('');
@@ -48,31 +70,20 @@ PORTAL.VIEWS.downloadProgressDialog = function(el) {
     };
     
 	that.updateProgress = function(counts, resultType, fileFormat, continueFnc) {
-		var i;
-		var id;
-		
-		var resultsReturned = resultType !== 'Station';
-		var totalCount = resultsReturned ? counts.total.results : counts.total.sites;
-	
+		var totalCount = counts.total[totalCountProp[resultType]];
+
 		var getCountMessage = function(){
 			// Return a string showing the site counts, formatted to be shown in html.
-			var message = 'Your query will return ';
-			var providers = PORTAL.MODELS.providers.getIds();
-			if (resultsReturned) {
-				message += '<b>' + counts.total.results + '</b> sample results from <b>' + counts.total.sites + '</b> sites:<br />';
-				for (i = 0; i < providers.length; i++) {
-					id = providers[i];
-					message += 'From ' + id + ': ' + counts[id].results + ' sample results from ' + counts[id].sites + ' sites<br />';
-				}
-			}
-			else {
-				message += counts.total.sites + ':<br />';
-				for (i = 0; i < providers.length; i++) {
-					id = providers[i];
-					message += 'From ' + id + ': ' + counts[id].sites + '<br/>';
-				}
-			}
-			return message;
+			var context = {
+				total : counts.total
+			};
+			context.providers = _.map(PORTAL.MODELS.providers.getIds(), function(provider) {
+				return {
+					id : provider,
+					counts : counts[provider]
+				};
+			});
+			return countsHbTemplate(context);
 		};
 		
 
