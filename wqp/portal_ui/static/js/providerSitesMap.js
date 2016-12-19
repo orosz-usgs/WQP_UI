@@ -51,7 +51,6 @@ function setPopupValue(feature, layer) {
 // actually adding the data to the map.
 //learn more about this here:
 function addDataToMap(data, map) {
-	console.log("Adding data to map");
 	var markers = L.markerClusterGroup({chunkedLoading:true, spiderfyDistanceMultiplier:3});
 	var dataLayer = L.geoJson(data, {
 		onEachFeature: setPopupValue,
