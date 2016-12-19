@@ -7,7 +7,7 @@
 
 //This example uses leaflet to render maps.  Learn more about leaflet at http://leafletjs.com/
 var map = L.map('sites_map');
-var site = $.parseJSON(Config.site);
+var site = Config.site;
 // leaflet providers is a simple way to add a variety of free basemaps to a map.
 // learn more here: https://github.com/leaflet-extras/leaflet-providers
 var basemapTiles = L.tileLayer.provider('Esri.WorldGrayCanvas');
@@ -110,7 +110,7 @@ function onEachPointFeature(feature, layer) {
             + "<br>Data Source Name: " + feature.properties.sourceName
             + "<br>Station Name: " + feature.properties.name
             + "<br>Station ID: " + feature.properties.identifier
-            + "<br>More Station Data: " + '<a href="' + localBaseUrl + parser.pathname + '">Go to site page</a>';;
+            + "<br>More Station Data: " + '<a href="' + localBaseUrl + parser.pathname + '">Go to site page</a>';
         console.log(popupText);
         layer.bindPopup(popupText);
         }

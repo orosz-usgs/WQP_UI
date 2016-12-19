@@ -38,11 +38,12 @@ function getValue(x) {
 function setPopupValue(feature, layer) {
 			var localBaseUrl = window.location.href;
 			console.log(localBaseUrl);
+			console.log(Config.localBaseUrl);
             var popupText = "Organization Name: " + feature.properties.OrganizationFormalName
                 + "<br>Station Name: " + feature.properties.MonitoringLocationName
                 + "<br>Station ID: " + feature.properties.MonitoringLocationIdentifier
                 + "<br>Station Type: " + feature.properties.ResolvedMonitoringLocationTypeName
-                +'<br>Station Details:  <a href="' + localBaseUrl + feature.properties.MonitoringLocationIdentifier + '/">Go to station page.</a>';
+                +'<br>Station Details:  <a href="' + 'http://127.0.0.1:5050' + feature.properties.MonitoringLocationIdentifier + '/">Go to station page.</a>';
             layer.bindPopup(popupText);
             }
 
@@ -73,36 +74,5 @@ function addDataToMap(data, map) {
     map.fitBounds(L.geoJson(data).getBounds());
 }
 
-var siteEndpoint = Config.SEARCH_QUERY_ENDPOINT;
-console.log(siteEndpoint);
-
-var generateMap = function(search_endpoint, parameters) {
-	var requestUrl;
-
-	parameters.mimeType = 'geojson';
-	parameters.sorted = 'no';
-	parameters.urlpage = 'yes';
-	requestUrl = search_endpoint + "Station/search/";
-	$.getJSON(requestUrl, parameters, function(siteData){
-		console.log('Generating Map!');
-		addDataToMap(siteData, map);
-	});
-};
-
-var parsePath = function() {
-	var pathname = window.location.pathname;
-	var splitPath = pathname.split('/');
-	var providerName = splitPath[2];
-	var orgName = splitPath[3];
-	return {providers : providerName, organization : orgName};
-}
-
-//var parameters = parsePath();
-//console.log(parameters);
-// generateMap(siteEndpoint, parameters);
-
-console.log(Config.siteData);
-console.log(Config.siteData.slice(12116680, 12116880));
-var siteData = $.parseJSON(Config.siteData);
-
+var siteData = Config.siteData;
 addDataToMap(siteData, map);
