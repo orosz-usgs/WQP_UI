@@ -65,6 +65,7 @@ bundles = {
         output='gen/coverage.js'),
     'sites_map': Bundle(
         'portal_ui/js/providerSitesMap.js',
+        'portal_ui/js/providerSitesMapOnReady.js',
         filters='jsmin',
         output='gen/sitesMap.js'),
     'site_map': Bundle(
