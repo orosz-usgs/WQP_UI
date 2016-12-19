@@ -27,12 +27,12 @@ console.log(Config);
 map.setView([site.LatitudeMeasure, site.LongitudeMeasure], 10);
 
 var all_extents = {
-                "features": [],
-                "properties": {
+				"features": [],
+				"properties": {
 					"title": "all wqp extents"
-                },
-                "type": "FeatureCollection"
-            };
+				},
+				"type": "FeatureCollection"
+			};
 
 var geojsonWqpMarkerOptions = {
 radius: 4,
@@ -67,73 +67,49 @@ var upstreamLineStyle = {
 };
 
 function addPointDataToMap(data, map, markerOptions) {
-    var markers = L.markerClusterGroup({chunkedLoading:true, spiderfyDistanceMultiplier:3, maxClusterRadius:15});
-    var pointLayer = L.geoJson(data, {
-    onEachFeature: onEachPointFeature,
-    pointToLayer: function (feature, latlng) {
-    return L.circleMarker(latlng, markerOptions);
-    }
-    });
-    markers.addLayer(pointLayer);
-    map.addLayer(markers);
+	var markers = L.markerClusterGroup({chunkedLoading:true, spiderfyDistanceMultiplier:3, maxClusterRadius:15});
+	var pointLayer = L.geoJson(data, {
+	onEachFeature: onEachPointFeature,
+	pointToLayer: function (feature, latlng) {
+	return L.circleMarker(latlng, markerOptions);
+	}
+	});
+	markers.addLayer(pointLayer);
+	map.addLayer(markers);
 }
 
 
-var getParametersFromPath = function() {
-    var pathname;
-    var parameters;
-    var provider;
-    var organization;
-    var siteId;
-
-    pathname = window.location.pathname.split('/');
-    console.log(pathname)
-    provider = pathname[2];
-    organization = pathname[3];
-    siteId = pathname[4];
-    parameters = {
-        providers : provider,
-        siteid : siteId,
-        organization : organization
-        };
-    console.log(parameters);
-    return parameters;
-};
-
-
 function onEachPointFeature(feature, layer) {
-        var parser = document.createElement('a');
-        parser.href =  feature.properties.uri;
-        var localBaseUrl = Config.localBaseUrl;
-        console.log(localBaseUrl);
-        var popupText = "Data Source: " + feature.properties.source
-            + "<br>Data Source Name: " + feature.properties.sourceName
-            + "<br>Station Name: " + feature.properties.name
-            + "<br>Station ID: " + feature.properties.identifier
-            + "<br>More Station Data: " + '<a href="' + localBaseUrl + parser.pathname + '">Go to site page</a>';
-        console.log(popupText);
-        layer.bindPopup(popupText);
-        }
+		var parser = document.createElement('a');
+		parser.href =  feature.properties.uri;
+		var localBaseUrl = Config.localBaseUrl;
+		var popupText = "Data Source: " + feature.properties.source
+			+ "<br>Data Source Name: " + feature.properties.sourceName
+			+ "<br>Station Name: " + feature.properties.name
+			+ "<br>Station ID: " + feature.properties.identifier
+			+ "<br>More Station Data: " + '<a href="' + localBaseUrl + parser.pathname + '">Go to site page</a>';
+		layer.bindPopup(popupText);
+		}
 
 function onEachLineFeature(feature, layer) {
-        var popupText = "Data Source: NHD+"
-            + "<br>Reach ComID: " + feature.properties.nhdplus_comid;
-        layer.bindPopup(popupText);
-        }
+		var popupText = "Data Source: NHD+"
+			+ "<br>Reach ComID: " + feature.properties.nhdplus_comid;
+		layer.bindPopup(popupText);
+		}
 
 function addLineDataToMap(data, map, style) {
 
-    var lineLayer = L.geoJson(data, {
-        onEachFeature: onEachLineFeature,
-        style: style
-        });
-    lineLayer.addTo(map);
+	var lineLayer = L.geoJson(data, {
+		onEachFeature: onEachLineFeature,
+		style: style
+		});
+	lineLayer.addTo(map);
 
 
-     for (feature in data.features ) {
-         all_extents.features.push(data.features[feature]);
-     }
-    map.fitBounds(L.geoJson(all_extents).getBounds());
+	 for (feature in data.features ) {
+		 all_extents.features.push(data.features[feature]);
+	 }
+	map.fitBounds(L.geoJson(all_extents).getBounds());
 }
 
 
@@ -153,10 +129,10 @@ console.log(wqpURL_DM);
 //$.get(wqpURL, {}, function(data) { addPointDataToMap(data, map); };);
 console.log("getting sites upstream");
 $.getJSON( wqpURL_Site,{}, function(data) { addPointDataToMap(data, map, geojsonThisSiteMarkerOptions);
-                                            var coord = data.features[0].geometry.coordinates;
-                                            var lalo = L.GeoJSON.coordsToLatLng(coord);
-                                            map.setView(lalo, 10);
-                                            });
+											var coord = data.features[0].geometry.coordinates;
+											var lalo = L.GeoJSON.coordsToLatLng(coord);
+											map.setView(lalo, 10);
+											});
 
 $.getJSON( wqpURL_UT, {distance:d}, function(data) { addPointDataToMap(data, map, geojsonWqpMarkerOptions); });
 console.log("sites added, getting streams upstream");
