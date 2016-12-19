@@ -50,8 +50,9 @@ SITES.sitesMap = function(options) {
 			+ "<br>Station Name: " + feature.properties.MonitoringLocationName
 			+ "<br>Station ID: " + feature.properties.MonitoringLocationIdentifier
 			+ "<br>Station Type: " + feature.properties.ResolvedMonitoringLocationTypeName
-			+'<br>Station Details:  <a href="' + localBaseUrl + '/' + providers + '/' + organization + '/' + feature.properties.MonitoringLocationIdentifier + '/">Go to station page.</a>';
+			+'<br>Station Details:  <a href="' + localBaseUrl + '/provider/' + providers + '/' + organization + '/' + feature.properties.MonitoringLocationIdentifier + '/">Go to station page.</a>';
 		layer.bindPopup(popupText);
+		console.log(popupText);
 	};
 
 	var addDataToMap = function(data) {
