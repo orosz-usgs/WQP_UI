@@ -22,6 +22,15 @@ SITE.siteMap = function(options) {
 		url: "http://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer"
 	});
 	esriHydroLayer.addTo(map);
+
+	var nhdplusLayer = L.tileLayer.wms('https://cida.usgs.gov/nwc/geoserver/gwc/service/wms', {
+		layers : 'nhdplus:nhdflowline_network',
+		format : 'image/png',
+		transparent : true,
+		opacity : 0.5
+	});
+	nhdplusLayer.addTo(map);
+
 	map.setView([site.LatitudeMeasure, site.LongitudeMeasure], 10);
 	return map;
 };
