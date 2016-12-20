@@ -49,7 +49,7 @@ class TestGetSiteFeature(TestCase):
             'SiteTypeCode': 'ST',
             'SiteType': 'Stream',
             'siteId' : 'USGS-12345',
-            'url': 'http://waterdata.usgs.gov/nwis/inventory?agency_code=USGS&site_no=12345'
+            'url': 'https://waterdata.usgs.gov/nwis/inventory?agency_code=USGS&site_no=12345'
         }
         result = geojson_loads(geojson_dumps(get_site_feature(station)))
 
@@ -115,7 +115,7 @@ class TestSiteGeoJsonGeneatorTestCase(TestCase):
         site1 = '\t'.join(['USGS', '00336840', 'BISCUIT BROOK NTN SITE', 'AT', '41.9942589', '-74.5032094',
                            'S', 'NAD83', '2087', '4.3', 'NAVD88', '02040104'])
 
-        m.get('http://waterservices.usgs.gov/nwis/site/', text='\n'.join([headers, 'skip this line', site1]))
+        m.get('https://waterservices.usgs.gov/nwis/site/', text='\n'.join([headers, 'skip this line', site1]))
 
         result = tuple(site_geojson_generator([{'hucCd': '01'}]))
         feature = geojson_loads(''.join(result).replace('\n', ''))
@@ -131,7 +131,7 @@ class TestSiteGeoJsonGeneatorTestCase(TestCase):
         site2 = '\t'.join(['USGS', '01300450', 'BEAVER SWAMP BROOK AT RYE NY	ST', '40.98', '-73.7019444',
                            'S', 'NAD83', '49', '4.3', 'NAVD88', '02030102'])
 
-        m.get('http://waterservices.usgs.gov/nwis/site/', [{'text': '\n'.join([headers, 'skip this line', site1])},
+        m.get('https://waterservices.usgs.gov/nwis/site/', [{'text': '\n'.join([headers, 'skip this line', site1])},
                                                            {'text': '\n'.join([headers, 'skip this line', site2])}])
 
         result = tuple(site_geojson_generator([{'hucCd': '02'}, {'hucCd': '01'}]))
