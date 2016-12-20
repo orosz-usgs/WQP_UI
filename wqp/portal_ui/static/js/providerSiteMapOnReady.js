@@ -1,7 +1,9 @@
 /* jslint browser: true */
 /* global $ */
 /* global SITE */
+/* global NLDI */
 
 $(document).ready(function() {
-	function addNldiToMap()
+	var map = SITE.siteMap({mapDivId : 'sites_map'});
+	NLDI.overlays(map);
 });
