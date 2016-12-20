@@ -50,7 +50,6 @@ NLDI.overlays = function(map) {
 	var d = '16.1';
 	var distanceParam = {distance : d};
 	var localBaseUrl = Config.localBaseUrl;
-	console.log(map);
 
 	var allExtents = {
 		"features": [],
