@@ -69,6 +69,15 @@ NLDI.overlays = function(map) {
 		fillOpacity: 0.8
 	};
 
+	var geojsonThisSiteMarkerOptions = {
+		radius: 25,
+		fillColor: "#35ECFF",
+		color: "#000",
+		weight: 1,
+		opacity: 1,
+		fillOpacity: 0.8
+	};
+
 	var downstreamLineStyle = {
 		"color": "#41b6c4",
 		"weight": 5,
@@ -99,7 +108,7 @@ NLDI.overlays = function(map) {
 		var pointLayer = L.geoJson(data, {
 			onEachFeature: onEachPointFeature,
 			pointToLayer: function (feature, latlng) {
-			return L.circleMarker(latlng, markerOptions);
+				return L.circleMarker(latlng, markerOptions);
 			}
 		});
 		markers.addLayer(pointLayer);
@@ -140,6 +149,14 @@ NLDI.overlays = function(map) {
 	var wqpUrlDm = nldiUrl + f + "/" + c + "/navigate/" + g + "/wqp";
 	var nhdUrlUt = nldiUrl + f + "/" + c + "/navigate/" + e;
 	var nhdUrlDm = nldiUrl + f + "/" + c + "/navigate/" + g;
+	var wqpUrlSite = nldiUrl + f + "/" + c + "/";
+
+	$.getJSON(wqpUrlSite, {}, function(data) {
+		addPointDataToMap(data, geojsonThisSiteMarkerOptions);
+		var coord = data.features[0].geometry.coordinates;
+		var latlon = L.GeoJSON.coordsToLatLng(coord);
+		map.setView(latlon, 10);
+	});
 
 	var nldiLines = [
 		{url : nhdUrlUt, style : upstreamLineStyle},
