@@ -30,7 +30,8 @@ PORTAL.queryServices = (function () {
 
 		var formatCount = function(countData, key) {
 			var countString = _.has(countData, key) ? countData[key] : '0';
-			return numeral(countString).format('0,0');
+			var result = numeral(countString).format('0,0');
+			return (result === '0') ? 0 : result;
 		};
 
 		$.ajax({
@@ -42,13 +43,15 @@ PORTAL.queryServices = (function () {
 				var result = {
 					total : {
 						sites : formatCount(data, 'Total-Site-Count'),
-						results : formatCount(data, 'Total-Result-Count')
+						results : formatCount(data, 'Total-Result-Count'),
+						activities : formatCount(data, 'Total-Activity-Count')
 					}
 				};
 				_.each(providers, function(provider) {
 					result[provider] = {
 						sites : formatCount(data, provider + '-Site-Count'),
-						results : formatCount(data, provider + '-Result-Count')
+						results : formatCount(data, provider + '-Result-Count'),
+						activities : formatCount(data, provider + '-Activity-Count')
 					};
 				});
 				log.debug('Successfully got counts');

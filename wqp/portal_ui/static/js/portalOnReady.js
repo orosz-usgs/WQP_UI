@@ -1,10 +1,6 @@
 /*jslint browser: true*/
 /* global $*/
-/* global alert */
-/* global _gaq */
 /* global Config */
-/* global IdentifyDialog */
-/* global PortalDataMap */
 /* global log */
 
 var PORTAL = PORTAL || {};

@@ -53,15 +53,18 @@ describe('Tests for PORTAl.VIEWS.downloadProgressDialog', function () {
 			counts = {
 				DS1: {
 					results: '24',
-					sites: '10'
+					sites: '10',
+					activities : 0
 				},
 				DS2: {
 					results: '50',
-					sites: '20'
+					sites: '20',
+					activities : 0
 				},
 				total: {
 					results: '100',
-					sites: '50'
+					sites: '50',
+					activities : 0
 				}
 			};
 		});
@@ -111,15 +114,18 @@ describe('Tests for PORTAl.VIEWS.downloadProgressDialog', function () {
 			counts = {
 				DS1: {
 					results: '24',
-					sites: '10'
+					sites: '10',
+					activities: 0,
 				},
 				DS2: {
 					results: '50',
-					sites: '20'
+					sites: '20',
+					activities : 0,
 				},
 				total: {
 					results: '100',
-					sites: '50'
+					sites: '50',
+					activities : 0
 				}
 			};
 		});
@@ -127,7 +133,8 @@ describe('Tests for PORTAl.VIEWS.downloadProgressDialog', function () {
 		it('Expects when the dialog is for downloads and the fileFormat is not xlsx, that the download is always allowed', function () {
 			counts.total = {
 				sites: '250,001',
-				results: '1,123,456'
+				results: '1,123,456',
+				activities : 0
 			};
 			thisDialog.updateProgress(counts, 'Station', 'csv', continueSpy);
 
@@ -141,7 +148,7 @@ describe('Tests for PORTAl.VIEWS.downloadProgressDialog', function () {
 			expect(continueSpy).toHaveBeenCalledWith('250,001');
 
 			thisDialog.show('download', continueSpy);
-			thisDialog.updateProgress(counts, 'Results', 'tsv', continueSpy);
+			thisDialog.updateProgress(counts, 'Result', 'tsv', continueSpy);
 
 			expect($('.modal-body').html()).toContain('download the data');
 			expect($('#progress-ok-btn').length).toEqual(0);
@@ -157,7 +164,8 @@ describe('Tests for PORTAl.VIEWS.downloadProgressDialog', function () {
 		it('Expects when the dialog is for downloads and the fileFormat is xlsx, that the download is allowed if counts are less than or equal to 1,048,575', function () {
 			counts.total = {
 				sites: '1,048,574',
-				results: '2,000,000'
+				results: '2,000,000',
+				activities : 0
 			};
 			thisDialog.updateProgress(counts, 'Station', 'xlsx', continueSpy);
 
@@ -174,9 +182,10 @@ describe('Tests for PORTAl.VIEWS.downloadProgressDialog', function () {
 		it('Expects when the dialog is for downloads and the fileFormat is xlsx, the download is not allowed if counts are greater than 1048575', function () {
 			counts.total = {
 				sites: '1,048,574',
-				results: '2,000,000'
+				results: '2,000,000',
+				activities : 0
 			};
-			thisDialog.updateProgress(counts, 'Results', 'xlsx', continueSpy);
+			thisDialog.updateProgress(counts, 'Result', 'xlsx', continueSpy);
 
 			expect($('.modal-body').html()).toContain('more than 1,048,575');
 			expect($('#progress-ok-btn').length).toEqual(1);

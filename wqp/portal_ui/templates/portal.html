@@ -400,6 +400,13 @@
 									<input type="radio" class="result-type" id="biosamples" value="Result">
 									<label for="biosamples">Sample results (biological metadata)</label>
 								</li>
+								{% if config.DISABLE_ACTIVITY_DOWNLOAD %}
+								{% else %}
+									<li>
+										<input type="radio" class="result-type" id="activity-input" value="Activity" />
+										<label for="activity-input">Sampling Activity</label>
+									</li>
+								{% endif %}
 							</ul>
 						</div>
 						<div id="download-tabular-data">
@@ -488,6 +495,13 @@
 						<input type="radio" name="resultType" id="dialog-biosamples" value="Result"/>
 						<label for="dialog-biosamples">Sample results with biological metadata</label>
 					</li>
+					{% if config.DISABLE_ACTIVITY_DOWNLOAD %}
+					{% else %}
+						<li>
+							<input type="radio" name="resultType" id="dialog-activities" value="Activity"/>
+							<label for="dialog-activities">Sampling Activity</label>
+						</li>
+					{% endif %}
 				</ul>
 			</div>
 			<div style="display: inline-block;" id="map-info-file-format-div">
