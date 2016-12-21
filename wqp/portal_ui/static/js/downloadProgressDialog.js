@@ -39,12 +39,16 @@ PORTAL.VIEWS.downloadProgressDialog = function (el) {
 	};
 
 	var countsHbTemplate = Handlebars.compile('Your query will return ' +
-		'{{#if total.results}} <b>{{total.results}}</b> sample results from {{/if}}' +
-		'{{#if total.activities }} <b>{{total.activities}}</b> activity results from {{/if}}' +
+		'{{#if isResults}} <b>{{total.results}}</b> sample results from ' +
+		'{{else}}' +
+		'{{#if total.activities }}data on <b>{{total.activities}}</b> sampling activities at {{/if}}' +
+		'{{/if}}' +
 		' <b>{{total.sites}}</b> sites:<br />' +
 		'{{#each providers}} From {{id}}: ' +
-		'{{#if ../total.results}}{{counts.results}} sample results from {{/if}}' +
-		'{{#if ../total.activities}}{{counts.activities}} activity results from {{/if}}' +
+		'{{#if ../isResults}}{{counts.results}} sample results from ' +
+		'{{else}}' +
+		'{{#if ../total.activities}}{{counts.activities}} sampling activities from {{/if}}' +
+		'{{/if}}' +
 		'{{counts.sites}} sites <br/>' +
 		'{{/each}}'
 	);
@@ -75,7 +79,8 @@ PORTAL.VIEWS.downloadProgressDialog = function (el) {
 		var getCountMessage = function () {
 			// Return a string showing the site counts, formatted to be shown in html.
 			var context = {
-				total: counts.total
+				total: counts.total,
+				isResults : resultType === 'Result'
 			};
 			context.providers = _.map(PORTAL.MODELS.providers.getIds(), function (provider) {
 				return {
