@@ -70,6 +70,7 @@ bundles = {
         output='gen/sitesMap.js'),
     'site_map': Bundle(
         'portal_ui/js/providerSiteMap.js',
+        'portal_ui/js/nldiMapping.js',
         'portal_ui/js/providerSiteMapOnReady.js',
         filters='jsmin',
         output='gen/siteMap.js')
