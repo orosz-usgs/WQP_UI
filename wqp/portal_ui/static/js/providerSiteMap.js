@@ -13,7 +13,6 @@ SITE.siteMap = function(options) {
 	var map;
 	var basemapTiles;
 	var site = Config.site;
-
 	map = L.map(mapDivId);
 	basemapTiles = L.tileLayer.provider('Esri.WorldGrayCanvas');
 	basemapTiles.addTo(map);
