@@ -218,7 +218,7 @@ def uri_organization(provider_id, organization_id):
     if provider_id not in providers:
         abort(404)
     org_check = check_org_id(organization_id, code_endpoint)
-    if org_check['status_code'] == 200 and org_check['org_exists'] == False:
+    if org_check['status_code'] == 200 and org_check['org_exists'] is False:
         abort(404)
     rendered_site_template = None
     search_endpoint = base_url + "Station/search/"
@@ -284,7 +284,7 @@ def uris(provider_id, organization_id, site_id):
     if provider_id not in providers:
         abort(404)
     org_check = check_org_id(organization_id, code_endpoint)
-    if org_check['status_code'] == 200 and org_check['org_exists'] == False:
+    if org_check['status_code'] == 200 and org_check['org_exists'] is False:
         abort(404)
     site_data = None
     if redis_config:
@@ -373,7 +373,7 @@ def sitescachetask(provider_id):
         abort(404)
     redis_db = generate_redis_db_number(provider_id)
     task = generate_site_list_from_streamed_tsv_async.apply_async(args=[base_url, redis_config,
-                                                                          provider_id, redis_db])
+                                                                        provider_id, redis_db])
     response_content = {'Location': '/'.join([app.config['LOCAL_BASE_URL'], "status", task.id])}
     # passing the content after the response code sets a custom header, which the task status javascript needs
     return jsonify(response_content), 202, response_content
@@ -411,7 +411,7 @@ def taskstatus(task_id):
 
 @portal_ui.route('/manage_cache')
 def manage_cache():
-    provider_list = ['NWIS','STORET','STEWARDS','BIODATA']
+    provider_list = ['NWIS', 'STORET', 'STEWARDS', 'BIODATA']
     status_list = []
     if redis_config:
         for provider in provider_list:
