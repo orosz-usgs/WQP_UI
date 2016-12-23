@@ -1,6 +1,7 @@
 import arrow
 import cPickle as pickle
 import sys
+from urlparse import urljoin
 
 from flask import render_template, request, make_response, redirect, url_for, abort, Response, jsonify, Blueprint
 import redis
@@ -374,7 +375,7 @@ def sitescachetask(provider_id):
     redis_db = generate_redis_db_number(provider_id)
     task = generate_site_list_from_streamed_tsv_async.apply_async(args=[base_url, redis_config,
                                                                           provider_id, redis_db])
-    response_content = {'Location': app.config['LOCAL_BASE_URL']+"/status/"+task.id}
+    response_content = {'Location': '/'.join([app.config['LOCAL_BASE_URL'], "status", task.id])}
     # passing the content after the response code sets a custom header, which the task status javascript needs
     return jsonify(response_content), 202, response_content
 
