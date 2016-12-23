@@ -1,7 +1,6 @@
 import arrow
 import cPickle as pickle
 import sys
-from urlparse import urljoin
 
 from flask import render_template, request, make_response, redirect, url_for, abort, Response, jsonify, Blueprint
 import redis
