@@ -16,11 +16,8 @@ SITES.sitesMap = function(options) {
 	var localBaseUrl = Config.localBaseUrl;
 	var mapDivId = options.mapDivId;
 	var map;
-	var basemapTiles;
 
-	map = L.map(mapDivId);
-	basemapTiles = L.tileLayer.provider('Esri.WorldTopoMap');
-	basemapTiles.addTo(map);
+	map = MAPS.create(mapDivId, 'Esri.WorldTopoMap');
 	map.setView([35.9908385, -78.9005222], 3);
 
 	var getValue = function (x) {

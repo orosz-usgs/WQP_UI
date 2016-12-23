@@ -11,11 +11,8 @@ SITE.siteMap = function(options) {
 	"use strict";
 	var mapDivId = options.mapDivId;
 	var map;
-	var basemapTiles;
 	var site = Config.site;
-	map = L.map(mapDivId);
-	basemapTiles = L.tileLayer.provider('Esri.WorldGrayCanvas');
-	basemapTiles.addTo(map);
+	map = MAPS.create(mapDivId, 'Esri.WorldGrayCanvas');
 
 	var esriHydroLayer = L.esri.tiledMapLayer({
 		url: "http://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer"
