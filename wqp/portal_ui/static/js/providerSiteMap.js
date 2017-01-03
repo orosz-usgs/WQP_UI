@@ -1,7 +1,6 @@
 /* jslint browser: true */
 /* global L */
 /* global Config */
-/* global _ */
 /* global $ */
 
 var SITE = SITE || {};

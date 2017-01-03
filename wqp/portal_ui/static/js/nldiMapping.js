@@ -1,7 +1,6 @@
 /* jslint browser: true */
 /* global L */
 /* global Config */
-/* global _ */
 /* global $ */
 
 
@@ -96,9 +95,10 @@ NLDI.overlays = function(map) {
 			style: style
 			});
 		lineLayer.addTo(map);
-		_.each(data.features, function(feature) {
+		var features = data.features;
+		features.forEach(function(feature) {
 			allExtents.features.push(feature);
-		}, this);
+		});
 		map.fitBounds(L.geoJson(allExtents).getBounds());
 	};
 
@@ -138,11 +138,11 @@ NLDI.overlays = function(map) {
 		map.setView(latlon, 10);
 	});
 
-	_.each(nldiLines, function(pair) {
+	nldiLines.forEach(function(pair) {
 		addNldiLinesToMap(pair.url, pair.style);
 	});
 
-	_.each(nldiPoints, function(pair) {
+	nldiPoints.forEach(function(pair) {
 		addNldiPointsToMap(pair.url, pair.style);
 	});
 };

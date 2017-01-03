@@ -2,7 +2,6 @@
 /* global L */
 /* global Handlebars */
 /* global Config */
-/* global _ */
 /* global $ */
 
 
