@@ -7,11 +7,11 @@
 var SITE = SITE || {};
 
 
-SITE.siteMap = function(options) {
+SITE.siteMap = function(latitude, longitude, options) {
 	"use strict";
 	var mapDivId = options.mapDivId;
+	var zoom = options.mapZoom;
 	var map;
-	var site = Config.site;
 	var hydroLayerEndpoint = Config.HYDRO_LAYER_ENDPOINT;
 	var flowlineEndpoint = Config.NHDPLUS_FLOWLINE_ENDPOINT;
 	var layername = Config.NHDPLUS_FLOWLINE_LAYER_NAME;
@@ -30,6 +30,6 @@ SITE.siteMap = function(options) {
 	});
 	nhdplusLayer.addTo(map);
 
-	map.setView([site.LatitudeMeasure, site.LongitudeMeasure], 10);
+	map.setView([latitude, longitude], zoom);
 	return map;
 };
