@@ -12,7 +12,7 @@ var SITES = SITES || {};
 SITES.sitesMap = function(options) {
 	"use strict";
 	var self = {};
-	var siteData = Config.siteData;
+	var siteData = Config.sitesData;
 	var localBaseUrl = Config.localBaseUrl;
 	var mapDivId = options.mapDivId;
 	var map;

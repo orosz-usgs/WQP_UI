@@ -36,7 +36,7 @@
 	<script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet-providers/leaflet-providers.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet.markercluster/dist/leaflet.markercluster.js') }}"></script>
 	<script type="text/javascript">
-		Config.siteData = {{ sites_geojson|tojson }};
+		Config.sitesData = {{ sites_geojson|tojson }};
 		Config.localBaseUrl = '{{ config.LOCAL_BASE_URL }}';
 	</script>
     {% assets "sites_map" %}
