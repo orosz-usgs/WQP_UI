@@ -11,7 +11,6 @@ var SITES = SITES || {};
 
 SITES.sitesMap = function(options) {
 	"use strict";
-	var self = {};
 	var siteData = Config.sitesData;
 	var localBaseUrl = Config.localBaseUrl;
 	var mapDivId = options.mapDivId;
@@ -72,5 +71,5 @@ SITES.sitesMap = function(options) {
 		map.fitBounds(L.geoJson(data).getBounds());
 	};
 
-	self.sitesMap = addDataToMap(siteData);
+	addDataToMap(siteData);
 };
