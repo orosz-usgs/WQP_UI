@@ -120,14 +120,6 @@ NLDI.overlays = function(map) {
 	var nhdUrlDm = nldiUrl + f + "/" + c + "/navigate/" + g;
 	var wqpUrlSite = nldiUrl + f + "/" + c + "/";
 
-	// style the current site so it can be easily identified
-	$.getJSON(wqpUrlSite, {}, function(data) {
-		addPointDataToMap(data, geojsonThisSiteMarkerOptions);
-		var coord = data.features[0].geometry.coordinates;
-		var latlon = L.GeoJSON.coordsToLatLng(coord);
-		map.setView(latlon, 10);
-	});
-
 	var nldiLines = [
 		{url : nhdUrlUt, style : upstreamLineStyle}, // upstream lines
 		{url : nhdUrlDm, style : downstreamLineStyle} // downstream lines
@@ -137,6 +129,15 @@ NLDI.overlays = function(map) {
 		{url : wqpUrlUt, style : geojsonWqpMarkerOptions}, // upstream sites
 		{url : wqpUrlDm, style : geojsonWqpMarkerOptions} // downstream sites
 	];
+
+		// style the current site so it can be easily identified
+	$.getJSON(wqpUrlSite, {}, function(data) {
+		addPointDataToMap(data, geojsonThisSiteMarkerOptions);
+		var coord = data.features[0].geometry.coordinates;
+		var latlon = L.GeoJSON.coordsToLatLng(coord);
+		map.setView(latlon, 10);
+	});
+
 	_.each(nldiLines, function(pair) {
 		addNldiLinesToMap(pair.url, pair.style);
 	});
