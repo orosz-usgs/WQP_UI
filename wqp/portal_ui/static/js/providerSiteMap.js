@@ -3,9 +3,19 @@
 /* global Config */
 /* global $ */
 
+
+/** @namespace */
 var SITE = SITE || {};
 
 
+/**
+ * Create a map showing the location of a specific WQP site.
+ *
+ * @param {number} latitude The latitude of the site
+ * @param {number} longitude The longitude of the site
+ * @param {object} options An object containing mapDivId (div containing the map) and mapZoom (zoom level) attributes
+ * @returns {L.map|*}
+ */
 SITE.siteMap = function(latitude, longitude, options) {
 	"use strict";
 	var mapDivId = options.mapDivId;

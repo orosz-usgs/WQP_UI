@@ -5,18 +5,26 @@
 /* global $ */
 
 
+/** @namespace */
 var SITES = SITES || {};
 
-
+/**
+ * Create a leaflet map for all the sites in an organization that
+ * exists within a WQP provider. Pop-ups with site metadata and
+ * links to each site's WQP page are created.
+ *
+ * @param {object} options An object containing mapDivId (div containing the map) and mapZoom (zoom level) attributes
+ */
 SITES.sitesMap = function(options) {
 	"use strict";
 	var siteData = Config.sitesData;
 	var localBaseUrl = Config.localBaseUrl;
 	var mapDivId = options.mapDivId;
+	var zoom = options.mapZoom;
 	var map;
 
 	map = WQP.MAPS.create(mapDivId, 'Esri.WorldTopoMap');
-	map.setView([35.9908385, -78.9005222], 3);
+	map.setView([35.9908385, -78.9005222], zoom);
 
 	var getValue = function (x) {
 		return x == "Stream" ? "#800026" :
@@ -29,6 +37,12 @@ SITES.sitesMap = function(options) {
 				"#FFEDA0";
 	};
 
+	/**
+	 * Figure out the provider and organization that the map is currently on.
+	 * This information is used to create links within WQP.
+	 *
+	 * @returns {{providers: {string}, organization: {string}}
+	 */
 	var parsePath = function() {
 		var pathname = window.location.pathname;
 		var splitPath = pathname.split('/');

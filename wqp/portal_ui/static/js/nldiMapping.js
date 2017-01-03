@@ -3,10 +3,17 @@
 /* global Config */
 /* global $ */
 
-
+/** @namespace */
 var NLDI = NLDI || {};
 
-
+/**
+ * Add NLDI layer overlays to a leaflet map. An overlay is added for the flowlines
+ * upstream and downstream of a site; another overlay is added to upstream and
+ * downstream WQP sites. Pop-ups are created for each feature in the overlay
+ * layers.
+ *
+ * @param {L.map} map The leaflet map that the overlay should be added to
+ */
 NLDI.addOverlays = function(map) {
 	"use strict";
 	var map = map;
