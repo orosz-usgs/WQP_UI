@@ -114,24 +114,24 @@ NLDI.overlays = function(map) {
 		});
 	};
 
-	var wqpUrlUt = nldiUrl + f + "/" + c + "/navigate/" + e + "/wqp";
-	var wqpUrlDm = nldiUrl + f + "/" + c + "/navigate/" + g + "/wqp";
-	var nhdUrlUt = nldiUrl + f + "/" + c + "/navigate/" + e;
-	var nhdUrlDm = nldiUrl + f + "/" + c + "/navigate/" + g;
-	var wqpUrlSite = nldiUrl + f + "/" + c + "/";
+	var WQPURLUT = nldiUrl + f + "/" + c + "/navigate/" + e + "/wqp";
+	var WQPURLDM = nldiUrl + f + "/" + c + "/navigate/" + g + "/wqp";
+	var NHDURLUT = nldiUrl + f + "/" + c + "/navigate/" + e;
+	var NHDURLDM = nldiUrl + f + "/" + c + "/navigate/" + g;
+	var WQPURLSITE = nldiUrl + f + "/" + c + "/";
 
 	var nldiLines = [
-		{url : nhdUrlUt, style : upstreamLineStyle}, // upstream lines
-		{url : nhdUrlDm, style : downstreamLineStyle} // downstream lines
+		{url : NHDURLUT, style : upstreamLineStyle}, // upstream lines
+		{url : NHDURLDM, style : downstreamLineStyle} // downstream lines
 	];
 
 	var nldiPoints = [
-		{url : wqpUrlUt, style : geojsonWqpMarkerOptions}, // upstream sites
-		{url : wqpUrlDm, style : geojsonWqpMarkerOptions} // downstream sites
+		{url : WQPURLUT, style : geojsonWqpMarkerOptions}, // upstream sites
+		{url : WQPURLDM, style : geojsonWqpMarkerOptions} // downstream sites
 	];
 
 		// style the current site so it can be easily identified
-	$.getJSON(wqpUrlSite, {}, function(data) {
+	$.getJSON(WQPURLSITE, {}, function(data) {
 		addPointDataToMap(data, geojsonThisSiteMarkerOptions);
 		var coord = data.features[0].geometry.coordinates;
 		var latlon = L.GeoJSON.coordsToLatLng(coord);
