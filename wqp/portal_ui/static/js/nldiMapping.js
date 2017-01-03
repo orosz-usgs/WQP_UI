@@ -12,13 +12,12 @@ NLDI.overlays = function(map) {
 	var map = map;
 	var nldiUrl = Config.NLDI_SERVICES_ENDPOINT;
 	var site = Config.site;
-	var f = 'wqp';
-	var e = 'UT';
-	var g = 'DM';
-	var c = site['MonitoringLocationIdentifier'];
-	var d = '16.1';
-	var distanceParam = {distance : d};
-	var localBaseUrl = Config.localBaseUrl;
+	var WQP = 'wqp';
+	var UT = 'UT';
+	var DM = 'DM';
+	var MONITORING_LOCATION_IDENTIFIER = site['MonitoringLocationIdentifier'];
+	var DISTANCE = '16.1'; // distance in kilometers
+	var distanceParam = {distance : DISTANCE};
 
 	var allExtents = {
 		"features": [],
@@ -60,21 +59,20 @@ NLDI.overlays = function(map) {
 		"lineJoin": 'square'
 	};
 
-	var onEachPointFeature = function(feature, layer) {
-		var parser = document.createElement('a');
-		parser.href =  feature.properties.uri;
+	var onEachPointFeatureAddPopUp = function(feature, layer) {
+		var uri = feature.properties.uri;
 		var popupText = "Data Source: " + feature.properties.source
 			+ "<br>Data Source Name: " + feature.properties.sourceName
 			+ "<br>Station Name: " + feature.properties.name
 			+ "<br>Station ID: " + feature.properties.identifier
-			+ "<br>More Station Data: " + '<a href="' + localBaseUrl + parser.pathname + '">Go to site page</a>';
+			+ "<br>More Station Data: " + '<a href="' + uri + '">Go to site page</a>';
 		layer.bindPopup(popupText);
 	};
 
 	var addPointDataToMap = function(data, markerOptions) {
 		var markers = L.markerClusterGroup({chunkedLoading:true, spiderfyDistanceMultiplier:3, maxClusterRadius:15});
 		var pointLayer = L.geoJson(data, {
-			onEachFeature: onEachPointFeature,
+			onEachFeature: onEachPointFeatureAddPopUp,
 			pointToLayer: function (feature, latlng) {
 				return L.circleMarker(latlng, markerOptions);
 			}
@@ -83,7 +81,7 @@ NLDI.overlays = function(map) {
 		map.addLayer(markers);
 	};
 
-	var onEachLineFeature = function(feature, layer) {
+	var onEachLineFeatureAddPopUp = function(feature, layer) {
 		var popupText = "Data Source: NHD+"
 			+ "<br>Reach ComID: " + feature.properties.nhdplus_comid;
 		layer.bindPopup(popupText);
@@ -91,7 +89,7 @@ NLDI.overlays = function(map) {
 
 	var addLineDataToMap = function(data, style) {
 		var lineLayer = L.geoJson(data, {
-			onEachFeature: onEachLineFeature,
+			onEachFeature: onEachLineFeatureAddPopUp,
 			style: style
 			});
 		lineLayer.addTo(map);
@@ -114,11 +112,11 @@ NLDI.overlays = function(map) {
 		});
 	};
 
-	var WQPURLUT = nldiUrl + f + "/" + c + "/navigate/" + e + "/wqp";
-	var WQPURLDM = nldiUrl + f + "/" + c + "/navigate/" + g + "/wqp";
-	var NHDURLUT = nldiUrl + f + "/" + c + "/navigate/" + e;
-	var NHDURLDM = nldiUrl + f + "/" + c + "/navigate/" + g;
-	var WQPURLSITE = nldiUrl + f + "/" + c + "/";
+	var WQPURLUT = nldiUrl + WQP + "/" + MONITORING_LOCATION_IDENTIFIER + "/navigate/" + UT + "/wqp";
+	var WQPURLDM = nldiUrl + WQP + "/" + MONITORING_LOCATION_IDENTIFIER + "/navigate/" + DM + "/wqp";
+	var NHDURLUT = nldiUrl + WQP + "/" + MONITORING_LOCATION_IDENTIFIER + "/navigate/" + UT;
+	var NHDURLDM = nldiUrl + WQP + "/" + MONITORING_LOCATION_IDENTIFIER + "/navigate/" + DM;
+	var WQPURLSITE = nldiUrl + WQP + "/" + MONITORING_LOCATION_IDENTIFIER + "/";
 
 	var nldiLines = [
 		{url : NHDURLUT, style : upstreamLineStyle}, // upstream lines
