@@ -62,7 +62,20 @@ bundles = {
         'portal_ui/js/coverage/coverageMap.js',
         'portal_ui/js/coverage/coverageOnReady.js',
         filters='jsmin',
-        output='gen/coverage.js')
+        output='gen/coverage.js'),
+    'sites_map': Bundle(
+        'portal_ui/js/generalMapping.js',
+        'portal_ui/js/providerSitesMap.js',
+        'portal_ui/js/providerSitesMapOnReady.js',
+        filters='jsmin',
+        output='gen/sitesMap.js'),
+    'site_map': Bundle(
+        'portal_ui/js/generalMapping.js',
+        'portal_ui/js/providerSiteMap.js',
+        'portal_ui/js/nldiMapping.js',
+        'portal_ui/js/providerSiteMapOnReady.js',
+        filters='jsmin',
+        output='gen/siteMap.js')
 }
     
 assets = Environment(app)

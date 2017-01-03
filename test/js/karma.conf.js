@@ -1,6 +1,14 @@
 // Karma configuration
 // Generated on Thu Feb 18 2016 09:06:03 GMT-0600 (CST)
 
+var sourcePreprocessors = ['coverage'];
+function isDebug(argument) {
+    return argument === '--debug';
+};
+if (process.argv.some(isDebug)) {
+    sourcePreprocessors = [];
+}
+
 module.exports = function(config) {
   config.set({
 
@@ -26,6 +34,7 @@ module.exports = function(config) {
         'wqp/bower_components/leaflet/dist/leaflet.js',
         'wqp/bower_components/leaflet-providers/leaflet-providers.js',
         'wqp/bower_components/esri-leaflet/dist/esri-leaflet.js',
+        'wqp/bower_components/leaflet.markercluster/dist/leaflet.markercluster.js',
         'wqp/bower_components/Leaflet.EasyButton/src/easy-button.js',
         'test/js/vendor/sinon-1.17.2.js',
         'test/resources/testConfig.js',
@@ -38,6 +47,8 @@ module.exports = function(config) {
     exclude: [
         'wqp/portal_ui/static/js/portalOnReady.js',
         'wqp/portal_ui/static/js/coverage/coverageOnReady.js',
+        'wqp/portal_ui/static/js/providerSiteMapOnReady.js',
+        'wqp/portal_ui/static/js/providerSitesMapOnReady.js',
         'wqp/portal_ui/static/js/angular/**/*.js'
     ],
 
@@ -47,7 +58,7 @@ module.exports = function(config) {
       // source files, that you wanna generate coverage for
       // do not include tests or libraries
       // (these files will be instrumented by Istanbul)
-      'wqp/portal_ui/static/js/**/*.js': ['coverage']
+      'wqp/portal_ui/static/js/**/*.js': sourcePreprocessors
     },
 
     // test results reporter to use
