@@ -1,10 +1,11 @@
 /* jslint browser: true */
 /* global L */
 
+var WQP = WQP || {};
 
-var MAPS = MAPS || {};
+WQP.MAPS = WQP.MAPS || {};
 
-MAPS.create = function(mapDiv, basemapProvider) {
+WQP.MAPS.create = function(mapDiv, basemapProvider) {
 	var map;
 	var basemapTiles;
 

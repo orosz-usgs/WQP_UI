@@ -14,7 +14,7 @@ SITE.siteMap = function(latitude, longitude, options) {
 	var hydroLayerEndpoint = Config.HYDRO_LAYER_ENDPOINT;
 	var flowlineEndpoint = Config.NHDPLUS_FLOWLINE_ENDPOINT;
 	var layername = Config.NHDPLUS_FLOWLINE_LAYER_NAME;
-	map = MAPS.create(mapDivId, 'Esri.WorldGrayCanvas');
+	map = WQP.MAPS.create(mapDivId, 'Esri.WorldGrayCanvas');
 
 	var esriHydroLayer = L.esri.tiledMapLayer({
 		url: hydroLayerEndpoint

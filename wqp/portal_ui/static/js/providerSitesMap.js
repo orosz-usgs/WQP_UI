@@ -15,7 +15,7 @@ SITES.sitesMap = function(options) {
 	var mapDivId = options.mapDivId;
 	var map;
 
-	map = MAPS.create(mapDivId, 'Esri.WorldTopoMap');
+	map = WQP.MAPS.create(mapDivId, 'Esri.WorldTopoMap');
 	map.setView([35.9908385, -78.9005222], 3);
 
 	var getValue = function (x) {

@@ -8,5 +8,5 @@ $(document).ready(function() {
 	var latitude = site.LatitudeMeasure;
 	var longitude = site.LongitudeMeasure;
 	var map = SITE.siteMap(latitude, longitude, {mapDivId : 'sites_map', mapZoom: 10});
-	NLDI.overlays(map);
+	NLDI.addOverlays(map);
 });

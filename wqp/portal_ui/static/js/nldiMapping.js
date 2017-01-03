@@ -7,7 +7,7 @@
 var NLDI = NLDI || {};
 
 
-NLDI.overlays = function(map) {
+NLDI.addOverlays = function(map) {
 	"use strict";
 	var map = map;
 	var nldiUrl = Config.NLDI_SERVICES_ENDPOINT;
