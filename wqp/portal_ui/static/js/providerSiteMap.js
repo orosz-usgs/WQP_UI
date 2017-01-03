@@ -12,15 +12,18 @@ SITE.siteMap = function(options) {
 	var mapDivId = options.mapDivId;
 	var map;
 	var site = Config.site;
+	var hydroLayerEndpoint = Config.HYDRO_LAYER_ENDPOINT;
+	var flowlineEndpoint = Config.NHDPLUS_FLOWLINE_ENDPOINT;
+	var layername = Config.NHDPLUS_FLOWLINE_LAYER_NAME;
 	map = MAPS.create(mapDivId, 'Esri.WorldGrayCanvas');
 
 	var esriHydroLayer = L.esri.tiledMapLayer({
-		url: "http://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer"
+		url: hydroLayerEndpoint
 	});
 	esriHydroLayer.addTo(map);
 
-	var nhdplusLayer = L.tileLayer.wms('https://cida.usgs.gov/nwc/geoserver/gwc/service/wms', {
-		layers : 'nhdplus:nhdflowline_network',
+	var nhdplusLayer = L.tileLayer.wms(flowlineEndpoint, {
+		layers : layername,
 		format : 'image/png',
 		transparent : true,
 		opacity : 0.5
