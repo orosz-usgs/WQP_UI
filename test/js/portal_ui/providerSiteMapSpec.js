@@ -13,6 +13,8 @@ describe ('Tests for SITE.siteMap', function() {
 
 	beforeEach(function() {
 		Config.site = {LatitudeMeasure: 43.06, LongitudeMeasure: -89.4};
+		Config.HYDRO_LAYER_ENDPOINT = 'http://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer';
+		Config.NHDPLUS_FLOWLINE_ENDPOINT = 'https://cida.usgs.gov/nwc/geoserver/gwc/service/wms';
 		$('body').prepend('<div id="test-div"><div id="map-div"></div></div>');
 		mapDiv = 'map-div';
 		$testDiv = $('#test-div');
@@ -33,7 +35,9 @@ describe ('Tests for SITE.siteMap', function() {
 		spyOn(L.tileLayer, 'wms').and.returnValue({
 			addTo: wmsAddToSpy
 		});
-		SITE.siteMap({mapDivId : mapDiv});
+		var latitude = Config.site.LatitudeMeasure;
+		var longitude = Config.site.LongitudeMeasure;
+		SITE.siteMap(latitude, longitude, {mapDivId : mapDiv, mapZoom : 10});
 	});
 
 	afterEach(function() {

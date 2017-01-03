@@ -6,7 +6,7 @@
 /* global NLDI */
 
 
-describe('Tests for NLDI.overlays.', function() {
+describe('Tests for NLDI.addOverlays.', function() {
 	var fakeServer;
 	var map;
 	var $testDiv;
@@ -25,7 +25,7 @@ describe('Tests for NLDI.overlays.', function() {
 		mockSite = {MonitoringLocationIdentifier : 'USGS-400359097101400'};
 		Config.site = mockSite;
 		Config.localBaseUrl = 'http://fake-base-url.gov/'
-		NLDI.overlays(map);
+		NLDI.addOverlays(map);
 	});
 
 	afterEach(function() {
