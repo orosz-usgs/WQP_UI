@@ -139,6 +139,13 @@ PORTAL.MODELS.help = {
                 </ul>\
                 </div>'
 	},
+	minactivities: {
+		placement: 'auto',
+		title: 'Minumum Sampling Activities Per Site Help',
+		content: '\
+			<div>This limits the data returned to data from sites where at least a minimum number of sampling activities have been \
+        	reported that conform to the rest of the query parameters.</div>'
+	},
 	nldi: {
 		placement: 'auto',
 		title: 'NLDI Help',

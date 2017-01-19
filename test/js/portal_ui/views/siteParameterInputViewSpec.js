@@ -8,7 +8,7 @@ describe('Tests for PORTAL.VIEWS.siteParameterInputView', function() {
 
 	var testView;
 	var $testDiv;
-	var $siteType, $organization, $siteId, $huc;
+	var $siteType, $organization, $siteId, $huc, $minActivities;
 	var fetchSiteTypeDeferred, fetchOrgDeferred;
 
 	var siteTypeModel, organizationModel;
@@ -19,6 +19,7 @@ describe('Tests for PORTAL.VIEWS.siteParameterInputView', function() {
 			'<select multiple id="organization"></select>' +
 			'<input type="text" id="siteid" />' +
 			'<input type="text" id="huc" />' +
+			'<input type="text" id="min-activities" />' +
 			'</div>'
 		);
 
@@ -27,6 +28,7 @@ describe('Tests for PORTAL.VIEWS.siteParameterInputView', function() {
 		$organization = $('#organization');
 		$siteId = $('#siteid');
 		$huc = $('#huc');
+		$minActivities = $('#min-activities');
 
 		fetchSiteTypeDeferred = $.Deferred();
 		fetchOrgDeferred = $.Deferred();
@@ -133,5 +135,16 @@ describe('Tests for PORTAL.VIEWS.siteParameterInputView', function() {
 		testView.initialize();
 		$huc.val('07;0801').trigger('change');
 		expect($huc.val()).toEqual('07*;0801*');
+	});
+
+	it('Expects if that invalid counts are flagged with an error message', function() {
+		testView.initialize();
+		$minActivities.val('-23').trigger('change');
+
+		expect($testDiv.has('.error-message').length).toBe(1);
+
+		$minActivities.val('23').trigger('change');
+
+		expect($testDiv.has('.error-message').length).toBe(0);
 	});
 });

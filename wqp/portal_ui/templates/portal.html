@@ -189,6 +189,18 @@
 							</div>
 							<button type="button" class="help-link popover-help" id="hucHelp" data-help="huc">?</button>
 						</div>
+						{% if config.DISABLE_ACTIVITY_DOWNLOAD %}
+						{% else %}
+							<div class="form-group" id='min-activities-div'>
+								<label class="control-label" for="min-activities">Minimum sampling activities per site:</label>
+								<div>
+									<input class="form-control" type="number" min="1" name="minactivities" id="min-activites"/>
+								</div>
+								<button type="button" class="help-link popover-help" id="min-activities-help"
+										data-help="minactivities">?
+								</button>
+							</div>
+						{%  endif %}
 						<div id="nldi-container">
 							<label for="nldi-picker">Search Upstream and Downstream (BETA)</label>
 							<button type="button" class="help-link popover-help" id="nldiHelp" data-help="nldi">?</button>
