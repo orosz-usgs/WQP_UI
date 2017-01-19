@@ -52,8 +52,8 @@ PORTAL.VIEWS.samplingParameterInputView = function(options) {
 		// Add input validations and reformatting handlers
 		PORTAL.VIEWS.inputValidation({
 			inputEl : $minresults,
-			validationFnc : PORTAL.validators.nonNegativeValidator,
-		})
+			validationFnc : PORTAL.validators.positiveIntValidator
+		});
 		PORTAL.VIEWS.inputValidation({
 			inputEl: $startDate,
 			validationFnc: PORTAL.dateValidator.validate,
