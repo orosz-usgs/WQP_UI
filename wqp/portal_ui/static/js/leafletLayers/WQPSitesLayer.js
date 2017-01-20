@@ -83,7 +83,7 @@
 			};
 			if (this.wmsParams.styles === 'activity_visual') {
 				queryParams.WIDTH = 50;
-				queryParams.HEIGHT = 30;
+				queryParams.HEIGHT = 50;
 			};
 			return Config.SITES_GEOSERVER_ENDPOINT + 'wms?' + $.param(queryParams);
 		},
