@@ -71,19 +71,26 @@ describe('Tests for PORTAL.VIEWS.biologicalSamplingInputView', function() {
 			testView.initialize().done(initializeSuccessSpy).fail(initializeFailSpy);
 		});
 
-		it('Expects that initialize returned promise is not resolved until assemblage have been successfully fetched', function () {
+		it('Expects that initialize returned promise is not resolved until assemblage have been successfully fetched', function (done) {
 			expect(initializeSuccessSpy).not.toHaveBeenCalled();
 			expect(initializeFailSpy).not.toHaveBeenCalled();
 
 			fetchAssemblageDeferred.resolve();
-			expect(initializeSuccessSpy).toHaveBeenCalled();
-			expect(initializeFailSpy).not.toHaveBeenCalled();
+			setTimeout(function() {
+				expect(initializeSuccessSpy).toHaveBeenCalled();
+				expect(initializeFailSpy).not.toHaveBeenCalled();
+				done();
+			}, 100);
 		});
 
-		it('Expects that initialize returned promise is rejected if assemblage is not successfully fetched', function() {
+		it('Expects that initialize returned promise is rejected if assemblage is not successfully fetched', function(done) {
 			fetchAssemblageDeferred.reject();
-			expect(initializeSuccessSpy).not.toHaveBeenCalled();
-			expect(initializeFailSpy).toHaveBeenCalled();
+
+			setTimeout(function() {
+				expect(initializeSuccessSpy).not.toHaveBeenCalled();
+				expect(initializeFailSpy).toHaveBeenCalled();
+				done();
+			}, 100);
 		});
 	});
 });

@@ -164,12 +164,12 @@ PORTAL.VIEWS.placeInputView = function (options) {
 
 		var getCountryKeys = function () {
 			var results = $countrySelect.val();
-			return (results) ? results : [USA];
+			return (results.length > 0) ? results : [USA];
 		};
 
 		var getStateKeys = function() {
 			var results = $stateSelect.val();
-			return (results) ? results : [];
+			return (results.length > 0) ? results : [];
 		};
 
 		//Initialize select2s

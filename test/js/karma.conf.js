@@ -18,7 +18,7 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine'],
+    frameworks: ['jasmine', 'sinon'],
 
 
     // list of files / patterns to load in the browser
@@ -36,7 +36,6 @@ module.exports = function(config) {
         'wqp/bower_components/esri-leaflet/dist/esri-leaflet.js',
         'wqp/bower_components/leaflet.markercluster/dist/leaflet.markercluster.js',
         'wqp/bower_components/Leaflet.EasyButton/src/easy-button.js',
-        'test/js/vendor/sinon-1.17.2.js',
         'test/resources/testConfig.js',
         'wqp/portal_ui/static/js/**/*.js',
         'test/js/portal_ui/**/*.js'
