@@ -60,7 +60,7 @@ describe('Tests for queryService', function() {
 			expect(successSpy.calls.argsFor(0)).toEqual([{
 				total : {sites : '492', results : '6,641', activities :'664'},
 				NWIS : {sites : '492', results : '6,641', activities : '664'},
-				STORET : {sites : 0, results : 0, activities : 0}
+				STORET : {sites : '0', results : '0', activities : '0'}
 			}]);
 		});
 
