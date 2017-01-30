@@ -47,7 +47,7 @@ describe('Tests for queryService', function() {
 			expect(requestBody.sorted).not.toBeDefined();
 		});
 
-		fit('Expects a successful response passes a correctly formatted counts record', function() {
+		it('Expects a successful response passes a correctly formatted counts record', function() {
 			PORTAL.queryServices.fetchQueryCounts('Result', testQuery, ['NWIS', 'STORET']).done(successSpy).fail(errorSpy);
 			fakeServer.respondWith([200, {"Content-Type" : "application/json"},
 				'{"NWIS-Site-Count":"492","Total-Site-Count":"492","NWIS-Result-Count":"6641","Total-Result-Count":"6641",' +
@@ -61,7 +61,7 @@ describe('Tests for queryService', function() {
 			expect(successSpy.calls.argsFor(0)).toEqual([{
 				total : {sites : '492', results : '6,641', activities :'664', activitymetrics: '232'},
 				NWIS : {sites : '492', results : '6,641', activities : '664', activitymetrics: '0'},
-				STORET : {sites : 0, results : 0, activities : 0, activitymetrics: '232'}
+				STORET : {sites : '0', results : '0', activities : '0', activitymetrics: '232'}
 			}]);
 		});
 

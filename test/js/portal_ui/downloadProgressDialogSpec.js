@@ -54,17 +54,20 @@ describe('Tests for PORTAl.VIEWS.downloadProgressDialog', function () {
 				DS1: {
 					results: '24',
 					sites: '10',
-					activities : 0
+					activities : '0',
+					activitymetrics : '0'
 				},
 				DS2: {
 					results: '50',
 					sites: '20',
-					activities : 0
+					activities : '0',
+					activitymetrics : '0'
 				},
 				total: {
 					results: '100',
 					sites: '50',
-					activities : 0
+					activities : '0',
+					activitymetrics : '0'
 				}
 			};
 		});
@@ -115,17 +118,20 @@ describe('Tests for PORTAl.VIEWS.downloadProgressDialog', function () {
 				DS1: {
 					results: '24',
 					sites: '10',
-					activities: 0,
+					activities: '0',
+					activitymetrics: '0'
 				},
 				DS2: {
 					results: '50',
 					sites: '20',
-					activities : 0,
+					activities : '0',
+					activitymetrics: '0'
 				},
 				total: {
 					results: '100',
 					sites: '50',
-					activities : 0
+					activities : '0',
+					activitymetrics: '0'
 				}
 			};
 		});
@@ -134,7 +140,8 @@ describe('Tests for PORTAl.VIEWS.downloadProgressDialog', function () {
 			counts.total = {
 				sites: '250,001',
 				results: '1,123,456',
-				activities : 0
+				activities : '0',
+				activitymetrics: '0'
 			};
 			thisDialog.updateProgress(counts, 'Station', 'csv', continueSpy);
 
@@ -165,7 +172,8 @@ describe('Tests for PORTAl.VIEWS.downloadProgressDialog', function () {
 			counts.total = {
 				sites: '1,048,574',
 				results: '2,000,000',
-				activities : 0
+				activities : '0',
+				activitymetrics: '0'
 			};
 			thisDialog.updateProgress(counts, 'Station', 'xlsx', continueSpy);
 
@@ -183,7 +191,8 @@ describe('Tests for PORTAl.VIEWS.downloadProgressDialog', function () {
 			counts.total = {
 				sites: '1,048,574',
 				results: '2,000,000',
-				activities : 0
+				activities : '0',
+				activitymetrics: '0'
 			};
 			thisDialog.updateProgress(counts, 'Result', 'xlsx', continueSpy);
 

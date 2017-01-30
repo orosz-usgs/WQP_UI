@@ -16,6 +16,7 @@ describe('Tests for PORTAL.VIEWS.showAPIViewSpec', function() {
 				'<div id="sites-query-div"><textarea></textarea></div>' +
 				'<div id="results-query-div"><textarea></textarea></div>' +
 				'<div id="getfeature-query-div"><textarea></textarea></div>' +
+				'<div id="activitymetrics-query-div"><textarea></textarea></div>' +
 				'</div>'
 		);
 		$testDiv = $('#test-div');
@@ -41,6 +42,7 @@ describe('Tests for PORTAL.VIEWS.showAPIViewSpec', function() {
 		expect($('#sites-query-div textarea').html()).toContain('Station?Testparam1=value1&amp;Testparam2=value2');
 		expect($('#results-query-div textarea').html()).toContain('Result?Testparam1=value1&amp;Testparam2=value2');
 		expect($('#getfeature-query-div textarea').html()).toContain('SEARCHPARAMS=' + encodeURIComponent('Testparam1:value1;Testparam2:value2'));
+		expect($('#activitymetrics-query-div textarea').html()).toContain('ActivityMetric?Testparam1=value1&amp;Testparam2=value2');
 	});
 });
 
