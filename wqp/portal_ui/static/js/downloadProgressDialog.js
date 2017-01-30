@@ -39,17 +39,23 @@ PORTAL.VIEWS.downloadProgressDialog = function (el) {
 	};
 
 	var countsHbTemplate = Handlebars.compile('Your query will return ' +
-		'{{#if isResults}} <b>{{total.results}}</b> sample results from ' +
+		'{{#if isResults}} <b>{{total.results}}</b> sample results from {{/if}}' +
+		'{{#if isActivities }}data on <b>{{total.activities}}</b> sampling activities at {{/if}}' +
+		'{{#if isActivityMetrics }}data on <b>{{total.activitymetrics }}</b> activity metrics in {{total.activities}} activities {{/if}}' +
+		'{{#if isActivityMetrics}}' +
+		'<br/>' +
 		'{{else}}' +
-		'{{#if total.activities }}data on <b>{{total.activities}}</b> sampling activities at {{/if}}' +
-		'{{/if}}' +
 		' <b>{{total.sites}}</b> sites:<br />' +
-		'{{#each providers}} From {{id}}: ' +
-		'{{#if ../isResults}}{{counts.results}} sample results from ' +
-		'{{else}}' +
-		'{{#if ../total.activities}}{{counts.activities}} sampling activities from {{/if}}' +
 		'{{/if}}' +
+		'{{#each providers}} From {{id}}: ' +
+		'{{#if ../isResults}}{{counts.results}} sample results from {{/if}}' +
+		'{{#if ../isActivities}}{{counts.activities}} sampling activities from {{/if}}' +
+		'{{#if ../isActivityMetrics}}{{counts.activitymetrics}} activity metrics in {{counts.activities}} activities {{/if}}' +
+		'{{#if ../isActivityMetrics}}' +
+		'<br/>' +
+		'{{else}}' +
 		'{{counts.sites}} sites <br/>' +
+		'{{/if}}' +
 		'{{/each}}'
 	);
 
@@ -80,7 +86,9 @@ PORTAL.VIEWS.downloadProgressDialog = function (el) {
 			// Return a string showing the site counts, formatted to be shown in html.
 			var context = {
 				total: counts.total,
-				isResults : resultType === 'Result'
+				isResults : resultType === 'Result',
+				isActivities : resultType === 'Activity',
+				isActivityMetrics : resultType === 'ActivityMetric'
 			};
 			context.providers = _.map(PORTAL.MODELS.providers.getIds(), function (provider) {
 				return {

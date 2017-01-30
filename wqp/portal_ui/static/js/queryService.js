@@ -44,14 +44,16 @@ PORTAL.queryServices = (function () {
 					total : {
 						sites : formatCount(data, 'Total-Site-Count'),
 						results : formatCount(data, 'Total-Result-Count'),
-						activities : formatCount(data, 'Total-Activity-Count')
+						activities : formatCount(data, 'Total-Activity-Count'),
+						activitymetrics : formatCount(data, 'Total-ActivityMetric-Count'),
 					}
 				};
 				_.each(providers, function(provider) {
 					result[provider] = {
 						sites : formatCount(data, provider + '-Site-Count'),
 						results : formatCount(data, provider + '-Result-Count'),
-						activities : formatCount(data, provider + '-Activity-Count')
+						activities : formatCount(data, provider + '-Activity-Count'),
+						activitymetrics: formatCount(data, provider + '-ActivityMetric-Count')
 					};
 				});
 				log.debug('Successfully got counts');

@@ -3,7 +3,8 @@ var Config = {
 	QUERY_URLS: {
 		Station: 'http://fakestationservice/Station',
 		Result : 'http://fakeresultservice/Result',
-		biologicalresult : 'http://fakebiologicalservice'
+		biologicalresult : 'http://fakebiologicalservice',
+		ActivityMetric : 'http://fakeresultservice/ActivityMetric'
 	},
 	SITES_GEOSERVER_ENDPOINT: 'http://faketestserver.com/',
 	WQP_MAP_GEOSERVER_ENDPOINT : 'http://faketestserver.com/',

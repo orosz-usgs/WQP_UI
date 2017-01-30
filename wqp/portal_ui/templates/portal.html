@@ -418,6 +418,10 @@
 										<input type="radio" class="result-type" id="activity-input" value="Activity" />
 										<label for="activity-input">Sampling Activity</label>
 									</li>
+									<li>
+										<input type="radio" class="result-type" id="activitymetric-input" value="ActivityMetric" />
+										<label for="activitymetric-input">Sampling Activity Metrics</label>
+									</li>
 								{% endif %}
 							</ul>
 						</div>
@@ -468,6 +472,11 @@
 							<br/>
 							<textarea readonly="readonly" rows="6"></textarea>
 						</div>
+						<div class="show-query-text" id="activitymetrics-query-div">
+							<b>Activity Metrics</b>
+							<br/>
+							<textarea readonly="readonly" rows="6"></textarea>
+						</div>
 						<div class="show-query-text" id="getfeature-query-div">
 							<b>WFS GetFeature</b>
 							<br/>
@@ -512,6 +521,10 @@
 						<li>
 							<input type="radio" name="resultType" id="dialog-activities" value="Activity"/>
 							<label for="dialog-activities">Sampling Activity</label>
+						</li>
+						<li>
+							<input type="radio" class="resultType" id="dialog-activitymetric" value="ActivityMetric" />
+							<label for="dialog-activitymetric">Sampling Activity Metrics</label>
 						</li>
 					{% endif %}
 				</ul>

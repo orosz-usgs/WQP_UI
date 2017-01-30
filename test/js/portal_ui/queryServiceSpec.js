@@ -51,16 +51,17 @@ describe('Tests for queryService', function() {
 			PORTAL.queryServices.fetchQueryCounts('Result', testQuery, ['NWIS', 'STORET']).done(successSpy).fail(errorSpy);
 			fakeServer.respondWith([200, {"Content-Type" : "application/json"},
 				'{"NWIS-Site-Count":"492","Total-Site-Count":"492","NWIS-Result-Count":"6641","Total-Result-Count":"6641",' +
-				'"NWIS-Activity-Count":"664","Total-Activity-Count":"664"}'
+				'"NWIS-Activity-Count":"664","Total-Activity-Count":"664",' +
+				'"STORET-ActivityMetric-Count": "232", "Total-ActivityMetric-Count" : "232"}'
 			]);
 			fakeServer.respond();
 
 			expect(successSpy).toHaveBeenCalled();
 			expect(errorSpy).not.toHaveBeenCalled();
 			expect(successSpy.calls.argsFor(0)).toEqual([{
-				total : {sites : '492', results : '6,641', activities :'664'},
-				NWIS : {sites : '492', results : '6,641', activities : '664'},
-				STORET : {sites : '0', results : '0', activities : '0'}
+				total : {sites : '492', results : '6,641', activities :'664', activitymetrics: '232'},
+				NWIS : {sites : '492', results : '6,641', activities : '664', activitymetrics: '0'},
+				STORET : {sites : '0', results : '0', activities : '0', activitymetrics: '232'}
 			}]);
 		});
 
