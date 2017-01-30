@@ -19,7 +19,7 @@ CODES_ENDPOINT = ''
 SEARCH_QUERY_ENDPOINT = ''
 PUBLIC_SRSNAMES_ENDPOINT = ''
 
-HYDRO_LAYER_ENDPOINT = 'http://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer'
+HYDRO_LAYER_ENDPOINT = 'https://tiles.arcgis.com/tiles/P3ePLMYs2RVChkJx/arcgis/rest/services/Esri_Hydro_Reference_Overlay/MapServer'
 NHDPLUS_FLOWLINE_ENDPOINT = 'https://cida.usgs.gov/nwc/geoserver/gwc/service/wms'
 NHDPLUS_FLOWLINE_LAYER_NAME = 'nhdplus:nhdflowline_network'
 NLDI_SERVICES_ENDPOINT = ''

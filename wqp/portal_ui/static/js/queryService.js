@@ -31,7 +31,7 @@ PORTAL.queryServices = (function () {
 		var formatCount = function(countData, key) {
 			var countString = _.has(countData, key) ? countData[key] : '0';
 			var result = numeral(countString).format('0,0');
-			return (result === '0') ? 0 : result;
+			return (result === '0') ? '0' : result;
 		};
 
 		$.ajax({
