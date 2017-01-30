@@ -4,6 +4,7 @@ var Config = {
 		Station: 'http://fakestationservice/Station',
 		Result : 'http://fakeresultservice/Result',
 		biologicalresult : 'http://fakebiologicalservice',
+		Activity : 'http://fakeresultservice/Activity',
 		ActivityMetric : 'http://fakeresultservice/ActivityMetric'
 	},
 	SITES_GEOSERVER_ENDPOINT: 'http://faketestserver.com/',
