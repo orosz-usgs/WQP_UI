@@ -1,5 +1,6 @@
 var Config = {
 	CODES_ENDPOINT : 'http:fakecodesservice/codes',
+	STATIC_ENDPOINT : 'base/wqp/portal_ui/static/',
 	QUERY_URLS: {
 		Station: 'http://fakestationservice/Station',
 		Result : 'http://fakeresultservice/Result',
@@ -12,7 +13,6 @@ var Config = {
 	NWIS_SITE_SLD_URL : 'http://fakenwissitesldservice',
 	PUBLIC_SRSNAMES_ENDPOINT: 'http://fakeendpoint.com/names',
 	NLDI_SERVICES_ENDPOINT: 'http://fakenldi.com/service/',
-	STATIC_ENDPOINT : '',
 	SLD_ENDPOINT : 'http://fakesldendpoint/',
 	SEARCH_QUERY_ENDPOINT : 'http://fakesearchservice',
 	NAWQA_ONLY_PROJECTS : true,
