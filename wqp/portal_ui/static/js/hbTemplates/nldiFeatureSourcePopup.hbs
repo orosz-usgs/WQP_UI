@@ -1,0 +1,26 @@
+<div class="feature-source-info">
+	<ul>
+		{{#if nwisSite}}
+			<li>Station Name: {{feature.properties.stationNam}}</li>
+			<li>Site ID: {{feature.properties.siteId}}</li>
+			<li>Site Type: {{feature.properties.SiteType}}</li>
+			<li>HUC 08: {{feature.properties.hucCode}}</li>
+			<li>Click <a href="{{feature.properties.url}}">here</a> for more info</li>
+		{{/if}}
+		{{#if pourPoint}}
+			<li>HUC 12: {{feature.properties.HUC_12}}</li>
+		{{/if}}
+	</ul>
+</div>
+
+<p>Select a navigation and optional distance</p>
+<div class="navigation-selection-div">
+	<select>
+		<option value="">Select navigation type</option>
+		{{#each navigationModes }}
+			<option value="{{id}}">{{text}}</option>
+		{{/each}}
+	</select>
+	<input type="text" size="15" title="Optional distance from query source" placeholder="Distance in km" />
+	<button disabled type="button">Navigate</button>
+</div>

@@ -14,7 +14,7 @@
  *	 		@prop {String} text - The text to be shown in the selection menu for this featureSource
  *			@prop {String} mapLayer - The layer to be shown on the map when this featureSource is selected.
  *		@prop {String} initialQueryValue - optional. If set, the control's initial value will be set to this
- 	*		if it matches one of the queryOptions object's id property.
+ *	 		if it matches one of the queryOptions object's id property.
  */
 
 L.control.QuerySelectControl = L.Control.extend({

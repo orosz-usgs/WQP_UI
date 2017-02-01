@@ -177,43 +177,45 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	 * @param {L.MouseEvent} ev
 	 */
 	var findSitesHandler = function(ev) {
-		var nldiModel = PORTAL.MODELS.nldiModel.getData();
-		if (nldiModel.navigation && nldiModel.featureSource) {
-			log.debug('Clicked at location: ' + ev.latlng.toString());
-			$mapDiv.css('cursor', 'progress');
+		var featureIdProperty = PORTAL.MODELS.nldiModel.getData().featureSource.getFeatureInfoSource.featureIdProperty;
 
-			PORTAL.MODELS.nldiModel.setData('featureId', '');
-			lastLatLngClicked = undefined;
-			cleanUpMaps();
-			map.closePopup();
+		log.debug('Clicked at location: ' + ev.latlng.toString());
+		$mapDiv.css('cursor', 'progress');
 
-			fetchFeatureId(ev.containerPoint.round())
-				.done(function (result) {
-					if (result.features.length === 0) {
-						map.openPopup('<p>No query point has been selected. Please click on a point to query from.</p>', ev.latlng);
-						$mapDiv.css('cursor', '');
+		PORTAL.MODELS.nldiModel.setData('featureId', '');
+		PORTAL.MODELS.nldiModel.setData('navigation', undefined);
+		PORTAL.MODELS.nldiModel.setData('distance', '');
+		lastLatLngClicked = undefined;
+		cleanUpMaps();
+		map.closePopup();
 
-					}
-					else if (result.features.length > 1) {
-						map.openPopup('<p>More than one query point has been selected. Please zoom in and try again.</p>', ev.latlng);
-						$mapDiv.css('cursor', '');
-					}
-					else {
-						PORTAL.MODELS.nldiModel.setData('featureId',
-							result.features[0].properties[nldiModel.featureSource.getFeatureInfoSource.featureIdProperty]);
-						lastLatLngClicked= ev.latlng;
-						map.openPopup(getRetrieveMessage(), ev.latlng);
-						updateNldiSites();
-					}
-				})
-				.fail(function () {
-					map.openPopup('<p>Unable to retrieve points, service call failed</p>', ev.latlng);
+		fetchFeatureId(ev.containerPoint.round())
+			.done(function (result) {
+				var navHandler = function() {
+					map.openPopup(getRetrieveMessage(), ev.latlng);
+					updateNldiSites();
+				};
+				if (result.features.length === 0) {
+					map.openPopup('<p>No query point has been selected. Please click on a point to query from.</p>', ev.latlng);
 					$mapDiv.css('cursor', '');
-				});
-		}
-		else {
-			map.openPopup('<p>Please select a navigation direction and a query source</p>', ev.latlng);
-		}
+
+				}
+				else if (result.features.length > 1) {
+					map.openPopup('<p>More than one query point has been selected. Please zoom in and try again.</p>', ev.latlng);
+					$mapDiv.css('cursor', '');
+				}
+				else {
+					PORTAL.MODELS.nldiModel.setData('featureId',
+						result.features[0].properties[featureIdProperty]);
+					lastLatLngClicked= ev.latlng;
+
+					PORTAL.VIEWS.nldiNavPopupView.createPopup(map, result.features[0], ev.latlng, navHandler);
+				}
+			})
+			.fail(function () {
+				map.openPopup('<p>Unable to retrieve points, service call failed</p>', ev.latlng);
+				$mapDiv.css('cursor', '');
+			});
 	};
 
 	/*
@@ -225,8 +227,6 @@ PORTAL.VIEWS.nldiView  = function(options) {
 			nldiModel = PORTAL.MODELS.nldiModel.getData();
 			$insetMapDiv.hide();
 			$mapDiv.parent().show();
-			nldiControl.setNavValue(_.has(nldiModel.navigation, 'id') ? nldiModel.navigation.id : '');
-			nldiControl.setDistanceValue(nldiModel.distance);
 			map.invalidateSize();
 			map.setView(insetMap.getCenter(), insetMap.getZoom());
 		}
@@ -242,52 +242,8 @@ PORTAL.VIEWS.nldiView  = function(options) {
 			nldiModel = PORTAL.MODELS.nldiModel.getData();
 			$insetMapDiv.show();
 			$mapDiv.parent().hide();
-			insetNldiControl.setNavValue(_.has(nldiModel.navigation, 'id') ? nldiModel.navigation.id : '');
-			insetNldiControl.setDistanceValue(nldiModel.distance);
 			insetMap.invalidateSize();
 			insetMap.setView(map.getCenter(), map.getZoom());
-		}
-	};
-
-	/*
-	 * @param {DOM event object} ev
-	 * Handle the change event for the nav selection control.
-	 */
-	var navChangeHandler = function(ev) {
-		var navValue = {
-			id : $(ev.target).val(),
-			text : $(ev.target.selectedOptions[0]).html()
-		};
-		PORTAL.MODELS.nldiModel.setData('navigation', navValue);
-		cleanUpMaps();
-		if (navValue.id) {
-			showMap();
-			if (PORTAL.MODELS.nldiModel.getData().featureId) {
-				map.openPopup(getRetrieveMessage(), lastLatLngClicked);
-				updateNldiSites();
-			}
-		}
-		else {
-			PORTAL.MODELS.nldiModel.setData('featureId', '');
-			lastLatLngClicked = undefined;
-			showInsetMap();
-		}
-	};
-
-	var distanceChangeHandler = function(ev) {
-		var nldiData = PORTAL.MODELS.nldiModel.getData();
-		PORTAL.MODELS.nldiModel.setData('distance', $(ev.target).val());
-		cleanUpMaps();
-
-		if (nldiData.navigation.id) {
-			showMap();
-			if (nldiData.featureId) {
-				map.openPopup(getRetrieveMessage(),  lastLatLngClicked);
-				updateNldiSites();
-			}
-		}
-		else {
-			showInsetMap();
 		}
 	};
 
@@ -334,19 +290,6 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		}
 	);
 
-	var insetNldiControl = L.control.nldiControl({
-		navOptions : PORTAL.MODELS.nldiModel.NAVIGATION_MODES,
-		navChangeHandler : navChangeHandler,
-		distanceChangeHandler : distanceChangeHandler,
-		clearClickHandler : clearHandler
-	});
-	var nldiControl = L.control.nldiControl({
-		navOptions : PORTAL.MODELS.nldiModel.NAVIGATION_MODES,
-		navChangeHandler : navChangeHandler,
-		distanceChangeHandler : distanceChangeHandler,
-		clearClickHandler : clearHandler
-	});
-
 	var querySelectControl = L.control.querySelectControl({
 		changeHandler : queryChangeHandler,
 		queryOptions : PORTAL.MODELS.nldiModel.QUERY_SOURCES,
@@ -378,7 +321,6 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		});
 		insetMap.addLayer(insetHydroLayer);
 		insetMap.addControl(expandControl);
-		insetMap.addControl(insetNldiControl);
 		insetMap.addControl(L.control.zoom());
 
 		map = new MapWithSingleClickHandler(options.mapDivId, {
@@ -395,7 +337,6 @@ PORTAL.VIEWS.nldiView  = function(options) {
 			'Hydro Reference' : hydroLayer,
 			'NHDLPlus Flowline Network' : nhdlPlusFlowlineLayer
 		}));
-		map.addControl(nldiControl);
 		map.addControl(L.control.zoom());
 
 		map.addSingleClickHandler(findSitesHandler);
