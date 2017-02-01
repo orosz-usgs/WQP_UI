@@ -349,7 +349,8 @@ PORTAL.VIEWS.nldiView  = function(options) {
 
 	var querySelectControl = L.control.querySelectControl({
 		changeHandler : queryChangeHandler,
-		queryOptions : PORTAL.MODELS.nldiModel.QUERY_SOURCES
+		queryOptions : PORTAL.MODELS.nldiModel.QUERY_SOURCES,
+		initialQueryValue : PORTAL.MODELS.nldiModel.getData().featureSource.id
 	});
 
 	var searchControl = L.control.searchControl(Config.GEO_SEARCH_API_ENDPOINT);

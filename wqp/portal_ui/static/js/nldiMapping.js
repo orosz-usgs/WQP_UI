@@ -14,15 +14,15 @@ var NLDI = NLDI || {};
  *
  * @param {L.map} map The leaflet map that the overlay should be added to
  */
-NLDI.addOverlays = function(map) {
+NLDI.addOverlays = function(nldiMap) {
 	"use strict";
-	var map = map;
+	var map = nldiMap;
 	var nldiUrl = Config.NLDI_SERVICES_ENDPOINT;
 	var site = Config.site;
 	var WQP = 'wqp';
 	var UT = 'UT';
 	var DM = 'DM';
-	var MONITORING_LOCATION_IDENTIFIER = site['MonitoringLocationIdentifier'];
+	var MONITORING_LOCATION_IDENTIFIER = site.MonitoringLocationIdentifier;
 	var DISTANCE = '16.1'; // distance in kilometers
 	var distanceParam = {distance : DISTANCE};
 
@@ -68,11 +68,11 @@ NLDI.addOverlays = function(map) {
 
 	var onEachPointFeatureAddPopUp = function(feature, layer) {
 		var uri = feature.properties.uri;
-		var popupText = "Data Source: " + feature.properties.source
-			+ "<br>Data Source Name: " + feature.properties.sourceName
-			+ "<br>Station Name: " + feature.properties.name
-			+ "<br>Station ID: " + feature.properties.identifier
-			+ "<br>More Station Data: " + '<a href="' + uri + '">Go to site page</a>';
+		var popupText = "Data Source: " + feature.properties.source +
+			"<br>Data Source Name: " + feature.properties.sourceName +
+			"<br>Station Name: " + feature.properties.name +
+			"<br>Station ID: " + feature.properties.identifier +
+			"<br>More Station Data: " + '<a href="' + uri + '">Go to site page</a>';
 		layer.bindPopup(popupText);
 	};
 
@@ -89,8 +89,8 @@ NLDI.addOverlays = function(map) {
 	};
 
 	var onEachLineFeatureAddPopUp = function(feature, layer) {
-		var popupText = "Data Source: NHD+"
-			+ "<br>Reach ComID: " + feature.properties.nhdplus_comid;
+		var popupText = "Data Source: NHD+" +
+			"<br>Reach ComID: " + feature.properties.nhdplus_comid;
 		layer.bindPopup(popupText);
 	};
 

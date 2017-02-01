@@ -58,7 +58,7 @@ PORTAL.MODELS.nldiModel = (function() {
 
 	self.reset = function() {
 		modelData = {
-			featureSource : undefined, // should be one of QUERY_SOURCES
+			featureSource : nwisSitesFeatureSource, // should be one of QUERY_SOURCES
 			featureId : '',
 			navigation : undefined, // Should be one of NAVIGATION_MODES
 			distance : ''

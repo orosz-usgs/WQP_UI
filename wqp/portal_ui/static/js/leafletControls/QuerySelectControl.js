@@ -1,5 +1,6 @@
 /* jslint browser: true */
 /* global L */
+/* global _ */
 
 /*
  * @constructs
@@ -12,18 +13,28 @@
  *	 		@prop {String} id - the string to be used as the featureSource in the NLDI query
  *	 		@prop {String} text - The text to be shown in the selection menu for this featureSource
  *			@prop {String} mapLayer - The layer to be shown on the map when this featureSource is selected.
+ *		@prop {String} initialQueryValue - optional. If set, the control's initial value will be set to this
+ 	*		if it matches one of the queryOptions object's id property.
  */
 
 L.control.QuerySelectControl = L.Control.extend({
 	options: {
 		position: 'topright',
 		changeHandler : null,
-		queryOptions : []
+		queryOptions : [],
+		initialQueryValue : ''
 	},
 	initialize : function(options) {
 		"use strict";
+
+		var isInitialValueInQueryOption = function(queryOption) {
+			return options.initialQueryValue === queryOption.id;
+		};
+
 		L.setOptions(this, options);
 		L.Control.prototype.initialize.apply(this, options);
+
+		this._initialQueryOption = _.find(options.queryOptions, isInitialValueInQueryOption);
 		this._queryLayer = undefined;
 		this._selectEl = undefined;
 	},
@@ -31,13 +42,20 @@ L.control.QuerySelectControl = L.Control.extend({
 	onAdd : function() {
 		"use strict";
 		var container = L.DomUtil.create('div', 'leaflet-nldi-query-control-div');
+		var self = this;
+
 		var addOption = function(optionsString, option) {
-			return optionsString + '<option value="' + option.id + '">' + option.text + '</option>';
+			var selected = ((self._initialQueryOption) && (self._initialQueryOption.id === option.id)) ? 'selected' : '';
+			return optionsString + '<option value="' + option.id + '" ' + selected + '>' + option.text + '</option>';
 		};
 
 		this._selectEl = L.DomUtil.create('select', 'leaflet-nldi-query-picker', container);
 		this._selectEl.title = 'Pick a NLDI feature source';
 		this._selectEl.innerHTML = this.options.queryOptions.reduce(addOption, '<option value="">Select query source</option>');
+		if (this._initialQueryOption) {
+			this._queryLayer = this._initialQueryOption.mapLayer;
+			this._map.addLayer(this._queryLayer);
+		}
 		L.DomEvent.addListener(this._selectEl, 'change', this._changeQueryMapLayer, this);
 		L.DomEvent.disableClickPropagation(this._selectEl);
 
