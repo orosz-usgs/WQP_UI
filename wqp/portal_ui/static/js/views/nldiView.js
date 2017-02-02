@@ -319,6 +319,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 			center: [37.0, -100.0],
 			zoom : 3,
 			layers : [insetBaseLayers['World Gray']],
+			scrollWheelZoom : false,
 			zoomControl : false
 		});
 		insetMap.addLayer(insetHydroLayer);
