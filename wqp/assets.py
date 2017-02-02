@@ -24,6 +24,7 @@ bundles = {
         'portal_ui/js/identifyDialog.js',
         'portal_ui/js/MapConfig.js',
         'portal_ui/js/leafletControls/NldiControl.js',
+        'portal_ui/js/leafletControls/QuerySelectControl.js',
         'portal_ui/js/leafletControls/SearchControl.js',
         'portal_ui/js/LeafletMixins/SingleClickEventHandlerMixin.js',
         'portal_ui/js/leafletLayers/WQPSitesLayer.js',
