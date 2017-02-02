@@ -12,7 +12,7 @@ PORTAL.VIEWS.nldiNavPopupView = (function() {
 	var self = {};
 
 	var NULL_TEMPLATE = function() {
-		return 'No template';
+		return 'Template has not been loaded';
 	};
 
 	var popupTemplate =  NULL_TEMPLATE;
@@ -37,7 +37,7 @@ PORTAL.VIEWS.nldiNavPopupView = (function() {
 	 *
 	 * @param {L.Map} onMap - The map where the popup will be created
 	 * @param {Object} feature - contains properties that will be displayed on the popup
-	 * @param {L.LatLng} atLatLng - The popup will be opened at theis lat lng
+	 * @param {L.LatLng} atLatLng - The popup will be opened at this lat lng
 	 * #param {Function} navHandler - This event handler will get called when the Navigate button is clicked in the popup.
 	 */
 	self.createPopup = function(onMap, feature, atLatLng, navHandler) {
