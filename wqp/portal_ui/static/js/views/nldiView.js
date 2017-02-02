@@ -26,8 +26,6 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	var $mapDiv = $('#' + options.mapDivId);
 	var $insetMapDiv = $('#' + options.insetMapDivId);
 
-	var lastLatLngClicked;
-
 	var nldiSiteCluster, nldiFlowlineLayers;
 	var insetNldiSiteCluster, insetNldiFlowlineLayers;
 
@@ -109,6 +107,10 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	};
 
 
+	/*
+	 * Retrieve the NLDI sites and flow lines for the current state of PORTAL.MODELS.nldiModel and
+	 * display them on both the insetMap and map.
+	 */
 	var updateNldiSites = function() {
 		var nldiSiteUrl = PORTAL.MODELS.nldiModel.getUrl('wqp');
 		var nldiFlowlinesUrl = PORTAL.MODELS.nldiModel.getUrl();
@@ -171,8 +173,9 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	};
 
 	/*
-	 * Leaflet mouse event handler to find the sites associated with the COMID at the location in the event and displays
-	 * the sites and flowlines on the nldi map. Popups are used to tell the user if an error occurred in the process.
+	 * Leaflet mouse event handler to find the sites associated with the feature source at the location in the event.
+	 * Popups are used to tell the user if an error occurred in the process. If a feature source is located, the popup
+	 * displayed will allow the user to perform an NLDI navigation using parameters entered in the popup.
 	 *
 	 * @param {L.MouseEvent} ev
 	 */
@@ -185,7 +188,6 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		PORTAL.MODELS.nldiModel.setData('featureId', '');
 		PORTAL.MODELS.nldiModel.setData('navigation', undefined);
 		PORTAL.MODELS.nldiModel.setData('distance', '');
-		lastLatLngClicked = undefined;
 		cleanUpMaps();
 		map.closePopup();
 
@@ -195,6 +197,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 					map.openPopup(getRetrieveMessage(), ev.latlng);
 					updateNldiSites();
 				};
+
 				if (result.features.length === 0) {
 					map.openPopup('<p>No query point has been selected. Please click on a point to query from.</p>', ev.latlng);
 
@@ -205,7 +208,6 @@ PORTAL.VIEWS.nldiView  = function(options) {
 				else {
 					PORTAL.MODELS.nldiModel.setData('featureId',
 						result.features[0].properties[featureIdProperty]);
-					lastLatLngClicked= ev.latlng;
 
 					PORTAL.VIEWS.nldiNavPopupView.createPopup(map, result.features[0], ev.latlng, navHandler);
 				}
@@ -219,12 +221,10 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	};
 
 	/*
-	 * Show the full size map and set it's navigation select value. Hide the inset map
+	 * Show the full size map and  hide the inset map
 	 */
 	var showMap = function () {
-		var nldiModel;
 		if ($mapDiv.is(':hidden')) {
-			nldiModel = PORTAL.MODELS.nldiModel.getData();
 			$insetMapDiv.hide();
 			$mapDiv.parent().show();
 			map.invalidateSize();
@@ -234,12 +234,10 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	};
 
 	/*
-	 * Show the inset map and set it's navigation select value. Hide the full size map
+	 * Show the inset map and hide the full size map
 	 */
 	var showInsetMap = function () {
-		var nldiModel;
 		if ($insetMapDiv.is(':hidden')) {
-			nldiModel = PORTAL.MODELS.nldiModel.getData();
 			$insetMapDiv.show();
 			$mapDiv.parent().hide();
 			insetMap.invalidateSize();
@@ -248,7 +246,6 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	};
 
 	var featureSourceChangeHandler = function(ev) {
-		lastLatLngClicked = undefined;
 		cleanUpMaps();
 		map.closePopup();
 		PORTAL.MODELS.nldiModel.setFeatureSource($(ev.currentTarget).val());
