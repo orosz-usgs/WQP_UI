@@ -175,6 +175,28 @@
         list-style: none;
         padding-left: 0px;
       }
+      .navigation-selection-div {
+        label {
+          font-size: 14px;
+          font-weight: bold;
+        }
+        .navigate-button-div {
+          margin-top: 5px;
+          text-align: center;
+          button {
+            color: @btn-default-color;
+            font-size: 14px;
+            background-color: @btn-default-bg;
+            border-color: lightgrey;
+            padding: 5px 15px;
+            border-radius: 5px;
+            text-align: center;
+          }
+          button:disabled {
+            opacity: 0.65
+          }
+        }
+      }
     }
   }
 }

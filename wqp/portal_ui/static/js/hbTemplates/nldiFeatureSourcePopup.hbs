@@ -13,8 +13,8 @@
 	</ul>
 </div>
 
-<p>Select a navigation and optional distance</p>
 <div class="navigation-selection-div">
+	<div><label>Select a navigation and optional distance</label></div>
 	<select>
 		<option value="">Select navigation type</option>
 		{{#each navigationModes }}
@@ -22,7 +22,7 @@
 		{{/each}}
 	</select>
 	<input type="text" size="15" title="Optional distance from query source" placeholder="Distance in km" />
-	<div>
+	<div class="navigate-button-div">
 		<button disabled type="button">Navigate</button>
 	</div>
 </div>

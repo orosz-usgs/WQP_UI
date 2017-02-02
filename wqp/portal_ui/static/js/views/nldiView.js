@@ -197,12 +197,10 @@ PORTAL.VIEWS.nldiView  = function(options) {
 				};
 				if (result.features.length === 0) {
 					map.openPopup('<p>No query point has been selected. Please click on a point to query from.</p>', ev.latlng);
-					$mapDiv.css('cursor', '');
 
 				}
 				else if (result.features.length > 1) {
 					map.openPopup('<p>More than one query point has been selected. Please zoom in and try again.</p>', ev.latlng);
-					$mapDiv.css('cursor', '');
 				}
 				else {
 					PORTAL.MODELS.nldiModel.setData('featureId',
@@ -214,6 +212,8 @@ PORTAL.VIEWS.nldiView  = function(options) {
 			})
 			.fail(function () {
 				map.openPopup('<p>Unable to retrieve points, service call failed</p>', ev.latlng);
+			})
+			.always(function() {
 				$mapDiv.css('cursor', '');
 			});
 	};
