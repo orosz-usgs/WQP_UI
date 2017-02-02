@@ -3,7 +3,7 @@
 /* global L */
 
 
-describe('leafletControl/QuerySelectControl', function() {
+describe('leafletControl/FeatureSourceSelectControl', function() {
 	"use strict";
 
 	var map;
@@ -27,13 +27,13 @@ describe('leafletControl/QuerySelectControl', function() {
 		document.body.innerHTML = '';
 	});
 
-	describe('Tests without an initialQueryValue', function() {
+	describe('Tests without an initialFeatureSourceValue', function() {
 		beforeEach(function() {
-			testControl = L.control.querySelectControl({
+			testControl = L.control.featureSourceSelectControl({
 				changeHandler: changeHandlerSpy,
-				queryOptions: [
-					{id: 'query1', text: 'Text1', mapLayer: layer1},
-					{id: 'query2', text: 'Text2', mapLayer: layer2}
+				featureSourceOptions: [
+					{id: 'source1', text: 'Text1', mapLayer: layer1},
+					{id: 'source2', text: 'Text2', mapLayer: layer2}
 				]
 			});
 			map.addControl(testControl);
@@ -45,31 +45,31 @@ describe('leafletControl/QuerySelectControl', function() {
 			}
 		});
 
-		it('Expects that the map contains a select control containing the query options', function() {
-			var select = document.getElementsByClassName('leaflet-nldi-query-control-div');
+		it('Expects that the map contains a select control containing the feature source options', function() {
+			var select = document.getElementsByClassName('leaflet-nldi-feature-source-control-div');
 			var options;
 
 			expect(select.length).toBe(1);
 			options = select[0].getElementsByTagName('option');
 			expect(options.length).toBe(3);
 			expect(options[0].value).toEqual('');
-			expect(options[1].value).toEqual('query1');
-			expect(options[2].value).toEqual('query2');
+			expect(options[1].value).toEqual('source1');
+			expect(options[2].value).toEqual('source2');
 		});
 
 		it('Expects that the getValue method returns the current value selected', function() {
-			var select = document.getElementsByClassName('leaflet-nldi-query-picker')[0];
+			var select = document.getElementsByClassName('leaflet-nldi-feature-source-picker')[0];
 
 			expect(testControl.getValue()).toEqual('');
 
-			select.value = 'query1';
-			expect(testControl.getValue()).toEqual('query1');
+			select.value = 'source1';
+			expect(testControl.getValue()).toEqual('source1');
 		});
 
 		it('Expects that a change event calls the changeHandler', function() {
-			var select = document.getElementsByClassName('leaflet-nldi-query-picker')[0];
+			var select = document.getElementsByClassName('leaflet-nldi-feature-source-picker')[0];
 			var event = document.createEvent('HTMLEvents');
-			select.value='query1';
+			select.value='source1';
 			event.initEvent('change', true, false);
 			select.dispatchEvent(event);
 
@@ -77,10 +77,10 @@ describe('leafletControl/QuerySelectControl', function() {
 		});
 
 		it('Expects that the change handler adds the selected layer to the map', function() {
-			var select = document.getElementsByClassName('leaflet-nldi-query-picker')[0];
+			var select = document.getElementsByClassName('leaflet-nldi-feature-source-picker')[0];
 			var event = document.createEvent('HTMLEvents');
 
-			select.value='query1';
+			select.value='source1';
 			event.initEvent('change', true, false);
 			select.dispatchEvent(event);
 
@@ -89,14 +89,14 @@ describe('leafletControl/QuerySelectControl', function() {
 		});
 
 		it('Expects that the second call to the change handler removes the first layer and adds the second to the map', function() {
-			var select = document.getElementsByClassName('leaflet-nldi-query-picker')[0];
+			var select = document.getElementsByClassName('leaflet-nldi-feature-source-picker')[0];
 			var event = document.createEvent('HTMLEvents');
 
-			select.value='query1';
+			select.value='source1';
 			event.initEvent('change', true, false);
 			select.dispatchEvent(event);
 
-			select.value='query2';
+			select.value='source2';
 			event.initEvent('change', true, false);
 			select.dispatchEvent(event);
 
@@ -112,11 +112,11 @@ describe('leafletControl/QuerySelectControl', function() {
 			expect(L.DomEvent.removeListener).toHaveBeenCalled();
 		});
 
-		it('Expects that removing the control removes the displayed query layer', function() {
-			var select = document.getElementsByClassName('leaflet-nldi-query-picker')[0];
+		it('Expects that removing the control removes the displayed feature source layer', function() {
+			var select = document.getElementsByClassName('leaflet-nldi-feature-source-picker')[0];
 			var event = document.createEvent('HTMLEvents');
 
-			select.value='query1';
+			select.value='source1';
 			event.initEvent('change', true, false);
 			select.dispatchEvent(event);
 			map.removeControl(testControl);
@@ -125,15 +125,15 @@ describe('leafletControl/QuerySelectControl', function() {
 		});
 	});
 
-	describe('Tests with an initialQueryValue', function() {
+	describe('Tests with an initialFeatureSourceValue', function() {
 		beforeEach(function () {
-			testControl = L.control.querySelectControl({
+			testControl = L.control.featureSourceSelectControl({
 				changeHandler: changeHandlerSpy,
-				queryOptions: [
-					{id: 'query1', text: 'Text1', mapLayer: layer1},
-					{id: 'query2', text: 'Text2', mapLayer: layer2}
+				featureSourceOptions: [
+					{id: 'source1', text: 'Text1', mapLayer: layer1},
+					{id: 'source2', text: 'Text2', mapLayer: layer2}
 				],
-				initialQueryValue: 'query1'
+				initialFeatureSourceValue: 'source1'
 			});
 			map.addControl(testControl);
 		});
@@ -144,7 +144,7 @@ describe('leafletControl/QuerySelectControl', function() {
 			}
 		});
 
-		it('Expects that the map contains the initial query map layer', function() {
+		it('Expects that the map contains the initial feature source map layer', function() {
 			expect(map.hasLayer(layer1)).toBe(true);
 		});
 	});
