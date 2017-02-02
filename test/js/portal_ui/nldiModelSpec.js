@@ -42,9 +42,9 @@ describe('nldiModel', function() {
 		nldiModel.setFeatureSource('huc12pp');
 		featureSource = nldiModel.getData().featureSource;
 		expect(featureSource.id).toEqual('huc12pp');
-		expect(featureSource.text).toEqual(nldiModel.QUERY_SOURCES[0].text);
-		expect(featureSource.mapLayer).toEqual(nldiModel.QUERY_SOURCES[0].mapLayer);
-		expect(featureSource.getFeatureInfoSource).toEqual(nldiModel.QUERY_SOURCES[0].getFeatureInfoSource);
+		expect(featureSource.text).toEqual(nldiModel.FEATURE_SOURCES[0].text);
+		expect(featureSource.mapLayer).toEqual(nldiModel.FEATURE_SOURCES[0].mapLayer);
+		expect(featureSource.getFeatureInfoSource).toEqual(nldiModel.FEATURE_SOURCES[0].getFeatureInfoSource);
 	});
 
 	it('Expects that reset returns the model to it\'s initial state', function() {
@@ -68,7 +68,7 @@ describe('nldiModel', function() {
 	});
 
 	it('Expects getUrl without a data source parameter to return an NLDI query url', function() {
-		nldiModel.setData('featureSource', nldiModel.QUERY_SOURCES[1]);
+		nldiModel.setData('featureSource', nldiModel.FEATURE_SOURCES[1]);
 		nldiModel.setData('featureId', 'USGS-01010101');
 		nldiModel.setData('navigation', nldiModel.NAVIGATION_MODES[2]);
 		nldiModel.setData('distance', 12);
@@ -77,7 +77,7 @@ describe('nldiModel', function() {
 	});
 
 	it('Expects getUrl with a data source parameter adds that to the NLDI query url', function() {
-		nldiModel.setData('featureSource', nldiModel.QUERY_SOURCES[1]);
+		nldiModel.setData('featureSource', nldiModel.FEATURE_SOURCES[1]);
 		nldiModel.setData('featureId', 'USGS-01010101');
 		nldiModel.setData('navigation', nldiModel.NAVIGATION_MODES[2]);
 		nldiModel.setData('distance', 12);

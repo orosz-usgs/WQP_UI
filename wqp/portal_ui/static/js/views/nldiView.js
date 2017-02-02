@@ -247,7 +247,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		}
 	};
 
-	var queryChangeHandler = function(ev) {
+	var featureSourceChangeHandler = function(ev) {
 		lastLatLngClicked = undefined;
 		cleanUpMaps();
 		map.closePopup();
@@ -256,10 +256,6 @@ PORTAL.VIEWS.nldiView  = function(options) {
 
 	var clearHandler = function() {
 		PORTAL.MODELS.nldiModel.reset();
-
-		this.setNavValue('');
-		this.setDistanceValue('');
-
 		cleanUpMaps();
 		map.closePopup();
 	};
@@ -290,10 +286,10 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		}
 	);
 
-	var querySelectControl = L.control.querySelectControl({
-		changeHandler : queryChangeHandler,
-		queryOptions : PORTAL.MODELS.nldiModel.QUERY_SOURCES,
-		initialQueryValue : PORTAL.MODELS.nldiModel.getData().featureSource.id
+	var featureSourceSelectControl = L.control.featureSourceSelectControl({
+		changeHandler : featureSourceChangeHandler,
+		featureSourceOptions : PORTAL.MODELS.nldiModel.FEATURE_SOURCES,
+		initialFeatureSourceValue : PORTAL.MODELS.nldiModel.getData().featureSource.id
 	});
 
 	var searchControl = L.control.searchControl(Config.GEO_SEARCH_API_ENDPOINT);
@@ -303,6 +299,12 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	});
 	var collapseControl = L.easyButton('fa-lg fa-compress', showInsetMap, 'Collapse NLDI Map', {
 		position: 'topright'
+	});
+	var insetClearControl = L.easyButton('fa-lg fa-undo', clearHandler, 'Clear the sites', {
+		position: 'topleft'
+	});
+	var clearControl = L.easyButton('fa-lg fa-undo', clearHandler, 'Clear the sites', {
+		position: 'topleft'
 	});
 
 	var MapWithSingleClickHandler = L.Map.extend({
@@ -321,6 +323,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		});
 		insetMap.addLayer(insetHydroLayer);
 		insetMap.addControl(expandControl);
+		insetMap.addControl(insetClearControl);
 		insetMap.addControl(L.control.zoom());
 
 		map = new MapWithSingleClickHandler(options.mapDivId, {
@@ -331,12 +334,13 @@ PORTAL.VIEWS.nldiView  = function(options) {
 		});
 
 		map.addControl(searchControl);
-		map.addControl(querySelectControl);
+		map.addControl(featureSourceSelectControl);
 		map.addControl(collapseControl);
 		map.addControl(L.control.layers(baseLayers, {
 			'Hydro Reference' : hydroLayer,
 			'NHDLPlus Flowline Network' : nhdlPlusFlowlineLayer
 		}));
+		map.addControl(clearControl);
 		map.addControl(L.control.zoom());
 
 		map.addSingleClickHandler(findSitesHandler);
