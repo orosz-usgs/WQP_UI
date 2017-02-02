@@ -23,7 +23,6 @@ bundles = {
         'portal_ui/js/utils.js',
         'portal_ui/js/identifyDialog.js',
         'portal_ui/js/MapConfig.js',
-        'portal_ui/js/leafletControls/NldiControl.js',
         'portal_ui/js/leafletControls/FeatureSourceSelectControl.js',
         'portal_ui/js/leafletControls/SearchControl.js',
         'portal_ui/js/LeafletMixins/SingleClickEventHandlerMixin.js',
