@@ -19,7 +19,7 @@ PORTAL.VIEWS.arcGisOnlineDialog = function(el) {
 	'parameter fields in ArcGIS Online when adding a layer from the web.<br/>' +
 	'<table style="width:100%">' +
 	'<tr><th>Parameter</th><th>Value</th></tr>' +
-	'<tr><td>SEARCHPARAMS</td><td>{{ searchParams }}</td></tr>' +
+	'<tr><td>SEARCHPARAMS</td><td><textarea style="resize:none" cols="50" rows="5">{{ searchParams }}</textarea></td></tr>' +
 	'<tr><td>Style</td><td>{{ style }}</td></tr>' +
 	'<tr><td>Styles</td><td>{{ style }}</td></tr>' +
 	'</table>'
