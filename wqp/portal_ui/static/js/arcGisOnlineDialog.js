@@ -15,7 +15,8 @@ PORTAL.VIEWS.arcGisOnlineDialog = function(el) {
 
 	var HEADER = "Parameters to be used with the wqp_sites layer.";
 
-	var arcGisParameters = Handlebars.compile('Please copy and paste into the appropriate files in ArcGIS Online<br/>' +
+	var arcGisParameters = Handlebars.compile('Please copy and paste into the appropriate ' +
+	'parameter fields in ArcGIS Online when adding a layer from the web.<br/>' +
 	'<table style="width:100%">' +
 	'<tr><th>Parameter</th><th>Value</th></tr>' +
 	'<tr><td>SEARCHPARAMS</td><td>{{ searchParams }}</td></tr>' +
