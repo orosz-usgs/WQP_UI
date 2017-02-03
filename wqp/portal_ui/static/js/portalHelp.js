@@ -150,8 +150,9 @@ PORTAL.MODELS.help = {
 		placement: 'auto',
 		title: 'NLDI Help',
 		content: '\
-			<div><p>Select a navigation direction and distance and click on a query location on the map to display sites upstream or downstream of that point. \
-			The list of sites will be passed to the water quality portal query.</p>\
+			<div><p>Click the Expand button in the upper right of the map. This will show a larger map. Zoom in to see features of interest. The feature \
+			source can be changed using the feature select picker in the upper right. Click on a feature to display a popup dialog where you enter the navigation type and \
+			optional distance. Then click the Navigate button to show the sites upstream or downstream from the feature</p></div>\
 			<p>Use a distance with upstream tributaries to restrict the query size and ensure that the result does not crash the page</p>\
 			<p>This tool uses the <a href="https://cida.usgs.gov/nldi/about"  target="_blank" title="Go to the Network Linked Data Index about page" >Network Linked Data Index</a> to navigate.</p>\
 			</div>'
