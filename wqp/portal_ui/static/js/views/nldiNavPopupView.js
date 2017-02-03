@@ -22,6 +22,7 @@ PORTAL.VIEWS.nldiNavPopupView = (function() {
 	 */
 	$.ajax({
 		url : Config.STATIC_ENDPOINT + 'js/hbTemplates/nldiFeatureSourcePopup.hbs',
+		cache: false,
 		success : function(response) {
 			popupTemplate = Handlebars.compile(response);
 		},
