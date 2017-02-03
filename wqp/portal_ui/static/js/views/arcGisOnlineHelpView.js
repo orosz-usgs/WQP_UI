@@ -12,7 +12,12 @@ PORTAL.VIEWS.arcGisOnlineHelpView = function(options) {
 
 	var self = {};
 
-	options.$container.find('#show-arcgis-online-help').click(function() {
-		options.arcGisOnlineDialog.show();
-	});
+	self.initialize = function() {
+		var $arcGisOnlineButton = options.$container.find('#show-arcgis-online-help');
+
+		$arcGisOnlineButton.click(function() {
+			options.arcGisOnlineDialog.show();
+		});
+	};
+	return self;
 };
