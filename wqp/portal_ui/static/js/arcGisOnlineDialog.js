@@ -3,6 +3,7 @@
 /* global Config */
 /* global _gaq */
 /* global _ */
+/* global L */
 
 var PORTAL = PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
@@ -14,19 +15,29 @@ PORTAL.VIEWS.arcGisOnlineDialog = function(el) {
 
 	var HEADER = "Parameters to be used with the wqp_sites layer.";
 
-	var arcGisParameters = Handlebars.compile('Please copy and paste into the appropriate files in ArcGIS Online' +
+	var arcGisParameters = Handlebars.compile('Please copy and paste into the appropriate files in ArcGIS Online<br/>' +
 	'<table style="width:100%">' +
 	'<tr><th>Parameter</th><th>Value</th></tr>' +
 	'<tr><td>SEARCHPARAMS</td><td>{{ searchParams }}</td></tr>' +
 	'<tr><td>Style</td><td>{{ style }}</td></tr>' +
+	'<tr><td>Styles</td><td>{{ style }}</td></tr>' +
 	'</table>'
 	);
 
-	that.show = function(message) {
+	that.show = function(queryParams, selectedSld) {
+		var wfsUrl = decodeURIComponent(L.WQPSitesLayer.getWfsGetFeatureUrl(queryParams));
+		var queryStr = wfsUrl.substring(wfsUrl.indexOf('?') + 1);
+		var queryStrPairs = queryStr.split('&');
+		var parameters = {};
+		queryStrPairs.forEach(function(pair) {
+			pair = pair.split('=');
+			parameters[pair[0]] = pair[1];
+		});
+		var searchParams = parameters.SEARCHPARAMS;
 		var buildContext = function() {
 			var context = {
-				searchParams : 'R2D2',
-				style : 'wqp_sources'
+				searchParams : searchParams,
+				style : selectedSld
 			};
 			return arcGisParameters(context);
 		};

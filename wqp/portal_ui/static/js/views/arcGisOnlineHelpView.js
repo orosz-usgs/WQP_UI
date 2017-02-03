@@ -14,9 +14,12 @@ PORTAL.VIEWS.arcGisOnlineHelpView = function(options) {
 
 	self.initialize = function() {
 		var $arcGisOnlineButton = options.$container.find('#show-arcgis-online-help');
+		var $sldSelect = options.$mapContainer.find('#sld-select-input');
 
 		$arcGisOnlineButton.click(function() {
-			options.arcGisOnlineDialog.show();
+			var queryParamArray = options.getQueryParamArray()
+			var selectedSld = $sldSelect.val();
+			options.arcGisOnlineDialog.show(queryParamArray, selectedSld);
 		});
 	};
 	return self;

@@ -37,7 +37,9 @@ $(document).ready(function () {
 
 	var arcGisOnlineHelpView = PORTAL.VIEWS.arcGisOnlineHelpView({
 		$container : $('#show-queries-div'),
-		arcGisOnlineDialog : arcGisOnlineDialog
+		$mapContainer : $('#mapping-div'),
+		arcGisOnlineDialog : arcGisOnlineDialog,
+		getQueryParamArray : downloadFormView.getQueryParamArray
 	});
 
 	//Initialize subviews
