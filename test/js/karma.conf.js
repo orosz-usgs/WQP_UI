@@ -38,6 +38,7 @@ module.exports = function(config) {
         'wqp/bower_components/Leaflet.EasyButton/src/easy-button.js',
         'test/resources/testConfig.js',
         'wqp/portal_ui/static/js/**/*.js',
+        {pattern: 'wqp/portal_ui/static/js/hbTemplates/*.hbs', included: false},
         'test/js/portal_ui/**/*.js'
     ],
 

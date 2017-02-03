@@ -9,7 +9,7 @@ describe('nldiModel', function() {
 
 	var nldiModel = PORTAL.MODELS.nldiModel;
 
-	it('Expects that the modelData.getData initially returns an object containing undefined/null properties', function() {
+	it('Expects that the modelData.getData initially returns an object containing the default properties', function() {
 		var data = nldiModel.getData();
 
 		expect(_.has(data, 'featureSource')).toBe(true);
@@ -17,7 +17,7 @@ describe('nldiModel', function() {
 		expect(_.has(data, 'navigation')).toBe(true);
 		expect(_.has(data, 'distance')).toBe(true);
 
-		expect(data.featureSource).toBeFalsy();
+		expect(data.featureSource.id).toEqual('nwissite');
 		expect(data.featureId).toBeFalsy();
 		expect(data.navigation).toBeFalsy();
 		expect(data.distance).toBeFalsy();
@@ -39,12 +39,12 @@ describe('nldiModel', function() {
 
 	it('Expects that featureSource is updated with the specified feature source id when setFeatureSource is used', function() {
 		var featureSource;
-		nldiModel.setFeatureSource('nwissite');
+		nldiModel.setFeatureSource('huc12pp');
 		featureSource = nldiModel.getData().featureSource;
-		expect(featureSource.id).toEqual('nwissite');
-		expect(featureSource.text).toEqual(nldiModel.QUERY_SOURCES[1].text);
-		expect(featureSource.mapLayer).toEqual(nldiModel.QUERY_SOURCES[1].mapLayer);
-		expect(featureSource.getFeatureInfoSource).toEqual(nldiModel.QUERY_SOURCES[1].getFeatureInfoSource);
+		expect(featureSource.id).toEqual('huc12pp');
+		expect(featureSource.text).toEqual(nldiModel.FEATURE_SOURCES[0].text);
+		expect(featureSource.mapLayer).toEqual(nldiModel.FEATURE_SOURCES[0].mapLayer);
+		expect(featureSource.getFeatureInfoSource).toEqual(nldiModel.FEATURE_SOURCES[0].getFeatureInfoSource);
 	});
 
 	it('Expects that reset returns the model to it\'s initial state', function() {
@@ -61,14 +61,14 @@ describe('nldiModel', function() {
 		expect(_.has(data, 'distance')).toBe(true);
 		expect(_.has(data, 'newProp')).toBe(false);
 
-		expect(data.featureSource).toBeFalsy();
+		expect(data.featureSource.id).toEqual('nwissite');
 		expect(data.featureId).toBeFalsy();
 		expect(data.navigation).toBeFalsy();
 		expect(data.distance).toBeFalsy();
 	});
 
 	it('Expects getUrl without a data source parameter to return an NLDI query url', function() {
-		nldiModel.setData('featureSource', nldiModel.QUERY_SOURCES[1]);
+		nldiModel.setData('featureSource', nldiModel.FEATURE_SOURCES[1]);
 		nldiModel.setData('featureId', 'USGS-01010101');
 		nldiModel.setData('navigation', nldiModel.NAVIGATION_MODES[2]);
 		nldiModel.setData('distance', 12);
@@ -77,7 +77,7 @@ describe('nldiModel', function() {
 	});
 
 	it('Expects getUrl with a data source parameter adds that to the NLDI query url', function() {
-		nldiModel.setData('featureSource', nldiModel.QUERY_SOURCES[1]);
+		nldiModel.setData('featureSource', nldiModel.FEATURE_SOURCES[1]);
 		nldiModel.setData('featureId', 'USGS-01010101');
 		nldiModel.setData('navigation', nldiModel.NAVIGATION_MODES[2]);
 		nldiModel.setData('distance', 12);
