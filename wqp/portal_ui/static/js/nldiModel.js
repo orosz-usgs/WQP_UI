@@ -19,7 +19,6 @@ PORTAL.MODELS.nldiModel = (function() {
 			styles : 'pour_points',
 			format : 'image/png',
 			transparent : true,
-			minZoom : 8,
 			zIndex : 20
 		}),
 		getFeatureInfoSource : {
@@ -36,7 +35,6 @@ PORTAL.MODELS.nldiModel = (function() {
 			layers: 'qw_portal_map:nwis_sites',
 			format : 'image/png',
 			transparent : true,
-			minZoom : 8,
 			zIndex : 20
 		}),
 		getFeatureInfoSource : {
