@@ -46,6 +46,7 @@ bundles = {
         'portal_ui/js/views/showAPIView.js',
         'portal_ui/js/views/nldiView.js',
         'portal_ui/js/views/nldiNavPopupView.js',
+        'portal_ui/js/views/arcGisOnlineHelpView.js',
         'portal_ui/js/portalHelp.js',
         'portal_ui/js/stateFIPS.js',
         'portal_ui/js/dateValidator.js',

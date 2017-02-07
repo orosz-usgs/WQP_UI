@@ -34,10 +34,18 @@ $(document).ready(function () {
 		getQueryParamArray : downloadFormView.getQueryParamArray
 	});
 
+	var arcGisOnlineHelpView = PORTAL.VIEWS.arcGisOnlineHelpView({
+		$button : $('#show-arcgis-online-help'),
+		$dialog : $('#arcgis-online-dialog'),
+		$siteMapViewContainer : $('#mapping-div'),
+		getQueryParamArray : downloadFormView.getQueryParamArray
+	});
+
 	//Initialize subviews
 	var initDownloadForm = downloadFormView.initialize();
 	siteMapView.initialize();
 	showAPIView.initialize();
+	arcGisOnlineHelpView.initialize();
 
 	initDownloadForm.fail(function() {
 		$('#service-error-dialog').modal('show');

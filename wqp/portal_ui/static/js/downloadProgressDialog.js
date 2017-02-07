@@ -130,7 +130,6 @@ PORTAL.VIEWS.downloadProgressDialog = function (el) {
 	};
 
 	return that;
-
 };
 
 
