@@ -33,12 +33,11 @@ $(document).ready(function () {
 		$container : $('#show-queries-div'),
 		getQueryParamArray : downloadFormView.getQueryParamArray
 	});
-	var arcGisOnlineDialog = PORTAL.VIEWS.arcGisOnlineDialog($('#arcgis-online-dialog'));
 
 	var arcGisOnlineHelpView = PORTAL.VIEWS.arcGisOnlineHelpView({
-		$container : $('#show-queries-div'),
-		$mapContainer : $('#mapping-div'),
-		arcGisOnlineDialog : arcGisOnlineDialog,
+		$button : $('#show-arcgis-online-help'),
+		$dialog : $('#arcgis-online-dialog'),
+		$siteMapViewContainer : $('#mapping-div'),
 		getQueryParamArray : downloadFormView.getQueryParamArray
 	});
 

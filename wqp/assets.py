@@ -55,7 +55,6 @@ bundles = {
         'portal_ui/js/portalValidators.js',
         'portal_ui/js/downloadFormController.js',
         'portal_ui/js/hucValidator.js',
-        'portal_ui/js/arcGisOnlineDialog.js',
         filters='jsmin',
         output='gen/portal.js'),
     'coverage_js' : Bundle(
