@@ -33,11 +33,20 @@ $(document).ready(function () {
 		$container : $('#show-queries-div'),
 		getQueryParamArray : downloadFormView.getQueryParamArray
 	});
+	var arcGisOnlineDialog = PORTAL.VIEWS.arcGisOnlineDialog($('#arcgis-online-dialog'));
+
+	var arcGisOnlineHelpView = PORTAL.VIEWS.arcGisOnlineHelpView({
+		$container : $('#show-queries-div'),
+		$mapContainer : $('#mapping-div'),
+		arcGisOnlineDialog : arcGisOnlineDialog,
+		getQueryParamArray : downloadFormView.getQueryParamArray
+	});
 
 	//Initialize subviews
 	var initDownloadForm = downloadFormView.initialize();
 	siteMapView.initialize();
 	showAPIView.initialize();
+	arcGisOnlineHelpView.initialize();
 
 	initDownloadForm.fail(function() {
 		$('#service-error-dialog').modal('show');
