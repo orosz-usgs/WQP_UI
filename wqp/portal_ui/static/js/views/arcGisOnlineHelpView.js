@@ -34,7 +34,6 @@ PORTAL.VIEWS.arcGisOnlineHelpView = function(options) {
 	 * 		will be in the dialog
 	 * @param {String} selectedSld - The SLD string that will be used to in the dialog
 	 */
-
 	var showDialog = function(queryParams, selectedSld) {
 		var wfsUrl = decodeURIComponent(L.WQPSitesLayer.getWfsGetFeatureUrl(queryParams));
 		var queryStr = wfsUrl.substring(wfsUrl.indexOf('?') + 1);
@@ -67,6 +66,9 @@ PORTAL.VIEWS.arcGisOnlineHelpView = function(options) {
 		}
 	});
 
+	/*
+	 * Initialize the Arc GIS online view, initializing content and setting up event handlers as needed.
+	 */
 	self.initialize = function() {
 		var $sldSelect = options.$siteMapViewContainer.find('#sld-select-input');
 
