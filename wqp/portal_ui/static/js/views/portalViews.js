@@ -212,7 +212,10 @@ PORTAL.VIEWS.createCascadedCodeSelect = function (el, options, select2Options) {
 			else {
 				options.model.fetch(selectedKeys)
 					.done(function (data) {
-						deferred.resolve(data);
+						filteredLookups = _.filter(data, function(lookup) {
+							return options.isMatch(params.data.term, lookup);
+						});
+						deferred.resolve(filteredLookups);
 					})
 					.fail(function () {
 						deferred.reject();
