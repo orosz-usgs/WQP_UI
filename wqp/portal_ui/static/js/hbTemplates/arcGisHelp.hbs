@@ -11,20 +11,23 @@
                     <li>Click "<strong>Add Custom Parameters</strong>" and add the three parameters below. Copying and pasting is recommended
                         <table class="table table-striped table-bordered">
                             <thead>
-                                <tr><th>Parameter</th><th>Value</th></tr>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Value</th>
+                                </tr>
                             </thead>
                             <tbody>
-                                <tr class="searchparams-tr">
+                                <tr class="searchparams-row">
                                     <td>SEARCHPARAMS</td>
-                                    <td class="searchparams-td">{{ searchParams }}</td>
+                                    <td><textarea rows="5" class="searchparams-value">{{ searchParams }}</textarea></td>
                                 </tr>
                                 <tr>
                                     <td>style</td>
-                                    <td>{{ style }}</td>
+                                    <td class="style-value">{{ style }}</td>
                                 </tr>
                                 <tr>
                                     <td>styles</td>
-                                    <td>{{ style }}</td>
+                                    <td class="style-value">{{ style }}</td>
                                 </tr>
                             </tbody>
                         </table>
