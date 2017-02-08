@@ -1,20 +1,32 @@
 <div>
-	<p> Please copy and paste into the appropriate parameter fields in ArcGIS Online
-		when adding a layer from the web. Currently only a "A WMS OGC Web Service" is supported.
+	<p>These are directions for adding the same map as you can see after clicking "Show Sites on Map" onto ArcGIS Online.
+        Similar steps should allow connections to arcGIS or QGIS. These layers will persist over time, though they are
+        dynamic and represent the current state of WQP Data.</p>
+    <p><strong>Before attempting to add a layer, first view the layer using the "Show Sites on Map" dialog</strong></p>
+    <p>
+        <ol>
+            <li>Under the "Add" menu, choose "Add Layer from Web."</li>
+            <li>In the drop-down menu under "What type of data are you referencing?," choose "A WMS OGC Web Service."</li>
+            <li>Copy this url and paste it into the URL field: https://www.waterqualitydata.us/ogcservices/ows.</li>
+            <li>Click "Add Custom Parameters" and add the three parameters below. Copying and pasting is recommended.
+                <table class="table">
+                    <thead>
+                        <tr><th>Parameter</th><th>Value</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>SEARCHPARAMS</td>
+                            <td><textarea rows="1" class="searchparams-value">{{ searchParams }}</textarea></td>
+                        </tr>
+                    </tbody>
+                    <tr><td>style</td><td class="style-value">{{ style }}</td></tr>
+                    <tr><td>styles</td><td class="style-value">{{ style }}</td></tr>
+                </table>
+            </li>
+            <li>Click the "GET LAYERS" button to pull the list of available layers from the WQP.</li>
+            <li>Check the box to the left of the "wqp_sites" layer from the layer chooser that comes up.</li>
+            <li>Click "ADD LAYER" to add the layer to the map</li>
+        </ol>
 	</p>
-	<table class="table">
-		<thead>
-			<tr><th>Parameter</th><th>Value</th></tr>
-		</thead>
-		<tbody>
-		 	<tr><td>URL</td><td>https://www.waterqualitydata.us/ogcservices/ows</td></tr>
-			<tr><td>Layers</td><td>wqp_sites</td></tr>
-			<tr>
-				<td>SEARCHPARAMS</td>
-				<td><textarea rows="5" class="searchparams-value">{{ searchParams }}</textarea></td>
-			</tr>
-		</tbody>
-		<tr><td>Style</td><td class="style-value">{{ style }}</td></tr>
-		<tr><td>Styles</td><td class="style-value">{{ style }}</td></tr>
-	</table>
+
 </div>

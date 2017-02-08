@@ -20,7 +20,7 @@ PORTAL.VIEWS.arcGisOnlineHelpView = function(options) {
 
 	var self = {};
 
-	var HEADER = "Parameters to be used with the wqp_sites layer";
+	var HEADER = "Using WQP Maps with ArcGIS online";
 
 	var NULL_TEMPLATE = function() {
 		return 'Template has not been loaded';
