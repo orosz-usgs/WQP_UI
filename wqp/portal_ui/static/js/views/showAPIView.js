@@ -22,6 +22,8 @@ PORTAL.VIEWS.showAPIView = function(options) {
 		var $apiQueryDiv = options.$container.find('#api-queries-div');
 		var $sitesText = options.$container.find('#sites-query-div textarea');
 		var $resultsText = options.$container.find('#results-query-div textarea');
+		var $activitiesText = options.$container.find('#activities-query-div textarea');
+		var $activitymetricsText = options.$container.find('#activitymetrics-query-div textarea');
 		var $wfsText = options.$container.find('#getfeature-query-div textarea');
 
 		options.$container.find('#show-queries-button').click(function() {
@@ -31,6 +33,8 @@ PORTAL.VIEWS.showAPIView = function(options) {
 			$apiQueryDiv.show();
 			$sitesText.html(PORTAL.queryServices.getFormUrl('Station', queryString));
 			$resultsText.html(PORTAL.queryServices.getFormUrl('Result', queryString));
+			$activitiesText.html(PORTAL.queryServices.getFormUrl('Activity', queryString));
+			$activitymetricsText.html(PORTAL.queryServices.getFormUrl('ActivityMetric', queryString));
 			$wfsText.html(L.WQPSitesLayer.getWfsGetFeatureUrl(queryParamArray));
 		});
 	};

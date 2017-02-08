@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "node_modules/karma/bin/karma start test/js/karma.conf.js --no-single-run --browsers \"\" --reporters progress"
+    "test": "node_modules/karma/bin/karma start test/js/karma.conf.js --no-single-run --reporters progress"
   },
   "repository": {
     "type": "git",
@@ -20,12 +20,14 @@
   },
   "homepage": "https://github.com/USGS-CIDA/WQP_UI",
   "devDependencies": {
-    "bower": "^1.7.7",
-    "jasmine-core": "^2.4.1",
-    "karma": "^0.13.21",
-    "karma-firefox-launcher": "^0.1.7",
-    "karma-jasmine": "^0.3.7",
-    "karma-js-coverage": "^0.4.0",
-    "less": "^2.6.1"
+    "bower": "1.8.0",
+    "jasmine-core": "2.5.2",
+    "karma": "1.4.0",
+    "karma-firefox-launcher": "1.0.0",
+    "karma-jasmine": "1.1.0",
+    "karma-js-coverage": "0.4.0",
+    "karma-sinon": "1.0.5",
+    "less": "2.7.2",
+    "sinon": "1.17.7"
   }
 }

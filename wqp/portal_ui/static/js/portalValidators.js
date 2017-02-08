@@ -40,7 +40,7 @@ PORTAL.validators = function () {
         }
     };
 
-    that.nonNegativeValidator = function(value) {
+    that.positiveIntValidator = function(value) {
         var result;
         var MSG = "Enter a positive number";
         if (!value) {

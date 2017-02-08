@@ -189,6 +189,18 @@
 							</div>
 							<button type="button" class="help-link popover-help" id="hucHelp" data-help="huc">?</button>
 						</div>
+						{% if config.DISABLE_ACTIVITY_DOWNLOAD %}
+						{% else %}
+							<div class="form-group" id='min-activities-div'>
+								<label class="control-label" for="min-activities">Minimum sampling activities per site:</label>
+								<div>
+									<input class="form-control" type="number" min="1" name="minactivities" id="min-activites"/>
+								</div>
+								<button type="button" class="help-link popover-help" id="min-activities-help"
+										data-help="minactivities">?
+								</button>
+							</div>
+						{%  endif %}
 						<div id="nldi-container">
 							<label for="nldi-picker">Search Upstream and Downstream (BETA)</label>
 							<button type="button" class="help-link popover-help" id="nldiHelp" data-help="nldi">?</button>
@@ -329,8 +341,9 @@
 			<div class="clearfix"></div>
 			<div id="nldi-map-container">
 				<div id="nldi-help-div">
-					Zoom in to see the points to search up and downstream from. Once a navigation type
-					and optionally a distance (in km) are specified, click on a point to look for points upstream and downstream from.
+					Zoom in to see the points to search up and downstream from. Click on a point, fill out the
+					navigation type and optional distance in the popup, and then click the Navigate button to find
+					sites upstream and downstream from the selected feature.
 				</div>
 				<div id="nldi-map"></div>
 			</div>
@@ -400,6 +413,17 @@
 									<input type="radio" class="result-type" id="biosamples" value="Result">
 									<label for="biosamples">Sample results (biological metadata)</label>
 								</li>
+								{% if config.DISABLE_ACTIVITY_DOWNLOAD %}
+								{% else %}
+									<li>
+										<input type="radio" class="result-type" id="activity-input" value="Activity" />
+										<label for="activity-input">Sampling Activity</label>
+									</li>
+									<li>
+										<input type="radio" class="result-type" id="activitymetric-input" value="ActivityMetric" />
+										<label for="activitymetric-input">Sampling Activity Metrics</label>
+									</li>
+								{% endif %}
 							</ul>
 						</div>
 						<div id="download-tabular-data">
@@ -437,6 +461,8 @@
 				<div id="show-queries-div" class="panel-body">
 					<button class="btn" id="show-queries-button" type="button">Show Web Service Calls</button>
 					&nbsp;
+					<button class="btn" id="show-arcgis-online-help" type="button">Show ArcGIS Online Parameters</button>
+					&nbsp;
 					<button type="button" id="WQXSchemaHelp" class="popover-help" data-help="xmlSchema">?</button>
 					<div id="api-queries-div">
 						<div class="show-query-text" id="sites-query-div">
@@ -446,6 +472,16 @@
 						</div>
 						<div class="show-query-text" id="results-query-div">
 							<b>Results</b>
+							<br/>
+							<textarea readonly="readonly" rows="6"></textarea>
+						</div>
+						<div class="show-query-text" id="activities-query-div">
+							<b>Sampling Activities</b>
+							<br/>
+							<textarea readonly="readonly" rows="6"></textarea>
+						</div>
+						<div class="show-query-text" id="activitymetrics-query-div">
+							<b>Activity Metrics</b>
 							<br/>
 							<textarea readonly="readonly" rows="6"></textarea>
 						</div>
@@ -471,6 +507,18 @@
 			</div>
 		</div>
 	</div>
+	<div id="arcgis-online-dialog" class="modal fade">
+		<div class="modal-dialog model-sm">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">x</button>
+					<h4></h4>
+				</div>
+				<div class="modal-body"></div>
+				<div class="modal-footer"></div>
+			</div>
+		</div>
+	</div>
 	<div id="map-info-dialog" style="display: none;">
 		<form method="get" style="vertical-align: top; display: inline-block;">
 			<div id="map-info-data-type-div" style="vertical-align: top; display: inline-block;">
@@ -488,6 +536,17 @@
 						<input type="radio" name="resultType" id="dialog-biosamples" value="Result"/>
 						<label for="dialog-biosamples">Sample results with biological metadata</label>
 					</li>
+					{% if config.DISABLE_ACTIVITY_DOWNLOAD %}
+					{% else %}
+						<li>
+							<input type="radio" name="resultType" id="dialog-activities" value="Activity"/>
+							<label for="dialog-activities">Sampling Activity</label>
+						</li>
+						<li>
+							<input type="radio" class="resultType" id="dialog-activitymetric" value="ActivityMetric" />
+							<label for="dialog-activitymetric">Sampling Activity Metrics</label>
+						</li>
+					{% endif %}
 				</ul>
 			</div>
 			<div style="display: inline-block;" id="map-info-file-format-div">

@@ -19,13 +19,13 @@ CODES_ENDPOINT = ''
 SEARCH_QUERY_ENDPOINT = ''
 PUBLIC_SRSNAMES_ENDPOINT = ''
 
-HYDRO_LAYER_ENDPOINT = 'http://hydrology.esri.com/arcgis/rest/services/WorldHydroReferenceOverlay/MapServer'
+HYDRO_LAYER_ENDPOINT = 'https://tiles.arcgis.com/tiles/P3ePLMYs2RVChkJx/arcgis/rest/services/Esri_Hydro_Reference_Overlay/MapServer'
 NHDPLUS_FLOWLINE_ENDPOINT = 'https://cida.usgs.gov/nwc/geoserver/gwc/service/wms'
 NHDPLUS_FLOWLINE_LAYER_NAME = 'nhdplus:nhdflowline_network'
 NLDI_SERVICES_ENDPOINT = ''
 
-NWIS_SITES_SERVICE_ENDPOINT = 'http://waterservices.usgs.gov/nwis/site/'
-NWIS_SITES_INVENTORY_ENDPOINT = 'http://waterdata.usgs.gov/nwis/inventory'
+NWIS_SITES_SERVICE_ENDPOINT = 'https://waterservices.usgs.gov/nwis/site/'
+NWIS_SITES_INVENTORY_ENDPOINT = 'https://waterdata.usgs.gov/nwis/inventory'
 
 GEO_SEARCH_API_ENDPOINT = 'https://txpub.usgs.gov/DSS/search_api/1.1/dataService/dataService.ashx/search'
 

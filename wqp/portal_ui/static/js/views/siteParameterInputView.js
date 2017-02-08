@@ -57,6 +57,7 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 		var $organizationSelect = options.$container.find('#organization');
 		var $siteIdInput = options.$container.find('#siteid');
 		var $hucInput = options.$container.find('#huc');
+		var $minActivitiesInput = options.$container.find('#min-activities');
 
 		var fetchSiteType = options.siteTypeModel.fetch();
 		var fetchOrganization = options.organizationModel.fetch();
@@ -78,6 +79,10 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 			inputEl: $hucInput,
 			validationFnc: PORTAL.hucValidator.validate,
 			updateFnc: PORTAL.hucValidator.format
+		});
+		PORTAL.VIEWS.inputValidation({
+			inputEl : $minActivitiesInput,
+			validationFnc : PORTAL.validators.positiveIntValidator
 		});
 
 		return fetchComplete;

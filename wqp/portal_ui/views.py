@@ -281,6 +281,7 @@ def uri_organization(provider_id, organization_id):
                 abort(404)
             else:
                 sites_geojson = ujson.loads(sites_request.text)
+                # sites_geojson = sites_request.text
                 rendered_site_template = render_template('sites.html', provider=provider_id,
                                                          organization=organization_id, sites_geojson=sites_geojson,
                                                          total_site_count=total_site_count)

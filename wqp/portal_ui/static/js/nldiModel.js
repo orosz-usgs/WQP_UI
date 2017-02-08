@@ -19,7 +19,6 @@ PORTAL.MODELS.nldiModel = (function() {
 			styles : 'pour_points',
 			format : 'image/png',
 			transparent : true,
-			minZoom : 8,
 			zIndex : 20
 		}),
 		getFeatureInfoSource : {
@@ -36,7 +35,6 @@ PORTAL.MODELS.nldiModel = (function() {
 			layers: 'qw_portal_map:nwis_sites',
 			format : 'image/png',
 			transparent : true,
-			minZoom : 8,
 			zIndex : 20
 		}),
 		getFeatureInfoSource : {
@@ -46,7 +44,7 @@ PORTAL.MODELS.nldiModel = (function() {
 		}
 	};
 
-	self.QUERY_SOURCES = [huc12FeatureSource, nwisSitesFeatureSource];
+	self.FEATURE_SOURCES = [huc12FeatureSource, nwisSitesFeatureSource];
 	self.NAVIGATION_MODES = [
 		{id : 'UM', text : 'Upstream main'},
 		{id : 'DM', text : 'Downstream main'},
@@ -58,7 +56,7 @@ PORTAL.MODELS.nldiModel = (function() {
 
 	self.reset = function() {
 		modelData = {
-			featureSource : undefined, // should be one of QUERY_SOURCES
+			featureSource : nwisSitesFeatureSource, // should be one of FEATURE_SOURCES
 			featureId : '',
 			navigation : undefined, // Should be one of NAVIGATION_MODES
 			distance : ''
@@ -74,7 +72,7 @@ PORTAL.MODELS.nldiModel = (function() {
 	};
 
 	self.setFeatureSource = function(featureSourceId) {
-		modelData.featureSource = _.find(self.QUERY_SOURCES, function(source) {
+		modelData.featureSource = _.find(self.FEATURE_SOURCES, function(source) {
 			return source.id === featureSourceId;
 		});
 	};

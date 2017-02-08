@@ -169,6 +169,35 @@
     height: 500px;
     width: 100%;
     cursor: pointer;
+
+    .leaflet-popup-pane {
+      .feature-source-info ul {
+        list-style: none;
+        padding-left: 0px;
+      }
+      .navigation-selection-div {
+        label {
+          font-size: 14px;
+          font-weight: bold;
+        }
+        .navigate-button-div {
+          margin-top: 5px;
+          text-align: center;
+          button {
+            color: @btn-default-color;
+            font-size: 14px;
+            background-color: @btn-default-bg;
+            border-color: lightgrey;
+            padding: 5px 15px;
+            border-radius: 5px;
+            text-align: center;
+          }
+          button:disabled {
+            opacity: 0.65
+          }
+        }
+      }
+    }
   }
 }
 
@@ -177,17 +206,6 @@
     padding: 5px;
     font-size : 12px;
     height: 23px;
-  }
-}
-
-.leaflet-nldi-input-div {
-  select, input {
-    margin-right : 4px;
-  }
-  button {
-    background-color : #ffffff;
-    border-radius : 4px;
-    border-width: 1px;
   }
 }
 
@@ -445,6 +463,28 @@
     }
   }
 }
+
+#show-arcgis-online-help {
+  .btn-default;
+}
+
+#arcgis-online-dialog {
+  table {
+    width: 100%;
+    padding: 5px;
+    table-layout: fixed;
+    thead th:first-child {
+      width: 10em;
+    }
+
+    textarea {
+      width: 100%;
+      resize: none;
+      border: none;
+    }
+  }
+}
+
 
 /* Styles for the ui dialogs */
 .ui-dialog-content {

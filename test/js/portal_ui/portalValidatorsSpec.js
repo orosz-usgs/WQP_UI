@@ -57,29 +57,29 @@ describe('Tests for portalValidators', function () {
 		});
 	});
 
-	describe('Tests for PORTAL.validators.nonNegativeValidator', function() {
+	describe('Tests for PORTAL.validators.positiveIntValidator', function() {
 		it('Expects a null value to be valid', function() {
-			expect(PORTAL.validators.nonNegativeValidator('').isValid).toBe(true);
+			expect(PORTAL.validators.positiveIntValidator('').isValid).toBe(true);
 		});
 
 		it('Expects a zero value to be invalid', function() {
-			expect(PORTAL.validators.nonNegativeValidator('0').isValid).toBe(false);
+			expect(PORTAL.validators.positiveIntValidator('0').isValid).toBe(false);
 		});
 
 		it('Expects a negative value to be invalid', function() {
-			expect(PORTAL.validators.nonNegativeValidator('-12').isValid).toBe(false);
+			expect(PORTAL.validators.positiveIntValidator('-12').isValid).toBe(false);
 		});
 
 		it('Expects real numbers to be invalid', function() {
-			expect(PORTAL.validators.nonNegativeValidator('23.3').isValid).toBe(false);
+			expect(PORTAL.validators.positiveIntValidator('23.3').isValid).toBe(false);
 		});
 
 		it('Expects that strings containing anything other the numbers is invalid', function() {
-			expect(PORTAL.validators.nonNegativeValidator('A123').isValid).toBe(false);
+			expect(PORTAL.validators.positiveIntValidator('A123').isValid).toBe(false);
 		});
 
 		it('Expects positive integers to be valid', function() {
-			expect(PORTAL.validators.nonNegativeValidator('435681690').isValid).toBe(true);
+			expect(PORTAL.validators.positiveIntValidator('435681690').isValid).toBe(true);
 		});
 	});
 

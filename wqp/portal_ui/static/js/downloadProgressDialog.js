@@ -1,80 +1,104 @@
+/* jslint browser: true */
+/* global Handlebars */
+/* global _ */
+/* global $ */
+
 var PORTAL = PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 
-PORTAL.VIEWS.downloadProgressDialog = function(el) {
+PORTAL.VIEWS.downloadProgressDialog = function (el) {
 	"use strict";
 
-    var that = {};
+	var that = {};
 
-    // constants for the two different download statuses
-    var DIALOG = {
-        map : {
-            title : 'Map Sites Status',
-            continueMessage : 'map the sites',
-            cancelDownload : function(sitesCount) {
-                var intSiteCount = parseInt(sitesCount.split(',').join(''));
-                return (intSiteCount > 250000);
-            },
-            cancelMessage : 'Your query is returning more than 250,000 sites and can not be mapped.'
-        },
-        download : {
-            title : 'Download Status',
-            continueMessage : 'download the data',
-            cancelDownload : function(counts, fileFormat) {
-                 return (fileFormat === 'xlsx') &&  (parseInt(counts.split(',').join('')) > 1048575);
-            },
-            cancelMessage : 'Your query is returning more than 1,048,575 results which exceeds Excel\'s limit.'
-        }
-    };
+	var totalCountProp = {
+		'Station': 'sites',
+		'Result': 'results',
+		'Activity': 'activities'
+	};
 
-    var opKind;
+	// constants for the two different download statuses
+	var DIALOG = {
+		map: {
+			title: 'Map Sites Status',
+			continueMessage: 'map the sites',
+			cancelDownload: function (sitesCount) {
+				var intSiteCount = parseInt(sitesCount.split(',').join(''));
+				return (intSiteCount > 250000);
+			},
+			cancelMessage: 'Your query is returning more than 250,000 sites and can not be mapped.'
+		},
+		download: {
+			title: 'Download Status',
+			continueMessage: 'download the data',
+			cancelDownload: function (counts, fileFormat) {
+				return (counts !== 0) && (fileFormat === 'xlsx') && (parseInt(counts.split(',').join('')) > 1048575);
+			},
+			cancelMessage: 'Your query is returning more than 1,048,575 results which exceeds Excel\'s limit.'
+		}
+	};
 
-    var buttonHtml = function(id, label) {
-        return '<button id="' + id + '" type="button" class="btn btn-default">' + label + '</button>';
-    };
+	var countsHbTemplate = Handlebars.compile('Your query will return ' +
+		'{{#if isResults}} <b>{{total.results}}</b> sample results from {{/if}}' +
+		'{{#if isActivities }}data on <b>{{total.activities}}</b> sampling activities at {{/if}}' +
+		'{{#if isActivityMetrics }}data on <b>{{total.activitymetrics }}</b> activity metrics in {{total.activities}} activities {{/if}}' +
+		'{{#if isActivityMetrics}}' +
+		'<br/>' +
+		'{{else}}' +
+		' <b>{{total.sites}}</b> sites:<br />' +
+		'{{/if}}' +
+		'{{#each providers}} From {{id}}: ' +
+		'{{#if ../isResults}}{{counts.results}} sample results from {{/if}}' +
+		'{{#if ../isActivities}}{{counts.activities}} sampling activities from {{/if}}' +
+		'{{#if ../isActivityMetrics}}{{counts.activitymetrics}} activity metrics in {{counts.activities}} activities {{/if}}' +
+		'{{#if ../isActivityMetrics}}' +
+		'<br/>' +
+		'{{else}}' +
+		'{{counts.sites}} sites <br/>' +
+		'{{/if}}' +
+		'{{/each}}'
+	);
 
-    that.show = function(thisOpKind, dialogMessage) {
-		var message = (dialogMessage) ? dialogMessage : 'Validating query ... Please wait.'
-        opKind = thisOpKind;
-        
-        el.find('.modal-footer').html('');
-        el.find('.modal-body').html(message);
-        el.find('.modal-header h4').html(DIALOG[opKind].title);
-        el.modal('show');
-    };
+	var buttonHtml = function (id, label) {
+		return '<button id="' + id + '" type="button" class="btn btn-default">' + label + '</button>';
+	};
 
-    that.hide = function() {
-        el.modal('hide');
-    };
-    
-	that.updateProgress = function(counts, resultType, fileFormat, continueFnc) {
-		var i;
-		var id;
-		
-		var resultsReturned = resultType !== 'Station';
-		var totalCount = resultsReturned ? counts.total.results : counts.total.sites;
-	
-		var getCountMessage = function(){
+	var opKind; // Will hold the current state of the type of download requested.
+
+	that.show = function (thisOpKind, dialogMessage) {
+		var message = (dialogMessage) ? dialogMessage : 'Validating query ... Please wait.';
+		opKind = thisOpKind;
+
+		el.find('.modal-footer').html('');
+		el.find('.modal-body').html(message);
+		el.find('.modal-header h4').html(DIALOG[opKind].title);
+		el.modal('show');
+	};
+
+	that.hide = function () {
+		el.modal('hide');
+	};
+
+	that.updateProgress = function (counts, resultType, fileFormat, continueFnc) {
+		var totalCount = counts.total[totalCountProp[resultType]];
+
+		var getCountMessage = function () {
 			// Return a string showing the site counts, formatted to be shown in html.
-			var message = 'Your query will return ';
-			var providers = PORTAL.MODELS.providers.getIds();
-			if (resultsReturned) {
-				message += '<b>' + counts.total.results + '</b> sample results from <b>' + counts.total.sites + '</b> sites:<br />';
-				for (i = 0; i < providers.length; i++) {
-					id = providers[i];
-					message += 'From ' + id + ': ' + counts[id].results + ' sample results from ' + counts[id].sites + ' sites<br />';
-				}
-			}
-			else {
-				message += counts.total.sites + ':<br />';
-				for (i = 0; i < providers.length; i++) {
-					id = providers[i];
-					message += 'From ' + id + ': ' + counts[id].sites + '<br/>';
-				}
-			}
-			return message;
+			var context = {
+				total: counts.total,
+				isResults : resultType === 'Result',
+				isActivities : resultType === 'Activity',
+				isActivityMetrics : resultType === 'ActivityMetric'
+			};
+			context.providers = _.map(PORTAL.MODELS.providers.getIds(), function (provider) {
+				return {
+					id: provider,
+					counts: counts[provider]
+				};
+			});
+			return countsHbTemplate(context);
 		};
-		
+
 
 		if (totalCount === '0') {
 			that.cancelProgress('Your query returned no data to download.');
@@ -82,31 +106,30 @@ PORTAL.VIEWS.downloadProgressDialog = function(el) {
 		else if (DIALOG[opKind].cancelDownload(totalCount, fileFormat)) {
 			that.cancelProgress(getCountMessage() + DIALOG[opKind].cancelMessage);
 		}
-		
+
 		else {
 			el.find('.modal-body').html(getCountMessage() + '<p>Click Continue to ' + DIALOG[opKind].continueMessage);
-            el.find('.modal-footer').html(buttonHtml('progress-cancel-btn', 'Cancel') +
-                    buttonHtml('progress-continue-btn', 'Continue'));
-            $('#progress-cancel-btn').click(function() {
-                el.modal('hide');
-            });
-            $('#progress-continue-btn').click(function() {
-                el.modal('hide');
-                continueFnc(totalCount);
-            });			
+			el.find('.modal-footer').html(buttonHtml('progress-cancel-btn', 'Cancel') +
+				buttonHtml('progress-continue-btn', 'Continue'));
+			$('#progress-cancel-btn').click(function () {
+				el.modal('hide');
+			});
+			$('#progress-continue-btn').click(function () {
+				el.modal('hide');
+				continueFnc(totalCount);
+			});
 		}
 	};
-    
-	that.cancelProgress = function(message) {
+
+	that.cancelProgress = function (message) {
 		el.find('.modal-body').html(message);
 		el.find('.modal-footer').html(buttonHtml('progress-ok-btn', 'Ok'));
-		$('#progress-ok-btn').click(function() {
+		$('#progress-ok-btn').click(function () {
 			el.modal('hide');
 		});
 	};
 
-    return that;
-
+	return that;
 };
 
 

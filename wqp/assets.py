@@ -23,9 +23,8 @@ bundles = {
         'portal_ui/js/utils.js',
         'portal_ui/js/identifyDialog.js',
         'portal_ui/js/MapConfig.js',
-        'portal_ui/js/leafletControls/NldiControl.js',
+        'portal_ui/js/leafletControls/FeatureSourceSelectControl.js',
         'portal_ui/js/leafletControls/SearchControl.js',
-        'portal_ui/js/leafletControls/QuerySelectControl.js',
         'portal_ui/js/LeafletMixins/SingleClickEventHandlerMixin.js',
         'portal_ui/js/leafletLayers/WQPSitesLayer.js',
         'portal_ui/js/leafletUtils.js',
@@ -46,6 +45,8 @@ bundles = {
         'portal_ui/js/views/dataDetailsView.js',
         'portal_ui/js/views/showAPIView.js',
         'portal_ui/js/views/nldiView.js',
+        'portal_ui/js/views/nldiNavPopupView.js',
+        'portal_ui/js/views/arcGisOnlineHelpView.js',
         'portal_ui/js/portalHelp.js',
         'portal_ui/js/stateFIPS.js',
         'portal_ui/js/dateValidator.js',
@@ -62,7 +63,20 @@ bundles = {
         'portal_ui/js/coverage/coverageMap.js',
         'portal_ui/js/coverage/coverageOnReady.js',
         filters='jsmin',
-        output='gen/coverage.js')
+        output='gen/coverage.js'),
+    'sites_map': Bundle(
+        'portal_ui/js/generalMapping.js',
+        'portal_ui/js/providerSitesMap.js',
+        'portal_ui/js/providerSitesMapOnReady.js',
+        filters='jsmin',
+        output='gen/sitesMap.js'),
+    'site_map': Bundle(
+        'portal_ui/js/generalMapping.js',
+        'portal_ui/js/providerSiteMap.js',
+        'portal_ui/js/nldiMapping.js',
+        'portal_ui/js/providerSiteMapOnReady.js',
+        filters='jsmin',
+        output='gen/siteMap.js')
 }
     
 assets = Environment(app)
