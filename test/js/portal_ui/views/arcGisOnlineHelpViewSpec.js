@@ -50,7 +50,7 @@ describe ('Tests for PORTAL.VIEWS.arcGisOnlineHelp', function() {
 		/* Allows time for the handlebar template to be loaded */
 		setTimeout(function() {
 			done();
-		}, 200);
+		}, 500);
 	});
 
 	afterEach(function() {
