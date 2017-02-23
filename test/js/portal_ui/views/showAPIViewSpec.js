@@ -43,8 +43,10 @@ describe('Tests for PORTAL.VIEWS.showAPIViewSpec', function() {
 		expect($('#sites-query-div textarea').html()).toContain('Station?Testparam1=value1&amp;Testparam2=value2');
 		expect($('#results-query-div textarea').html()).toContain('Result?Testparam1=value1&amp;Testparam2=value2');
 		expect($('#getfeature-query-div textarea').html()).toContain('SEARCHPARAMS=' + encodeURIComponent('Testparam1:value1;Testparam2:value2'));
-		expect($('#activitymetrics-query-div textarea').html()).toContain('ActivityMetric?Testparam1=value1&amp;Testparam2=value2');
-		expect($('#activities-query-div textarea').html()).toContain('Activity?Testparam1=value1&amp;Testparam2=value2');
+		//expect($('#activitymetrics-query-div textarea').html()).toContain('ActivityMetric?Testparam1=value1&amp;Testparam2=value2');
+		//expect($('#activities-query-div textarea').html()).toContain('Activity?Testparam1=value1&amp;Testparam2=value2');
+		expect($('#activitymetrics-query-div').is(':visible')).toBe(false);
+		expect($('#activities-query-div').is(':visible')).toBe(false);
 	});
 });
 

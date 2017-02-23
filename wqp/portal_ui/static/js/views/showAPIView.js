@@ -1,6 +1,8 @@
 /* jslint browser: true */
 
 /* global L */
+/* global Config */
+
 
 var PORTAL = PORTAL || {};
 
@@ -33,8 +35,16 @@ PORTAL.VIEWS.showAPIView = function(options) {
 			$apiQueryDiv.show();
 			$sitesText.html(PORTAL.queryServices.getFormUrl('Station', queryString));
 			$resultsText.html(PORTAL.queryServices.getFormUrl('Result', queryString));
-			$activitiesText.html(PORTAL.queryServices.getFormUrl('Activity', queryString));
-			$activitymetricsText.html(PORTAL.queryServices.getFormUrl('ActivityMetric', queryString));
+			if (Config.ACTIVITY_ENDPOINTS_ENABLED) {
+				$activitiesText.html(PORTAL.queryServices.getFormUrl('Activity', queryString));
+				$activitymetricsText.html(PORTAL.queryServices.getFormUrl('ActivityMetric', queryString));
+			}
+			else {
+				var $activitiesDiv = options.$container.find('#activities-query-div');
+				var $activitymetricsDiv = options.$container.find('#activitymetrics-query-div');
+				$activitiesDiv.hide();
+				$activitymetricsDiv.hide();
+			}
 			$wfsText.html(L.WQPSitesLayer.getWfsGetFeatureUrl(queryParamArray));
 		});
 	};
