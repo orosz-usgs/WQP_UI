@@ -38,7 +38,6 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
 	 * 		@returns {Array of Objects with name and value properties} - The form's current query parameters.
 	 */
 	PORTAL.VIEWS.arcGisOnlineHelpView = function (options) {
-		"use strict";
 
 		var self = {};
 
