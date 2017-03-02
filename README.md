@@ -38,6 +38,18 @@ SEARCH_QUERY_ENDPOINT = ''
 #points to the public srsnames endpoint you want to use.
 PUBLIC_SRSNAMES_ENDPOINT = ''
 
+#A list of dictionaries that associate user-facing text with an identifier for the style
+#
+# In each dictionary,
+#    The 'id' key should be given a string value - the name of a style present on GeoServer
+#    The 'text' key should be given a string value - user-facing text that appears in the web ui's dropdown for selecting styles
+SITE_SLDS = [
+    {'id' : 'wqp_sources', 'text' : 'By source'},
+    {'id' : 'site_type', 'text' : 'By site type'},
+    {'id' : 'activity_visual', 'text' : 'By activity'}
+]
+
+
 # set REDIS Config if it exists.
 REDIS_CONFIG = None
 
