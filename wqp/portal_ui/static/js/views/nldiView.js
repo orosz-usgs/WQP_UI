@@ -305,7 +305,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
 	});
 
 	var MapWithSingleClickHandler = L.Map.extend({
-		includes : L.SingleClickEventMixin()
+		includes : L.singleClickEventMixin()
 	});
 
 	/*

@@ -6,7 +6,7 @@
 /**
  * This function returns a stateful mixin.
  */
-L.SingleClickEventMixin = function(){
+L.singleClickEventMixin = function(){
 	"use strict";
 	/* 
 	 * Since this mixin object is stateful, it is important for a new mixin object to

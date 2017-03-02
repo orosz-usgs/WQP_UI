@@ -7,21 +7,21 @@
 /* global PORTAL */
 /* global $ */
 
-describe('Test L.SingleClickEventMixin', function () {
+describe('Test L.singleClickEventMixin', function () {
 	"use strict";
 
 	describe('Mixins do not share state', function() {
 
 		it('Expects successive invocations of the function to produce non-identical objects', function() {
-			var mixin1 = L.SingleClickEventMixin();
-			var mixin2 = L.SingleClickEventMixin();
+			var mixin1 = L.singleClickEventMixin();
+			var mixin2 = L.singleClickEventMixin();
 			expect(mixin1).not.toBe(mixin2);
 		});
 		it('Expects mixins not to share state via added properties', function(){
 			var additionalPropertyName = '80cb4067f8c1b534b4a59bcdf08dbf50'; //this can be any unlikely property name
 
-			var mixin1 = L.SingleClickEventMixin();
-			var mixin2 = L.SingleClickEventMixin();
+			var mixin1 = L.singleClickEventMixin();
+			var mixin2 = L.singleClickEventMixin();
 
 			mixin1[additionalPropertyName] = 'test';
 			expect(mixin2[additionalPropertyName]).toBeUndefined();
@@ -33,17 +33,17 @@ describe('Test L.SingleClickEventMixin', function () {
 		});
 
 		it('Expects mixins not to share state via existing properties', function(){
-			var mixin1 = L.SingleClickEventMixin();
+			var mixin1 = L.singleClickEventMixin();
 			mixin1.dblclickInterval = 999;
-			var mixin2 = L.SingleClickEventMixin();
+			var mixin2 = L.singleClickEventMixin();
 			mixin2.dblclickInterval = 0;
 			expect(mixin1.dblclickInterval).not.toBe(mixin2.dblclickInterval);
 
 		});
 		
 		it('Expects mixins not to share state when using stateful methods', function(){
-			var mixin1 = L.SingleClickEventMixin();
-			var mixin2 = L.SingleClickEventMixin();
+			var mixin1 = L.singleClickEventMixin();
+			var mixin2 = L.singleClickEventMixin();
 			
 			//expect both are initially empty
 			expect(mixin1._singleClickHandlers.length).toBe(0);

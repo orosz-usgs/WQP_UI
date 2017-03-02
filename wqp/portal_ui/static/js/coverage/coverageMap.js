@@ -24,7 +24,7 @@ COVERAGE.coverageMap = function(options) {
 	var DATA_LAYER_Z_INDEX = 3;
 
 	var MapWithSingleClickHandler = L.Map.extend({
-		includes: L.SingleClickEventMixin()
+		includes: L.singleClickEventMixin()
 	});
 
 	var DIALOG_TEMPLATE = Handlebars.compile('<div id="coverage-map-popup">' +
