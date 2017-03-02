@@ -38,6 +38,19 @@ SEARCH_QUERY_ENDPOINT = ''
 #points to the public srsnames endpoint you want to use.
 PUBLIC_SRSNAMES_ENDPOINT = ''
 
+#points to the geo search endpoint you want to use
+GEO_SEARCH_API_ENDPOINT = ''
+
+#a list of dictionaries that associate user-facing text with programmatic style identifiers
+#usually something like:
+# SITE_SLDS = [
+#     {'id' : 'wqp_sources', 'text' : 'By source'},
+#     {'id' : 'site_type', 'text' : 'By site type'},
+#     {'id' : 'activity_visual', 'text' : 'By activity'}
+# ]
+SITE_SLDS = []
+
+
 # set REDIS Config if it exists.
 REDIS_CONFIG = None
 
