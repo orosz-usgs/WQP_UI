@@ -1,5 +1,5 @@
 /* jslint browser: true */
-/* global describe, beforeEach, afterEach, it, expect, jasmine */
+/* global describe, beforeEach, afterEach, it, expect, jasmine, log */
 /* global sinon */
 /* global $ */
 /* global PORTAL */
@@ -66,12 +66,21 @@ describe('Tests for queryService', function() {
 		});
 
 		it('Expects a failed response to reject the promise', function() {
-			PORTAL.queryServices.fetchQueryCounts('Result', testQuery, ['NWIS', 'STORET']).done(successSpy).fail(errorSpy);
-			fakeServer.respondWith([404, {"Content-Type" : 'text/html'}, 'Not found']);
-			fakeServer.respond();
+			//We expect the test to log error messages, but we don't want them in the test output
+			//so we will record the initial logging level, mute logging, then finally restore the logging level
+			var initialLevel = log.getLevel();
+			
+			try{
+				log.disableAll();
+				PORTAL.queryServices.fetchQueryCounts('Result', testQuery, ['NWIS', 'STORET']).done(successSpy).fail(errorSpy);
+				fakeServer.respondWith([404, {"Content-Type" : 'text/html'}, 'Not found']);
+				fakeServer.respond();
 
-			expect(successSpy).not.toHaveBeenCalled();
-			expect(errorSpy).toHaveBeenCalled();
+				expect(successSpy).not.toHaveBeenCalled();
+				expect(errorSpy).toHaveBeenCalled();
+			} finally {
+				log.setLevel(initialLevel);
+			}
 		});
 	});
 });
