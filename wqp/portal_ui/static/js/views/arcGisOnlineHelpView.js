@@ -38,7 +38,6 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
 	 * 		@returns {Array of Objects with name and value properties} - The form's current query parameters.
 	 */
 	PORTAL.VIEWS.arcGisOnlineHelpView = function (options) {
-		"use strict";
 
 		var self = {};
 
@@ -51,16 +50,9 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
 		 * @param {String} selectedSld - The SLD string that will be used to in the dialog
 		 */
 		var showDialog = function (queryParams, selectedSld) {
-			var wfsUrl = decodeURIComponent(L.WQPSitesLayer.getWfsGetFeatureUrl(queryParams));
-			var queryStr = wfsUrl.substring(wfsUrl.indexOf('?') + 1);
-			var queryStrPairs = queryStr.split('&');
-			var parameters = {};
-			queryStrPairs.forEach(function (pair) {
-				pair = pair.split('=');
-				parameters[pair[0]] = pair[1];
-			});
+
 			var hbContext = {
-				searchParams: parameters.SEARCHPARAMS,
+				searchParams: L.WQPSitesLayer.getSearchParams(queryParams),
 				style: selectedSld
 			};
 

@@ -167,7 +167,7 @@ describe('leafletLayers.WQPSitesLayer', function() {
 		});
 	});
 
-	describe('Tests for getLegendGarphicUrl', function() {
+	describe('Tests for getLegendGraphicUrl', function() {
 		var testLayer;
 
 		beforeEach(function() {
@@ -236,6 +236,18 @@ describe('leafletLayers.WQPSitesLayer', function() {
 			var queryParamArray = [{name : 'statecode', value : 'US:50'}];
 			var url = L.WQPSitesLayer.getWfsGetFeatureUrl(queryParamArray);
 			expect(url).toContain('SEARCHPARAMS=' + encodeURIComponent('statecode:US:50'));
+		});
+	});
+
+	describe('Tests for getSearchParams', function() {
+		it('Expects that the returned string represents the correct SEARCHPARAMS query parameters', function() {
+			var queryParamArray =[
+				{name : 'statecode', value : 'US:50'},
+				{name: 'nldiurl', value: 'http://fakenldi.com/service/nldi/nwissite/04050626/navigate/UM/wqp?distance=50'}
+			];
+			var param = L.WQPSitesLayer.getSearchParams(queryParamArray);
+			expect(param).toContain('statecode:US:50');
+			expect(param).toContain('nldiurl:http://fakenldi.com/service/nldi/nwissite/04050626/navigate/UM/wqp?distance=50');
 		});
 	});
 

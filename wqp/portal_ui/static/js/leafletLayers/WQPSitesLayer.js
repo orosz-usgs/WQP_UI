@@ -14,18 +14,6 @@
 	var WMS_VERSION = '1.1.0';
 	var WFS_VERSION = '2.0.0';
 
-	var getSearchParams = function(queryParamArray) {
-		var queryJson = PORTAL.UTILS.getQueryParamJson(queryParamArray);
-		var resultJson = _.omit(queryJson, ['mimeType', 'zip']);
-		resultJson = _.mapObject(resultJson, function(value) {
-			return value.join('|');
-		});
-		var resultArray =  _.map(resultJson, function(value, name) {
-			return name + ':' + value;
-		});
-		return resultArray.join(';');
-	};
-
 	/*
 	 * @constructs - extends L.TileLayer.WMS
 	 * The url should not be passed into the constructor. The layers, format, transparent, and version options are
@@ -48,7 +36,7 @@
 			this.queryParamArray = queryParamArray;
 			L.TileLayer.WMS.prototype.initialize.call(this, Config.SITES_GEOSERVER_ENDPOINT + 'wms', options);
 
-			this.wmsParams.SEARCHPARAMS = getSearchParams((queryParamArray));
+			this.wmsParams.SEARCHPARAMS = L.WQPSitesLayer.getSearchParams((queryParamArray));
 		},
 
 		getQueryParamArray : function() {
@@ -63,7 +51,7 @@
 		updateQueryParams : function(queryParamArray) {
 			this.queryParamArray = queryParamArray;
 			this.setParams({
-				SEARCHPARAMS : getSearchParams(queryParamArray),
+				SEARCHPARAMS : L.WQPSitesLayer.getSearchParams(queryParamArray),
 				cacheId : Date.now() // Needed to prevent a cached layer from being used.
 			});
 		},
@@ -81,10 +69,11 @@
 				SEARCHPARAMS : this.wmsParams.SEARCHPARAMS,
 				legend_options : 'fontStyle:bold'
 			};
+
 			if (this.wmsParams.styles === 'activity_visual') {
 				queryParams.WIDTH = 50;
 				queryParams.HEIGHT = 45;
-			};
+			}
 			return Config.SITES_GEOSERVER_ENDPOINT + 'wms?' + $.param(queryParams);
 		},
 
@@ -106,6 +95,22 @@
 	L.extend(L.WQPSitesLayer, {
 		/*
 		 * @static
+		 * @returns {String} - Returns the value of the SEARCHPARAMS query parameter that is sent in OGC request
+		 */
+		getSearchParams : function(queryParamArray) {
+			var queryJson = PORTAL.UTILS.getQueryParamJson(queryParamArray);
+			var resultJson = _.omit(queryJson, ['mimeType', 'zip']);
+			resultJson = _.mapObject(resultJson, function(value) {
+				return value.join('|');
+			});
+			var resultArray =  _.map(resultJson, function(value, name) {
+				return name + ':' + value;
+			});
+			return resultArray.join(';');
+		},
+
+		/*
+		 * @static
 		 * @returns {String} - Url which can be used to retrieve json feature information using WFS GetFeature.
 		 */
 		getWfsGetFeatureUrl : function(queryParamArray) {
@@ -114,7 +119,7 @@
 				service : 'wfs',
 				version : WFS_VERSION,
 				typeNames : LAYER_NAME,
-				SEARCHPARAMS : getSearchParams(queryParamArray),
+				SEARCHPARAMS : L.WQPSitesLayer.getSearchParams(queryParamArray),
 				outputFormat : 'application/json'
 			};
 
