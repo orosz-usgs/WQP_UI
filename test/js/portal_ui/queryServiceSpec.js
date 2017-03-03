@@ -20,16 +20,23 @@ describe('Tests for queryService', function() {
 		];
 
 		var successSpy, errorSpy;
-
+		
+		//We expect some of these tests to log error messages, but we don't want them in the test output
+		//so before each test we will record the initial logging level, mute logging,
+		//and after each teste we wil restore the logging level
+		var initialLevel = log.getLevel();
+		
 		beforeEach(function() {
 			fakeServer = sinon.fakeServer.create();
 
 			successSpy = jasmine.createSpy('successSpy');
 			errorSpy = jasmine.createSpy('errorSpy');
+			log.disableAll();
 		});
 
 		afterEach(function() {
 			fakeServer.restore();
+			log.setLevel(initialLevel);
 		});
 
 		it('Expects that the mimeType, zip, and sorted are removed from the json payload and that a POST request is made', function() {
@@ -66,21 +73,14 @@ describe('Tests for queryService', function() {
 		});
 
 		it('Expects a failed response to reject the promise', function() {
-			//We expect the test to log error messages, but we don't want them in the test output
-			//so we will record the initial logging level, mute logging, then finally restore the logging level
-			var initialLevel = log.getLevel();
-			
-			try{
-				log.disableAll();
-				PORTAL.queryServices.fetchQueryCounts('Result', testQuery, ['NWIS', 'STORET']).done(successSpy).fail(errorSpy);
-				fakeServer.respondWith([404, {"Content-Type" : 'text/html'}, 'Not found']);
-				fakeServer.respond();
 
-				expect(successSpy).not.toHaveBeenCalled();
-				expect(errorSpy).toHaveBeenCalled();
-			} finally {
-				log.setLevel(initialLevel);
-			}
+			PORTAL.queryServices.fetchQueryCounts('Result', testQuery, ['NWIS', 'STORET']).done(successSpy).fail(errorSpy);
+			fakeServer.respondWith([404, {"Content-Type" : 'text/html'}, 'Not found']);
+			fakeServer.respond();
+
+			expect(successSpy).not.toHaveBeenCalled();
+			expect(errorSpy).toHaveBeenCalled();
+
 		});
 	});
 });
