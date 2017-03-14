@@ -12,11 +12,13 @@
 		{% block page_style %}{% endblock %}
 		
 		<link rel="shortcut icon" href="{{ url_for('portal_ui.static', filename='img/favicon.ico') }}" type="image/vnd.microsoft.icon" />
-		{% assets "custom_less" %}
-			<link rel="stylesheet"  type="text/css" href="{{ ASSET_URL }}" >
-		{% endassets %}
+		{% block custom_style %}
+			{% assets "custom_less" %}
+				<link rel="stylesheet"  type="text/css" href="{{ ASSET_URL }}" >
+			{% endassets %}
 
-		{% block head_page_script %}{% endblock %}
+			{% block head_page_script %}{% endblock %}
+		{%  endblock %}
 		
 		<!-- If you need to remove google analytics from a page create a blank google_analytics_script block -->
 		<script type="text/javascript">

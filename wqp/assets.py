@@ -15,7 +15,8 @@ bundles = {
             'portal_ui/less/portal_form.less',
             'portal_ui/less/site_nav.less',
             'portal_ui/less/variables.less',
-            'portal_ui/less/sites.less'],
+            'portal_ui/less/sites.less',
+            'portal_ui/less/public_srsnames.less'],
         filters='less,cssmin', 
         output='gen/custom.css'),
     'portal_js' : Bundle(
