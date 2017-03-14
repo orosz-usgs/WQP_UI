@@ -158,7 +158,10 @@ def other_portal_links():
 def public_srsnames():
     if request.path == '/public_srsnames.jsp':
         return redirect(url_for('portal_ui.public_srsnames-canonical')), 301
-    return render_template('public_srsnames.html')
+
+    resp = session.get(app.config['PUBLIC_SRSNAMES_ENDPOINT'] + '?mimeType=json')
+
+    return render_template('public_srsnames.html', status_code=resp.status_code, content = resp.json())
     
 
 @portal_ui.route('/wqp_geoserver/<op>', methods=['GET', 'POST'])
