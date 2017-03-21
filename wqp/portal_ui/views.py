@@ -202,7 +202,7 @@ def images(image_file):
 def uri_base():
     providers = retrieve_providers()
     if providers:
-        return render_template('provider_base.html', providers=providers.sort())
+        return render_template('provider_base.html', providers=sorted(providers))
     else:
         abort(500)
 
@@ -247,7 +247,8 @@ def uri_organization(provider_id, organization_id):
                                                      provider=provider_id,
                                                      organization=organization_id,
                                                      sites_geojson=sites,
-                                                     total_site_count=len(sites.features))
+                                                     total_site_count=len(sites['features'])
+                                                     )
 
         if redis_config:
             redis_session.set(redis_key, pickle.dumps(rendered_template, protocol=2))
@@ -273,10 +274,11 @@ def uris(provider_id, organization_id, site_id):
         if site_data is None:
             abort(500)
         elif site_data:
-            abort(404)
-        else:
             if redis_config:
                 redis_session.set(redis_key, pickle.dumps(site_data, protocol=2))
+        else:
+            abort(404)
+
 
     additional_data = {}
     country = site_data.get('CountryCode')

@@ -204,10 +204,11 @@ def retrieve_site(provider_id, organization_id, site_id):
                        )
     if resp.status_code == 200 and resp.text:
         data = tablib.Dataset().load(resp.text)
-        if data is None:
-            site = {}
-        else:
+        if data.dict:
             site = data.dict[0]
+        else:
+            site = {}
+
     elif resp.status_code == 500:
         site = None
     else:
