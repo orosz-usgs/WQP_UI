@@ -1,11 +1,12 @@
-import feedparser
-from bs4 import BeautifulSoup
-from flask import request, make_response
-import tablib
-import redis
-import csv
-import cPickle as pickle
 
+from bs4 import BeautifulSoup
+import feedparser
+import tablib
+import ujson
+
+from flask import request, make_response
+
+from . import app
 from . import session
 
 
@@ -61,92 +62,157 @@ def geoserver_proxy_request(target_url, cert_verification):
         if 'content-encoding' in resp.headers: 
             del resp.headers['content-encoding']
         
-    return make_response(resp.content, resp.status_code, resp.headers.items())    
+    return make_response(resp.content, resp.status_code, resp.headers.items())
 
-
-def generate_provider_list(endpoint):
+def retrieve_lookups(code_uri, params={}):
     """
 
-    :param endpoint: the base codes endpoint
-    :return: a list of provider names
+    :param code_uri: string - The part of the url that identifies what kind of information to lookup. Should start with a slash
+    :param params: dict - Any query parameters other than the mimeType that should be sent with the lookup
+    :return: list of dictionaries representing the json object returned by the code lookup. Return None if
+        the information can not be retrieved
     """
-    provider_endpoint = endpoint + '/providers'
-    r = session.get(provider_endpoint, params={"mimeType": "json"})
-    status_code = r.status_code
-    provider_list = None
-    if status_code == 200:
-        codes = r.json().get('codes')
-        provider_list = sorted([code['value'] for code in codes])
-    return {"status_code": status_code, "providers": provider_list}
+    local_params = dict(params)
+    local_params['mimeType'] = 'json'
+    resp = session.get(app.config['CODES_ENDPOINT'] + code_uri, params=local_params)
+    if resp.status_code == 200:
+        lookups = resp.json()
+    else:
+        #TODO: Log error
+        lookups = None
+    return lookups
 
 
-def check_org_id(org_id, code_endpoint):
-    org_exists = False
-    org_name = None
-    org_endpoint = code_endpoint + '/Organization'
-    r = session.get(org_endpoint, params={"mimeType": "json", "text": org_id})
-    status_code = r.status_code
-    if status_code == 200:
-        codes = r.json().get('codes')
-        for code in codes:
+def retrieve_providers():
+    """
+
+    :return: list of strings - one string for each provider. Return None if the information can't be retrieved
+    """
+    provider_lookups = retrieve_lookups('/providers')
+    if provider_lookups:
+        providers = [code['value'] for code in provider_lookups.get('codes')]
+    else:
+        providers = None
+    return providers
+
+
+def retrieve_organization(provider, org_id):
+    """
+
+    :param org_id: string identifying a WQP organization value
+    :return: dictionary containing id and name properties if such an org exists, an empty
+        dictionary if no such org exists or None if no information can be retrieved.
+    """
+    organization_lookups = retrieve_lookups('/organizations', {'text': org_id})
+    if organization_lookups:
+        org_codes = organization_lookups.get('codes')
+        # org_id must be exact match to value and provider must be in the provider value
+        provider_org_codes = [org_code for org_code in org_codes if provider in org_code['providers'].split(' ')]
+        organization = {}
+        for code in provider_org_codes:
             if code['value'] == org_id:
-                org_exists = True
-                org_name = code['desc']
+                organization = {'id' : org_id, 'name': code['desc']}
                 break
-    return {"org_exists": org_exists, "status_code": status_code, "org_name": org_name}
+    else:
+        organization = None
+    return organization
 
 
-def generate_organization_list(endpoint, provider):
+def retrieve_organizations(provider):
     """
 
-    :param endpoint: the base codes endpoint
-    :param provider: which provider we are looking for
-    :return: a list of dicts of organizations and organization IDs for a specific provider
-    """
-    provider_endpoint = endpoint + '/organizations'
-    r = session.get(provider_endpoint, params={"mimeType": "json"})
-    status_code = r.status_code
-    organization_list = None
-    if status_code == 200:
-        organization_list = []
-        codes = r.json().get('codes')
-        for organization in codes:
-            org_dict = {}
-            org_providers = organization['providers'].split(' ')
-            if provider in org_providers:
-                org_dict['id'] = organization['value']
-                org_dict['name'] = organization['desc']
-            if org_dict:
-                organization_list.append(org_dict)
-    return {"status_code": status_code, "organizations": organization_list}
-
-
-def get_site_info(base_url, provider_id, site_id, organization_id):
+    :param provider: string - retrieve organizations belonging to provider
+    :return: list of dictionaries or None. Each dictionary contains id and name keys representing an organization.
+        None is returned if no information can be retrieved.
     """
 
-    :param base_url:
-    :param provider_id:
-    :param site_id:
-    :param organization_id: id of the organization that has the site
-    :return:
+    organization_lookups = retrieve_lookups('/organizations')
+    if organization_lookups:
+        org_codes = organization_lookups.get('codes')
+        provider_org_codes = [org_code for org_code in org_codes if provider in org_code['providers'].split(' ')]
+        organizations = [{'id': org_code['value'], 'name' : org_code['desc']} for org_code in provider_org_codes]
+
+    else:
+        organizations = None
+    return organizations
+
+
+def retrieve_county(country, state, county):
     """
-    search_endpoint = base_url + "Station/search/"
-    r = session.get(search_endpoint, params={"providers": provider_id,
-                                             "siteid": site_id,
-                                             "mimeType": "csv",
-                                             "sorted": "no",
-                                             "organization": organization_id,
-                                             "uripage": "yes"
-                                             }
-                    )
-    status_code = r.status_code
-    site_data = None
-    if status_code == 200 and r.text:
-        site_data_raw = r.content
-        data = tablib.Dataset().load(site_data_raw).dict[0]
-        if data is not None:
-            site_data = dict(data)
-    return {"status_code": status_code, "site_data": site_data}
+
+    :param country: string - two letter country abbreviation
+    :param state string - states fips code
+    :param county: - county fips code
+
+    :return: dictionary - with StateName and CountyName properties, an empty dictionary if no county exists or
+        None if no information can be retrieved
+    """
+    statecode = country + ':' + state
+    countycode = statecode + ':' + county
+    county_lookups = retrieve_lookups('/countycode', {'statecode': statecode, 'text': countycode})
+
+    if county_lookups:
+        if county_lookups.get('recordCount') == 1:
+            state_county = county_lookups['codes'][0]['desc'].split(',')
+            county_data = {'StateName': state_county[0], 'CountyName': state_county[1]}
+        else:
+            county_data = {}
+    else:
+        county_data = None
+
+    return county_data
+
+
+def retrieve_sites_geojson(provider, org_id):
+    """
+
+    :param provider: string
+    :param org_id: string
+    :return: python object representing the geojson object containing the sites which are in the provider and org_id.
+        Return None if the information can not be retrieved.
+    """
+    resp = session.get(app.config['SEARCH_QUERY_ENDPOINT'] + 'Station/search/',
+                       params={'organization': org_id,
+                               'providers': provider,
+                               'mimeType': 'geojson',
+                               'sorted': 'no',
+                               'uripage': 'yes'} # This is added to distinguish from normal web service queries
+                       )
+    if resp.status_code == 200:
+        sites = ujson.loads(resp.text)
+    else:
+        sites = None
+    return sites
+
+
+def retrieve_site(provider_id, organization_id, site_id):
+    """
+
+    :param provider_id: string
+    :param organization_id: string
+    :param site_id: string
+    :return: dictionary representing the requested site, empty dictionary if no site exists, or None if the site data can not be returned.
+    """
+
+    resp = session.get(app.config['SEARCH_QUERY_ENDPOINT'] + 'Station/search',
+                       params={'organization': organization_id,
+                               'providers' : provider_id,
+                               'siteid': site_id,
+                               'mimeType' : 'tsv',
+                               'sorted': 'no',
+                               'uripage': 'yes'} # This is added to distinguish from normal web service queries
+                       )
+    if resp.status_code == 200 and resp.text:
+        data = tablib.Dataset().load(resp.text)
+        if data is None:
+            site = {}
+        else:
+            site = data.dict[0]
+    elif resp.status_code == 500:
+        site = None
+    else:
+        site = {}
+    return site
 
 
 def make_cache_key():
@@ -179,55 +245,35 @@ def generate_redis_db_number(provider):
     return redis_db_number
 
 
-def generate_site_list_from_streamed_tsv(base_url, redis_config, provider_id, redis_db, organization_id=None):
+def tsv_dict_generator(tsv_iter_lines):
     """
 
-    :param base_url: the base url we are using for the generating the search URL
-    :param organization_id:
-    :param provider_id:
-    :param redis_config:
-    :return: a list of dicts that describe sites that are associated with an organization under a data provider
+    :param tsv_iter_lines: Generator which yields a line for each data line in a tsv.
+    :yield: list of dictionaries. If a line's column count does not match the header, an empty dictionary is
+        returned. Otherwise the dictionary representing the line is returned using the headers as keys
     """
-    search_endpoint = base_url+"Station/search/"
-    r = session.get(search_endpoint, params={"organization": organization_id,
-                                             "providers": provider_id,
-                                             "mimeType": "tsv",
-                                             "sorted": "no",
-                                             "uripage": "yes"
-                                             },
-                    stream=True
-                    )
 
-    status = r.status_code
-    header_line = None
-    redis_session = None
-    if redis_config:
-        redis_session = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db,
-                                          password=redis_config.get('password'))
-    error_count = 0
-    cached_count = 0
-    counter = 0
-    for line in r.iter_lines():
-        # filter out keep-alive new lines
-        if line:
-            if counter == 0:
-                header_line = line
-                header_object = csv.reader([header_line], delimiter='\t')
-                for row in header_object:
-                    header = row
-                counter += 1
-            elif counter >= 1:
-                station = csv.reader([line], delimiter='\t')
-                for row in station:
-                    station_data = row
-                    if len(station_data) == 36:
-                        station_dict = dict(zip(header, station_data))
-                        site_key = 'sites_' + provider_id + '_' + str(station_dict['OrganizationIdentifier']) + "_" + \
-                                   str(station_dict['MonitoringLocationIdentifier'])
-                        if redis_session:
-                            redis_session.set(site_key, pickle.dumps(station_dict, protocol=2))
-                        cached_count += 1
-                    elif len(station_data) != 36:
-                        error_count += 1
+    header_line = tsv_iter_lines.next()
+    headers = header_line.split('\t')
+    column_count = len(headers)
 
-    return {"status": status, "cached_count": cached_count, "error_count": error_count}
+    for line in tsv_iter_lines:
+        data_row = line.split('\t')
+        if len(data_row) == column_count:
+            data = dict(zip(headers, data_row))
+        else:
+            data = {}
+        yield data
+
+
+def get_site_key(provider_id, organization_id, site_id):
+    """
+
+    :param site: dictionary representing a WQP site.
+    :return: String - Key that can be used to uniquely identify a site
+    """
+
+    return '_'.join(['sites', provider_id, organization_id, site_id])
+
+
+
