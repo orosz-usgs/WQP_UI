@@ -67,7 +67,6 @@ def load_sites_into_cache_async(self, provider_id):
                           'provider': provider_id}
         redis_session.set(status_key, pickle.dumps(status_content))
 
-
     else:
         status = 500
         self.update_state(state='NO_REDIS_CONFIGURED', meta={})

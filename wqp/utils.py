@@ -1,8 +1,7 @@
 
 from bs4 import BeautifulSoup
 import feedparser
-import tablib
-import ujson
+
 
 from flask import request, make_response
 
@@ -63,6 +62,7 @@ def geoserver_proxy_request(target_url, cert_verification):
             del resp.headers['content-encoding']
         
     return make_response(resp.content, resp.status_code, resp.headers.items())
+
 
 def retrieve_lookups(code_uri, params={}):
     """
@@ -153,8 +153,8 @@ def retrieve_county(country, state, county):
 
     if county_lookups:
         if county_lookups.get('recordCount') == 1:
-            state_county = county_lookups['codes'][0]['desc'].split(',')
-            county_data = {'StateName': state_county[0], 'CountyName': state_county[1]}
+            country_state_county = county_lookups['codes'][0]['desc'].split(',')
+            county_data = {'StateName': country_state_county[1], 'CountyName': country_state_county[2]}
         else:
             county_data = {}
     else:
@@ -169,9 +169,10 @@ def retrieve_sites_geojson(provider, org_id):
     :param provider: string
     :param org_id: string
     :return: python object representing the geojson object containing the sites which are in the provider and org_id.
+        Return an empty object if the org_id does not exist in provider.
         Return None if the information can not be retrieved.
     """
-    resp = session.get(app.config['SEARCH_QUERY_ENDPOINT'] + 'Station/search/',
+    resp = session.get(app.config['SEARCH_QUERY_ENDPOINT'] + 'Station/search',
                        params={'organization': org_id,
                                'providers': provider,
                                'mimeType': 'geojson',
@@ -179,9 +180,12 @@ def retrieve_sites_geojson(provider, org_id):
                                'uripage': 'yes'} # This is added to distinguish from normal web service queries
                        )
     if resp.status_code == 200:
-        sites = ujson.loads(resp.text)
+        sites = resp.json()
+    elif resp.status_code == 400:
+        sites = {}
     else:
         sites = None
+        #TODO: Log error
     return sites
 
 
@@ -203,28 +207,22 @@ def retrieve_site(provider_id, organization_id, site_id):
                                'uripage': 'yes'} # This is added to distinguish from normal web service queries
                        )
     if resp.status_code == 200 and resp.text:
-        data = tablib.Dataset().load(resp.text)
-        if data.dict:
-            site = data.dict[0]
+        resp_lines = resp.text.split('\n')
+        if (len(resp_lines) > 1):
+            headers = resp_lines[0].split('\t')
+            site = dict(zip(headers, resp_lines[1].split('\t')))
+
         else:
             site = {}
 
-    elif resp.status_code == 500:
-        site = None
-    else:
+    elif resp.status_code == 400:
         site = {}
+
+    else:
+        #TODO: Log error
+        site = None
     return site
 
-
-def make_cache_key():
-    """
-    this function gets the provider ID out of the path for the various URI fields, so that we can set the cache prefix
-     in a way that can be cleared programatically.  The path needs to look like /provider/<provider_id>/*
-    :return: the provider
-    """
-    path = request.path
-    key = '_'.join(path.split('/'))
-    return key
 
 
 def generate_redis_db_number(provider):
