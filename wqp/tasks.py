@@ -23,7 +23,6 @@ def load_sites_into_cache_async(self, provider_id):
     total = 0
     current_count = 0
 
-    print redis_config
     if redis_config:
         redis_session = redis.StrictRedis(host=redis_config['host'],
                                           port=redis_config['port'],
@@ -40,23 +39,24 @@ def load_sites_into_cache_async(self, provider_id):
                             )
 
         status = resp.status_code
-        total = int(resp.headers['Total-Site-Count'])
+        if status == 200:
+            total = int(resp.headers['Total-Site-Count'])
 
-        for site in tsv_dict_generator(resp.iter_lines()):
-            current_count += 1
-            if site:
-                cached_count += 1
-                site_key = get_site_key(provider_id, site['OrganizationIdentifier'], site['MonitoringLocationIdentifier'])
-                redis_session.set(site_key, pickle.dumps(site, protocol=2))
+            for site in tsv_dict_generator(resp.iter_lines()):
+                current_count += 1
+                if site:
+                    cached_count += 1
+                    site_key = get_site_key(provider_id, site['OrganizationIdentifier'], site['MonitoringLocationIdentifier'])
+                    redis_session.set(site_key, pickle.dumps(site, protocol=2))
 
-            else:
-                error_count += 0
-            self.update_state(state='PROGRESS',
-                              meta={'current': current_count,
-                                    'errors': error_count,
-                                    'total': total,
-                                    'status': 'working'}
-                              )
+                else:
+                    error_count += 1
+                self.update_state(state='PROGRESS',
+                                  meta={'current': current_count,
+                                        'errors': error_count,
+                                        'total': total,
+                                        'status': 'working'}
+                                  )
 
         # Add loading stats to cache
         status_key = provider_id + '_sites_load_status'
