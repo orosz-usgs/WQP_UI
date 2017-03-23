@@ -268,6 +268,7 @@ def uris(provider_id, organization_id, site_id):
         redis_data = redis_session.get(redis_key)
         if redis_data:
             site_data = pickle.loads(redis_data)
+
     if site_data is None:
         site_data = retrieve_site(provider_id, organization_id, site_id)
         if site_data is None:
@@ -277,7 +278,6 @@ def uris(provider_id, organization_id, site_id):
                 redis_session.set(redis_key, pickle.dumps(site_data, protocol=2))
         else:
             abort(404)
-
 
     additional_data = {}
     country = site_data.get('CountryCode')

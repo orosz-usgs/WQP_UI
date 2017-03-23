@@ -16,11 +16,13 @@ def load_sites_into_cache_async(self, provider_id):
     :param provider_id: the identifier of the provider (NWIS, STORET, ETC)
     :return: dict - with keys for status (code of request for sites), cached_count, error_count, and total_count
     """
+
     search_endpoint = app.config['SEARCH_QUERY_ENDPOINT'] + "Station/search/"
     redis_config = app.config['REDIS_CONFIG']
-    error_count = 0
-    cached_count = 0
-    total = 0
+    result = {'status': '',
+              'error_count': 0,
+              'cached_count': 0,
+              'total_count': 0}
     current_count = 0
 
     if redis_config:
@@ -38,32 +40,32 @@ def load_sites_into_cache_async(self, provider_id):
                             stream=True
                             )
 
-        status = resp.status_code
-        if status == 200:
-            total = int(resp.headers['Total-Site-Count'])
+        result['status'] = resp.status_code
+        if resp.status_code == 200:
+            result['total_count'] = int(resp.headers['Total-Site-Count'])
 
             for site in tsv_dict_generator(resp.iter_lines()):
                 current_count += 1
                 if site:
-                    cached_count += 1
+                    result['cached_count'] += 1
                     site_key = get_site_key(provider_id, site['OrganizationIdentifier'], site['MonitoringLocationIdentifier'])
                     redis_session.set(site_key, pickle.dumps(site, protocol=2))
 
                 else:
-                    error_count += 1
+                    result['error_count'] += 1
                 self.update_state(state='PROGRESS',
                                   meta={'current': current_count,
-                                        'errors': error_count,
-                                        'total': total,
+                                        'errors': result['error_count'],
+                                        'total': result['total_count'],
                                         'status': 'working'}
                                   )
 
         # Add loading stats to cache
         status_key = provider_id + '_sites_load_status'
         status_content = {'time_utc': arrow.utcnow(),
-                          'cached_count': cached_count,
-                          'error_count': error_count,
-                          'total_count': total,
+                          'cached_count': result['cached_count'],
+                          'error_count': result['error_count'],
+                          'total_count': result['total_count'],
                           'provider': provider_id}
         redis_session.set(status_key, pickle.dumps(status_content))
 
@@ -71,4 +73,4 @@ def load_sites_into_cache_async(self, provider_id):
         status = 500
         self.update_state(state='NO_REDIS_CONFIGURED', meta={})
 
-    return {"status": status, "cached_count": cached_count, "error_count": error_count, 'total_count':total}
+    return result

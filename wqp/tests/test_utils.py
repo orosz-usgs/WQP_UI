@@ -46,6 +46,7 @@ class RetrieveLookupsTestCase(TestCase):
     @mock.patch('wqp.session.get')
     def test_request_with_params(self, mock_get):
         value = retrieve_lookups('/test', {'param1': 'value1'})
+
         mock_get.assert_called_with(self.codes_endpoint + '/test', params={'mimeType': 'json',
                                                                             'param1': 'value1'})
 
@@ -59,6 +60,7 @@ class RetrieveLookupsTestCase(TestCase):
                     ]
                     }
               )
+
         self.assertEqual(retrieve_lookups('/test'),
                          {'recordCount': 2,
                           'codes': [
@@ -70,6 +72,7 @@ class RetrieveLookupsTestCase(TestCase):
     @requests_mock.Mocker()
     def test_request_with_invalid_response(self, m):
         m.get(self.codes_endpoint + '/test', status_code=500)
+
         self.assertIsNone(retrieve_lookups('/test'))
 
 
@@ -88,10 +91,12 @@ class RetrieveProviders(TestCase):
                         {'value': 'P2', 'desc': 'Provider2'}
                     ]}
               )
+
         self.assertEqual(retrieve_providers(), ['P1', 'P2'])
 
     def test_with_invalid_request(self, m):
         m.get(self.codes_endpoint + '/providers', status_code=500)
+
         self.assertIsNone(retrieve_providers())
 
 @requests_mock.Mocker()
@@ -109,6 +114,7 @@ class RetrieveOrganization(TestCase):
                         {'value' : 'Org1', 'desc': 'Organization1', 'providers': 'P1 P2'}
                      ]}
               )
+
         self.assertEqual(retrieve_organization('P2', 'Org1'), {'id': 'Org1', 'name': 'Organization1'})
 
     def test_with_response_containing_org_but_not_provider(self, m):
@@ -119,6 +125,7 @@ class RetrieveOrganization(TestCase):
                         {'value': 'Org1', 'desc': 'Organization1', 'providers': 'P1 P2'}
                     ]}
               )
+
         self.assertEqual(retrieve_organization('P3', 'Org1'), {})
 
     def test_with_response_containing_no_orgs(self, m):
@@ -127,10 +134,12 @@ class RetrieveOrganization(TestCase):
                     'codes': []
                     }
               )
+
         self.assertEqual(retrieve_organization('P3', 'Org1'), {})
 
     def test_with_bad_response(self, m):
         m.get(self.codes_endpoint + '/organizations', status_code=500)
+
         self.assertIsNone(retrieve_organization('P3', 'Org1'))
 
 
@@ -150,6 +159,7 @@ class RetrieveOrganizationsTestCase(TestCase):
                         {'value': 'Org2', 'desc': 'Organization2', 'providers': 'P4'}
                     ]}
               )
+
         self.assertEqual(retrieve_organizations('P1'), [{'id': 'Org10', 'name': 'Organization10'},
                                                        {'id': 'Org1', 'name': 'Organization1'}])
         self.assertEqual(retrieve_organizations('P4'), [{'id': 'Org2', 'name': 'Organization2'}])
@@ -163,10 +173,12 @@ class RetrieveOrganizationsTestCase(TestCase):
                         {'value': 'Org2', 'desc': 'Organization2', 'providers': 'P4'}
                     ]}
               )
+
         self.assertEqual(retrieve_organizations('P5'), [])
 
     def test_with_bad_response(self, m):
         m.get(self.codes_endpoint + '/organizations', status_code=500)
+
         self.assertIsNone(retrieve_organizations('P1'))
 
 
@@ -179,6 +191,7 @@ class RetrieveCountyTestCase(TestCase):
     @mock.patch('wqp.utils.retrieve_lookups')
     def test_retrieval_parameters(self, mock_retrieve):
         result = retrieve_county('US', '55', '005')
+
         mock_retrieve.assert_called_with('/countycode', {'statecode': 'US:55', 'text': 'US:55:005'})
 
     @requests_mock.Mocker()
@@ -190,6 +203,7 @@ class RetrieveCountyTestCase(TestCase):
                     ]
                     }
               )
+
         self.assertEqual(retrieve_county('US', '55', '005'), {'StateName' : ' Wisconsin', 'CountyName': ' Dane County'})
 
     @requests_mock.Mocker()
@@ -197,11 +211,13 @@ class RetrieveCountyTestCase(TestCase):
         m.get(self.codes_endpoint + '/countycode',
               json={'recordCount': 0, 'codes': []}
               )
+
         self.assertEqual(retrieve_county('US', '55', '005'), {})
 
     @requests_mock.Mocker()
     def test_with_bad_response(self, m):
         m.get(self.codes_endpoint + '/countycode', status_code=500)
+
         self.assertIsNone(retrieve_county('US', '55', '005'))
 
 
@@ -214,6 +230,7 @@ class RetrieveSitsGeojsonTestCase(TestCase):
     @mock.patch('wqp.session.get')
     def test_request_parameters(self, mock_get):
         value = retrieve_sites_geojson('P1', 'Org1')
+
         mock_get.assert_called_with(self.sites_endpoint + 'Station/search',
                                     params={'organization': 'Org1',
                                             'providers' : 'P1',
@@ -246,16 +263,19 @@ class RetrieveSitsGeojsonTestCase(TestCase):
                        }]
         }
         m.get(self.sites_endpoint + 'Station/search', json=geojson)
+
         self.assertEqual(retrieve_sites_geojson('NWIS', 'USGS-AZ'), geojson)
 
     @requests_mock.Mocker()
     def test_with_bad_request(self, m):
         m.get(self.sites_endpoint + 'Station/search', status_code=400)
+
         self.assertEqual(retrieve_sites_geojson('NWIS', 'USGS-AZ'), {})
 
     @requests_mock.Mocker()
     def test_with_server_error(self, m):
         m.get(self.sites_endpoint + 'Station/search', status_code=500)
+
         self.assertIsNone(retrieve_sites_geojson('NWIS', 'USGS-AZ'))
 
 
@@ -268,6 +288,7 @@ class RetrieveSiteTestCase(TestCase):
     @mock.patch('wqp.session.get')
     def test_request_parameters(self, mock_get):
         value = retrieve_site('NWIS', 'USGS-AZ', 'AZ003-365613111285900')
+
         mock_get.assert_called_with(self.sites_endpoint + 'Station/search',
                                     params={'organization': 'USGS-AZ',
                                             'providers': 'NWIS',
@@ -284,6 +305,7 @@ class RetrieveSiteTestCase(TestCase):
         m.get(self.sites_endpoint + 'Station/search',
               text='OrganizationIdentifier\tOrganizationFormalName\tMonitoringLocationIdentifier\tCountryCode\tStateCode\tCountyCode\tProviderName\n' +
                 'USGS-AZ\tUSGS Arizona Water Science Center\tAZ003-365613111285900\tUS\t04\t005\tNWIS')
+
         self.assertEqual(retrieve_site('NWIS', 'USGS-AZ', 'AZ003-365613111285900'),
                          {u'OrganizationIdentifier': u'USGS-AZ',
                           u'OrganizationFormalName': u'USGS Arizona Water Science Center',
@@ -297,11 +319,13 @@ class RetrieveSiteTestCase(TestCase):
     @requests_mock.Mocker()
     def test_with_bad_response(self, m):
         m.get(self.sites_endpoint + 'Station/search', status_code=400)
+
         self.assertEqual(retrieve_site('NWIS', 'USGS-AZ', 'AZ003-365613111285900'), {})
 
     @requests_mock.Mocker()
     def test_with_server_error(self, m):
         m.get(self.sites_endpoint + 'Station/search', status_code=500)
+
         self.assertIsNone(retrieve_site('NWIS', 'USGS-AZ', 'AZ003-365613111285900'))
 
 
@@ -314,6 +338,7 @@ class TsvDictGenerator(TestCase):
                  ]
         iter_lines = (line for line in lines)
         result = tuple(tsv_dict_generator(iter_lines))
+
         self.assertEqual(len(result), 2)
         self.assertEqual(result[0], {'H1': 'L1C1', 'H2': 'L1C2', 'H3': 'L1C3', 'H4': 'L1C4'})
         self.assertEqual(result[1], {'H1': 'L2C1', 'H2': 'L2C2', 'H3': 'L2C3', 'H4': 'L2C4'})
@@ -327,6 +352,7 @@ class TsvDictGenerator(TestCase):
                  ]
         iter_lines = (line for line in lines)
         result = tuple(tsv_dict_generator(iter_lines))
+
         self.assertEqual(len(result), 4)
         self.assertEqual(result[0], {}),
         self.assertEqual(result[1], {'H1': 'L2C1', 'H2': 'L2C2', 'H3': 'L2C3', 'H4': 'L2C4'})
