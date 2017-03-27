@@ -424,6 +424,10 @@
 										<label for="activitymetric-input">Sampling Activity Metrics</label>
 									</li>
 								{% endif %}
+								<li>
+									<input type="radio" class="result-type" id="resultdetection" value="ResultDetectionQuantitationLimit" />
+									<label for="resultdetection">Result Detection Quantitation Limit Data</label>
+								</li>
 							</ul>
 						</div>
 						<div id="download-tabular-data">
@@ -543,10 +547,14 @@
 							<label for="dialog-activities">Sampling Activity</label>
 						</li>
 						<li>
-							<input type="radio" class="resultType" id="dialog-activitymetric" value="ActivityMetric" />
+							<input type="radio" name="resultType" id="dialog-activitymetric" value="ActivityMetric" />
 							<label for="dialog-activitymetric">Sampling Activity Metrics</label>
 						</li>
 					{% endif %}
+					<li>
+						<input type="radio" name="resultType" id="dialog-resultdetection" value="ResultDetectionQuantitationLimit" />
+						<label for="dialog-resultdetection">Result Detection Quantitation Limit Data</label>
+					</li>
 				</ul>
 			</div>
 			<div style="display: inline-block;" id="map-info-file-format-div">
