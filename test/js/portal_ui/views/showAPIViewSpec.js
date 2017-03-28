@@ -47,6 +47,7 @@ describe('Tests for PORTAL.VIEWS.showAPIViewSpec', function() {
 		expect($('#getfeature-query-div textarea').html()).toContain('SEARCHPARAMS=' + encodeURIComponent('Testparam1:value1;Testparam2:value2'));
 		expect($('#activitymetrics-query-div textarea').html()).toContain('ActivityMetric?Testparam1=value1&amp;Testparam2=value2');
 		expect($('#activities-query-div textarea').html()).toContain('Activity?Testparam1=value1&amp;Testparam2=value2');
+		expect($('#resultdetection-query-div textarea').html()).toContain('ResultDetectionQuantitationLimit?Testparam1=value1&amp;Testparam2=value2');
 	});
 });
 
