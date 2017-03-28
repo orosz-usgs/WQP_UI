@@ -90,7 +90,10 @@ def retrieve_providers():
     """
     provider_lookups = retrieve_lookups('/providers')
     if provider_lookups:
-        providers = [code['value'] for code in provider_lookups.get('codes')]
+        try:
+            providers = [code['value'] for code in provider_lookups.get('codes')]
+        except TypeError:
+            providers = None
     else:
         providers = None
     return providers
@@ -105,14 +108,17 @@ def retrieve_organization(provider, org_id):
     """
     organization_lookups = retrieve_lookups('/organizations', {'text': org_id})
     if organization_lookups:
-        org_codes = organization_lookups.get('codes')
-        # org_id must be exact match to value and provider must be in the provider value
-        provider_org_codes = [org_code for org_code in org_codes if provider in org_code['providers'].split(' ')]
-        organization = {}
-        for code in provider_org_codes:
-            if code['value'] == org_id:
-                organization = {'id' : org_id, 'name': code['desc']}
-                break
+        try:
+            org_codes = organization_lookups.get('codes')
+            # org_id must be exact match to value and provider must be in the provider value
+            provider_org_codes = [org_code for org_code in org_codes if provider in org_code.get('providers', '').split(' ')]
+            organization = {}
+            for code in provider_org_codes:
+                if code.get('value', '') == org_id:
+                    organization = {'id' : org_id, 'name': code.get('desc', '')}
+                    break
+        except TypeError:
+            organization = None
     else:
         organization = None
     return organization
@@ -128,9 +134,12 @@ def retrieve_organizations(provider):
 
     organization_lookups = retrieve_lookups('/organizations')
     if organization_lookups:
-        org_codes = organization_lookups.get('codes')
-        provider_org_codes = [org_code for org_code in org_codes if provider in org_code['providers'].split(' ')]
-        organizations = [{'id': org_code['value'], 'name' : org_code['desc']} for org_code in provider_org_codes]
+        try:
+            org_codes = organization_lookups.get('codes')
+            provider_org_codes = [org_code for org_code in org_codes if provider in org_code.get('providers', '').split(' ')]
+            organizations = [{'id': org_code.get('value', ''), 'name' : org_code.get('desc', '')} for org_code in provider_org_codes]
+        except TypeError:
+            organizations = None
 
     else:
         organizations = None
@@ -151,10 +160,13 @@ def retrieve_county(country, state, county):
     countycode = statecode + ':' + county
     county_lookups = retrieve_lookups('/countycode', {'statecode': statecode, 'text': countycode})
 
-    if county_lookups:
-        if county_lookups.get('recordCount') == 1:
-            country_state_county = county_lookups['codes'][0]['desc'].split(',')
-            county_data = {'StateName': country_state_county[1], 'CountyName': country_state_county[2]}
+    if county_lookups and county_lookups.has_key('recordCount'):
+        if county_lookups.get('recordCount') == 1 and county_lookups.has_key('codes'):
+            country_state_county = county_lookups.get('codes', [{}])[0].get('desc', '').split(',')
+            if (len(country_state_county) > 2):
+                county_data = {'StateName': country_state_county[1], 'CountyName': country_state_county[2]}
+            else:
+                county_data = {}
         else:
             county_data = {}
     else:

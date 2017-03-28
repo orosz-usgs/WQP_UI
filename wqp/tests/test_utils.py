@@ -30,12 +30,12 @@ class RedisDbNumberTestCase(TestCase):
         """will any other value give back a db value of 0?"""
         assert generate_redis_db_number('RANDOM') == 0
 
-
 class RetrieveLookupsTestCase(TestCase):
 
     def setUp(self):
         self.codes_endpoint = 'mock://wqpfake.com/test_lookup/endpoint'
         app.config['CODES_ENDPOINT'] = self.codes_endpoint
+
 
     @mock.patch('wqp.session.get')
     def test_request_with_default_params(self, mock_get):
@@ -48,8 +48,7 @@ class RetrieveLookupsTestCase(TestCase):
         value = retrieve_lookups('/test', {'param1': 'value1'})
 
         mock_get.assert_called_with(self.codes_endpoint + '/test', params={'mimeType': 'json',
-                                                                            'param1': 'value1'})
-
+                                                                           'param1': 'value1'})
     @requests_mock.Mocker()
     def test_request_with_valid_response(self, m):
         m.get(self.codes_endpoint + '/test',
@@ -95,9 +94,17 @@ class RetrieveProviders(TestCase):
         self.assertEqual(retrieve_providers(), ['P1', 'P2'])
 
     def test_with_invalid_request(self, m):
-        m.get(self.codes_endpoint + '/providers', status_code=500)
+        m.get(self.codes_endpoint + '/providers', json={})
 
         self.assertIsNone(retrieve_providers())
+
+
+    def test_with_unexpected_response(self, m):
+        m.get(self.codes_endpoint + '/providers',
+              json={'error': 'Unexpected'})
+
+        self.assertIsNone(retrieve_providers())
+
 
 @requests_mock.Mocker()
 class RetrieveOrganization(TestCase):
@@ -136,6 +143,25 @@ class RetrieveOrganization(TestCase):
               )
 
         self.assertEqual(retrieve_organization('P3', 'Org1'), {})
+
+
+    def test_with_nonsense_response(self, m):
+        m.get(self.codes_endpoint + '/organizations',
+              json={'error': 'Unexpected error'}
+              )
+        self.assertIsNone(retrieve_organization('P3', 'Org1'))
+
+    def test_with_response_without_providers(self, m):
+        m.get(self.codes_endpoint + '/organizations',
+              json={'recordCount': 2,
+                    'codes': [
+                        {'value': 'Org10', 'desc': 'Organization10'},
+                        {'value': 'Org1', 'desc': 'Organization1'}
+                        ]
+                    }
+              )
+        self.assertEqual(retrieve_organization('P3', 'Org1'), {})
+
 
     def test_with_bad_response(self, m):
         m.get(self.codes_endpoint + '/organizations', status_code=500)
@@ -176,6 +202,14 @@ class RetrieveOrganizationsTestCase(TestCase):
 
         self.assertEqual(retrieve_organizations('P5'), [])
 
+
+    def test_with_nonsense_response(self, m):
+        m.get(self.codes_endpoint + '/organizations',
+              json={'Error': 'Unexpected'})
+
+        self.assertIsNone(retrieve_organizations('P5'))
+
+
     def test_with_bad_response(self, m):
         m.get(self.codes_endpoint + '/organizations', status_code=500)
 
@@ -210,6 +244,35 @@ class RetrieveCountyTestCase(TestCase):
     def test_response_with_no_records(self, m):
         m.get(self.codes_endpoint + '/countycode',
               json={'recordCount': 0, 'codes': []}
+              )
+
+        self.assertEqual(retrieve_county('US', '55', '005'), {})
+
+    @requests_mock.Mocker()
+    def test_response_with_bad_description(self, m):
+        m.get(self.codes_endpoint + '/countycode',
+              json={'recordCount': 1,
+                    'codes': [
+                        {'value': 'US:55:005', 'desc': 'US, Wisconsin', 'providers': 'P1 P2'}
+                    ]
+                    }
+              )
+
+        self.assertEqual(retrieve_county('US', '55', '005'), {})
+
+
+    @requests_mock.Mocker()
+    def test_response_with_nonsense_response(self, m):
+        m.get(self.codes_endpoint + '/countycode',
+              json={'error': 'Unexpected error'})
+
+        self.assertIsNone(retrieve_county('US', '55', '005'))
+
+
+    @requests_mock.Mocker()
+    def test_response_with_no_codes_in_response(self, m):
+        m.get(self.codes_endpoint + '/countycode',
+              json={'recordCount': 1}
               )
 
         self.assertEqual(retrieve_county('US', '55', '005'), {})
