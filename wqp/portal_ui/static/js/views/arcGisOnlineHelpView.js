@@ -20,7 +20,7 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
 	/*
 	 * Read handlebar template
 	 */
-	$.ajax({
+	var template_loaded_promise = $.ajax({
 		url: Config.STATIC_ENDPOINT + 'js/hbTemplates/arcGisHelp.hbs',
 		cache: false,
 		success: function (response) {
@@ -74,6 +74,8 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
 				showDialog(queryParamArray, selectedSld);
 			});
 		};
+
+		self.template_loaded = template_loaded_promise;
 		return self;
 	};
 })();

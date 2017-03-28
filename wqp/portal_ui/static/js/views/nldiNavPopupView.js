@@ -20,7 +20,7 @@ PORTAL.VIEWS.nldiNavPopupView = (function() {
 	/*
 	 * Read handlebar templates
 	 */
-	$.ajax({
+	var template_loaded_promise = $.ajax({
 		url : Config.STATIC_ENDPOINT + 'js/hbTemplates/nldiFeatureSourcePopup.hbs',
 		cache: false,
 		success : function(response) {
@@ -51,24 +51,28 @@ PORTAL.VIEWS.nldiNavPopupView = (function() {
 		};
 		var $navButton;
 
-		onMap.openPopup(popupTemplate(context), atLatLng);
-		$navButton = $('.navigation-selection-div button');
-		$('.navigation-selection-div select').change(function (ev) {
-			var $select = $(ev.target);
-			var selectedValue = $select.val();
-			var navValue = {
-				id: selectedValue,
-				text: $(ev.target.selectedOptions[0]).html()
-			};
+		template_loaded_promise.always(function() {
+			onMap.openPopup(popupTemplate(context), atLatLng);
+			$navButton = $('.navigation-selection-div button');
+			$('.navigation-selection-div select').change(function (ev) {
+				var $select = $(ev.target);
+				var selectedValue = $select.val();
+				var navValue = {
+					id: selectedValue,
+					text: $(ev.target.selectedOptions[0]).html()
+				};
 
-			PORTAL.MODELS.nldiModel.setData('navigation', navValue);
-			$navButton.prop('disabled', !(navValue.id));
+				PORTAL.MODELS.nldiModel.setData('navigation', navValue);
+				$navButton.prop('disabled', !(navValue.id));
+			});
+			$('.navigation-selection-div input[type="text"]').change(function (ev) {
+				PORTAL.MODELS.nldiModel.setData('distance', $(ev.target).val());
+			});
+			$navButton.click(navHandler);
 		});
-		$('.navigation-selection-div input[type="text"]').change(function (ev) {
-			PORTAL.MODELS.nldiModel.setData('distance', $(ev.target).val());
-		});
-		$navButton.click(navHandler);
 	};
+
+	self.template_loaded = template_loaded_promise;
 
 	return self;
 })();
