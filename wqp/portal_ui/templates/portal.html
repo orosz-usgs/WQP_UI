@@ -189,18 +189,15 @@
 							</div>
 							<button type="button" class="help-link popover-help" id="hucHelp" data-help="huc">?</button>
 						</div>
-						{% if config.DISABLE_ACTIVITY_DOWNLOAD %}
-						{% else %}
-							<div class="form-group" id='min-activities-div'>
-								<label class="control-label" for="min-activities">Minimum sampling activities per site:</label>
-								<div>
-									<input class="form-control" type="number" min="1" name="minactivities" id="min-activites"/>
-								</div>
-								<button type="button" class="help-link popover-help" id="min-activities-help"
-										data-help="minactivities">?
-								</button>
+						<div class="form-group" id='min-activities-div'>
+							<label class="control-label" for="min-activities">Minimum sampling activities per site:</label>
+							<div>
+								<input class="form-control" type="number" min="1" name="minactivities" id="min-activites"/>
 							</div>
-						{%  endif %}
+							<button type="button" class="help-link popover-help" id="min-activities-help"
+									data-help="minactivities">?
+							</button>
+						</div>
 						<div id="nldi-container">
 							<label for="nldi-picker">Search Upstream and Downstream (BETA)</label>
 							<button type="button" class="help-link popover-help" id="nldiHelp" data-help="nldi">?</button>
@@ -413,17 +410,14 @@
 									<input type="radio" class="result-type" id="biosamples" value="Result">
 									<label for="biosamples">Sample results (biological metadata)</label>
 								</li>
-								{% if config.DISABLE_ACTIVITY_DOWNLOAD %}
-								{% else %}
-									<li>
-										<input type="radio" class="result-type" id="activity-input" value="Activity" />
-										<label for="activity-input">Sampling Activity</label>
-									</li>
-									<li>
-										<input type="radio" class="result-type" id="activitymetric-input" value="ActivityMetric" />
-										<label for="activitymetric-input">Sampling Activity Metrics</label>
-									</li>
-								{% endif %}
+								<li>
+									<input type="radio" class="result-type" id="activity-input" value="Activity" />
+									<label for="activity-input">Sampling Activity</label>
+								</li>
+								<li>
+									<input type="radio" class="result-type" id="activitymetric-input" value="ActivityMetric" />
+									<label for="activitymetric-input">Sampling Activity Metrics</label>
+								</li>
 							</ul>
 						</div>
 						<div id="download-tabular-data">
@@ -536,17 +530,14 @@
 						<input type="radio" name="resultType" id="dialog-biosamples" value="Result"/>
 						<label for="dialog-biosamples">Sample results with biological metadata</label>
 					</li>
-					{% if config.DISABLE_ACTIVITY_DOWNLOAD %}
-					{% else %}
-						<li>
-							<input type="radio" name="resultType" id="dialog-activities" value="Activity"/>
-							<label for="dialog-activities">Sampling Activity</label>
-						</li>
-						<li>
-							<input type="radio" class="resultType" id="dialog-activitymetric" value="ActivityMetric" />
-							<label for="dialog-activitymetric">Sampling Activity Metrics</label>
-						</li>
-					{% endif %}
+					<li>
+						<input type="radio" name="resultType" id="dialog-activities" value="Activity"/>
+						<label for="dialog-activities">Sampling Activity</label>
+					</li>
+					<li>
+						<input type="radio" class="resultType" id="dialog-activitymetric" value="ActivityMetric" />
+						<label for="dialog-activitymetric">Sampling Activity Metrics</label>
+					</li>
 				</ul>
 			</div>
 			<div style="display: inline-block;" id="map-info-file-format-div">
