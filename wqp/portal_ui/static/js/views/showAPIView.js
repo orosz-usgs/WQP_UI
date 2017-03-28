@@ -36,16 +36,8 @@ PORTAL.VIEWS.showAPIView = function(options) {
 			$apiQueryDiv.show();
 			$sitesText.html(PORTAL.queryServices.getFormUrl('Station', queryString));
 			$resultsText.html(PORTAL.queryServices.getFormUrl('Result', queryString));
-			if (Config.ACTIVITY_ENDPOINTS_ENABLED) {
-				$activitiesText.html(PORTAL.queryServices.getFormUrl('Activity', queryString));
-				$activitymetricsText.html(PORTAL.queryServices.getFormUrl('ActivityMetric', queryString));
-			}
-			else {
-				var $activitiesDiv = options.$container.find('#activities-query-div');
-				var $activitymetricsDiv = options.$container.find('#activitymetrics-query-div');
-				$activitiesDiv.hide();
-				$activitymetricsDiv.hide();
-			}
+			$activitiesText.html(PORTAL.queryServices.getFormUrl('Activity', queryString));
+			$activitymetricsText.html(PORTAL.queryServices.getFormUrl('ActivityMetric', queryString));
 			$resultdetectionText.html(PORTAL.queryServices.getFormUrl('ResultDetectionQuantitationLimit', queryString))
 			$wfsText.html(L.WQPSitesLayer.getWfsGetFeatureUrl(queryParamArray));
 		});
