@@ -19,10 +19,8 @@ describe('PORTAL.VIEWS.nldiNavViewPopupView', function() {
 		});
 
 		navHandlerSpy = jasmine.createSpy('navHandlerSpy');
-		setTimeout(function() {
-			PORTAL.VIEWS.nldiNavPopupView.createPopup(testMap, {}, L.latLng(43.0, -100.0), navHandlerSpy);
-			done();
-		}, 200);
+		PORTAL.VIEWS.nldiNavPopupView.createPopup(testMap, {}, L.latLng(43.0, -100.0), navHandlerSpy);
+		PORTAL.VIEWS.nldiNavPopupView.template_loaded.always(done);
 	});
 
 	afterEach(function() {
