@@ -12,8 +12,6 @@ describe('Tests for PORTAL.VIEWS.showAPIViewSpec', function() {
 	var mockGetQueryParamArray;
 
 	beforeEach(function() {
-		// The below line can be removed once the feature toggle for activity endpoints has been removed.
-		Config.ACTIVITY_ENDPOINTS_ENABLED = true;
 		$('body').append('<div id="test-div">' +
 			'<button type="button"  id="show-queries-button"></button>' +
 				'<div id="sites-query-div"><textarea></textarea></div>' +
