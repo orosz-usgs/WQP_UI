@@ -418,6 +418,10 @@
 									<input type="radio" class="result-type" id="activitymetric-input" value="ActivityMetric" />
 									<label for="activitymetric-input">Sampling Activity Metrics</label>
 								</li>
+								<li>
+									<input type="radio" class="result-type" id="resultdetection" value="ResultDetectionQuantitationLimit" />
+									<label for="resultdetection">Result Detection Quantitation Limit Data</label>
+								</li>
 							</ul>
 						</div>
 						<div id="download-tabular-data">
@@ -479,6 +483,11 @@
 							<br/>
 							<textarea readonly="readonly" rows="6"></textarea>
 						</div>
+						<div class="show-query-text" id="resultdetection-query-div">
+							<b>Result Detection Quantitation Limit</b>
+							<br/>
+							<textarea readonly="readonly" row="6"></textarea>
+						</div>
 						<div class="show-query-text" id="getfeature-query-div">
 							<b>WFS GetFeature</b>
 							<br/>
@@ -537,6 +546,10 @@
 					<li>
 						<input type="radio" class="resultType" id="dialog-activitymetric" value="ActivityMetric" />
 						<label for="dialog-activitymetric">Sampling Activity Metrics</label>
+					</li>
+					<li>
+						<input type="radio" name="resultType" id="dialog-resultdetection" value="ResultDetectionQuantitationLimit" />
+						<label for="dialog-resultdetection">Result Detection Quantitation Limit Data</label>
 					</li>
 				</ul>
 			</div>

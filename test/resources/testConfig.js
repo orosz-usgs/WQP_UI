@@ -6,7 +6,8 @@ var Config = {
 		Result : 'http://fakeresultservice/Result',
 		biologicalresult : 'http://fakebiologicalservice',
 		Activity : 'http://fakeresultservice/Activity',
-		ActivityMetric : 'http://fakeresultservice/ActivityMetric'
+		ActivityMetric : 'http://fakeresultservice/ActivityMetric',
+		ResultDetectionQuantitationLimit : 'http://fakeresultservice/ResultDetectionQuantitationLimit'
 	},
 	SITES_GEOSERVER_ENDPOINT: 'http://faketestserver.com/',
 	WQP_MAP_GEOSERVER_ENDPOINT : 'http://faketestserver.com/',
