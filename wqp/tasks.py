@@ -1,80 +1,76 @@
-import csv
-import cPickle as pickle
+
 import arrow
+import cPickle as pickle
 import redis
-from . import session, celery
+
+from . import app, celery, session
+from .utils import generate_redis_db_number, tsv_dict_generator, get_site_key
 
 
 @celery.task(bind=True)
-def generate_site_list_from_streamed_tsv_async(self, base_url, redis_config, provider_id, redis_db):
+def load_sites_into_cache_async(self, provider_id):
     """
-
+    Retrieves all sites for provider_id using streaming and adds each site to the cache. The current
+    state of the task is also saved in the cache with key <provider_id>_sites_load_status
     :param self: self, allows the task status to be updated
-    :param base_url: the base url we are using for the generating the search URL
     :param provider_id: the identifier of the provider (NWIS, STORET, ETC)
-    :param redis_config: redis config variables
-    :param redis_db: the db number that we are pushing the cached info to
-    :return: a list of dicts that describe sites that are associated with an organization under a data provider
+    :return: dict - with keys for status (code of request for sites), cached_count, error_count, and total_count
     """
-    search_endpoint = base_url + "Station/search/"
-    r = session.get(search_endpoint, params={"providers": provider_id,
-                                             "mimeType": "tsv",
-                                             "sorted": "no",
-                                             "uripage": "yes"
-                                             },
-                    stream=True
-                    )
 
-    status = r.status_code
-    headers = r.headers
-    total = int(headers['Total-Site-Count'])
-    redis_session = None
+    search_endpoint = app.config['SEARCH_QUERY_ENDPOINT'] + "Station/search/"
+    redis_config = app.config['REDIS_CONFIG']
+    result = {'status': '',
+              'error_count': 0,
+              'cached_count': 0,
+              'total_count': 0}
+    current_count = 0
+
     if redis_config:
-        redis_session = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db,
+        redis_session = redis.StrictRedis(host=redis_config['host'],
+                                          port=redis_config['port'],
+                                          db=generate_redis_db_number(provider_id),
                                           password=redis_config.get('password'))
 
-    error_count = 0
-    cached_count = 0
-    counter = 0
-    header = None
-    number_of_columns = None
-    if status == 200:
-        if redis_session:
-            redis_session.flushdb()
-        for line in r.iter_lines():
-            # filter out keep-alive new lines
-            if line:
-                if counter == 0:
-                    header_line = line
-                    header_object = csv.reader([header_line], delimiter='\t')
-                    for row in header_object:
-                        header = row
-                        number_of_columns = len(header)
-                    counter += 1
-                elif counter >= 1:
-                    station = csv.reader([line], delimiter='\t')
-                    for row in station:
-                        station_data = row
-                        if len(station_data) == number_of_columns and header is not None:
-                            station_dict = dict(zip(header, station_data))
-                            site_key = 'sites_' + provider_id + '_' + str(station_dict['OrganizationIdentifier']) + "_" + \
-                                       str(station_dict['MonitoringLocationIdentifier'])
-                            if redis_session:
-                                redis_session.set(site_key, pickle.dumps(station_dict, protocol=2))
-                            cached_count += 1
-                            self.update_state(state='PROGRESS',
-                                              meta={'current': counter, 'errors': error_count, 'total': total,
-                                                    'status': 'working'})
-                            counter += 1
-                        elif len(station_data) != number_of_columns:
-                            error_count += 1
-        if redis_session:
-            status_key = provider_id+'_sites_load_status'
-            time_utc = arrow.utcnow()
-            status_content = {'time_utc': time_utc, "cached_count": cached_count, "error_count": error_count,
-                              'total_count': total, 'provider': provider_id}
-            redis_session.set(status_key, pickle.dumps(status_content, protocol=2))
+
+        resp = session.get(search_endpoint, params={"providers": provider_id,
+                                                    "mimeType": "tsv",
+                                                    "sorted": "no",
+                                                    "uripage": "yes"
+                                                    },
+                            stream=True
+                            )
+
+        result['status'] = resp.status_code
+        if resp.status_code == 200:
+            result['total_count'] = int(resp.headers['Total-Site-Count'])
+
+            for site in tsv_dict_generator(resp.iter_lines()):
+                current_count += 1
+                if site:
+                    result['cached_count'] += 1
+                    site_key = get_site_key(provider_id, site['OrganizationIdentifier'], site['MonitoringLocationIdentifier'])
+                    redis_session.set(site_key, pickle.dumps(site, protocol=2))
+
+                else:
+                    result['error_count'] += 1
+                self.update_state(state='PROGRESS',
+                                  meta={'current': current_count,
+                                        'errors': result['error_count'],
+                                        'total': result['total_count'],
+                                        'status': 'working'}
+                                  )
+
+        # Add loading stats to cache
+        status_key = provider_id + '_sites_load_status'
+        status_content = {'time_utc': arrow.utcnow(),
+                          'cached_count': result['cached_count'],
+                          'error_count': result['error_count'],
+                          'total_count': result['total_count'],
+                          'provider': provider_id}
+        redis_session.set(status_key, pickle.dumps(status_content))
 
     else:
-        self.update_state(state='FAILURE', meta={'status': status})
-    return {"status": status, "cached_count": cached_count, "error_count": error_count, 'total_count':total}
+        status = 500
+        self.update_state(state='NO_REDIS_CONFIGURED', meta={})
+
+    return result
