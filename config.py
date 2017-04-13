@@ -1,4 +1,4 @@
-
+import logging
 import os
 
 PROJECT_HOME = os.path.dirname(__file__)
@@ -64,5 +64,6 @@ CELERY_BROKER_URL = None
 CELERY_RESULT_BACKEND = None
 
 # Logging Configuration
-LOGGING_ON = False
+LOGGING_ON = True
 LOGGING_LOCATION = None
+LOG_LEVEL = logging.INFO

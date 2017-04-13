@@ -11,7 +11,7 @@ from requests import Session
 __version__ = '4.13.0dev'
 
 
-def create_log_handler(logfile=None):
+def create_log_handler(loglevel, logfile=None):
     """
     Create a logger object. The logs will be streamed
     to stdout if a logfile is not specifed. If a logfile
@@ -28,17 +28,12 @@ def create_log_handler(logfile=None):
     else:
         handler = logging.StreamHandler(sys.stdout)
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    handler.setLevel(loglevel)
     handler.setFormatter(formatter)
     return handler
 
 
 app = Flask(__name__.split()[0], instance_relative_config=True)
-
-
-if app.config.get('LOGGING_ON'):
-    logfile = app.config.get('LOGGING')
-    handler = create_log_handler(logfile)
-    app.logger.addHandler(handler)
 
 Bower(app)
 
@@ -46,6 +41,14 @@ Bower(app)
 app.config.from_object('config')
 app.config.from_pyfile('config.py')
 
+if app.config.get('LOGGING_ON'):
+    logfile = app.config.get('LOGGING_LOCATION')
+    loglevel = app.config.get('LOG_LEVEL')
+    handler = create_log_handler(loglevel, logfile)
+    app.logger.disabled = False
+    app.logger.addHandler(handler)
+else:
+    app.logger.disabled = True
 
 import assets
 
@@ -88,5 +91,3 @@ swaggerui_blueprint = get_swaggerui_blueprint(
     api_view_func=API_VIEW_FUNC
 )
 app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
-
-
