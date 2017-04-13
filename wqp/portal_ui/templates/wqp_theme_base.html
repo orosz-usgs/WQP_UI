@@ -1,0 +1,55 @@
+{% extends 'theme_base.html' %}
+
+{% block custom_style %}
+	{% assets "custom_less" %}
+		<link rel="stylesheet"  type="text/css" href="{{ ASSET_URL }}" >
+	{% endassets %}
+{% endblock %}
+
+{% block page_header %}
+	<div id="page-header-small">
+		<a href="http://acwi.gov/monitoring/">
+			<div id="page-header-logo">
+				<img src="{{ url_for('portal_ui.static', filename='img/NWQMC_newlogo.jpg') }}"/>
+			</div>
+			<div id="page-header-text-div">
+				<div id="page-header-sponser-div">NATIONAL WATER QUALITY MONITORING COUNCIL</div>
+				<div id="page-header-tag-line-div">Working Together for Clean Water</div>
+			</div>
+		</a>
+	</div>
+
+	<div id="page-header-full">
+		<a href="http://acwi.gov/monitoring/">
+			<img src="{{ url_for('portal_ui.static', filename='img/NWQMC_header_web_960w.png') }}"/>
+		</a>
+		<div id="page-title">
+			<a href="{{ url_for('portal_ui.home-canonical') }}">
+				<h1>
+					{% block page_header_title %}{% endblock %}
+				</h1>
+			</a>
+		</div>
+	</div>
+{% endblock %}
+
+{% block page_footer %}
+	<hr/>
+	<div id="footer-row-div">
+		<div id="contact-us-div"><a href="{{ url_for('portal_ui.contact_us-canonical') }}">Contact us</a></div>
+		<div class="logo">
+			<a href="http://usgs.gov"><img alt="USGS Science for a changing world"
+										   src="{{ url_for('portal_ui.static', filename='img/USGS_logo.gif') }}"/></a>
+		</div>
+		<div class="logo">
+			<a href="http://epa.gov"><img alt="EPA"
+										  src="{{ url_for('portal_ui.static', filename='img/EPA_logo.gif') }}"/></a>
+		</div>
+		<div class="logo" id="USDA-logo-div">
+			<a href="http://www.ars.usda.gov/"><img alt="USDA-ARS"
+													src="{{ url_for('portal_ui.static', filename='img/USDA-Logo.png') }}"/></a>
+		</div>
+	</div>
+{% endblock %}
+
+{% block body_page_script %}{% endblock %}
