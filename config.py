@@ -62,3 +62,7 @@ ANNOUNCEMENT_BANNER = None
 # Celery configuration
 CELERY_BROKER_URL = None
 CELERY_RESULT_BACKEND = None
+
+# Logging Configuration
+LOGGING_ON = False
+LOGGING_LOCATION = None

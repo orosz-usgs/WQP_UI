@@ -1,3 +1,5 @@
+import logging
+import sys
 
 from celery import Celery
 from flask import Flask, jsonify, request
@@ -9,7 +11,34 @@ from requests import Session
 __version__ = '4.13.0dev'
 
 
+def create_log_handler(logfile=None):
+    """
+    Create a logger object. The logs will be streamed
+    to stdout if a logfile is not specifed. If a logfile
+    is specified, logs will be written to the file.
+
+    :param str logger_name: name of the logger
+    :param str logfile: optional name of a file where logs can be written to
+    :return: a logger
+    :rtype: logging.Logger
+
+    """
+    if logfile is not None:
+        handler = logging.FileHandler(logfile)
+    else:
+        handler = logging.StreamHandler(sys.stdout)
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+    return handler
+
+
 app = Flask(__name__.split()[0], instance_relative_config=True)
+
+
+if app.config.get('LOGGING_ON'):
+    logfile = app.config.get('LOGGING')
+    handler = create_log_handler(logfile)
+    app.logger.addHandler(handler)
 
 Bower(app)
 

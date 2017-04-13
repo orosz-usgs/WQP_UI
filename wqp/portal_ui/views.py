@@ -82,6 +82,7 @@ def webservices_documentation():
 @portal_ui.route('/faqs.jsp')
 @portal_ui.route('/faqs/', endpoint='faqs-canonical')
 def faqs():
+    app.logger.info('In the FAQ page.')
     if request.path == '/faqs.jsp':
         return redirect(url_for('portal_ui.faqs-canonical')), 301
     feed_url = "https://my.usgs.gov/confluence/createrssfeed.action?types=page&spaces=qwdp&title=myUSGS+4.0+RSS+Feed&" \
