@@ -1,5 +1,6 @@
 import logging
 import sys
+import time
 
 from celery import Celery
 from flask import Flask, jsonify, request
@@ -24,7 +25,7 @@ def create_log_handler(loglevel, logfile=None):
 
     """
     if logfile is not None:
-        handler = logging.FileHandler(logfile)
+        handler = logging.TimedRotatingFileHandler(logfile, when='midnight', backupCount=10)
     else:
         handler = logging.StreamHandler(sys.stdout)
     formatter = logging.Formatter('%(asctime)s - {%(pathname)s:L%(lineno)d} - %(levelname)s - %(message)s')
