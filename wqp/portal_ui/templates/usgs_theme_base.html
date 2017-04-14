@@ -38,13 +38,13 @@
 		 <p id="usgsfootertext">
 				<a href="http://usa.gov/"><img id="usa_gov" src="{{url_for('portal_ui.static', filename='img/footer_graphic_usagov.jpg') }}" alt="USA.gov logo" title="USAGov: Government Made Easy" width="90" height="26" /></a>
 				<a href="http://www.doi.gov/" title="U.S. Department of the Interior">U.S. Department of the Interior</a>
+		 		&nbsp;!&nbsp;
 				<a href="http://www.usgs.gov/" title="U.S. Geological Survey">U.S. Geological Survey</a><br />
 
 
 
 				URL: {% block url %}<a href="{{ request.url }}">{{ request.url }}</a>{% endblock %}<br />
 				Page Contact Information: {% block contact_info %}{% endblock %}<br />
-				Page Last Modified: {% block modtime %}{{ LAST_MODIFIED }}{% endblock %}
 		 </p>
 	</footer>
 {% endblock %}
