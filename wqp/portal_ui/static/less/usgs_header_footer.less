@@ -1,5 +1,3 @@
-@import "../../../bower_components/bootstrap/less/bootstrap.less";
-
 /* USGS header styles */
 header {
     .make-row();
@@ -11,10 +9,16 @@ header {
     float: left;
   }
   #banner {
+    @media(max-width: @screen-xs-max) {
+      display: none;
+    }
     float: left;
     height: 72px;
   }
   #header_nav {
+    @media(max-width: @screen-xs-max) {
+      display: none;
+    }
     margin: 5px 8px 0 0;
     float: right;
   }

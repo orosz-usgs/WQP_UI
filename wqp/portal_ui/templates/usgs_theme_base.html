@@ -1,5 +1,7 @@
 {% extends 'theme_base.html' %}
 
+{% block title %}NWIS QW{% endblock %}
+
 {% block custom_style %}
 	{% assets "nwis_qw_custom_less" %}
 		<link rel="stylesheet"  type="text/css" href="{{ ASSET_URL }}" >
@@ -27,14 +29,21 @@
 {% endblock %}
 
 {% block navbar_navigation %}
-	<li><a href="{{ url_for('portal_ui.portal-canonical') }}">Download Data</a></li>
-	<li class="dropdown">
-		<a class="dropdown-toggle" href="#" data-toggle="dropdown">How to use the WQP<span class="caret"></span></a>
-		<ul class="dropdown-menu">
-			<li><a href="{{ url_for('portal_ui.portal_userguide-canonical') }}">User Guide</a></li>
+	<div id="wqp-navbar-header" class="navbar-header">
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#wqp-standard-navbar-collapse">NWIS QW<span class="caret"></span></button>
+	</div>
+	<div id="wqp-standard-navbar-collapse" class="navbar-collapse collapse">
+		<ul class="nav navbar-nav">
+			<li><a href="{{ url_for('portal_ui.portal-canonical') }}">Download Data</a></li>
+			<li class="dropdown">
+				<a class="dropdown-toggle" href="#" data-toggle="dropdown">How to use the WQP<span class="caret"></span></a>
+				<ul class="dropdown-menu">
+					<li><a href="{{ url_for('portal_ui.portal_userguide-canonical') }}">User Guide</a></li>
+				</ul>
+			</li>
+			<li><a href="{{ url_for('portal_ui.uri_base') }}">Explore WQP sites</a></li>
 		</ul>
-	</li>
-	<li><a href="{{ url_for('portal_ui.uri_base') }}">Explore WQP sites</a></li>
+	</div>
 {% endblock %}
 
 {% block page_footer %}
