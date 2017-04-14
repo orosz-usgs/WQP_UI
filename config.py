@@ -1,6 +1,7 @@
 import logging
 import os
 
+
 PROJECT_HOME = os.path.dirname(__file__)
 #Config for Flask-Collect
 COLLECT_STATIC_ROOT = 'static/'
@@ -66,4 +67,4 @@ CELERY_RESULT_BACKEND = None
 # Logging Configuration
 LOGGING_ENABLED = True
 LOGGING_LOCATION = None
-LOGGING_LEVEL = logging.INFO
+LOGGING_LEVEL = logging.DEBUG

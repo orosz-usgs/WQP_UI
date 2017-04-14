@@ -60,9 +60,9 @@ def log_entry():
 
 
 def create_request_resp_log_msg(response):
-    msg = 'Status Code: {0}, URL: {1}, Response Content: {2}'.format(response.status_code,
+    msg = 'Status Code: {0}, URL: {1}, Response headers: {2}'.format(response.status_code,
                                                                      response.url,
-                                                                     response.content
+                                                                     response.headers
                                                                      )
     return msg
 

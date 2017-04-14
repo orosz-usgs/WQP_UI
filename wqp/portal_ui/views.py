@@ -5,7 +5,7 @@ import sys
 from flask import render_template, request, make_response, redirect, url_for, abort, Response, jsonify, Blueprint
 import redis
 
-from .. import app, create_redis_log_msg, session
+from .. import app, create_request_resp_log_msg, create_redis_log_msg, session
 from ..utils import pull_feed, geoserver_proxy_request, retrieve_providers, retrieve_organizations, \
     get_site_key, retrieve_organization, retrieve_sites_geojson, retrieve_site, retrieve_county, \
     generate_redis_db_number
@@ -161,6 +161,8 @@ def public_srsnames():
         return redirect(url_for('portal_ui.public_srsnames-canonical')), 301
 
     resp = session.get(app.config['PUBLIC_SRSNAMES_ENDPOINT'] + '?mimeType=json')
+    msg = create_request_resp_log_msg(resp)
+    app.logger.info(msg)
 
     return render_template('public_srsnames.html', status_code=resp.status_code, content = resp.json())
     

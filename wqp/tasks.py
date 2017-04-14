@@ -26,9 +26,12 @@ def load_sites_into_cache_async(self, provider_id):
     current_count = 0
 
     if redis_config:
+        db_number = generate_redis_db_number(provider_id)
+        redis_msg = create_redis_log_msg(redis_config['host'], redis_config['port'], db_number)
+        app.logger.info(redis_msg)
         redis_session = redis.StrictRedis(host=redis_config['host'],
                                           port=redis_config['port'],
-                                          db=generate_redis_db_number(provider_id),
+                                          db=db_number,
                                           password=redis_config.get('password'))
         resp = session.get(search_endpoint, params={"providers": provider_id,
                                                     "mimeType": "tsv",

@@ -147,7 +147,8 @@ def site_feature_generator(iter_lines):
                 # Skip the line after the header
                 iter_lines.next()
                 found_header = True
-            except StopIteration:
+            except StopIteration as e:
+                app.logger.warning('{} - Header not found.'.format(repr(e)))
                 return
 
     for site_line in iter_lines:

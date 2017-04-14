@@ -14,6 +14,7 @@ def pull_feed(feed_url):
     :param feed_url: the url of the feed, created in confluence feed builder
     :return: the html of the page itself, stripped of header and footer
     """
+    app.logger.debug('Parsing content from {}.'.format(format))
     feed = feedparser.parse(feed_url)
 
     # Process html to remove unwanted mark-up and fix links
@@ -48,8 +49,6 @@ def geoserver_proxy_request(target_url, cert_verification):
     """
     if request.method == 'GET':
         resp = session.get(target_url + '?' + request.query_string, verify=cert_verification)
-        resp_msg = create_request_resp_log_msg(resp)
-        app.logger.info(resp_msg)
         # This fixed an an ERR_INVALID_CHUNKED_ENCODING when the app was run on the deployment server.
         if 'transfer-encoding' in resp.headers:
             del resp.headers['transfer-encoding']
@@ -59,11 +58,10 @@ def geoserver_proxy_request(target_url, cert_verification):
             
     else:
         resp = session.post(target_url, data=request.data, headers=request.headers, verify=cert_verification)
-        resp_msg = create_request_resp_log_msg(resp)
-        app.logger.info(resp_msg)
         if 'content-encoding' in resp.headers: 
             del resp.headers['content-encoding']
-        
+    msg = create_request_resp_log_msg(resp)
+    app.logger.info(msg)
     return make_response(resp.content, resp.status_code, resp.headers.items())
 
 
@@ -78,11 +76,12 @@ def retrieve_lookups(code_uri, params={}):
     local_params = dict(params)
     local_params['mimeType'] = 'json'
     resp = session.get(app.config['CODES_ENDPOINT'] + code_uri, params=local_params)
+    msg = create_request_resp_log_msg(resp)
     if resp.status_code == 200:
+        app.logger.debug(msg)
         lookups = resp.json()
     else:
-        msg = create_request_resp_log_msg(resp)
-        app.logger.warning(msg)
+        app.logger.info(msg)
         lookups = None
     return lookups
 
@@ -144,7 +143,8 @@ def retrieve_organizations(provider):
             org_codes = organization_lookups.get('codes')
             provider_org_codes = [org_code for org_code in org_codes if provider in org_code.get('providers', '').split(' ')]
             organizations = [{'id': org_code.get('value', ''), 'name' : org_code.get('desc', '')} for org_code in provider_org_codes]
-        except TypeError:
+        except TypeError as e:
+            app.logger.warning(repr(e))
             organizations = None
 
     else:
@@ -169,7 +169,7 @@ def retrieve_county(country, state, county):
     if county_lookups and county_lookups.has_key('recordCount'):
         if county_lookups.get('recordCount') == 1 and county_lookups.has_key('codes'):
             country_state_county = county_lookups.get('codes', [{}])[0].get('desc', '').split(',')
-            if (len(country_state_county) > 2):
+            if len(country_state_county) > 2:
                 county_data = {'StateName': country_state_county[1], 'CountyName': country_state_county[2]}
             else:
                 county_data = {}
@@ -225,9 +225,11 @@ def retrieve_site(provider_id, organization_id, site_id):
                                'sorted': 'no',
                                'uripage': 'yes'} # This is added to distinguish from normal web service queries
                        )
+    msg = create_request_resp_log_msg(resp)
     if resp.status_code == 200 and resp.text:
+        app.logger.debug(msg)
         resp_lines = resp.text.split('\n')
-        if (len(resp_lines) > 1):
+        if len(resp_lines) > 1:
             headers = resp_lines[0].split('\t')
             site = dict(zip(headers, resp_lines[1].split('\t')))
 
@@ -235,14 +237,13 @@ def retrieve_site(provider_id, organization_id, site_id):
             site = {}
 
     elif resp.status_code == 400:
+        app.logger.info(msg)
         site = {}
 
     else:
-        msg = create_request_resp_log_msg(resp)
         app.logger.warning(msg)
         site = None
     return site
-
 
 
 def generate_redis_db_number(provider):
