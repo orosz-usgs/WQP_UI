@@ -5,9 +5,21 @@ from . import app
 
 bundles = {
     'nwis_qw_custom_less' : Bundle(
-        'portal_ui/less/usgs_custom.less',
+        'portal_ui/less/usgs_theme/custom.less',
         depends=[
-            'portal_ui/less/common.less',
+            'portal_ui/less/page_content.less',
+            'portal_ui/less/portal_form.less',
+            'portal_ui/less/site_nav.less',
+            'portal_ui/less/sites.less',
+            'portal_ui/less/public_srsnames.less',
+            'portal_ui/less/usgs_theme/variables.less',
+            'portal_ui/less/usgs_theme/header_footer.less'
+        ],
+        filters='less,cssmin',
+        output='gen/nwis_qw_custom.css'),
+    'custom_less' : Bundle(
+        'portal_ui/less/wqp_theme/custom.less',
+        depends=[
             'portal_ui/less/coverage.less',
             'portal_ui/less/index.less',
             'portal_ui/less/page_content.less',
@@ -15,25 +27,10 @@ bundles = {
             'portal_ui/less/site_nav.less',
             'portal_ui/less/sites.less',
             'portal_ui/less/public_srsnames.less',
-            'portal_ui/less/usgs_variables.less',
-            'portal_ui/less/usgs_header_footer.less'
-        ],
-        filters='less,cssmin',
-        output='gen/nwis_qw_custom.css'),
-    'custom_less' : Bundle(
-        'portal_ui/less/custom.less',
-        depends=[
-            'portal_ui/less/common.less',
-            'portal_ui/less/coverage.less',
-            'portal_ui/less/footer.less',
-            'portal_ui/less/header.less',
-            'portal_ui/less/index.less',
-            'portal_ui/less/page_content.less',
-            'portal_ui/less/portal_form.less',
-            'portal_ui/less/site_nav.less',
-            'portal_ui/less/variables.less',
-            'portal_ui/less/sites.less',
-            'portal_ui/less/public_srsnames.less'],
+            'portal_ui/less/wqp_theme/footer.less',
+            'portal_ui/less/wqp_theme/header.less',
+            'portal_ui/less/wqp_theme/variables.less',
+            ],
         filters='less,cssmin', 
         output='gen/custom.css'),
     'portal_js' : Bundle(
