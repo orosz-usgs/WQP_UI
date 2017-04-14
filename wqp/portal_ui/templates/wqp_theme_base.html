@@ -33,6 +33,32 @@
 	</div>
 {% endblock %}
 
+{% block navbar_navigation %}
+	<li><a href="{{ url_for('portal_ui.home-canonical') }}">WQP Home</a></li>
+	<li><a href="{{ url_for('portal_ui.portal-canonical') }}">Download Data</a></li>
+	<li class="dropdown">
+		<a class="dropdown-toggle" href="#" data-toggle="dropdown">How to use the WQP<span class="caret"></span></a>
+		<ul class="dropdown-menu">
+			<li><a href="{{ url_for('portal_ui.portal_userguide-canonical') }}">User Guide</a></li>
+			<li><a href="{{ url_for('portal_ui.webservices_documentation-canonical') }}">Web Services Guide</a></li>
+			<li><a href="{{ url_for('portal_ui.faqs-canonical') }}">FAQs</a></li>
+			<li><a href="{{ url_for('portal_ui.upload_data-canonical') }}">Upload Data</a></li>
+		</ul>
+	</li>
+	<li> <a href="{{ url_for('portal_ui.coverage-canonical') }}">National Results Coverage</a></li>
+	<li class="dropdown">
+		<a class="dropdown-toggle" href="#" data-toggle="dropdown">About the WQP<span class="caret"></span></a>
+		<ul class="dropdown-menu">
+			<li><a href="{{ url_for('portal_ui.wqp_description-canonical') }}">What is the WQP?</a></li>
+			<li><a href="{{ url_for('portal_ui.orgs-canonical') }}">Contributing organizations</a></li>
+			<li><a href="{{ url_for('portal_ui.apps_using_portal-canonical') }}">Applications using the WQP</a></li>
+			<li><a href="{{ url_for('portal_ui.other_portal_links-canonical') }}">Other Water Quality Portals</a></li>
+			<li><a href="{{ url_for('portal_ui.contact_us-canonical') }}">Contact us</a></li>
+			<li><a href="{{ url_for('portal_ui.uri_base') }}">Explore WQP sites</a></li>
+		</ul>
+	</li>
+{% endblock %}
+
 {% block page_footer %}
 	<hr/>
 	<div id="footer-row-div">

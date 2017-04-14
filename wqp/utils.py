@@ -1,12 +1,14 @@
 
 from bs4 import BeautifulSoup
 import feedparser
+from functools import wraps
 
-
-from flask import request, make_response
+from flask import request, make_response, abort
 
 from . import app
 from . import session
+
+IS_USGS_THEME = app.config['UI_THEME'] == 'usgs'
 
 
 def pull_feed(feed_url):
@@ -287,4 +289,13 @@ def get_site_key(provider_id, organization_id, site_id):
     return '_'.join(['sites', provider_id, organization_id, site_id])
 
 
+def invalid_usgs_view(func):
+    @wraps(func)
 
+    def decorated_function(*args, **kwargs):
+        if IS_USGS_THEME:
+            return abort(404)
+        else:
+            return func(*args, **kwargs)
+
+    return decorated_function
