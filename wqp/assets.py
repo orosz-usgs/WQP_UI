@@ -7,6 +7,7 @@ bundles = {
     'nwis_qw_custom_less' : Bundle(
         'portal_ui/less/usgs_theme/custom.less',
         depends=[
+            'portal_ui/less/variables.less',
             'portal_ui/less/page_content.less',
             'portal_ui/less/portal_form.less',
             'portal_ui/less/site_nav.less',
@@ -20,6 +21,7 @@ bundles = {
     'custom_less' : Bundle(
         'portal_ui/less/wqp_theme/custom.less',
         depends=[
+            'portal_ui/less/variables.less',
             'portal_ui/less/coverage.less',
             'portal_ui/less/index.less',
             'portal_ui/less/page_content.less',
