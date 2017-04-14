@@ -27,7 +27,7 @@ def create_log_handler(logfile=None):
         handler = logging.handlers.TimedRotatingFileHandler(logfile, when='midnight', backupCount=10)
     else:
         handler = logging.StreamHandler(sys.stdout)
-    formatter = logging.Formatter('%(asctime)s - {%(pathname)s:L%(lineno)d} - %(levelname)s - %(message)s')
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - {%(pathname)s:L%(lineno)d} - %(message)s')
     handler.setFormatter(formatter)
     return handler
 
@@ -53,10 +53,18 @@ if app.config.get('LOGGING_ENABLED'):
 
 
 @app.before_request
-def log_entry():
+def log_before():
     url = request.path
     method = request.method
     app.logger.debug('Request of type {method} made to {url}'.format(method=method, url=url))
+
+
+@app.after_request
+def log_after(response):
+    resp_status = response.status
+    resp_headers = response.headers
+    app.logger.debug('Response: {0}, {1}'.format(resp_status, resp_headers))
+    return response
 
 
 def create_request_resp_log_msg(response):

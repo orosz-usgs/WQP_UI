@@ -291,7 +291,7 @@ def uris(provider_id, organization_id, site_id):
     state = site_data.get('StateCode')
     county = site_data.get('CountyCode')
 
-    if (country == 'US' and state and county):
+    if country == 'US' and state and county:
         county_data = retrieve_county(country, state, county)
         if county_data:
             additional_data = county_data
@@ -319,9 +319,11 @@ def clear_cache(provider_id=None):
         r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db_number,
                               password=redis_config.get('password'))
         r.flushdb()
-        return 'site cache cleared for: ' + provider_id
+        msg = 'site cache cleared for: ' + provider_id
     else:
-        return "no redis cache, no cache to clear"
+        msg = "no redis cache, no cache to clear"
+    app.logger.debug(msg)
+    return msg
 
 
 @portal_ui.route('/sites_cache_task/<provider_id>', methods=['POST'])
