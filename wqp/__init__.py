@@ -27,7 +27,7 @@ def create_log_handler(loglevel, logfile=None):
         handler = logging.FileHandler(logfile)
     else:
         handler = logging.StreamHandler(sys.stdout)
-    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter('%(asctime)s - {%(pathname)s:L%(lineno)d} - %(levelname)s - %(message)s')
     handler.setLevel(loglevel)
     handler.setFormatter(formatter)
     return handler

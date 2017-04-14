@@ -321,7 +321,6 @@ def sitescachetask(provider_id):
     providers = retrieve_providers()
     if provider_id not in providers:
         abort(404)
-    redis_db = generate_redis_db_number(provider_id)
     task = load_sites_into_cache_async.apply_async(args=[provider_id])
     response_content = {'Location': '/'.join([app.config['LOCAL_BASE_URL'], "status", task.id])}
     # passing the content after the response code sets a custom header, which the task status javascript needs

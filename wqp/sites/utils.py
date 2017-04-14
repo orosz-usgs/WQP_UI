@@ -101,8 +101,9 @@ def get_site_feature(station):
         try:
             lat = float(station.get('dec_lat_va', ''))
             lon = float(station.get('dec_long_va', ''))
-        except ValueError:
+        except ValueError as e:
             # Need coordinates to create a geojson file
+            app.logger.debug(e)
             feature = None
         else:
             x1, y1 = NAD83_PROJ(lon, lat)
@@ -123,12 +124,8 @@ def get_site_feature(station):
 
             feature = Feature(geometry=Point((x2, y2)), properties=properties)
     else:
+        app.logger.debug('No feature returned from NWIS.')
         feature = None
-
-    if feature:
-        pass
-        # TODO: Add some logging so we know when we get a bad response from NWIS
-
     return feature
 
 
@@ -186,8 +183,9 @@ def site_geojson_generator(params_list):
                         yield geojson_dumps(prev_feature) + ', \n'
                     prev_feature = site_feature
             else:
-                # TODO: Add logging to see why an unexpected error occured.
-                pass
+                app.logger.debug('Status Code: {0}, Response Content: {1}'.format(site_resp.status_code,
+                                                                                  site_resp.content)
+                                 )
     # Got all of the features so yield the last one closing the geojson object
     if prev_feature:
         yield geojson_dumps(prev_feature) + ']}'
