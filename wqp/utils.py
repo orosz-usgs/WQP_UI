@@ -5,8 +5,7 @@ import feedparser
 
 from flask import request, make_response
 
-from . import app
-from . import session
+from . import app, create_request_resp_log_msg, session
 
 
 def pull_feed(feed_url):
@@ -49,6 +48,8 @@ def geoserver_proxy_request(target_url, cert_verification):
     """
     if request.method == 'GET':
         resp = session.get(target_url + '?' + request.query_string, verify=cert_verification)
+        resp_msg = create_request_resp_log_msg(resp)
+        app.logger.info(resp_msg)
         # This fixed an an ERR_INVALID_CHUNKED_ENCODING when the app was run on the deployment server.
         if 'transfer-encoding' in resp.headers:
             del resp.headers['transfer-encoding']
@@ -58,6 +59,8 @@ def geoserver_proxy_request(target_url, cert_verification):
             
     else:
         resp = session.post(target_url, data=request.data, headers=request.headers, verify=cert_verification)
+        resp_msg = create_request_resp_log_msg(resp)
+        app.logger.info(resp_msg)
         if 'content-encoding' in resp.headers: 
             del resp.headers['content-encoding']
         
@@ -78,7 +81,8 @@ def retrieve_lookups(code_uri, params={}):
     if resp.status_code == 200:
         lookups = resp.json()
     else:
-        #TODO: Log error
+        msg = create_request_resp_log_msg(resp)
+        app.logger.warning(msg)
         lookups = None
     return lookups
 
@@ -93,7 +97,7 @@ def retrieve_providers():
         try:
             providers = [code['value'] for code in provider_lookups.get('codes')]
         except TypeError as e:
-            app.logger.warning(e)
+            app.logger.warning(repr(e))
             providers = None
     else:
         providers = None
@@ -118,7 +122,8 @@ def retrieve_organization(provider, org_id):
                 if code.get('value', '') == org_id:
                     organization = {'id' : org_id, 'name': code.get('desc', '')}
                     break
-        except TypeError:
+        except TypeError as e:
+            app.logger.warning(repr(e))
             organization = None
     else:
         organization = None
@@ -197,8 +202,9 @@ def retrieve_sites_geojson(provider, org_id):
     elif resp.status_code == 400:
         sites = {}
     else:
+        msg = create_request_resp_log_msg(resp)
+        app.logger.warning(msg)
         sites = None
-        #TODO: Log error
     return sites
 
 
@@ -232,7 +238,8 @@ def retrieve_site(provider_id, organization_id, site_id):
         site = {}
 
     else:
-        #TODO: Log error
+        msg = create_request_resp_log_msg(resp)
+        app.logger.warning(msg)
         site = None
     return site
 

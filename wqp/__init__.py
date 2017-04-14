@@ -1,6 +1,5 @@
 import logging
 import sys
-import time
 
 from celery import Celery
 from flask import Flask, jsonify, request
@@ -8,6 +7,7 @@ from flask_bower import Bower
 from flask_swagger import swagger
 from flask_swagger_ui import get_swaggerui_blueprint
 from requests import Session
+
 
 __version__ = '4.13.0dev'
 
@@ -25,7 +25,7 @@ def create_log_handler(loglevel, logfile=None):
 
     """
     if logfile is not None:
-        handler = logging.TimedRotatingFileHandler(logfile, when='midnight', backupCount=10)
+        handler = logging.handlers.TimedRotatingFileHandler(logfile, when='midnight', backupCount=10)
     else:
         handler = logging.StreamHandler(sys.stdout)
     formatter = logging.Formatter('%(asctime)s - {%(pathname)s:L%(lineno)d} - %(levelname)s - %(message)s')
@@ -51,6 +51,27 @@ if app.config.get('LOGGING_ON'):
 else:
     app.logger.disabled = True
 
+
+@app.before_request
+def log_entry():
+    url = request.path
+    method = request.method
+    app.logger.debug('Request of type {method} made to {url}'.format(method=method, url=url))
+
+
+def create_request_resp_log_msg(response):
+    msg = 'Status Code: {0}, URL: {1}, Response Content: {2}'.format(response.status_code,
+                                                                     response.url,
+                                                                     response.content
+                                                                     )
+    return msg
+
+
+def create_redis_log_msg(redis_host, redis_port, db_number):
+    msg = 'Connecting to Redis database {0} on {1}:{2}.'.format(db_number, redis_host, redis_port)
+    return msg
+
+
 import assets
 
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
@@ -69,6 +90,7 @@ app.register_blueprint(portal_ui, url_prefix='')
 app.register_blueprint(sites,
                        url_prefix='/sites')
 app.register_blueprint(wqx, url_prefix='/portal/schemas')
+
 
 # Set up swagger endpoints
 @app.route('/spec')

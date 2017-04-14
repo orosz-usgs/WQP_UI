@@ -3,7 +3,7 @@ from geojson import Feature, Point, dumps as geojson_dumps
 from pyproj import Proj, transform
 from requests import Session
 
-from .. import app
+from .. import app, create_request_resp_log_msg
 
 NWIS_SITES_INVENTORY_ENDPOINT = app.config['NWIS_SITES_INVENTORY_ENDPOINT']
 NWIS_SITES_SERVICE_ENDPOINT = app.config['NWIS_SITES_SERVICE_ENDPOINT']
@@ -103,7 +103,7 @@ def get_site_feature(station):
             lon = float(station.get('dec_long_va', ''))
         except ValueError as e:
             # Need coordinates to create a geojson file
-            app.logger.warning(e)
+            app.logger.warning(repr(e))
             feature = None
         else:
             x1, y1 = NAD83_PROJ(lon, lat)
@@ -124,7 +124,7 @@ def get_site_feature(station):
 
             feature = Feature(geometry=Point((x2, y2)), properties=properties)
     else:
-        app.logger.debug('No feature returned from NWIS.')
+        app.logger.warning('No feature returned from NWIS.')
         feature = None
     return feature
 
@@ -183,9 +183,8 @@ def site_geojson_generator(params_list):
                         yield geojson_dumps(prev_feature) + ', \n'
                     prev_feature = site_feature
             else:
-                app.logger.warning('Status Code: {0}, Response Content: {1}'.format(site_resp.status_code,
-                                                                                    site_resp.content)
-                                   )
+                msg = create_request_resp_log_msg(site_resp)
+                app.logger.warning(msg)
     # Got all of the features so yield the last one closing the geojson object
     if prev_feature:
         yield geojson_dumps(prev_feature) + ']}'

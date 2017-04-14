@@ -5,7 +5,7 @@ import sys
 from flask import render_template, request, make_response, redirect, url_for, abort, Response, jsonify, Blueprint
 import redis
 
-from .. import app, session
+from .. import app, create_redis_log_msg, session
 from ..utils import pull_feed, geoserver_proxy_request, retrieve_providers, retrieve_organizations, \
     get_site_key, retrieve_organization, retrieve_sites_geojson, retrieve_site, retrieve_county, \
     generate_redis_db_number
@@ -225,6 +225,8 @@ def uri_organization(provider_id, organization_id):
     if redis_config:
         redis_db_number = generate_redis_db_number(provider_id)
         redis_key = 'all_sites_' + provider_id + '_' + organization_id
+        msg = create_redis_log_msg(redis_config['host'], redis_config['port'], redis_db_number)
+        app.logger.debug(msg)
         redis_session = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'],
                                           db=redis_db_number, password=redis_config.get('password'))
         redis_org_data = redis_session.get(redis_key)
@@ -262,10 +264,12 @@ def uris(provider_id, organization_id, site_id):
     if redis_config:
         redis_db_number = generate_redis_db_number(provider_id)
         redis_key = get_site_key(provider_id, organization_id, site_id)
+        msg = create_redis_log_msg(redis_config['host'], redis_config['port'], redis_db_number)
+        app.logger.debug(msg)
         redis_session = redis.StrictRedis(host=redis_config['host'],
-                              port=redis_config['port'],
-                              db=redis_db_number,
-                              password=redis_config.get('password'))
+                                          port=redis_config['port'],
+                                          db=redis_db_number,
+                                          password=redis_config.get('password'))
         redis_data = redis_session.get(redis_key)
         if redis_data:
             site_data = pickle.loads(redis_data)
@@ -308,6 +312,8 @@ def uris(provider_id, organization_id, site_id):
 def clear_cache(provider_id=None):
     if redis_config:
         redis_db_number = generate_redis_db_number(provider_id)
+        msg = create_redis_log_msg(redis_config['host'], redis_config['port'], redis_db_number)
+        app.logger.debug(msg)
         r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db_number,
                               password=redis_config.get('password'))
         r.flushdb()
@@ -364,6 +370,8 @@ def manage_cache():
     if redis_config:
         for provider in provider_list:
             redis_db_number = generate_redis_db_number(provider)
+            msg = create_redis_log_msg(redis_config['host'], redis_config['port'], redis_db_number)
+            app.logger.debug(msg)
             r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db_number,
                                   password=redis_config.get('password'))
             provider_site_load_status = r.get(provider+'_sites_load_status')
