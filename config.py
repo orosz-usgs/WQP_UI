@@ -66,4 +66,4 @@ CELERY_RESULT_BACKEND = None
 # Logging Configuration
 LOGGING_ENABLED = True
 LOGGING_LOCATION = None
-LOG_LEVEL = logging.DEBUG
+LOGGING_LEVEL = logging.INFO
