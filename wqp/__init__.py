@@ -12,13 +12,12 @@ from requests import Session
 __version__ = '4.13.0dev'
 
 
-def create_log_handler(loglevel, logfile=None):
+def create_log_handler(logfile=None):
     """
     Create a logger object. The logs will be streamed
     to stdout if a logfile is not specifed. If a logfile
     is specified, logs will be written to the file.
 
-    :param str logger_name: name of the logger
     :param str logfile: optional name of a file where logs can be written to
     :return: a logger
     :rtype: logging.Logger
@@ -29,7 +28,6 @@ def create_log_handler(loglevel, logfile=None):
     else:
         handler = logging.StreamHandler(sys.stdout)
     formatter = logging.Formatter('%(asctime)s - {%(pathname)s:L%(lineno)d} - %(levelname)s - %(message)s')
-    handler.setLevel(loglevel)
     handler.setFormatter(formatter)
     return handler
 
@@ -42,14 +40,15 @@ Bower(app)
 app.config.from_object('config')
 app.config.from_pyfile('config.py')
 
-if app.config.get('LOGGING_ON'):
+if app.config.get('LOGGING_ENABLED'):
     logfile = app.config.get('LOGGING_LOCATION')
     loglevel = app.config.get('LOG_LEVEL')
-    handler = create_log_handler(loglevel, logfile)
-    app.logger.disabled = False
+    handler = create_log_handler(logfile)
+    # do not set logging levels in the handler
+    # otherwise, if Flask's DEBUG is set to False,
+    # all logging will be disabled
+    app.logger.setLevel(loglevel)
     app.logger.addHandler(handler)
-else:
-    app.logger.disabled = True
 
 
 @app.before_request

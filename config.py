@@ -64,6 +64,6 @@ CELERY_BROKER_URL = None
 CELERY_RESULT_BACKEND = None
 
 # Logging Configuration
-LOGGING_ON = True
+LOGGING_ENABLED = True
 LOGGING_LOCATION = None
-LOG_LEVEL = logging.INFO
+LOG_LEVEL = logging.DEBUG
