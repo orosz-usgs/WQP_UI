@@ -103,7 +103,7 @@ def get_site_feature(station):
             lon = float(station.get('dec_long_va', ''))
         except ValueError as e:
             # Need coordinates to create a geojson file
-            app.logger.debug(e)
+            app.logger.warning(e)
             feature = None
         else:
             x1, y1 = NAD83_PROJ(lon, lat)
@@ -183,9 +183,9 @@ def site_geojson_generator(params_list):
                         yield geojson_dumps(prev_feature) + ', \n'
                     prev_feature = site_feature
             else:
-                app.logger.debug('Status Code: {0}, Response Content: {1}'.format(site_resp.status_code,
-                                                                                  site_resp.content)
-                                 )
+                app.logger.warning('Status Code: {0}, Response Content: {1}'.format(site_resp.status_code,
+                                                                                    site_resp.content)
+                                   )
     # Got all of the features so yield the last one closing the geojson object
     if prev_feature:
         yield geojson_dumps(prev_feature) + ']}'

@@ -93,7 +93,7 @@ def retrieve_providers():
         try:
             providers = [code['value'] for code in provider_lookups.get('codes')]
         except TypeError as e:
-            app.logger.debug(e)
+            app.logger.warning(e)
             providers = None
     else:
         providers = None
