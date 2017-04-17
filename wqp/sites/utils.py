@@ -4,6 +4,7 @@ from pyproj import Proj, transform
 from requests import Session
 
 from .. import app
+from ..utils import create_request_resp_log_msg
 
 NWIS_SITES_INVENTORY_ENDPOINT = app.config['NWIS_SITES_INVENTORY_ENDPOINT']
 NWIS_SITES_SERVICE_ENDPOINT = app.config['NWIS_SITES_SERVICE_ENDPOINT']
@@ -101,8 +102,9 @@ def get_site_feature(station):
         try:
             lat = float(station.get('dec_lat_va', ''))
             lon = float(station.get('dec_long_va', ''))
-        except ValueError:
+        except ValueError as e:
             # Need coordinates to create a geojson file
+            app.logger.warning(repr(e))
             feature = None
         else:
             x1, y1 = NAD83_PROJ(lon, lat)
@@ -123,12 +125,8 @@ def get_site_feature(station):
 
             feature = Feature(geometry=Point((x2, y2)), properties=properties)
     else:
+        app.logger.warning('No feature returned from NWIS.')
         feature = None
-
-    if feature:
-        pass
-        # TODO: Add some logging so we know when we get a bad response from NWIS
-
     return feature
 
 
@@ -150,7 +148,8 @@ def site_feature_generator(iter_lines):
                 # Skip the line after the header
                 iter_lines.next()
                 found_header = True
-            except StopIteration:
+            except StopIteration as e:
+                app.logger.warning('{} - Header not found.'.format(repr(e)))
                 return
 
     for site_line in iter_lines:
@@ -186,8 +185,8 @@ def site_geojson_generator(params_list):
                         yield geojson_dumps(prev_feature) + ', \n'
                     prev_feature = site_feature
             else:
-                # TODO: Add logging to see why an unexpected error occured.
-                pass
+                msg = create_request_resp_log_msg(site_resp)
+                app.logger.warning(msg)
     # Got all of the features so yield the last one closing the geojson object
     if prev_feature:
         yield geojson_dumps(prev_feature) + ']}'
