@@ -19,7 +19,7 @@ def create_log_handler(log_directory=None):
     to stdout if a logfile is not specifed. If a logfile
     is specified, logs will be written to the file.
 
-    :param str log_directory: optional name of a directory where logs can be written to
+    :param str log_directory: optional path of a directory where logs can be written to
     :return: a logger
     :rtype: logging.Logger
 
