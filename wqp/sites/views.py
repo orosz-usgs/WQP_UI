@@ -3,6 +3,7 @@ from flask import Blueprint, request, make_response, Response
 from requests import head as requests_head
 
 from .utils import site_geojson_generator, is_huc2, is_huc8
+from ..utils import create_request_resp_log_msg
 from .. import app
 
 NWIS_SITES_SERVICE_ENDPOINT = app.config['NWIS_SITES_SERVICE_ENDPOINT']
@@ -182,6 +183,8 @@ def nwis_sites():
 
     # Make a head request to validate the parameters. If it fails, don't proceed, just return the error
     head_response = requests_head(NWIS_SITES_SERVICE_ENDPOINT, params=params_list[0])
+    msg = create_request_resp_log_msg(head_response)
+    app.logger.debug(msg)
     if head_response.status_code != 200:
         response = make_response(head_response.reason, head_response.status_code)
 

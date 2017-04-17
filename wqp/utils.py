@@ -6,8 +6,20 @@ from functools import wraps
 from flask import request, make_response, abort
 
 
-from . import app
-from . import session
+from . import app, session
+
+
+def create_request_resp_log_msg(response):
+    msg = 'Status Code: {0}, URL: {1}, Response headers: {2}'.format(response.status_code,
+                                                                     response.url,
+                                                                     response.headers
+                                                                     )
+    return msg
+
+
+def create_redis_log_msg(redis_host, redis_port, db_number):
+    msg = 'Connecting to Redis database {0} on {1}:{2}.'.format(db_number, redis_host, redis_port)
+    return msg
 
 
 def pull_feed(feed_url):
@@ -16,6 +28,7 @@ def pull_feed(feed_url):
     :param feed_url: the url of the feed, created in confluence feed builder
     :return: the html of the page itself, stripped of header and footer
     """
+    app.logger.debug('Parsing content from {}.'.format(format))
     feed = feedparser.parse(feed_url)
 
     # Process html to remove unwanted mark-up and fix links
@@ -61,7 +74,8 @@ def geoserver_proxy_request(target_url, cert_verification):
         resp = session.post(target_url, data=request.data, headers=request.headers, verify=cert_verification)
         if 'content-encoding' in resp.headers: 
             del resp.headers['content-encoding']
-        
+    msg = create_request_resp_log_msg(resp)
+    app.logger.info(msg)
     return make_response(resp.content, resp.status_code, resp.headers.items())
 
 
@@ -76,10 +90,12 @@ def retrieve_lookups(code_uri, params={}):
     local_params = dict(params)
     local_params['mimeType'] = 'json'
     resp = session.get(app.config['CODES_ENDPOINT'] + code_uri, params=local_params)
+    msg = create_request_resp_log_msg(resp)
     if resp.status_code == 200:
+        app.logger.debug(msg)
         lookups = resp.json()
     else:
-        #TODO: Log error
+        app.logger.info(msg)
         lookups = None
     return lookups
 
@@ -93,7 +109,8 @@ def retrieve_providers():
     if provider_lookups:
         try:
             providers = [code['value'] for code in provider_lookups.get('codes')]
-        except TypeError:
+        except TypeError as e:
+            app.logger.warning(repr(e))
             providers = None
     else:
         providers = None
@@ -118,7 +135,8 @@ def retrieve_organization(provider, org_id):
                 if code.get('value', '') == org_id:
                     organization = {'id' : org_id, 'name': code.get('desc', '')}
                     break
-        except TypeError:
+        except TypeError as e:
+            app.logger.warning(repr(e))
             organization = None
     else:
         organization = None
@@ -139,7 +157,8 @@ def retrieve_organizations(provider):
             org_codes = organization_lookups.get('codes')
             provider_org_codes = [org_code for org_code in org_codes if provider in org_code.get('providers', '').split(' ')]
             organizations = [{'id': org_code.get('value', ''), 'name' : org_code.get('desc', '')} for org_code in provider_org_codes]
-        except TypeError:
+        except TypeError as e:
+            app.logger.warning(repr(e))
             organizations = None
 
     else:
@@ -164,7 +183,7 @@ def retrieve_county(country, state, county):
     if county_lookups and county_lookups.has_key('recordCount'):
         if county_lookups.get('recordCount') == 1 and county_lookups.has_key('codes'):
             country_state_county = county_lookups.get('codes', [{}])[0].get('desc', '').split(',')
-            if (len(country_state_county) > 2):
+            if len(country_state_county) > 2:
                 county_data = {'StateName': country_state_county[1], 'CountyName': country_state_county[2]}
             else:
                 county_data = {}
@@ -197,8 +216,9 @@ def retrieve_sites_geojson(provider, org_id):
     elif resp.status_code == 400:
         sites = {}
     else:
+        msg = create_request_resp_log_msg(resp)
+        app.logger.warning(msg)
         sites = None
-        #TODO: Log error
     return sites
 
 
@@ -219,9 +239,11 @@ def retrieve_site(provider_id, organization_id, site_id):
                                'sorted': 'no',
                                'uripage': 'yes'} # This is added to distinguish from normal web service queries
                        )
+    msg = create_request_resp_log_msg(resp)
     if resp.status_code == 200 and resp.text:
+        app.logger.debug(msg)
         resp_lines = resp.text.split('\n')
-        if (len(resp_lines) > 1):
+        if len(resp_lines) > 1:
             headers = resp_lines[0].split('\t')
             site = dict(zip(headers, resp_lines[1].split('\t')))
 
@@ -229,13 +251,13 @@ def retrieve_site(provider_id, organization_id, site_id):
             site = {}
 
     elif resp.status_code == 400:
+        app.logger.info(msg)
         site = {}
 
     else:
-        #TODO: Log error
+        app.logger.warning(msg)
         site = None
     return site
-
 
 
 def generate_redis_db_number(provider):

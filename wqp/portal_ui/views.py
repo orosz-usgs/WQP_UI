@@ -8,7 +8,7 @@ import redis
 from .. import app, session
 from ..utils import pull_feed, geoserver_proxy_request, retrieve_providers, retrieve_organizations, \
     get_site_key, retrieve_organization, retrieve_sites_geojson, retrieve_site, retrieve_county, \
-    generate_redis_db_number, invalid_usgs_view
+    generate_redis_db_number, create_request_resp_log_msg, create_redis_log_msg, invalid_usgs_view
 from ..tasks import load_sites_into_cache_async
 
 
@@ -170,6 +170,8 @@ def public_srsnames():
         return redirect(url_for('portal_ui.public_srsnames-canonical')), 301
 
     resp = session.get(app.config['PUBLIC_SRSNAMES_ENDPOINT'] + '?mimeType=json')
+    msg = create_request_resp_log_msg(resp)
+    app.logger.info(msg)
 
     return render_template('public_srsnames.html', status_code=resp.status_code, content = resp.json())
     
@@ -234,6 +236,8 @@ def uri_organization(provider_id, organization_id):
     if redis_config:
         redis_db_number = generate_redis_db_number(provider_id)
         redis_key = 'all_sites_' + provider_id + '_' + organization_id
+        msg = create_redis_log_msg(redis_config['host'], redis_config['port'], redis_db_number)
+        app.logger.debug(msg)
         redis_session = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'],
                                           db=redis_db_number, password=redis_config.get('password'))
         redis_org_data = redis_session.get(redis_key)
@@ -271,10 +275,12 @@ def uris(provider_id, organization_id, site_id):
     if redis_config:
         redis_db_number = generate_redis_db_number(provider_id)
         redis_key = get_site_key(provider_id, organization_id, site_id)
+        msg = create_redis_log_msg(redis_config['host'], redis_config['port'], redis_db_number)
+        app.logger.debug(msg)
         redis_session = redis.StrictRedis(host=redis_config['host'],
-                              port=redis_config['port'],
-                              db=redis_db_number,
-                              password=redis_config.get('password'))
+                                          port=redis_config['port'],
+                                          db=redis_db_number,
+                                          password=redis_config.get('password'))
         redis_data = redis_session.get(redis_key)
         if redis_data:
             site_data = pickle.loads(redis_data)
@@ -294,7 +300,7 @@ def uris(provider_id, organization_id, site_id):
     state = site_data.get('StateCode')
     county = site_data.get('CountyCode')
 
-    if (country == 'US' and state and county):
+    if country == 'US' and state and county:
         county_data = retrieve_county(country, state, county)
         if county_data:
             additional_data = county_data
@@ -317,12 +323,16 @@ def uris(provider_id, organization_id, site_id):
 def clear_cache(provider_id=None):
     if redis_config:
         redis_db_number = generate_redis_db_number(provider_id)
+        msg = create_redis_log_msg(redis_config['host'], redis_config['port'], redis_db_number)
+        app.logger.debug(msg)
         r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db_number,
                               password=redis_config.get('password'))
         r.flushdb()
-        return 'site cache cleared for: ' + provider_id
+        msg = 'site cache cleared for: ' + provider_id
     else:
-        return "no redis cache, no cache to clear"
+        msg = "no redis cache, no cache to clear"
+    app.logger.debug(msg)
+    return msg
 
 
 @portal_ui.route('/sites_cache_task/<provider_id>', methods=['POST'])
@@ -330,7 +340,6 @@ def sitescachetask(provider_id):
     providers = retrieve_providers()
     if provider_id not in providers:
         abort(404)
-    redis_db = generate_redis_db_number(provider_id)
     task = load_sites_into_cache_async.apply_async(args=[provider_id])
     response_content = {'Location': '/'.join([app.config['LOCAL_BASE_URL'], "status", task.id])}
     # passing the content after the response code sets a custom header, which the task status javascript needs
@@ -374,6 +383,8 @@ def manage_cache():
     if redis_config:
         for provider in provider_list:
             redis_db_number = generate_redis_db_number(provider)
+            msg = create_redis_log_msg(redis_config['host'], redis_config['port'], redis_db_number)
+            app.logger.debug(msg)
             r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db_number,
                                   password=redis_config.get('password'))
             provider_site_load_status = r.get(provider+'_sites_load_status')

@@ -65,3 +65,8 @@ CELERY_RESULT_BACKEND = None
 
 #Sets the theme to be used for the portal_ui app pages. Valid values are 'wqp' and 'usgs'
 UI_THEME = ''
+
+# Logging Configuration
+LOGGING_ENABLED = True
+LOGGING_DIRECTORY = None
+LOGGING_LEVEL = logging.DEBUG
