@@ -1,4 +1,5 @@
 import logging
+import os
 import sys
 
 from celery import Celery
@@ -12,19 +13,21 @@ from requests import Session
 __version__ = '4.13.0dev'
 
 
-def create_log_handler(logfile=None):
+def create_log_handler(log_directory=None):
     """
     Create a logger object. The logs will be streamed
     to stdout if a logfile is not specifed. If a logfile
     is specified, logs will be written to the file.
 
-    :param str logfile: optional name of a file where logs can be written to
+    :param str log_directory: optional name of a directory where logs can be written to
     :return: a logger
     :rtype: logging.Logger
 
     """
-    if logfile is not None:
-        handler = logging.handlers.TimedRotatingFileHandler(logfile, when='midnight', backupCount=20)
+    if log_directory is not None:
+        log_file = '{}.log'.format(__name__)
+        log_path = os.path.join(log_directory, log_file)
+        handler = logging.handlers.TimedRotatingFileHandler(log_path, when='midnight', backupCount=20)
     else:
         handler = logging.StreamHandler(sys.stdout)
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - {%(pathname)s:L%(lineno)d} - %(message)s')
@@ -41,7 +44,7 @@ app.config.from_object('config')
 app.config.from_pyfile('config.py')
 
 if app.config.get('LOGGING_ENABLED'):
-    logfile = app.config.get('LOGGING_LOCATION')
+    logfile = app.config.get('LOGGING_DIRECTORY')
     loglevel = app.config.get('LOGGING_LEVEL')
     handler = create_log_handler(logfile)
     # Do not set logging level in the handler.
