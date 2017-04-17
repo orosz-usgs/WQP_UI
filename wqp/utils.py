@@ -289,6 +289,11 @@ def get_site_key(provider_id, organization_id, site_id):
 
 
 def invalid_usgs_view(func):
+    """
+    If the theme is usgs return a function which will return a 404 response, otherwise return the passed in func
+    :param func: 
+    :return: function
+    """
     @wraps(func)
 
     def decorated_function(*args, **kwargs):
