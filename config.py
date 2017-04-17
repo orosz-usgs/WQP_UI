@@ -62,3 +62,6 @@ ANNOUNCEMENT_BANNER = None
 # Celery configuration
 CELERY_BROKER_URL = None
 CELERY_RESULT_BACKEND = None
+
+#Sets the theme to be used for the portal_ui app pages. Valid values are 'wqp' and 'usgs'
+UI_THEME = ''
