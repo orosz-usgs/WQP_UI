@@ -13,7 +13,7 @@ from requests import Session
 __version__ = '4.13.0dev'
 
 
-def create_log_handler(log_directory=None):
+def _create_log_handler(log_directory=None):
     """
     Create a logger object. The logs will be streamed
     to stdout if a logfile is not specifed. If a logfile
@@ -46,7 +46,7 @@ app.config.from_pyfile('config.py')
 if app.config.get('LOGGING_ENABLED'):
     logfile = app.config.get('LOGGING_DIRECTORY')
     loglevel = app.config.get('LOGGING_LEVEL')
-    handler = create_log_handler(logfile)
+    handler = _create_log_handler(logfile)
     # Do not set logging level in the handler.
     # Otherwise, if Flask's DEBUG is set to False,
     # all logging will be disabled.

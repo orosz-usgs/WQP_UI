@@ -3,7 +3,8 @@ from geojson import Feature, Point, dumps as geojson_dumps
 from pyproj import Proj, transform
 from requests import Session
 
-from .. import app, create_request_resp_log_msg
+from .. import app
+from ..utils import create_request_resp_log_msg
 
 NWIS_SITES_INVENTORY_ENDPOINT = app.config['NWIS_SITES_INVENTORY_ENDPOINT']
 NWIS_SITES_SERVICE_ENDPOINT = app.config['NWIS_SITES_SERVICE_ENDPOINT']

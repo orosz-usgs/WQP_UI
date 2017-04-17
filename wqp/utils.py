@@ -5,7 +5,20 @@ import feedparser
 
 from flask import request, make_response
 
-from . import app, create_request_resp_log_msg, session
+from . import app, session
+
+
+def create_request_resp_log_msg(response):
+    msg = 'Status Code: {0}, URL: {1}, Response headers: {2}'.format(response.status_code,
+                                                                     response.url,
+                                                                     response.headers
+                                                                     )
+    return msg
+
+
+def create_redis_log_msg(redis_host, redis_port, db_number):
+    msg = 'Connecting to Redis database {0} on {1}:{2}.'.format(db_number, redis_host, redis_port)
+    return msg
 
 
 def pull_feed(feed_url):

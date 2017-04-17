@@ -3,7 +3,8 @@ from flask import Blueprint, request, make_response, Response
 from requests import head as requests_head
 
 from .utils import site_geojson_generator, is_huc2, is_huc8
-from .. import app, create_request_resp_log_msg
+from ..utils import create_request_resp_log_msg
+from .. import app
 
 NWIS_SITES_SERVICE_ENDPOINT = app.config['NWIS_SITES_SERVICE_ENDPOINT']
 REQUIRED_SERVICE_ARGUMENTS = ('sites', 'statecd', 'huc', 'bbox', 'countycd')

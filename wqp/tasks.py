@@ -3,8 +3,9 @@ import arrow
 import cPickle as pickle
 import redis
 
-from . import app, celery, create_request_resp_log_msg, create_redis_log_msg, session
-from .utils import generate_redis_db_number, tsv_dict_generator, get_site_key
+from . import app, celery, session
+from .utils import generate_redis_db_number, tsv_dict_generator, get_site_key, create_request_resp_log_msg, \
+    create_redis_log_msg
 
 
 @celery.task(bind=True)

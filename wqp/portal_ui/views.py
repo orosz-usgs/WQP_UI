@@ -5,10 +5,10 @@ import sys
 from flask import render_template, request, make_response, redirect, url_for, abort, Response, jsonify, Blueprint
 import redis
 
-from .. import app, create_request_resp_log_msg, create_redis_log_msg, session
+from .. import app, session
 from ..utils import pull_feed, geoserver_proxy_request, retrieve_providers, retrieve_organizations, \
     get_site_key, retrieve_organization, retrieve_sites_geojson, retrieve_site, retrieve_county, \
-    generate_redis_db_number
+    generate_redis_db_number, create_request_resp_log_msg, create_redis_log_msg
 from ..tasks import load_sites_into_cache_async
 
 
@@ -82,7 +82,6 @@ def webservices_documentation():
 @portal_ui.route('/faqs.jsp')
 @portal_ui.route('/faqs/', endpoint='faqs-canonical')
 def faqs():
-    app.logger.info('In the FAQ page.')
     if request.path == '/faqs.jsp':
         return redirect(url_for('portal_ui.faqs-canonical')), 301
     feed_url = "https://my.usgs.gov/confluence/createrssfeed.action?types=page&spaces=qwdp&title=myUSGS+4.0+RSS+Feed&" \
