@@ -27,7 +27,7 @@ def _create_log_handler(log_directory=None):
     if log_directory is not None:
         log_file = '{}.log'.format(__name__)
         log_path = os.path.join(log_directory, log_file)
-        handler = logging.handlers.TimedRotatingFileHandler(log_path, when='midnight', backupCount=20)
+        handler = logging.handlers.TimedRotatingFileHandler(log_path, when='midnight', backupCount=30)
     else:
         handler = logging.StreamHandler(sys.stdout)
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - {%(pathname)s:L%(lineno)d} - %(message)s')
