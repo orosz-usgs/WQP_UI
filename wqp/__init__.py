@@ -44,9 +44,9 @@ app.config.from_object('config')
 app.config.from_pyfile('config.py')
 
 if app.config.get('LOGGING_ENABLED'):
-    logfile = app.config.get('LOGGING_DIRECTORY')
+    log_directory = app.config.get('LOGGING_DIRECTORY')
     loglevel = app.config.get('LOGGING_LEVEL')
-    handler = _create_log_handler(logfile)
+    handler = _create_log_handler(log_directory)
     # Do not set logging level in the handler.
     # Otherwise, if Flask's DEBUG is set to False,
     # all logging will be disabled.
