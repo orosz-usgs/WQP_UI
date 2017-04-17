@@ -24,7 +24,7 @@ def create_log_handler(logfile=None):
 
     """
     if logfile is not None:
-        handler = logging.handlers.TimedRotatingFileHandler(logfile, when='midnight', backupCount=10)
+        handler = logging.handlers.TimedRotatingFileHandler(logfile, when='midnight', backupCount=20)
     else:
         handler = logging.StreamHandler(sys.stdout)
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - {%(pathname)s:L%(lineno)d} - %(message)s')
