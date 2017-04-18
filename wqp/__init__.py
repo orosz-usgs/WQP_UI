@@ -15,13 +15,14 @@ __version__ = '4.13.0dev'
 
 def _create_log_handler(log_directory=None):
     """
-    Create a logger object. The logs will be streamed
-    to stdout if a logfile is not specifed. If a logfile
-    is specified, logs will be written to the file.
+    Create a handler object. The logs will be streamed
+    to stdout if a logfile is not specified using a StreamHandler.
+    If a logfile is specified, a handler will be created so logs
+    will be written to the file.
 
     :param str log_directory: optional path of a directory where logs can be written to
-    :return: a logger
-    :rtype: logging.Logger
+    :return: a handler
+    :rtype: logging.Handler
 
     """
     if log_directory is not None:
