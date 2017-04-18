@@ -1,9 +1,10 @@
 
 from bs4 import BeautifulSoup
 import feedparser
+from functools import wraps
 
+from flask import request, make_response, abort
 
-from flask import request, make_response
 
 from . import app, session
 
@@ -309,4 +310,18 @@ def get_site_key(provider_id, organization_id, site_id):
     return '_'.join(['sites', provider_id, organization_id, site_id])
 
 
+def invalid_usgs_view(func):
+    """
+    If the theme is usgs return a function which will return a 404 response, otherwise return the passed in func
+    :param func: 
+    :return: function
+    """
+    @wraps(func)
 
+    def decorated_function(*args, **kwargs):
+        if app.config['UI_THEME'] == 'usgs':
+            abort(404)
+        else:
+            return func(*args, **kwargs)
+
+    return decorated_function

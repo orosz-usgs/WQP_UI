@@ -16,7 +16,7 @@ before_script:
   - echo "SECRET_KEY = 'key-for-testing'" > instance/config.py
 
 script:
-  - nosetests --with-coverage --cover-package=wqp
+  - nosetests --logging-clear-handlers --with-coverage --cover-package=wqp
   - node_modules/karma/bin/karma start test/js/karma.conf.js --no-colors
 
 after_success:

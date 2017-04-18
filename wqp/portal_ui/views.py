@@ -8,7 +8,7 @@ import redis
 from .. import app, session
 from ..utils import pull_feed, geoserver_proxy_request, retrieve_providers, retrieve_organizations, \
     get_site_key, retrieve_organization, retrieve_sites_geojson, retrieve_site, retrieve_county, \
-    generate_redis_db_number, create_request_resp_log_msg, create_redis_log_msg
+    generate_redis_db_number, create_request_resp_log_msg, create_redis_log_msg, invalid_usgs_view
 from ..tasks import load_sites_into_cache_async
 
 
@@ -35,6 +35,7 @@ proxy_cert_verification = app.config.get('PROXY_CERT_VERIFY', False)
 @portal_ui.route('/index.jsp')
 @portal_ui.route('/index/')
 @portal_ui.route('/', endpoint='home-canonical')
+@invalid_usgs_view
 def home():
     if request.path == '/index.jsp' or request.path == '/index/':
         return redirect(url_for('portal_ui.home-canonical')), 301
@@ -43,6 +44,7 @@ def home():
 
 @portal_ui.route('/contact_us.jsp')
 @portal_ui.route('/contact_us/', endpoint='contact_us-canonical')
+@invalid_usgs_view
 def contact_us():
     if request.path == '/contact_us.jsp':
         return redirect(url_for('portal_ui.contact_us-canonical')), 301
@@ -70,6 +72,7 @@ def portal_userguide():
 
 @portal_ui.route('/webservices_documentation.jsp')
 @portal_ui.route('/webservices_documentation/', endpoint='webservices_documentation-canonical')
+@invalid_usgs_view
 def webservices_documentation():
     if request.path == '/webservices_documentation.jsp':
         return redirect(url_for('portal_ui.webservices_documentation-canonical')), 301
@@ -81,6 +84,7 @@ def webservices_documentation():
 
 @portal_ui.route('/faqs.jsp')
 @portal_ui.route('/faqs/', endpoint='faqs-canonical')
+@invalid_usgs_view
 def faqs():
     if request.path == '/faqs.jsp':
         return redirect(url_for('portal_ui.faqs-canonical')), 301
@@ -92,6 +96,7 @@ def faqs():
 
 @portal_ui.route('/upload_data.jsp')
 @portal_ui.route('/upload_data/', endpoint='upload_data-canonical')
+@invalid_usgs_view
 def upload_data():
     if request.path == '/upload_data.jsp':
         return redirect(url_for('portal_ui.upload_data-canonical')), 301
@@ -103,6 +108,7 @@ def upload_data():
 
 @portal_ui.route('/coverage.jsp')
 @portal_ui.route('/coverage/', endpoint='coverage-canonical')
+@invalid_usgs_view
 def coverage():
     if request.path == '/coverage.jsp':
         return redirect(url_for('portal_ui.coverage-canonical')), 301
@@ -111,6 +117,7 @@ def coverage():
 
 @portal_ui.route('/wqp_description.jsp')
 @portal_ui.route('/wqp_description/', endpoint='wqp_description-canonical')
+@invalid_usgs_view
 def wqp_description():
     if request.path == '/wqp_description.jsp':
         return redirect(url_for('portal_ui.wqp_description-canonical')), 301
@@ -122,6 +129,7 @@ def wqp_description():
 
 @portal_ui.route('/orgs.jsp')
 @portal_ui.route('/orgs/', endpoint='orgs-canonical')
+@invalid_usgs_view
 def orgs():
     if request.path == '/orgs.jsp':
         return redirect(url_for('portal_ui.orgs-canonical')), 301
@@ -133,6 +141,7 @@ def orgs():
 
 @portal_ui.route('/apps_using_portal.jsp')
 @portal_ui.route('/apps_using_portal/', endpoint='apps_using_portal-canonical')
+@invalid_usgs_view
 def apps_using_portal():
     if request.path == '/apps_using_portal.jsp':
         return redirect(url_for('portal_ui.apps_using_portal-canonical')), 301
@@ -144,6 +153,7 @@ def apps_using_portal():
 
 @portal_ui.route('/other_portal_links.jsp')
 @portal_ui.route('/other_portal_links/', endpoint='other_portal_links-canonical')
+@invalid_usgs_view
 def other_portal_links():
     if request.path == '/other_portal_links.jsp':
         return redirect(url_for('portal_ui.other_portal_links-canonical')), 301

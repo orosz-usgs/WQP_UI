@@ -2,10 +2,12 @@ from unittest import TestCase
 
 import mock
 import requests_mock
+from werkzeug.exceptions import NotFound
 
 from .. import app
 from ..utils import generate_redis_db_number, retrieve_lookups, retrieve_providers, retrieve_organization, \
-    retrieve_organizations, retrieve_county, retrieve_sites_geojson, retrieve_site, tsv_dict_generator, get_site_key
+    retrieve_organizations, retrieve_county, retrieve_sites_geojson, retrieve_site, tsv_dict_generator, get_site_key, \
+    invalid_usgs_view
 
 
 class RedisDbNumberTestCase(TestCase):
@@ -426,3 +428,21 @@ class GetSiteKey(TestCase):
 
     def test_get_site_key(self):
         self.assertEqual(get_site_key('P1', 'Org1', 'Site1'), 'sites_P1_Org1_Site1')
+
+
+class InvalidUsgsView(TestCase):
+
+    def setUp(self):
+        def test_view():
+            return 'It worked'
+        self.test_view = test_view
+
+    def test_with_theme_not_set_to_usgs(self):
+        app.config['UI_THEME'] = 'wqp'
+        self.assertEqual(invalid_usgs_view(self.test_view)(), 'It worked')
+
+    def test_with_theme_set_to_usgs(self):
+        app.config['UI_THEME'] = 'usgs'
+        view = invalid_usgs_view(self.test_view)
+        with self.assertRaises(NotFound):
+            view()

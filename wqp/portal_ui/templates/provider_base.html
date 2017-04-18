@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Water Quality Data Station Endpoint{% endblock %}
-
+{% block title %}{{ super () }} Station Endpoint{% endblock %}
 
 {% block page_content %}
     <a href="{{ url_for('portal_ui.home-canonical') }}">WQP Home</a> > <a href="{{ url_for('portal_ui.uri_base') }}">Providers</a>

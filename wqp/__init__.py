@@ -98,8 +98,7 @@ from wqx.views import wqx
 
 
 app.register_blueprint(portal_ui, url_prefix='')
-app.register_blueprint(sites,
-                       url_prefix='/sites')
+app.register_blueprint(sites, url_prefix='/sites')
 app.register_blueprint(wqx, url_prefix='/portal/schemas')
 
 

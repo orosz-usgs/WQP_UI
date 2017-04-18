@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 
-{% block title %}{{ site['MonitoringLocationName'] }} ({{ site['MonitoringLocationIdentifier'] }}) site data in the Water Quality Portal{% endblock %}
+{% block title %}{{ site['MonitoringLocationName'] }} ({{ site['MonitoringLocationIdentifier'] }}) site data in the {{ super }}{% endblock %}
 
 {% block meta_tags %}
 <meta name="description" content='This {{ site['MonitoringLocationTypeName']|lower }} site, maintained by the {{ site['OrganizationFormalName'] }} (identifier {{ site['OrganizationIdentifier'] }}),

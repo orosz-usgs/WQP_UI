@@ -57,6 +57,9 @@ REDIS_CONFIG = None
 # set the local base url, this deals with the weird way we do wsgi around here, for local development
 # use http://127.0.0.1:5050
 LOCAL_BASE_URL = ''
+
+#Sets the theme to be used for the portal_ui app pages. Valid values are 'wqp' and 'usgs'
+UI_THEME = 'wqp' or 'usgs'
 ```
 
 ## Setup on Linux or MacOS
