@@ -46,7 +46,7 @@ describe('Tests for PORTAL.MODELS.providers', function () {
 
 	it('Should call failureFnc when an unsuccessful fetch is made.', function () {
 		PORTAL.MODELS.providers.fetch().done(successSpy).fail(failureSpy);
-		server.requests[0].respond(500, 'Bad data');
+		server.requests[0].respond(500, {}, 'Bad data');
 
 		expect(failureSpy).toHaveBeenCalledWith('Internal Server Error');
 		expect(successSpy).not.toHaveBeenCalled();
