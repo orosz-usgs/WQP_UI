@@ -15,13 +15,14 @@ __version__ = '4.13.0dev'
 
 def _create_log_handler(log_directory=None):
     """
-    Create a logger object. The logs will be streamed
-    to stdout if a logfile is not specifed. If a logfile
-    is specified, logs will be written to the file.
+    Create a handler object. The logs will be streamed
+    to stdout if a logfile is not specified using a StreamHandler.
+    If a logfile is specified, a handler will be created so logs
+    will be written to the file.
 
     :param str log_directory: optional path of a directory where logs can be written to
-    :return: a logger
-    :rtype: logging.Logger
+    :return: a handler
+    :rtype: logging.Handler
 
     """
     if log_directory is not None:
@@ -68,19 +69,6 @@ def log_after(response):
     resp_headers = response.headers
     app.logger.debug('Response: {0}, {1}'.format(resp_status, resp_headers))
     return response
-
-
-def create_request_resp_log_msg(response):
-    msg = 'Status Code: {0}, URL: {1}, Response headers: {2}'.format(response.status_code,
-                                                                     response.url,
-                                                                     response.headers
-                                                                     )
-    return msg
-
-
-def create_redis_log_msg(redis_host, redis_port, db_number):
-    msg = 'Connecting to Redis database {0} on {1}:{2}.'.format(db_number, redis_host, redis_port)
-    return msg
 
 
 import assets
