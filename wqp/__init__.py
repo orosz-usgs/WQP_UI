@@ -71,19 +71,6 @@ def log_after(response):
     return response
 
 
-def create_request_resp_log_msg(response):
-    msg = 'Status Code: {0}, URL: {1}, Response headers: {2}'.format(response.status_code,
-                                                                     response.url,
-                                                                     response.headers
-                                                                     )
-    return msg
-
-
-def create_redis_log_msg(redis_host, redis_port, db_number):
-    msg = 'Connecting to Redis database {0} on {1}:{2}.'.format(db_number, redis_host, redis_port)
-    return msg
-
-
 import assets
 
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
