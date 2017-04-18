@@ -16,7 +16,7 @@ __version__ = '4.13.0dev'
 def _create_log_handler(log_directory=None):
     """
     Create a handler object. The logs will be streamed
-    to stdout if a logfile is not specifed using a StreamHandler.
+    to stdout if a logfile is not specified using a StreamHandler.
     If a logfile is specified, a handler will be created so logs
     will be written to the file.
 
