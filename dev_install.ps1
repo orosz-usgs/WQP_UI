@@ -37,7 +37,7 @@ if ($arg1 -eq "--clean") {
 $envExists = Test-Path env
 if (-Not $envExists) {
 	Write-Output "Creating a virtualenv."
-	virtualenv env
+	virtualenv env --no-download
 }
 else {
 	Write-Output "Virtualenv already exists."

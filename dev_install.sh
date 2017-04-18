@@ -32,7 +32,7 @@ fi
 
 if [ ! -s env ]; then
     echo "Creating the virtualenv env";
-	virtualenv --python=python2.7 env;
+	virtualenv --python=python2.7 --no-download env;
 fi
 echo "Installing python requirements";
 env/bin/pip install -r requirements.txt;
