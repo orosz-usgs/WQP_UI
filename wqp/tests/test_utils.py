@@ -1,13 +1,14 @@
 from unittest import TestCase
 
-import mock
+from mock import mock, MagicMock
+from requests import Response
 import requests_mock
 from werkzeug.exceptions import NotFound
 
 from .. import app
 from ..utils import generate_redis_db_number, retrieve_lookups, retrieve_providers, retrieve_organization, \
     retrieve_organizations, retrieve_county, retrieve_sites_geojson, retrieve_site, tsv_dict_generator, get_site_key, \
-    invalid_usgs_view
+    invalid_usgs_view, create_redis_log_msg, create_request_resp_log_msg
 
 
 class RedisDbNumberTestCase(TestCase):
@@ -38,7 +39,6 @@ class RetrieveLookupsTestCase(TestCase):
         self.codes_endpoint = 'mock://wqpfake.com/test_lookup/endpoint'
         app.config['CODES_ENDPOINT'] = self.codes_endpoint
 
-
     @mock.patch('wqp.session.get')
     def test_request_with_default_params(self, mock_get):
         value = retrieve_lookups('/test')
@@ -51,6 +51,7 @@ class RetrieveLookupsTestCase(TestCase):
 
         mock_get.assert_called_with(self.codes_endpoint + '/test', params={'mimeType': 'json',
                                                                            'param1': 'value1'})
+
     @requests_mock.Mocker()
     def test_request_with_valid_response(self, m):
         m.get(self.codes_endpoint + '/test',
@@ -100,7 +101,6 @@ class RetrieveProviders(TestCase):
 
         self.assertIsNone(retrieve_providers())
 
-
     def test_with_unexpected_response(self, m):
         m.get(self.codes_endpoint + '/providers',
               json={'error': 'Unexpected'})
@@ -146,7 +146,6 @@ class RetrieveOrganization(TestCase):
 
         self.assertEqual(retrieve_organization('P3', 'Org1'), {})
 
-
     def test_with_nonsense_response(self, m):
         m.get(self.codes_endpoint + '/organizations',
               json={'error': 'Unexpected error'}
@@ -163,7 +162,6 @@ class RetrieveOrganization(TestCase):
                     }
               )
         self.assertEqual(retrieve_organization('P3', 'Org1'), {})
-
 
     def test_with_bad_response(self, m):
         m.get(self.codes_endpoint + '/organizations', status_code=500)
@@ -204,13 +202,11 @@ class RetrieveOrganizationsTestCase(TestCase):
 
         self.assertEqual(retrieve_organizations('P5'), [])
 
-
     def test_with_nonsense_response(self, m):
         m.get(self.codes_endpoint + '/organizations',
               json={'Error': 'Unexpected'})
 
         self.assertIsNone(retrieve_organizations('P5'))
-
 
     def test_with_bad_response(self, m):
         m.get(self.codes_endpoint + '/organizations', status_code=500)
@@ -262,14 +258,12 @@ class RetrieveCountyTestCase(TestCase):
 
         self.assertEqual(retrieve_county('US', '55', '005'), {})
 
-
     @requests_mock.Mocker()
     def test_response_with_nonsense_response(self, m):
         m.get(self.codes_endpoint + '/countycode',
               json={'error': 'Unexpected error'})
 
         self.assertIsNone(retrieve_county('US', '55', '005'))
-
 
     @requests_mock.Mocker()
     def test_response_with_no_codes_in_response(self, m):
@@ -446,3 +440,34 @@ class InvalidUsgsView(TestCase):
         view = invalid_usgs_view(self.test_view)
         with self.assertRaises(NotFound):
             view()
+
+
+class TestCreateRedisLogMsg(TestCase):
+
+    def setUp(self):
+        self.redis_host = 'redis.fakehost.com'
+        self.redis_port = 10089
+        self.db_number = 91
+
+    def test_message(self):
+        result = create_redis_log_msg(self.redis_host,
+                                      self.redis_port,
+                                      self.db_number
+                                      )
+        expected = 'Connecting to Redis database 91 on redis.fakehost.com:10089.'
+        self.assertEqual(result, expected)
+
+
+class TestCreateRequestResponseLogMsg(TestCase):
+
+    def setUp(self):
+        self.test_resp = Response()
+        self.test_resp = MagicMock(status_code=601,
+                                   url='https://fake.url.com',
+                                   headers='blah'
+                                   )
+
+    def test_message(self):
+        result = create_request_resp_log_msg(self.test_resp)
+        expected = 'Status Code: 601, URL: https://fake.url.com, Response headers: blah'
+        self.assertEqual(result, expected)
