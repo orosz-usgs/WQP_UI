@@ -10,6 +10,15 @@ from . import app, session
 
 
 def create_request_resp_log_msg(response):
+    """
+    Generate a string for logging results of web service requests
+    from the requests package.
+    
+    :param requests.Response response: a requests Response object 
+    :return: a string that can be used in a logging statement
+    :rtype: str
+    
+    """
     msg = 'Status Code: {0}, URL: {1}, Response headers: {2}'.format(response.status_code,
                                                                      response.url,
                                                                      response.headers
@@ -18,6 +27,16 @@ def create_request_resp_log_msg(response):
 
 
 def create_redis_log_msg(redis_host, redis_port, db_number):
+    """
+    Generate a logging statement for connections to redis.
+    
+    :param redis_host: name of the redis host
+    :param redis_port: redis port number
+    :param db_number: redis database number
+    :return: a string that can be used in a logging statement
+    :rtype: str
+    
+    """
     msg = 'Connecting to Redis database {0} on {1}:{2}.'.format(db_number, redis_host, redis_port)
     return msg
 
