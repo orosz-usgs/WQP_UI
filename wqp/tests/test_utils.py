@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from mock import mock, MagicMock
+import mock
 from requests import Response
 import requests_mock
 from werkzeug.exceptions import NotFound
@@ -462,10 +462,10 @@ class TestCreateRequestResponseLogMsg(TestCase):
 
     def setUp(self):
         self.test_resp = Response()
-        self.test_resp = MagicMock(status_code=601,
-                                   url='https://fake.url.com',
-                                   headers='blah'
-                                   )
+        self.test_resp = mock.MagicMock(status_code=601,
+                                        url='https://fake.url.com',
+                                        headers='blah'
+                                        )
 
     def test_message(self):
         result = create_request_resp_log_msg(self.test_resp)
