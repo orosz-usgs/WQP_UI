@@ -323,15 +323,15 @@ def uris(provider_id, organization_id, site_id):
 def clear_cache(provider_id=None):
     if redis_config:
         redis_db_number = generate_redis_db_number(provider_id)
-        msg = create_redis_log_msg(redis_config['host'], redis_config['port'], redis_db_number)
-        app.logger.debug(msg)
+        connect_msg = create_redis_log_msg(redis_config['host'], redis_config['port'], redis_db_number)
         r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db_number,
                               password=redis_config.get('password'))
         r.flushdb()
         msg = 'site cache cleared for: ' + provider_id
     else:
+        connect_msg = 'No redis cache to connect to.'
         msg = "no redis cache, no cache to clear"
-    app.logger.debug(msg)
+    app.logger.debug(connect_msg)
     return msg
 
 
