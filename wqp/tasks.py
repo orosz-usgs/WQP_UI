@@ -1,11 +1,15 @@
 
 import arrow
+from celery.utils.log import get_task_logger
 import cPickle as pickle
 import redis
 
 from . import app, celery, session
 from .utils import generate_redis_db_number, tsv_dict_generator, get_site_key, create_request_resp_log_msg, \
     create_redis_log_msg
+
+
+logger = get_task_logger(__name__)
 
 
 @celery.task(bind=True)
@@ -17,7 +21,8 @@ def load_sites_into_cache_async(self, provider_id):
     :param provider_id: the identifier of the provider (NWIS, STORET, ETC)
     :return: dict - with keys for status (code of request for sites), cached_count, error_count, and total_count
     """
-    app.logger.debug('Starting async load of sites into Redis cache.')
+    logger.debug('Test message.')
+    # app.logger.debug('Starting async load of sites into Redis cache.')
     search_endpoint = app.config['SEARCH_QUERY_ENDPOINT'] + "Station/search/"
     redis_config = app.config['REDIS_CONFIG']
     result = {'status': '',
@@ -63,7 +68,7 @@ def load_sites_into_cache_async(self, provider_id):
                                   )
         else:
             msg = create_request_resp_log_msg(resp)
-            app.logger.warning(msg)
+            # app.logger.warning(msg)
 
         # Add loading stats to cache
         status_key = provider_id + '_sites_load_status'
@@ -75,7 +80,7 @@ def load_sites_into_cache_async(self, provider_id):
         redis_session.set(status_key, pickle.dumps(status_content))
 
     else:
-        app.logger.warning('Redis has not been configured.')
+        # app.logger.warning('Redis has not been configured.')
         self.update_state(state='NO_REDIS_CONFIGURED', meta={})
 
     return result
