@@ -343,7 +343,7 @@ def sitescachetask(provider_id):
     task = load_sites_into_cache_async.apply_async(args=[provider_id])
     response_content = {'Location': '/'.join([app.config['LOCAL_BASE_URL'], "status", task.id])}
     # passing the content after the response code sets a custom header, which the task status javascript needs
-    return '', 202, response_content
+    return jsonify(response_content), 202, response_content
 
 
 @portal_ui.route('/status/<task_id>')
