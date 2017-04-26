@@ -76,6 +76,8 @@ if app.config.get('LOGGING_ENABLED'):
     # Instead, set the level in the logger object.
     app.logger.setLevel(loglevel)
     app.logger.addHandler(handler)
+    # celery uses two loggers: one global/worker logger and a second task logger
+    # both should be configured to use the handler
     after_setup_logger.connect(_custom_celery_handler)
     after_setup_task_logger.connect(_custom_celery_handler)
 
