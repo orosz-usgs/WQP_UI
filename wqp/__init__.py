@@ -44,10 +44,8 @@ def _custom_celery_handler(logger=None, *args, **kwargs):
     This function should be passed to celery's logging
     setup signals.
     
-    :param logger: 
-    :param args: 
-    :param kwargs: 
-    :return: 
+    :param logging.logger logger: Logger object provided by a celery signal
+
     """
     log_directory = app.config.get('LOGGING_DIRECTORY')
     log_level = app.config.get('LOGGING_LEVEL')
