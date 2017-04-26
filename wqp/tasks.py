@@ -50,7 +50,7 @@ def load_sites_into_cache_async(self, provider_id):
         result['status'] = resp.status_code
         if resp.status_code == 200:
             result['total_count'] = int(resp.headers['Total-Site-Count'])
-
+            logger.debug('Parsing sites from TSV for {}.'.format(provider_id))
             for site in tsv_dict_generator(resp.iter_lines()):
                 current_count += 1
                 if site:
@@ -66,6 +66,8 @@ def load_sites_into_cache_async(self, provider_id):
                                         'total': result['total_count'],
                                         'status': 'working'}
                                   )
+        else:
+            logger.warning('No data to cache.')
         # Add loading stats to cache
         status_key = provider_id + '_sites_load_status'
         status_content = {'time_utc': arrow.utcnow(),
