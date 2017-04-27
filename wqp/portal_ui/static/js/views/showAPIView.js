@@ -31,15 +31,19 @@ PORTAL.VIEWS.showAPIView = function(options) {
 
 		options.$container.find('#show-queries-button').click(function() {
 			var queryParamArray = options.getQueryParamArray();
+			var queryWithoutDataProfileArray = queryParamArray.filter(function(param) {
+				return param.name !== 'dataProfile';
+			});
 			var queryString = PORTAL.UTILS.getQueryString(queryParamArray);
+			var queryStringWithoutDataProfile = PORTAL.UTILS.getQueryString(queryWithoutDataProfileArray);
 
 			$apiQueryDiv.show();
-			$sitesText.html(PORTAL.queryServices.getFormUrl('Station', queryString));
+			$sitesText.html(PORTAL.queryServices.getFormUrl('Station', queryStringWithoutDataProfile));
 			$resultsText.html(PORTAL.queryServices.getFormUrl('Result', queryString));
-			$activitiesText.html(PORTAL.queryServices.getFormUrl('Activity', queryString));
-			$activitymetricsText.html(PORTAL.queryServices.getFormUrl('ActivityMetric', queryString));
-			$resultdetectionText.html(PORTAL.queryServices.getFormUrl('ResultDetectionQuantitationLimit', queryString));
-			$wfsText.html(L.WQPSitesLayer.getWfsGetFeatureUrl(queryParamArray));
+			$activitiesText.html(PORTAL.queryServices.getFormUrl('Activity', queryStringWithoutDataProfile));
+			$activitymetricsText.html(PORTAL.queryServices.getFormUrl('ActivityMetric', queryStringWithoutDataProfile));
+			$resultdetectionText.html(PORTAL.queryServices.getFormUrl('ResultDetectionQuantitationLimit', queryStringWithoutDataProfile));
+			$wfsText.html(L.WQPSitesLayer.getWfsGetFeatureUrl(queryWithoutDataProfileArray));
 		});
 	};
 
