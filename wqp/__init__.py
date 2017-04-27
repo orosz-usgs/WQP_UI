@@ -3,7 +3,7 @@ import os
 import sys
 
 from celery import Celery
-from celery.signals import after_setup_logger, after_setup_task_logger
+from celery.signals import after_setup_task_logger
 from flask import Flask, jsonify, request
 from flask_bower import Bower
 from flask_swagger import swagger
@@ -29,12 +29,12 @@ def _create_log_handler(log_directory=None, log_name=__name__):
     if log_directory is not None:
         log_file = '{}.log'.format(log_name)
         log_path = os.path.join(log_directory, log_file)
-        handler = logging.handlers.TimedRotatingFileHandler(log_path, when='midnight', backupCount=30)
+        log_handler = logging.FileHandler(log_path)
     else:
-        handler = logging.StreamHandler(sys.stdout)
+        log_handler = logging.StreamHandler(sys.stdout)
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - {%(pathname)s:L%(lineno)d} - %(message)s')
-    handler.setFormatter(formatter)
-    return handler
+    log_handler.setFormatter(formatter)
+    return log_handler
 
 
 def _custom_celery_handler(logger=None, *args, **kwargs):
@@ -49,9 +49,11 @@ def _custom_celery_handler(logger=None, *args, **kwargs):
     """
     log_directory = app.config.get('LOGGING_DIRECTORY')
     log_level = app.config.get('LOGGING_LEVEL')
-    handler = _create_log_handler(log_directory, log_name=Celery.__name__.lower())
+    celery_handler = _create_log_handler(log_directory,
+                                         log_name=Celery.__name__.lower()+'_tasks'
+                                         )
     logger.setLevel(log_level)
-    logger.addHandler(handler)
+    logger.addHandler(celery_handler)
 
 
 app = Flask(__name__.split()[0], instance_relative_config=True)
@@ -77,8 +79,8 @@ if app.config.get('LOGGING_ENABLED'):
     app.logger.setLevel(loglevel)
     app.logger.addHandler(handler)
     # celery uses two loggers: one global/worker logger and a second task logger
-    # both should be configured to use the handler
-    after_setup_logger.connect(_custom_celery_handler)
+    # global/worker logs are handled by the celeryd process running the VM
+    # this configures a handler for the task logger:
     after_setup_task_logger.connect(_custom_celery_handler)
 
 
