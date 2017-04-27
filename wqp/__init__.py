@@ -3,6 +3,7 @@ import os
 import sys
 
 from celery import Celery
+from celery.signals import after_setup_logger, after_setup_task_logger
 from flask import Flask, jsonify, request
 from flask_bower import Bower
 from flask_swagger import swagger
@@ -13,7 +14,7 @@ from requests import Session
 __version__ = '4.13.0dev'
 
 
-def _create_log_handler(log_directory=None):
+def _create_log_handler(log_directory=None, log_name=__name__):
     """
     Create a handler object. The logs will be streamed
     to stdout if a logfile is not specified using a StreamHandler.
@@ -26,7 +27,7 @@ def _create_log_handler(log_directory=None):
 
     """
     if log_directory is not None:
-        log_file = '{}.log'.format(__name__)
+        log_file = '{}.log'.format(log_name)
         log_path = os.path.join(log_directory, log_file)
         handler = logging.handlers.TimedRotatingFileHandler(log_path, when='midnight', backupCount=30)
     else:
@@ -36,6 +37,23 @@ def _create_log_handler(log_directory=None):
     return handler
 
 
+def _custom_celery_handler(logger=None, *args, **kwargs):
+    """
+    Function to modify the logger object used by Celery.
+    
+    This function should be passed to celery's logging
+    setup signals.
+    
+    :param logging.logger logger: Logger object provided by a celery signal
+
+    """
+    log_directory = app.config.get('LOGGING_DIRECTORY')
+    log_level = app.config.get('LOGGING_LEVEL')
+    handler = _create_log_handler(log_directory, log_name=Celery.__name__.lower())
+    logger.setLevel(log_level)
+    logger.addHandler(handler)
+
+
 app = Flask(__name__.split()[0], instance_relative_config=True)
 
 Bower(app)
@@ -43,6 +61,10 @@ Bower(app)
 # Loads configuration information from config.py and instance/config.py
 app.config.from_object('config')
 app.config.from_pyfile('config.py')
+
+celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
+celery.conf.update(app.config)
+
 
 if app.config.get('LOGGING_ENABLED'):
     log_directory = app.config.get('LOGGING_DIRECTORY')
@@ -54,6 +76,10 @@ if app.config.get('LOGGING_ENABLED'):
     # Instead, set the level in the logger object.
     app.logger.setLevel(loglevel)
     app.logger.addHandler(handler)
+    # celery uses two loggers: one global/worker logger and a second task logger
+    # both should be configured to use the handler
+    after_setup_logger.connect(_custom_celery_handler)
+    after_setup_task_logger.connect(_custom_celery_handler)
 
 
 @app.before_request
@@ -72,9 +98,6 @@ def log_after(response):
 
 
 import assets
-
-celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
-celery.conf.update(app.config)
 
 
 session = Session()
