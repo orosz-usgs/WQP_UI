@@ -11,7 +11,7 @@ from flask_swagger_ui import get_swaggerui_blueprint
 from requests import Session
 
 
-__version__ = '4.13.0dev'
+__version__ = '4.13.0'
 
 
 def _create_log_handler(log_directory=None, log_name=__name__):
