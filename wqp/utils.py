@@ -146,7 +146,7 @@ def retrieve_organization(provider, org_id):
     :return: dictionary containing id and name properties if such an org exists, an empty
         dictionary if no such org exists or None if no information can be retrieved.
     """
-    organization_lookups = retrieve_lookups('/organizations', {'text': org_id})
+    organization_lookups = retrieve_lookups('/organization', {'text': org_id})
     if organization_lookups:
         try:
             org_codes = organization_lookups.get('codes')
@@ -173,7 +173,7 @@ def retrieve_organizations(provider):
         None is returned if no information can be retrieved.
     """
 
-    organization_lookups = retrieve_lookups('/organizations')
+    organization_lookups = retrieve_lookups('/organization')
     if organization_lookups:
         try:
             org_codes = organization_lookups.get('codes')
