@@ -383,17 +383,16 @@ def create_targz(archive_name, archive_contents):
                 f.truncate()
 
 
-def delete_old_files(files, retention_time=30):
+def delete_old_files(files):
     """
     Delete files older than the retention time in days.
     
     :param list files: list of files -- can either be absolute or relative paths
-    :param float retention_time: number of days before a file should be deleted 
 
     """
     current_time = time.time()
     for f in files:
         last_mod = os.stat(f).st_mtime
         days_since_last_mod = float((current_time-last_mod)) / 86400
-        if days_since_last_mod > retention_time:
+        if days_since_last_mod > app.config.get('LOG_RETENTION', 30):
             os.remove(f)
