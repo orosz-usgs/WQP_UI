@@ -1,12 +1,15 @@
+import datetime
+import os
 
 import arrow
 from celery.utils.log import get_task_logger
+from celery.schedules import crontab
 import cPickle as pickle
 import redis
 
 from . import app, celery, session
 from .utils import generate_redis_db_number, tsv_dict_generator, get_site_key, create_request_resp_log_msg, \
-    create_redis_log_msg
+    create_redis_log_msg, list_directory_contents, create_targz, delete_old_files
 
 
 logger = get_task_logger(__name__)
@@ -82,3 +85,55 @@ def load_sites_into_cache_async(self, provider_id):
         self.update_state(state='NO_REDIS_CONFIGURED', meta={})
 
     return result
+
+
+@celery.task
+def delete_old_log_archives():
+    """
+    Delete old log tar.gz archives.
+
+    """
+    logging_directory = app.config.get('LOGGING_DIRECTORY')
+    if logging_directory is not None:
+        logdir_contents = list_directory_contents(logging_directory)
+        archives = [content_file for content_file in logdir_contents if content_file.endswith('.tar.gz')]
+        delete_old_files(archives)
+    else:
+        pass
+
+
+@celery.task
+def rollover_logs():
+    """
+    Rollover .log files to tar.gz files.
+
+    """
+    logging_directory = app.config.get('LOGGING_DIRECTORY')
+    if logging_directory is not None:
+        logdir_contents = list_directory_contents(logging_directory)
+        logfiles = [content_file for content_file in logdir_contents if content_file.endswith('.log')]
+        if len(logfiles) > 0:
+            yesterday = (datetime.datetime.now() - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+            # name to archive as "wqp-YYYY-MM-DD"
+            archive_name = '{0}-{1}.tar.gz'.format(__name__.split('.')[0], yesterday)
+            create_targz(os.path.join(logging_directory, archive_name), logfiles)
+    else:
+        pass
+
+
+@celery.on_after_configure.connect
+def add_periodic(sender, **kwargs):
+    """
+    Schedule tasks in celery beat.
+    
+    :param sender: 
+    :param kwargs: 
+    :return: 
+    """
+    if app.config.get('LOGGING_DIRECTORY') is not None:
+        sender.add_periodic_task(schedule=crontab(hour=1),
+                                 sig=delete_old_log_archives.s()
+                                 )
+        sender.add_periodic_task(schedule=crontab(hour=0),
+                                 sig=rollover_logs.s()
+                                 )
