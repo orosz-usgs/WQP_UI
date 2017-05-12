@@ -2,9 +2,12 @@
 from bs4 import BeautifulSoup
 import feedparser
 from functools import wraps
+from ntpath import basename
+import os
+import tarfile
+import time
 
 from flask import request, make_response, abort
-
 
 from . import app, session
 
@@ -344,3 +347,53 @@ def invalid_usgs_view(func):
             return func(*args, **kwargs)
 
     return decorated_function
+
+
+def list_directory_contents(directory):
+    """
+    List of the contents of a directory
+    with their full paths.
+    
+    :param str directory: path to a directory 
+    :return: fullpaths to the content of the directory
+    :rtype: list
+    
+    """
+    contents = os.listdir(directory)
+    fullpaths = [os.path.join(directory, content) for content in contents]
+    return fullpaths
+
+
+def create_targz(archive_name, archive_contents):
+    """
+    Given a list of files add those to a tar.gz.
+    
+    :param str archive_name: name of the tar.gz archive
+    :param list archive_contents: list of contents for the archive
+    
+    """
+    with tarfile.open(archive_name, 'w:gz') as tar:
+        for archive_content in archive_contents:
+            alternate_name = basename(archive_content)
+            tar.add(archive_content, alternate_name)
+            # clear the log files contents
+            # if the file is deleted, it is not recreated until
+            # wsgi restarts, so truncating seems more effective
+            with open(archive_content, 'r+') as f:
+                f.truncate()
+
+
+def delete_old_files(files, retention_time=30):
+    """
+    Delete files older than the retention time in days.
+    
+    :param list files: list of files -- can either be absolute or relative paths
+    :param float retention_time: number of days before a file should be deleted 
+
+    """
+    current_time = time.time()
+    for f in files:
+        last_mod = os.stat(f).st_mtime
+        days_since_last_mod = float((current_time-last_mod)) / 86400
+        if days_since_last_mod > retention_time:
+            os.remove(f)
