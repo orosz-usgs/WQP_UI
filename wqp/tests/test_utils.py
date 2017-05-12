@@ -116,7 +116,7 @@ class RetrieveOrganization(TestCase):
         app.config['CODES_ENDPOINT'] = self.codes_endpoint
 
     def test_with_response_containing_org_and_provider(self, m):
-        m.get(self.codes_endpoint + '/organizations',
+        m.get(self.codes_endpoint + '/organization',
               json={'recordCount': 2,
                     'codes': [
                         {'value': 'Org10', 'desc': 'Organization10', 'providers': 'P1 P2 P3'},
@@ -127,7 +127,7 @@ class RetrieveOrganization(TestCase):
         self.assertEqual(retrieve_organization('P2', 'Org1'), {'id': 'Org1', 'name': 'Organization1'})
 
     def test_with_response_containing_org_but_not_provider(self, m):
-        m.get(self.codes_endpoint + '/organizations',
+        m.get(self.codes_endpoint + '/organization',
               json={'recordCount': 2,
                     'codes': [
                         {'value': 'Org10', 'desc': 'Organization10', 'providers': 'P1 P2 P3'},
@@ -138,7 +138,7 @@ class RetrieveOrganization(TestCase):
         self.assertEqual(retrieve_organization('P3', 'Org1'), {})
 
     def test_with_response_containing_no_orgs(self, m):
-        m.get(self.codes_endpoint + '/organizations',
+        m.get(self.codes_endpoint + '/organization',
               json={'recordCount': 0,
                     'codes': []
                     }
@@ -147,13 +147,13 @@ class RetrieveOrganization(TestCase):
         self.assertEqual(retrieve_organization('P3', 'Org1'), {})
 
     def test_with_nonsense_response(self, m):
-        m.get(self.codes_endpoint + '/organizations',
+        m.get(self.codes_endpoint + '/organization',
               json={'error': 'Unexpected error'}
               )
         self.assertIsNone(retrieve_organization('P3', 'Org1'))
 
     def test_with_response_without_providers(self, m):
-        m.get(self.codes_endpoint + '/organizations',
+        m.get(self.codes_endpoint + '/organization',
               json={'recordCount': 2,
                     'codes': [
                         {'value': 'Org10', 'desc': 'Organization10'},
@@ -164,7 +164,7 @@ class RetrieveOrganization(TestCase):
         self.assertEqual(retrieve_organization('P3', 'Org1'), {})
 
     def test_with_bad_response(self, m):
-        m.get(self.codes_endpoint + '/organizations', status_code=500)
+        m.get(self.codes_endpoint + '/organization', status_code=500)
 
         self.assertIsNone(retrieve_organization('P3', 'Org1'))
 
@@ -177,7 +177,7 @@ class RetrieveOrganizationsTestCase(TestCase):
         app.config['CODES_ENDPOINT'] = self.codes_endpoint
 
     def test_with_response_containing_provider(self, m):
-        m.get(self.codes_endpoint + '/organizations',
+        m.get(self.codes_endpoint + '/organization',
               json={'recordCount': 3,
                     'codes': [
                         {'value': 'Org10', 'desc': 'Organization10', 'providers': 'P1 P2 P3'},
@@ -191,7 +191,7 @@ class RetrieveOrganizationsTestCase(TestCase):
         self.assertEqual(retrieve_organizations('P4'), [{'id': 'Org2', 'name': 'Organization2'}])
 
     def test_with_response_without_provider(self, m):
-        m.get(self.codes_endpoint + '/organizations',
+        m.get(self.codes_endpoint + '/organization',
               json={'recordCount': 3,
                     'codes': [
                         {'value': 'Org10', 'desc': 'Organization10', 'providers': 'P1 P2 P3'},
@@ -203,13 +203,13 @@ class RetrieveOrganizationsTestCase(TestCase):
         self.assertEqual(retrieve_organizations('P5'), [])
 
     def test_with_nonsense_response(self, m):
-        m.get(self.codes_endpoint + '/organizations',
+        m.get(self.codes_endpoint + '/organization',
               json={'Error': 'Unexpected'})
 
         self.assertIsNone(retrieve_organizations('P5'))
 
     def test_with_bad_response(self, m):
-        m.get(self.codes_endpoint + '/organizations', status_code=500)
+        m.get(self.codes_endpoint + '/organization', status_code=500)
 
         self.assertIsNone(retrieve_organizations('P1'))
 
