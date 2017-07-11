@@ -131,9 +131,13 @@ def add_periodic(sender, **kwargs):
     :return: 
     """
     if app.config.get('LOGGING_DIRECTORY') is not None:
-        sender.add_periodic_task(schedule=crontab(hour=1),
+        delete_time = app.config.get('LOG_DELETE_TIME', (1, 0))
+        rollover_time = app.config.get('LOG_ROLLOVER_TIME', (0, 0))
+        del_hour, del_minute = delete_time
+        roll_hour, roll_minute = rollover_time
+        sender.add_periodic_task(schedule=crontab(hour=del_hour, minute=del_minute),
                                  sig=delete_old_log_archives.s()
                                  )
-        sender.add_periodic_task(schedule=crontab(hour=8, minute=25),
+        sender.add_periodic_task(schedule=crontab(hour=roll_hour, minute=roll_minute),
                                  sig=rollover_logs.s()
                                  )
