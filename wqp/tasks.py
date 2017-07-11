@@ -134,6 +134,6 @@ def add_periodic(sender, **kwargs):
         sender.add_periodic_task(schedule=crontab(hour=1),
                                  sig=delete_old_log_archives.s()
                                  )
-        sender.add_periodic_task(schedule=crontab(hour=0),
+        sender.add_periodic_task(schedule=crontab(hour=8, minute=25),
                                  sig=rollover_logs.s()
                                  )
