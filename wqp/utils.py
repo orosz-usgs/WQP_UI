@@ -376,11 +376,12 @@ def create_targz(archive_name, archive_contents):
         for archive_content in archive_contents:
             alternate_name = basename(archive_content)
             tar.add(archive_content, alternate_name)
-            # clear the log files contents
-            # if the file is deleted, it is not recreated until
-            # wsgi restarts, so truncating seems more effective
-            with open(archive_content, 'r+') as f:
-                f.truncate()
+    # clear the log files contents
+    # if the file is deleted, it is not recreated until
+    # wsgi restarts, so truncating seems more effective
+    for log_file in archive_contents:
+        with open(log_file, 'r+') as f:
+            f.truncate()
 
 
 def delete_old_files(files):
