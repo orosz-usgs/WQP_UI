@@ -46,6 +46,7 @@ PORTAL.queryServices = (function () {
 						results : formatCount(data, 'Total-Result-Count'),
 						activities : formatCount(data, 'Total-Activity-Count'),
 						activitymetrics : formatCount(data, 'Total-ActivityMetric-Count'),
+						resultdetections : formatCount(data, 'Total-ResultDetectionQuantitationLimit-Count')
 					}
 				};
 				_.each(providers, function(provider) {
@@ -53,7 +54,8 @@ PORTAL.queryServices = (function () {
 						sites : formatCount(data, provider + '-Site-Count'),
 						results : formatCount(data, provider + '-Result-Count'),
 						activities : formatCount(data, provider + '-Activity-Count'),
-						activitymetrics: formatCount(data, provider + '-ActivityMetric-Count')
+						activitymetrics: formatCount(data, provider + '-ActivityMetric-Count'),
+						resultdetections: formatCount(data, provider + '-ResultDetectionQuantitationLimit-Count')
 					};
 				});
 				log.debug('Successfully got counts');

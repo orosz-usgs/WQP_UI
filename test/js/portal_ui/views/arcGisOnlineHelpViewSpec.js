@@ -32,7 +32,7 @@ describe ('Tests for PORTAL.VIEWS.arcGisOnlineHelp', function() {
 				{name: 'Name1', value: 'Value1'},
 				{name: 'Name2', value: 'Value2'}
 			], [
-				{name: 'Name3', value: 'Value3'}
+				{name: 'Name3', value: 'http://fakenldi.com/service/nldi/nwissite/04050626/navigate/UM/wqp?distance=50'}
 			]
 		);
 
@@ -47,10 +47,7 @@ describe ('Tests for PORTAL.VIEWS.arcGisOnlineHelp', function() {
 
 		testView.initialize();
 
-		/* Allows time for the handlebar template to be loaded */
-		setTimeout(function() {
-			done();
-		}, 200);
+		testView.template_loaded.always(done);
 	});
 
 	afterEach(function() {
@@ -76,6 +73,6 @@ describe ('Tests for PORTAL.VIEWS.arcGisOnlineHelp', function() {
 		$testButton.trigger('click');
 		$searchparams =  $('.searchparams-value');
 
-		expect($searchparams.html()).toContain('Name3:Value3');
+		expect($searchparams.html()).toContain('Name3:http://fakenldi.com/service/nldi/nwissite/04050626/navigate/UM/wqp?distance=50');
 	});
 });

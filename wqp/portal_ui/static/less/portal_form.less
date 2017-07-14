@@ -24,7 +24,7 @@
   .subpanel-heading {
     margin-bottom: 15px;
     font-weight: bold;
-    color: #034e91;
+    color: @panel-heading-text;
     .show-hide-toggle {
       display: inline;
     }
@@ -331,50 +331,6 @@
       display: none;
       text-align: center;
       z-index : 50;
-    }
-
-    #query-results-map .layer-switcher {
-      z-index : 1;
-      .panel {
-            margin-bottom: 0px;
-            box-shadow: none;
-            ul {
-              padding-top : .5em;
-              input {
-                display: inline;
-              }
-
-              label {
-                display: inline;
-                margin-left: 4px;
-              }
-            }
-        }
-    }
-    #query-results-map .map-toggle {
-      position:absolute;
-      top: 70px;
-      left: 10px;
-    }
-    #query-results-map .map-toggle-on {
-      border-radius: 4px;
-      margin: 0px;
-      padding: 0px;
-      height: 22px;
-      width: 22px;
-      outline: none;
-      background-image: url('../../portal_ui/static/img/box_selected.png');
-    }
-
-    #query-results-map .map-toggle-off {
-      border-radius: 4px;
-      margin: 0px;
-      padding: 0px;
-      height: 22px;
-      width: 22px;
-      outline: none;
-      background-image: url('../../portal_ui/static/img/box_select2.png');
-      color: #444444;
     }
 
     .popover-content {

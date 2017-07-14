@@ -58,7 +58,7 @@ describe('Tests for PORTAL.MODELS.cachedCodes', function () {
 		spyOn(log, 'error');
 		testCodesModel.fetch().done(successSpy).fail(failedSpy);
 
-		server.requests[0].respond(500, 'Bad data');
+		server.requests[0].respond(500, {}, 'Bad data');
 
 		expect(log.error).toHaveBeenCalled();
 		expect(successSpy).not.toHaveBeenCalled();
@@ -124,7 +124,7 @@ describe('Tests for PORTAL.MODELS.cachedCodesWithKeys', function () {
 	it('Expects unsuccessful ajax call to log an error message and to reject the promise', function () {
 		testCodesWithKeysModel.fetch(['v1', 'v2']).done(successSpy).fail(failedSpy);
 		spyOn(log, 'error');
-		server.requests[0].respond(500, 'Bad data');
+		server.requests[0].respond(500, {}, 'Bad data');
 		expect(log.error).toHaveBeenCalled();
 		expect(successSpy).not.toHaveBeenCalled();
 		expect(failedSpy).toHaveBeenCalled();

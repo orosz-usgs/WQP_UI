@@ -1,80 +1,143 @@
-import csv
-import cPickle as pickle
+import datetime
+import os
+
 import arrow
+from celery.utils.log import get_task_logger
+from celery.schedules import crontab
+import cPickle as pickle
 import redis
-from . import session, celery
+
+from . import app, celery, session
+from .utils import generate_redis_db_number, tsv_dict_generator, get_site_key, create_request_resp_log_msg, \
+    create_redis_log_msg, list_directory_contents, create_targz, delete_old_files
+
+
+logger = get_task_logger(__name__)
 
 
 @celery.task(bind=True)
-def generate_site_list_from_streamed_tsv_async(self, base_url, redis_config, provider_id, redis_db):
+def load_sites_into_cache_async(self, provider_id):
     """
-
+    Retrieves all sites for provider_id using streaming and adds each site to the cache. The current
+    state of the task is also saved in the cache with key <provider_id>_sites_load_status
     :param self: self, allows the task status to be updated
-    :param base_url: the base url we are using for the generating the search URL
     :param provider_id: the identifier of the provider (NWIS, STORET, ETC)
-    :param redis_config: redis config variables
-    :param redis_db: the db number that we are pushing the cached info to
-    :return: a list of dicts that describe sites that are associated with an organization under a data provider
+    :return: dict - with keys for status (code of request for sites), cached_count, error_count, and total_count
     """
-    search_endpoint = base_url + "Station/search/"
-    r = session.get(search_endpoint, params={"providers": provider_id,
-                                             "mimeType": "tsv",
-                                             "sorted": "no",
-                                             "uripage": "yes"
-                                             },
-                    stream=True
-                    )
+    logger.debug('Starting async load of sites into Redis cache.')
+    search_endpoint = app.config['SEARCH_QUERY_ENDPOINT'] + "Station/search/"
+    redis_config = app.config['REDIS_CONFIG']
+    result = {'status': '',
+              'error_count': 0,
+              'cached_count': 0,
+              'total_count': 0}
+    current_count = 0
 
-    status = r.status_code
-    headers = r.headers
-    total = int(headers['Total-Site-Count'])
-    redis_session = None
     if redis_config:
-        redis_session = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db,
+        db_number = generate_redis_db_number(provider_id)
+        redis_msg = create_redis_log_msg(redis_config['host'], redis_config['port'], db_number)
+        logger.info(redis_msg)
+        redis_session = redis.StrictRedis(host=redis_config['host'],
+                                          port=redis_config['port'],
+                                          db=db_number,
                                           password=redis_config.get('password'))
+        resp = session.get(search_endpoint, params={"providers": provider_id,
+                                                    "mimeType": "tsv",
+                                                    "sorted": "no",
+                                                    "uripage": "yes"
+                                                    },
+                           stream=True
+                           )
+        resp_log_msg = create_request_resp_log_msg(resp)
+        logger.debug(resp_log_msg)
+        result['status'] = resp.status_code
+        if resp.status_code == 200:
+            result['total_count'] = int(resp.headers['Total-Site-Count'])
+            logger.debug('Parsing sites from TSV for {}.'.format(provider_id))
+            for site in tsv_dict_generator(resp.iter_lines()):
+                current_count += 1
+                if site:
+                    result['cached_count'] += 1
+                    site_key = get_site_key(provider_id, site['OrganizationIdentifier'], site['MonitoringLocationIdentifier'])
+                    redis_session.set(site_key, pickle.dumps(site, protocol=2))
 
-    error_count = 0
-    cached_count = 0
-    counter = 0
-    header = None
-    number_of_columns = None
-    if status == 200:
-        if redis_session:
-            redis_session.flushdb()
-        for line in r.iter_lines():
-            # filter out keep-alive new lines
-            if line:
-                if counter == 0:
-                    header_line = line
-                    header_object = csv.reader([header_line], delimiter='\t')
-                    for row in header_object:
-                        header = row
-                        number_of_columns = len(header)
-                    counter += 1
-                elif counter >= 1:
-                    station = csv.reader([line], delimiter='\t')
-                    for row in station:
-                        station_data = row
-                        if len(station_data) == number_of_columns and header is not None:
-                            station_dict = dict(zip(header, station_data))
-                            site_key = 'sites_' + provider_id + '_' + str(station_dict['OrganizationIdentifier']) + "_" + \
-                                       str(station_dict['MonitoringLocationIdentifier'])
-                            if redis_session:
-                                redis_session.set(site_key, pickle.dumps(station_dict, protocol=2))
-                            cached_count += 1
-                            self.update_state(state='PROGRESS',
-                                              meta={'current': counter, 'errors': error_count, 'total': total,
-                                                    'status': 'working'})
-                            counter += 1
-                        elif len(station_data) != number_of_columns:
-                            error_count += 1
-        if redis_session:
-            status_key = provider_id+'_sites_load_status'
-            time_utc = arrow.utcnow()
-            status_content = {'time_utc': time_utc, "cached_count": cached_count, "error_count": error_count,
-                              'total_count': total, 'provider': provider_id}
-            redis_session.set(status_key, pickle.dumps(status_content, protocol=2))
+                else:
+                    result['error_count'] += 1
+                self.update_state(state='PROGRESS',
+                                  meta={'current': current_count,
+                                        'errors': result['error_count'],
+                                        'total': result['total_count'],
+                                        'status': 'working'}
+                                  )
+        else:
+            logger.warning('No data to cache.')
+        # Add loading stats to cache
+        status_key = provider_id + '_sites_load_status'
+        status_content = {'time_utc': arrow.utcnow(),
+                          'cached_count': result['cached_count'],
+                          'error_count': result['error_count'],
+                          'total_count': result['total_count'],
+                          'provider': provider_id}
+        redis_session.set(status_key, pickle.dumps(status_content))
 
     else:
-        self.update_state(state='FAILURE', meta={'status': status})
-    return {"status": status, "cached_count": cached_count, "error_count": error_count, 'total_count':total}
+        logger.warning('Redis has not been configured.')
+        self.update_state(state='NO_REDIS_CONFIGURED', meta={})
+
+    return result
+
+
+@celery.task
+def delete_old_log_archives():
+    """
+    Delete old log tar.gz archives.
+
+    """
+    logging_directory = app.config.get('LOGGING_DIRECTORY')
+    if logging_directory is not None:
+        logdir_contents = list_directory_contents(logging_directory)
+        archives = [content_file for content_file in logdir_contents if content_file.endswith('.tar.gz')]
+        delete_old_files(archives)
+    else:
+        pass
+
+
+@celery.task
+def rollover_logs():
+    """
+    Rollover .log files to tar.gz files.
+
+    """
+    logging_directory = app.config.get('LOGGING_DIRECTORY')
+    if logging_directory is not None:
+        logdir_contents = list_directory_contents(logging_directory)
+        logfiles = [content_file for content_file in logdir_contents if content_file.endswith('.log')]
+        if len(logfiles) > 0:
+            yesterday = (datetime.datetime.now() - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+            # name to archive as "wqp-YYYY-MM-DD"
+            archive_name = '{0}-{1}.tar.gz'.format(__name__.split('.')[0], yesterday)
+            create_targz(os.path.join(logging_directory, archive_name), logfiles)
+    else:
+        pass
+
+
+@celery.on_after_configure.connect
+def add_periodic(sender, **kwargs):
+    """
+    Schedule tasks in celery beat.
+    
+    :param sender: 
+    :param kwargs: 
+    :return: 
+    """
+    if app.config.get('LOGGING_DIRECTORY') is not None:
+        delete_time = app.config.get('LOG_DELETE_TIME', (1, 0))
+        rollover_time = app.config.get('LOG_ROLLOVER_TIME', (0, 0))
+        del_hour, del_minute = delete_time
+        roll_hour, roll_minute = rollover_time
+        sender.add_periodic_task(schedule=crontab(hour=del_hour, minute=del_minute),
+                                 sig=delete_old_log_archives.s()
+                                 )
+        sender.add_periodic_task(schedule=crontab(hour=roll_hour, minute=roll_minute),
+                                 sig=rollover_logs.s()
+                                 )

@@ -3,6 +3,9 @@ language: python
 env:
   - PYTHON="2.7"
 
+before_install:
+  - nvm install 6.10.2
+
 install:
   - pip install -r requirements.txt
   - pip install coveralls
@@ -16,7 +19,7 @@ before_script:
   - echo "SECRET_KEY = 'key-for-testing'" > instance/config.py
 
 script:
-  - nosetests --with-coverage --cover-package=wqp
+  - nosetests --logging-clear-handlers --with-coverage --cover-package=wqp
   - node_modules/karma/bin/karma start test/js/karma.conf.js --no-colors
 
 after_success:

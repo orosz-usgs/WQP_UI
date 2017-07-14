@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
 
-{% block title %}Water Quality Data {% endblock %}
-
 {% block page_style %}
 	<link rel="stylesheet" type="text/css"
 		  href="{{ url_for('bower.static', filename='jquery-ui/themes/smoothness/jquery-ui.min.css') }}"/>
@@ -27,7 +25,7 @@
 	<div id="page-content">
 		<form role="form" id="params" name="params" autocomplete="off"
 			  method="post" action="{{ config.SEARCH_QUERY_ENDPOINT }}Station/search">
-			<div class="panel" id="location-parameters">
+			<div class="panel panel-default" id="location-parameters">
 				<div class="panel-heading">
 					LOCATION
 					<button type="button" class="show-hide-toggle" title="Show subsection">
@@ -146,7 +144,7 @@
 				</div>
 			</div>
 			<div id="site-and-sampling-params">
-				<div id="site-params" class="panel">
+				<div id="site-params" class="panel panel-default">
 					<div class="panel-heading">
 						SITE PARAMETERS
 						<button type="button" class="show-hide-toggle" title="Show subsection">
@@ -189,18 +187,15 @@
 							</div>
 							<button type="button" class="help-link popover-help" id="hucHelp" data-help="huc">?</button>
 						</div>
-						{% if config.DISABLE_ACTIVITY_DOWNLOAD %}
-						{% else %}
-							<div class="form-group" id='min-activities-div'>
-								<label class="control-label" for="min-activities">Minimum sampling activities per site:</label>
-								<div>
-									<input class="form-control" type="number" min="1" name="minactivities" id="min-activites"/>
-								</div>
-								<button type="button" class="help-link popover-help" id="min-activities-help"
-										data-help="minactivities">?
-								</button>
+						<div class="form-group" id='min-activities-div'>
+							<label class="control-label" for="min-activities">Minimum sampling activities per site:</label>
+							<div>
+								<input class="form-control" type="number" min="1" name="minactivities" id="min-activites"/>
 							</div>
-						{%  endif %}
+							<button type="button" class="help-link popover-help" id="min-activities-help"
+									data-help="minactivities">?
+							</button>
+						</div>
 						<div id="nldi-container">
 							<label for="nldi-picker">Search Upstream and Downstream (BETA)</label>
 							<button type="button" class="help-link popover-help" id="nldiHelp" data-help="nldi">?</button>
@@ -209,7 +204,7 @@
 						<div id="nldi-inset-map"></div>
 					</div>
 				</div>
-				<div id="sampling-params" class="panel">
+				<div id="sampling-params" class="panel panel-default">
 					<div class="panel-heading">
 						SAMPLING PARAMETERS
 						<button type="button" class="show-hide-toggle" title="Show subsection">
@@ -347,7 +342,7 @@
 				</div>
 				<div id="nldi-map"></div>
 			</div>
-			<div id="data-type-parameters-div" class="panel">
+			<div id="data-type-parameters-div" class="panel panel-default">
 				<div class="panel-heading">
 					DATA SOURCE
 					<button type="button" class="show-hide-toggle" title="Show subsection">
@@ -367,7 +362,7 @@
 					</div>
 				</div>
 			</div>
-			<div id="map-and-query-div" class="panel">
+			<div id="map-and-query-div" class="panel panel-default">
 				<div id="mapping-div" class="panel-body">
 					<div id="map-ops-button-div" class="form-inline">
 						<div id="show-on-map-button-div" class="form-group">
@@ -413,17 +408,22 @@
 									<input type="radio" class="result-type" id="biosamples" value="Result">
 									<label for="biosamples">Sample results (biological metadata)</label>
 								</li>
-								{% if config.DISABLE_ACTIVITY_DOWNLOAD %}
-								{% else %}
-									<li>
-										<input type="radio" class="result-type" id="activity-input" value="Activity" />
-										<label for="activity-input">Sampling Activity</label>
-									</li>
-									<li>
-										<input type="radio" class="result-type" id="activitymetric-input" value="ActivityMetric" />
-										<label for="activitymetric-input">Sampling Activity Metrics</label>
-									</li>
-								{% endif %}
+								<li>
+									<input type="radio" class="result-type" id="narrowsamples" value="Result">
+									<label for="narrowsamples">Sample results (narrow)</label>
+								</li>
+								<li>
+									<input type="radio" class="result-type" id="activity-input" value="Activity" />
+									<label for="activity-input">Sampling Activity</label>
+								</li>
+								<li>
+									<input type="radio" class="result-type" id="activitymetric-input" value="ActivityMetric" />
+									<label for="activitymetric-input">Sampling Activity Metrics</label>
+								</li>
+								<li>
+									<input type="radio" class="result-type" id="resultdetection" value="ResultDetectionQuantitationLimit" />
+									<label for="resultdetection">Result Detection Quantitation Limit Data</label>
+								</li>
 							</ul>
 						</div>
 						<div id="download-tabular-data">
@@ -485,6 +485,11 @@
 							<br/>
 							<textarea readonly="readonly" rows="6"></textarea>
 						</div>
+						<div class="show-query-text" id="resultdetection-query-div">
+							<b>Result Detection Quantitation Limit</b>
+							<br/>
+							<textarea readonly="readonly" row="6"></textarea>
+						</div>
 						<div class="show-query-text" id="getfeature-query-div">
 							<b>WFS GetFeature</b>
 							<br/>
@@ -536,17 +541,22 @@
 						<input type="radio" name="resultType" id="dialog-biosamples" value="Result"/>
 						<label for="dialog-biosamples">Sample results with biological metadata</label>
 					</li>
-					{% if config.DISABLE_ACTIVITY_DOWNLOAD %}
-					{% else %}
-						<li>
-							<input type="radio" name="resultType" id="dialog-activities" value="Activity"/>
-							<label for="dialog-activities">Sampling Activity</label>
-						</li>
-						<li>
-							<input type="radio" class="resultType" id="dialog-activitymetric" value="ActivityMetric" />
-							<label for="dialog-activitymetric">Sampling Activity Metrics</label>
-						</li>
-					{% endif %}
+					<li>
+						<input type="radio" name="resultType" id="dialog-narrowsamples" value="Result"/>
+						<label for="dialog-narrowsamples">Sample results with narrow metadata</label>
+					</li>
+					<li>
+						<input type="radio" name="resultType" id="dialog-activities" value="Activity"/>
+						<label for="dialog-activities">Sampling Activity</label>
+					</li>
+					<li>
+						<input type="radio" class="resultType" id="dialog-activitymetric" value="ActivityMetric" />
+						<label for="dialog-activitymetric">Sampling Activity Metrics</label>
+					</li>
+					<li>
+						<input type="radio" name="resultType" id="dialog-resultdetection" value="ResultDetectionQuantitationLimit" />
+						<label for="dialog-resultdetection">Result Detection Quantitation Limit Data</label>
+					</li>
 				</ul>
 			</div>
 			<div style="display: inline-block;" id="map-info-file-format-div">

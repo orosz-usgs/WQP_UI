@@ -1,7 +1,8 @@
 # WQP_UI
 ===================
+
 [![Build Status](https://travis-ci.org/USGS-CIDA/WQP_UI.svg?branch=master)](https://travis-ci.org/USGS-CIDA/WQP_UI)
-[![Coverage Status](https://coveralls.io/repos/github/USGS-CIDA/WQP_UI/badge.svg?branch=master)](https://coveralls.io/github/USGS-CIDA/WQP_UI?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/USGS-CIDA/WQP_UI/badge.svg)](https://coveralls.io/github/USGS-CIDA/WQP_UI)
 
 Water Quality Portal User Interface
 
@@ -38,12 +39,27 @@ SEARCH_QUERY_ENDPOINT = ''
 #points to the public srsnames endpoint you want to use.
 PUBLIC_SRSNAMES_ENDPOINT = ''
 
+#A list of dictionaries that associate user-facing text with an identifier for the style
+#
+# In each dictionary,
+#    The 'id' key should be given a string value - the name of a style present on GeoServer
+#    The 'text' key should be given a string value - user-facing text that appears in the web ui's dropdown for selecting styles
+SITE_SLDS = [
+    {'id' : 'wqp_sources', 'text' : 'By source'},
+    {'id' : 'site_type', 'text' : 'By site type'},
+    {'id' : 'activity_visual', 'text' : 'By activity'}
+]
+
+
 # set REDIS Config if it exists.
 REDIS_CONFIG = None
 
 # set the local base url, this deals with the weird way we do wsgi around here, for local development
 # use http://127.0.0.1:5050
 LOCAL_BASE_URL = ''
+
+#Sets the theme to be used for the portal_ui app pages. Valid values are 'wqp' and 'usgs'
+UI_THEME = 'wqp' or 'usgs'
 ```
 
 ## Setup on Linux or MacOS
@@ -81,3 +97,37 @@ The application can be accessed at 127.0.0.1:5050/index.
 
 For developer level testing, you can use the npm test script to run in no-single-step mode. Note that this
 script will have to modified for Windows users.
+
+## Installing Redis for local development
+Note that Redis does not support Windows, but there is a Windows port (see the link below)). These instructions
+are for Linux or MacOS. There is a brew recipe for MacOS which I have not tested
+
+Get the latest stable release from https://redis.io/download. You will install it as follows.
+
+`% tar xzf redis-3.2.8.tar.gz`
+`% make` will make in the current directory, or `sudo make install` to but the executable in /usr/local/bin
+
+You can run the redis server by using the redis_server executable in the src directory.
+`% src/redis-server`
+
+Test by running `src/redis-cli ping`. The response should be `PONG`.
+
+To use redis in the application set the following in your instance/config.py:
+```python
+REDIS_CONFIG = {
+    'host': 'localhost',
+    'port': 6379,
+    'db': 0
+}
+```
+
+## Running Celery worker for local development
+You will need to set the following in your instance/config.py to allow Celery to use Redis as the broker and backend.
+```python
+CELERY_BROKER_URL = 'redis://localhost:6379/10'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/11'
+```
+The celery worker can be started from the project home directory with the following command:
+`% env/bin/celery worker -A wqp:celery --loglevel=info`
+
+

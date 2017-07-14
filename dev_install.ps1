@@ -37,7 +37,7 @@ if ($arg1 -eq "--clean") {
 $envExists = Test-Path env
 if (-Not $envExists) {
 	Write-Output "Creating a virtualenv."
-	virtualenv env
+	virtualenv env --no-download
 }
 else {
 	Write-Output "Virtualenv already exists."
@@ -49,6 +49,6 @@ Write-Output "Running Javascript tests."
 node node_modules\karma\bin\karma start test\js\karma.conf.js
 
 Write-Output "Running Python tests"
-env\Scripts\nosetests
+env\Scripts\nosetests --logging-clear-handlers
 
 Write-Output "Finished setting up WQP-UI."

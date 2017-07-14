@@ -32,7 +32,7 @@ fi
 
 if [ ! -s env ]; then
     echo "Creating the virtualenv env";
-	virtualenv --python=python2.7 env;
+	virtualenv --python=python2.7 --no-download env;
 fi
 echo "Installing python requirements";
 env/bin/pip install -r requirements.txt;
@@ -41,6 +41,6 @@ echo "Running Javascript tests";
 node_modules/karma/bin/karma start test/js/karma.conf.js;
 
 echo "Running Python tests";
-env/bin/nosetests
+env/bin/nosetests --logging-clear-handlers
 
 echo "Finished setting up WQP-UI";

@@ -27,8 +27,8 @@ PORTAL.VIEWS.dataDetailsView = function(options) {
 		var $kml = options.$container.find('#kml');
 
 		var $site = options.$container.find('#sites');
-		var $samples = options.$container.find('#samples');
 		var $biosamples = options.$container.find('#biosamples');
+		var $narrowResults = options.$container.find('#narrowsamples');
 
 		var $sorted = options.$container.find('#sorted');
 		var $hiddenSorted = options.$container.find('input[type="hidden"][name="sorted"]');
@@ -38,9 +38,8 @@ PORTAL.VIEWS.dataDetailsView = function(options) {
 		$mimeTypeRadioboxes.change(function() {
 			var kmlChecked = $kml.prop('checked');
 
-			// Can only download results if kml is not checked
-			PORTAL.UTILS.setEnabled($samples, !kmlChecked);
-			PORTAL.UTILS.setEnabled($biosamples, !kmlChecked);
+			// Can only download sites if kml is checked
+			PORTAL.UTILS.setEnabled(options.$container.find('.result-type:not(#sites)'), !kmlChecked);
 		});
 
 		$resultTypeRadioboxes.change(function() {
@@ -52,14 +51,14 @@ PORTAL.VIEWS.dataDetailsView = function(options) {
 
 			PORTAL.UTILS.setEnabled($kml, $site.prop('checked'));
 
-			// If biological results desired add a hidden input, otherwise remove it.
+			// If biological results or narrow results desired add a hidden input, otherwise remove it.
+			$dataProfile.remove();
 			if ($biosamples.prop('checked')) {
-				if ($dataProfile.length === 0) {
-					options.$container.append('<input type="hidden" name="dataProfile" value="biological" />');
-				}
+				options.$container.append('<input type="hidden" name="dataProfile" value="biological" />');
+
 			}
-			else {
-				$dataProfile.remove();
+			else if ($narrowResults.prop('checked')){
+				options.$container.append('<input type="hidden" name="dataProfile" value="narrowResult" />');
 			}
 			options.updateResultTypeAction(resultType);
 		});

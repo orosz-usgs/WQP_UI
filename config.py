@@ -1,4 +1,5 @@
 
+import logging
 import os
 
 PROJECT_HOME = os.path.dirname(__file__)
@@ -39,9 +40,6 @@ GA_TRACKING_CODE = ''
 # set to false in instance/config.py if you want to turn off the NLDI feature
 NLDI_ENABLED = True
 
-# toggle True/False to enable/disable showing of activity endpoints
-ACTIVITY_ENDPOINTS_ENABLED = False
-
 LESS_BIN = os.path.join(PROJECT_HOME, 'node_modules', 'less', 'bin', 'lessc')
 
 # set REDIS Config if it exists
@@ -65,3 +63,15 @@ ANNOUNCEMENT_BANNER = None
 # Celery configuration
 CELERY_BROKER_URL = None
 CELERY_RESULT_BACKEND = None
+CELERY_TIMEZONE = 'US/Central'
+
+#Sets the theme to be used for the portal_ui app pages. Valid values are 'wqp' and 'usgs'
+UI_THEME = ''
+
+# Logging Configuration
+LOGGING_ENABLED = True
+LOGGING_DIRECTORY = None
+LOGGING_LEVEL = logging.DEBUG
+LOG_RETENTION = 30
+LOG_ROLLOVER_TIME = (0, 0)  # tuple of format (hour, minute)
+LOG_DELETE_TIME = (1, 0)  # tuple of format (hour, minute)

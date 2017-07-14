@@ -26,26 +26,24 @@ PORTAL.VIEWS.showAPIView = function(options) {
 		var $resultsText = options.$container.find('#results-query-div textarea');
 		var $activitiesText = options.$container.find('#activities-query-div textarea');
 		var $activitymetricsText = options.$container.find('#activitymetrics-query-div textarea');
+		var $resultdetectionText = options.$container.find('#resultdetection-query-div textarea');
 		var $wfsText = options.$container.find('#getfeature-query-div textarea');
 
 		options.$container.find('#show-queries-button').click(function() {
 			var queryParamArray = options.getQueryParamArray();
+			var queryWithoutDataProfileArray = queryParamArray.filter(function(param) {
+				return param.name !== 'dataProfile';
+			});
 			var queryString = PORTAL.UTILS.getQueryString(queryParamArray);
+			var queryStringWithoutDataProfile = PORTAL.UTILS.getQueryString(queryWithoutDataProfileArray);
 
 			$apiQueryDiv.show();
-			$sitesText.html(PORTAL.queryServices.getFormUrl('Station', queryString));
+			$sitesText.html(PORTAL.queryServices.getFormUrl('Station', queryStringWithoutDataProfile));
 			$resultsText.html(PORTAL.queryServices.getFormUrl('Result', queryString));
-			if (Config.ACTIVITY_ENDPOINTS_ENABLED) {
-				$activitiesText.html(PORTAL.queryServices.getFormUrl('Activity', queryString));
-				$activitymetricsText.html(PORTAL.queryServices.getFormUrl('ActivityMetric', queryString));
-			}
-			else {
-				var $activitiesDiv = options.$container.find('#activities-query-div');
-				var $activitymetricsDiv = options.$container.find('#activitymetrics-query-div');
-				$activitiesDiv.hide();
-				$activitymetricsDiv.hide();
-			}
-			$wfsText.html(L.WQPSitesLayer.getWfsGetFeatureUrl(queryParamArray));
+			$activitiesText.html(PORTAL.queryServices.getFormUrl('Activity', queryStringWithoutDataProfile));
+			$activitymetricsText.html(PORTAL.queryServices.getFormUrl('ActivityMetric', queryStringWithoutDataProfile));
+			$resultdetectionText.html(PORTAL.queryServices.getFormUrl('ResultDetectionQuantitationLimit', queryStringWithoutDataProfile));
+			$wfsText.html(L.WQPSitesLayer.getWfsGetFeatureUrl(queryWithoutDataProfileArray));
 		});
 	};
 

@@ -8,7 +8,7 @@
 }
 /* Style for input elements that are disabled */
 .disabled {
-	color: #AAAAAA;
+	color: @disabled-color;
 }
 
 .show-hide-toggle {
@@ -32,15 +32,14 @@
 
 /* Override styling for bootstrap's panel */
 #page-content .panel {
-    .panel-default;
     .panel-heading {
-        color: #034e91;
+        color: @panel-heading-text;
         font-weight: bold;    
     }
 }
 /* Style for lists and tables displayed on the user guide pages */
 .user-guide h4 {
-    color: #1E701E;
+    color: @user-guide-h4-text
 }
 .user-guide ul {
     margin-top: 3px;
@@ -66,8 +65,8 @@
 }
 .user-guide table {
 	border-collapse: collapse;
-	background: #f7f0e4;
-        margin-bottom: 10px;
+	background: @user-table-bg;
+  	margin-bottom: 10px;
 }
 .user-guide th {
 	padding: 4px;	
@@ -81,13 +80,4 @@
     font-size : @font-size-base;
     border-left: 0px;
 }
-/* Style for the loadingPanel control */
-.olControlLoadingPanel {
-    background-image: url('../../portal_ui/static/img/loading.gif');
-    position: relative;
-    width: 100%;
-    height: 20px;
-    background-position: center;
-    background-repeat:no-repeat;
-    display: none;
-}
+

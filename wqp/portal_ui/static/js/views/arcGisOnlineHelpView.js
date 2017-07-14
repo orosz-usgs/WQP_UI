@@ -20,7 +20,7 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
 	/*
 	 * Read handlebar template
 	 */
-	$.ajax({
+	var template_loaded_promise = $.ajax({
 		url: Config.STATIC_ENDPOINT + 'js/hbTemplates/arcGisHelp.hbs',
 		cache: false,
 		success: function (response) {
@@ -38,7 +38,6 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
 	 * 		@returns {Array of Objects with name and value properties} - The form's current query parameters.
 	 */
 	PORTAL.VIEWS.arcGisOnlineHelpView = function (options) {
-		"use strict";
 
 		var self = {};
 
@@ -52,21 +51,8 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
 		 */
 		var showDialog = function (queryParams, selectedSld) {
 
-			//This is not DRY, it is copy-pasted from WQPSitesLayer.js
-			//TODO: instead of copy-pasting, import the variable
-			var getSearchParams = function(queryParamArray) {
-				var queryJson = PORTAL.UTILS.getQueryParamJson(queryParamArray);
-				var resultJson = _.omit(queryJson, ['mimeType', 'zip']);
-				resultJson = _.mapObject(resultJson, function(value) {
-					return value.join('|');
-				});
-				var resultArray =  _.map(resultJson, function(value, name) {
-					return name + ':' + value;
-				});
-				return resultArray.join(';');
-			};
 			var hbContext = {
-				searchParams: getSearchParams(queryParams),
+				searchParams: L.WQPSitesLayer.getSearchParams(queryParams),
 				style: selectedSld
 			};
 
@@ -88,6 +74,8 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
 				showDialog(queryParamArray, selectedSld);
 			});
 		};
+
+		self.template_loaded = template_loaded_promise;
 		return self;
 	};
 })();

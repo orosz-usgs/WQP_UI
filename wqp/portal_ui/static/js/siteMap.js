@@ -38,7 +38,7 @@ PORTAL.MAP.siteMap = function(options) {
 	 */
 	self.initialize = function() {
 		var MapWithSingleClickHandler = L.Map.extend({
-			includes: L.SingleClickEventMixin
+			includes: L.singleClickEventMixin()
 		});
 		var baseLayers = {
 			'World Topo': L.tileLayer.provider('Esri.WorldTopoMap', {zIndex : BASE_LAYER_Z_INDEX}),
