@@ -67,7 +67,7 @@
 				layer : this.wmsParams.layers,
 				style : this.wmsParams.styles,
 				SEARCHPARAMS : this.wmsParams.SEARCHPARAMS,
-				legend_options : 'fontStyle:bold'
+				legend_options : 'fontStyle:bold;forceLabels:on'
 			};
 
 			if (this.wmsParams.styles === 'activity_visual') {
