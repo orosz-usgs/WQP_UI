@@ -1,9 +1,13 @@
-import arrow
 import cPickle as pickle
 import sys
+import json
 
 from flask import render_template, request, make_response, redirect, url_for, abort, Response, jsonify, Blueprint
+import arrow
 import redis
+from pyld import jsonld
+import requests
+from validators.url import url as url_validator
 
 from .. import app, session
 from ..utils import pull_feed, geoserver_proxy_request, retrieve_providers, retrieve_organizations, \
@@ -11,7 +15,7 @@ from ..utils import pull_feed, geoserver_proxy_request, retrieve_providers, retr
     generate_redis_db_number, create_request_resp_log_msg, create_redis_log_msg, invalid_usgs_view
 from ..tasks import load_sites_into_cache_async
 
-
+from pprint import pprint
 # Create blueprint
 portal_ui = Blueprint('portal_ui', __name__,
                       template_folder='templates',
@@ -310,13 +314,54 @@ def uris(provider_id, organization_id, site_id):
         additional_data['NWISOrg'] = org_and_number[0];
         additional_data['NWISNumber'] = org_and_number[1];
 
-    return render_template('site.html',
-                           site=site_data,
-                           site_data_additional=additional_data,
-                           provider=provider_id,
-                           organization=organization_id,
-                           site_id=site_id,
-                           cache_timeout=cache_timeout) # Why are we using this here and nowhere else
+    if 'mimetype' in request.args and request.args.get("mimetype") == 'json':
+        return jsonify(site_data)
+    elif 'mimetype' in request.args and request.args.get("mimetype") == 'jsonld' and request.args.get("profile") == 'elf-index':
+        context = "https://opengeospatial.github.io/ELFIE/json-ld/elf-index.jsonld"
+        doc = {
+            "@id": request.path,
+            "@type": "http://schema.org/Place",
+            "http://schema.org/name": site_data['MonitoringLocationName'],
+            "http://schema.org/description": 'This ' + site_data['MonitoringLocationTypeName'].lower() +
+                                             ' site, maintained by the ' + site_data['OrganizationFormalName'] +
+                                             ' (identifier ' + site_data['OrganizationIdentifier'] + '), has the name "'
+                                             + site_data['MonitoringLocationName'] + '" and has the identifier "'
+                                             + site_data['MonitoringLocationIdentifier'] + '"',
+            "http://schema.org/image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/The_Scream.jpg/220px-The_Scream.jpg"
+        }
+        if provider_id == 'NWIS':
+            doc["http://schema.org/sameAs"] = [
+                                            "http://waterdata.usgs.gov/nwis/inventory?agency_code=" + additional_data[
+                                                'NWISOrg'] + "&site_no=" + additional_data['NWISNumber']
+                                        ]
+        if site_data['LatitudeMeasure'] and site_data['LongitudeMeasure']:
+            doc["http://schema.org/geo"]= {
+                "@type": "http://schema.org/GeoCoordinates",
+                "http://schema.org/latitude": str(site_data['LatitudeMeasure']),
+                "http://schema.org/longitude": str(site_data['LongitudeMeasure'])
+            }
+        compacted = jsonld.compact(doc, context)
+        return jsonify(compacted)
+    elif 'mimetype' in request.args and request.args.get("mimetype") == 'jsonld' and request.args.get("profile") == 'elf-geojson':
+        context = "https://opengeospatial.github.io/ELFIE/json-ld/elf-geojson.jsonld"
+
+        # TODO: Actually properly generate the geojson here
+        doc = {
+               "@id": request.full_path,
+               "@type": "https://data.elfie.ogc/def/some/thing",
+               "https://www.w3.org/TR/rdf-schema/label": site_data['MonitoringLocationName']
+        }
+        compacted = jsonld.compact(doc, context)
+        return jsonify(compacted)
+
+    else:
+        return render_template('site.html',
+                               site=site_data,
+                               site_data_additional=additional_data,
+                               provider=provider_id,
+                               organization=organization_id,
+                               site_id=site_id,
+                               cache_timeout=cache_timeout) # Why are we using this here and nowhere else
 
 
 @portal_ui.route('/clear_cache/<provider_id>/')
