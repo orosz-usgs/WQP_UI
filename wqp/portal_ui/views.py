@@ -1,8 +1,9 @@
-import arrow
 import cPickle as pickle
 import sys
 
+
 from flask import render_template, request, make_response, redirect, url_for, abort, Response, jsonify, Blueprint
+import arrow
 import redis
 
 from .. import app, session
@@ -310,13 +311,17 @@ def uris(provider_id, organization_id, site_id):
         additional_data['NWISOrg'] = org_and_number[0];
         additional_data['NWISNumber'] = org_and_number[1];
 
-    return render_template('site.html',
-                           site=site_data,
-                           site_data_additional=additional_data,
-                           provider=provider_id,
-                           organization=organization_id,
-                           site_id=site_id,
-                           cache_timeout=cache_timeout) # Why are we using this here and nowhere else
+    if 'mimetype' in request.args and request.args.get("mimetype") == 'json':
+        return jsonify(site_data)
+
+    else:
+        return render_template('site.html',
+                               site=site_data,
+                               site_data_additional=additional_data,
+                               provider=provider_id,
+                               organization=organization_id,
+                               site_id=site_id,
+                               cache_timeout=cache_timeout) # Why are we using this here and nowhere else
 
 
 @portal_ui.route('/clear_cache/<provider_id>/')
