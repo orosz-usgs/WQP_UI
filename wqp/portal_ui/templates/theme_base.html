@@ -103,9 +103,9 @@
 			</div>
 		</div>
 
-		<script type="text/javascript" src="{{ url_for('portal_ui.bower.static', filename='js/jquery.js') }}"></script>
-		<script type="text/javascript" src="{{ url_for('portal_ui.bower.static', filename='js/bootstrap.js') }}"></script>
-		<script type="text/javascript" src="{{ url_for('portal_ui.bower.static', filename='js/loglevel.js') }}"></script>
+		{% assets "common_js" %}
+    		<script type="text/javascript" src="{{ ASSET_URL }}"></script>
+		{% endassets %}
 
 		{% block body_page_script %}{% endblock %}
 		

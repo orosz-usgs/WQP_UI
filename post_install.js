@@ -18,7 +18,7 @@ copy(
 		'node_modules/leaflet.markercluster/dist/*.js',
 		'node_modules/leaflet-draw/dist/*.js',
 		'node_modules/nanobar/*.js'
-	], 'wqp/bower_components/js');
+	], 'wqp/static/vendor/js');
 
 copy([
 	'node_modules/select2/dist/css/*.css',
@@ -26,35 +26,35 @@ copy([
 	'node_modules/select2-bootstrap-theme/dist/*.css',
 	'node_modules/leaflet-easybutton/src/*.css',
 	'node_modules/leaflet.markercluster/dist/*.css'
-	], 'wqp/bower_components/css');
+	], 'wqp/static/vendor/css');
 
 copy([
 	'node_modules/leaflet/dist/*.css'
-], 'wqp/bower_components/css/leaflet');
+], 'wqp/static/vendor/css/leaflet');
 copy([
 	'node_modules/leaflet/dist/images/*'
-], 'wqp/bower_components/css/leaflet/images');
+], 'wqp/static/vendor/css/leaflet/images');
 
 copy([
 	'node_modules/leaflet-draw/dist/*.css'
-], 'wqp/bower_components/css/leaflet-draw');
+], 'wqp/static/vendor/css/leaflet-draw');
 copy([
 	'node_modules/leaflet-draw/dist/images/*'
-], 'wqp/bower_components/css/leaflet-draw/images')
+], 'wqp/static/vendor/css/leaflet-draw/images')
 
 copy([
 	'node_modules/jquery-ui-dist/images/*'
-	], 'wqp/bower_components/css/images');
+	], 'wqp/static/vendor/css/images');
 
 copy([
 	'node_modules/bootstrap/less/*.less',
-	], 'wqp/bower_components/less/bootstrap');
+	], 'wqp/static/vendor/less/bootstrap');
 copy([
 	'node_modules/font-awesome/less/*.less'
-	], 'wqp/bower_components/less/font-awesome');
+	], 'wqp/static/vendor/less/font-awesome');
 
 copy([
 	'node_modules/font-awesome/fonts/*',
-], 'wqp/bower_components/fonts/font-awesome');
+], 'wqp/static/vendor/fonts/font-awesome');
 
-copy(['node_modules/bootstrap/less/mixins/*.less'], 'wqp/bower_components/less/bootstrap/mixins');
+copy(['node_modules/bootstrap/less/mixins/*.less'], 'wqp/static/vendor/less/bootstrap/mixins');
