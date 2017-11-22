@@ -16,7 +16,8 @@ copy(
 		'node_modules/leaflet-easybutton/src/*.js',
 		'node_modules/esri-leaflet/dist/*.js',
 		'node_modules/leaflet.markercluster/dist/*.js',
-		'node_modules/leaflet-draw/dist/*.js'
+		'node_modules/leaflet-draw/dist/*.js',
+		'node_modules/nanobar/*.js'
 	], 'wqp/bower_components/js');
 
 copy([

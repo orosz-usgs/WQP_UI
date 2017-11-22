@@ -45,6 +45,7 @@
     "leaflet-providers": "1.1.15",
     "leaflet.markercluster": "1.0.4",
     "loglevel": "1.4.1",
+    "nanobar": "^0.4.2",
     "numeral": "2.0.6",
     "select2": "4.0.3",
     "select2-bootstrap-theme": "0.1.0-beta.10",

@@ -5,11 +5,11 @@
 {% block page_style %}
 {% if total_site_count < 60000 %}
     <link rel="stylesheet" type="text/css"
-		  href="{{ url_for('bower.static', filename='leaflet/dist/leaflet.css') }}" />
+		  href="{{ url_for('bower.static', filename='css/leaflet/leaflet.css') }}" />
     <link rel="stylesheet" type="text/css"
-		  href="{{ url_for('bower.static', filename='leaflet.markercluster/dist/MarkerCluster.Default.css') }}"/>
+		  href="{{ url_for('bower.static', filename='css/MarkerCluster.Default.css') }}"/>
     <link rel="stylesheet" type="text/css"
-		  href="{{ url_for('bower.static', filename='leaflet.markercluster/dist/MarkerCluster.css') }}"/>
+		  href="{{ url_for('bower.static', filename='css/MarkerCluster.css') }}"/>
 {% endif %}
 {% endblock %}
 
@@ -32,16 +32,15 @@
 
 {% block body_page_script %}
     {% if total_site_count < 60000 %}
-    <script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet/dist/leaflet.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet-providers/leaflet-providers.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet.markercluster/dist/leaflet.markercluster.js') }}"></script>
-	<script type="text/javascript">
-		Config.sitesData = {{ sites_geojson|tojson }};
-		Config.localBaseUrl = '{{ config.LOCAL_BASE_URL }}';
-	</script>
-    {% assets "sites_map" %}
-		<script type="text/javascript" src="{{ ASSET_URL }}"></script>
-	{% endassets %}
-
+		<script type="text/javascript" src="{{ url_for('bower.static', filename='js/leaflet.js') }}"></script>
+		<script type="text/javascript" src="{{ url_for('bower.static', filename='js/leaflet-providers.js') }}"></script>
+		<script type="text/javascript" src="{{ url_for('bower.static', filename='js/leaflet.markercluster.js') }}"></script>
+		<script type="text/javascript">
+			Config.sitesData = {{ sites_geojson|tojson }};
+			Config.localBaseUrl = '{{ config.LOCAL_BASE_URL }}';
+		</script>
+		{% assets "sites_map" %}
+			<script type="text/javascript" src="{{ ASSET_URL }}"></script>
+		{% endassets %}
     {% endif %}
 {% endblock %}
