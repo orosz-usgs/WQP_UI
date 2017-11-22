@@ -18,21 +18,8 @@ if ($arg1 -eq "--clean") {
 
 }
 
-if ($arg1 -eq "--update") {
-	Write-Output "Updating npm and bower dependencies"
-	npm update
-	node_modules\bower\bin\bower update
-}
-
-if ($arg1 -eq "--clean") {
-	Write-Output "Installing npm and bower dependencies"
-	npm install
-	node_modules\bower\bin\bower install
-}
-
-Write-Output "Creating the virtualenv and installing Python requirements"
-if ($arg1 -eq "--clean") {
-}
+Write-Output "Installing npm and bower dependencies"
+npm install
 
 $envExists = Test-Path env
 if (-Not $envExists) {

@@ -18,17 +18,10 @@ if [ "$ARG1" == '--clean' ]; then
 	rm -rf wqp/static/gen;
 fi
 
-if [ "$ARG1" == '--update' ]; then
-	echo "Updating npm and bower dependencies";
-	npm update;
-	node_modules/bower/bin/bower update;
-fi
+echo "Installing npm and bower dependencies";
+npm install;
 
-if [ "$ARG1" == '--clean' ]; then
-    echo "Installing npm and bower dependencies";
-	npm install;
-	node_modules/bower/bin/bower install;
-fi
+node post_install.js
 
 if [ ! -s env ]; then
     echo "Creating the virtualenv env";
