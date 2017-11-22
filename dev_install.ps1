@@ -13,8 +13,6 @@ if ($arg1 -eq "--clean") {
 	Remove-Item env -Force -Recurse
 	Remove-Item node_modules -Force -Recurse
 	Remove-Item wqp\bower_components -Force -Recurse
-	Remove-Item wqp\static\.webassets-cache -Force -Recurse
-	Remove-Item wqp\static\gen -Force -Recurse
 
 }
 

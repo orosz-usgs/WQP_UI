@@ -12,10 +12,8 @@ if [ "$ARG1" == '--clean' ]; then
 	echo "Cleaning out current dependencies";
 
     rm -rf node_modules;
-	rm -rf wqp/bower_components;
+	rm -rf wqp/static;
 	rm -rf env;
-	rm -rf wqp/static/.webassets-cache;
-	rm -rf wqp/static/gen;
 fi
 
 echo "Installing npm and bower dependencies";
