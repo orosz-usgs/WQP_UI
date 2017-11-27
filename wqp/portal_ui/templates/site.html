@@ -19,6 +19,9 @@
 	{% assets "site_css" %}
 		<link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}" />
 	{% endassets %}
+	{# Once node has been updated, can add this to portal_vendor_css by using clean-css-cli #}
+	<link rel="stylesheet" type="text/css",
+		  href="{{ url_for('static', filename='vendor/css/leaflet/leaflet.css') }}" />
 {% endblock %}
 
 {% block page_content %}
