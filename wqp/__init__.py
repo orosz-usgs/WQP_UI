@@ -5,7 +5,6 @@ import sys
 from celery import Celery
 from celery.signals import after_setup_task_logger
 from flask import Flask, jsonify, request
-from flask_bower import Bower
 from flask_swagger import swagger
 from flask_swagger_ui import get_swaggerui_blueprint
 from requests import Session
@@ -57,8 +56,6 @@ def _custom_celery_handler(logger=None, *args, **kwargs):
 
 
 app = Flask(__name__.split()[0], instance_relative_config=True)
-
-Bower(app)
 
 # Loads configuration information from config.py and instance/config.py
 app.config.from_object('config')

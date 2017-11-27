@@ -12,23 +12,12 @@ if [ "$ARG1" == '--clean' ]; then
 	echo "Cleaning out current dependencies";
 
     rm -rf node_modules;
-	rm -rf wqp/bower_components;
+	rm -rf wqp/static;
 	rm -rf env;
-	rm -rf wqp/static/.webassets-cache;
-	rm -rf wqp/static/gen;
 fi
 
-if [ "$ARG1" == '--update' ]; then
-	echo "Updating npm and bower dependencies";
-	npm update;
-	node_modules/bower/bin/bower update;
-fi
-
-if [ "$ARG1" == '--clean' ]; then
-    echo "Installing npm and bower dependencies";
-	npm install;
-	node_modules/bower/bin/bower install;
-fi
+echo "Installing npm dependencies";
+npm install;
 
 if [ ! -s env ]; then
     echo "Creating the virtualenv env";

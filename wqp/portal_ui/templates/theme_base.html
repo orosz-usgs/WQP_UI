@@ -2,17 +2,19 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" >
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		{% block meta_tags %}{% endblock %}
 		<title>
 			{% block title %}{% endblock %}
 		</title>
-		
+
 		{% block page_style %}{% endblock %}
-		
-		<link rel="shortcut icon" href="{{ url_for('portal_ui.static', filename='img/favicon.ico') }}" type="image/vnd.microsoft.icon" />
-		{% block custom_style %}{%  endblock %}
+
+		<link rel="shortcut icon" href="{{ url_for('portal_ui.static', filename='img/favicon.ico') }}"
+			  type="image/vnd.microsoft.icon"/>
+
+		{% block custom_style %}{% endblock %}
 
 		{% block head_page_script %}{% endblock %}
 
@@ -29,8 +31,8 @@
 			Config.QUERY_URLS = {
 				Station: Config.SEARCH_QUERY_ENDPOINT + 'Station/search',
 				Result: Config.SEARCH_QUERY_ENDPOINT + 'Result/search',
-				Activity : Config.SEARCH_QUERY_ENDPOINT + 'Activity/search',
-				ActivityMetric : Config.SEARCH_QUERY_ENDPOINT + 'ActivityMetric/search',
+				Activity: Config.SEARCH_QUERY_ENDPOINT + 'Activity/search',
+				ActivityMetric: Config.SEARCH_QUERY_ENDPOINT + 'ActivityMetric/search',
 				ResultDetectionQuantitationLimit: Config.SEARCH_QUERY_ENDPOINT + 'ResultDetectionQuantitationLimit/search',
 				biologicalresult: Config.SEARCH_QUERY_ENDPOINT + 'biologicalresult/search'
 			};
@@ -49,26 +51,29 @@
 			Config.NAWQA_ONLY_PROJECTS = "{{ config.NAWQA_ONLY_PROJECTS }}";
 		</script>
 		{% block google_analytics_script %}
-			<script type="text/javascript">		
-	              var _gaq = _gaq || [];
-	              _gaq.push(['_setAccount', Config.GA_TRACKING_CODE]);
-	              _gaq.push (['_gat._anonymizeIp']);
-	              _gaq.push(['_trackPageview']);
-	
-	              (function() {
-	                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-	                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-	                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-	              })();		
-	        </script>
-	    {% endblock %}
-		
+			<script type="text/javascript">
+				var _gaq = _gaq || [];
+				_gaq.push(['_setAccount', Config.GA_TRACKING_CODE]);
+				_gaq.push(['_gat._anonymizeIp']);
+				_gaq.push(['_trackPageview']);
+
+				(function () {
+					var ga = document.createElement('script');
+					ga.type = 'text/javascript';
+					ga.async = true;
+					ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+					var s = document.getElementsByTagName('script')[0];
+					s.parentNode.insertBefore(ga, s);
+				})();
+			</script>
+		{% endblock %}
+
 		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 		<!--[if lt IE 9]>
-		   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-		   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-		<![endif]-->        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+			   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+			<![endif]-->        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 	</head>
 	<body>
@@ -84,7 +89,7 @@
 
 					{% block navbar_navigation %}{% endblock %}
 
-				</nav>				
+				</nav>
 			{% endblock %}
 
 			{% if config.ANNOUNCEMENT_BANNER %}
@@ -92,10 +97,10 @@
 				<script>
 					document.getElementById("announcement").innerHTML = '{{ config.ANNOUNCEMENT_BANNER|safe }}';
 				</script>
-            {% endif %}
+			{% endif %}
 
 			{% block page_content %}{% endblock %}
-			
+
 			<div id="footer-content">
 
 				{% block page_footer %}{% endblock %}
@@ -103,11 +108,11 @@
 			</div>
 		</div>
 
-		<script type="text/javascript" src="{{ url_for('portal_ui.bower.static', filename='jquery/dist/jquery.js') }}"></script>
-		<script type="text/javascript" src="{{ url_for('portal_ui.bower.static', filename='bootstrap/dist/js/bootstrap.js') }}"></script>
-		<script type="text/javascript" src="{{ url_for('portal_ui.bower.static', filename='loglevel/dist/loglevel.js') }}"></script>
+		{% assets "common_js" %}
+			<script type="text/javascript" src="{{ ASSET_URL }}"></script>
+		{% endassets %}
 
 		{% block body_page_script %}{% endblock %}
-		
+
 	</body>
 </html>

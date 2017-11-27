@@ -7,7 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "node_modules/karma/bin/karma start test/js/karma.conf.js --no-single-run --reporters progress"
+    "test": "node_modules/karma/bin/karma start test/js/karma.conf.js --no-single-run --reporters progress",
+    "postinstall": "node post_install.js"
   },
   "repository": {
     "type": "git",
@@ -20,7 +21,7 @@
   },
   "homepage": "https://github.com/USGS-CIDA/WQP_UI",
   "devDependencies": {
-    "bower": "1.8.0",
+    "cpy": "6.0.0",
     "jasmine-core": "2.5.2",
     "karma": "1.6.0",
     "karma-firefox-launcher": "1.0.1",
@@ -29,5 +30,24 @@
     "karma-sinon": "1.0.5",
     "less": "2.7.2",
     "sinon": "2.1.0"
+  },
+  "dependencies": {
+    "bootstrap": "3.3.7",
+    "esri-leaflet": "2.0.8",
+    "font-awesome": "4.7.0",
+    "handlebars": "4.0.5",
+    "jquery": "3.2.1",
+    "jquery-ui-dist": "1.12.1",
+    "leaflet": "1.0.3",
+    "leaflet-draw": "0.4.9",
+    "leaflet-easybutton": "2.2.0",
+    "leaflet-providers": "1.1.15",
+    "leaflet.markercluster": "1.0.4",
+    "loglevel": "1.4.1",
+    "nanobar": "^0.4.2",
+    "numeral": "2.0.6",
+    "select2": "4.0.3",
+    "select2-bootstrap-theme": "0.1.0-beta.10",
+    "underscore": "1.8.3"
   }
 }
