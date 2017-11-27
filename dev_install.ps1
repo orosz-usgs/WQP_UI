@@ -16,7 +16,7 @@ if ($arg1 -eq "--clean") {
 
 }
 
-Write-Output "Installing npm and bower dependencies"
+Write-Output "Installing npm dependencies"
 npm install
 
 $envExists = Test-Path env

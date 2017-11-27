@@ -16,10 +16,8 @@ if [ "$ARG1" == '--clean' ]; then
 	rm -rf env;
 fi
 
-echo "Installing npm and bower dependencies";
+echo "Installing npm dependencies";
 npm install;
-
-node post_install.js
 
 if [ ! -s env ]; then
     echo "Creating the virtualenv env";
