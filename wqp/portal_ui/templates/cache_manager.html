@@ -61,7 +61,7 @@
     <div id="progress"></div>
 {% endblock %}
 {% block body_page_script %}
-    <script type="text/javascript" src="{{ url_for('bower.static', filename='js/nanobar.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='vendor/js/nanobar.js') }}"></script>
     <script>
         function start_long_task(data_provider) {
             // add task status elements

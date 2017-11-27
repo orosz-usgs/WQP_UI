@@ -4,12 +4,9 @@
 
 {% block page_style %}
 {% if total_site_count < 60000 %}
-    <link rel="stylesheet" type="text/css"
-		  href="{{ url_for('bower.static', filename='css/leaflet/leaflet.css') }}" />
-    <link rel="stylesheet" type="text/css"
-		  href="{{ url_for('bower.static', filename='css/MarkerCluster.Default.css') }}"/>
-    <link rel="stylesheet" type="text/css"
-		  href="{{ url_for('bower.static', filename='css/MarkerCluster.css') }}"/>
+    {% assets "site_css" %}
+		<link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}" />
+	{% endassets %}
 {% endif %}
 {% endblock %}
 
@@ -32,9 +29,6 @@
 
 {% block body_page_script %}
     {% if total_site_count < 60000 %}
-		<script type="text/javascript" src="{{ url_for('bower.static', filename='js/leaflet.js') }}"></script>
-		<script type="text/javascript" src="{{ url_for('bower.static', filename='js/leaflet-providers.js') }}"></script>
-		<script type="text/javascript" src="{{ url_for('bower.static', filename='js/leaflet.markercluster.js') }}"></script>
 		<script type="text/javascript">
 			Config.sitesData = {{ sites_geojson|tojson }};
 			Config.localBaseUrl = '{{ config.LOCAL_BASE_URL }}';

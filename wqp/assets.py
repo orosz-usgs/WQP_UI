@@ -108,23 +108,57 @@ bundles = {
         filters='jsmin',
         output='gen/portal.js'),
     'coverage_js' : Bundle(
-        'portal_ui/js/LeafletMixins/SingleClickEventHandlerMixin.js',
-        'portal_ui/js/leafletLayers/CoverageLayer.js',
-        'portal_ui/js/coverage/coverageMap.js',
-        'portal_ui/js/coverage/coverageOnReady.js',
+        Bundle(
+            'vendor/js/underscore.js',
+            'vendor/js/leaflet.js',
+            'vendor/js/leaflet-providers.js',
+            'vendor/js/esri-leaflet.js',
+            'vendor/js/handlebars.js',
+            'vendor/js/numeral.js'
+        ),
+        Bundle(
+            'portal_ui/js/LeafletMixins/SingleClickEventHandlerMixin.js',
+            'portal_ui/js/leafletLayers/CoverageLayer.js',
+            'portal_ui/js/coverage/coverageMap.js',
+            'portal_ui/js/coverage/coverageOnReady.js'
+        ),
         filters='jsmin',
         output='gen/coverage.js'),
+    'site_css' : Bundle(
+        'vendor/css/leaflet/leaflet.css',
+        'vendor/css/MarkerCluster.Default.css',
+        'vendor/css/MarkerCluster.css',
+        filters='less,cssmin',
+        output='gen/site.css'
+    ),
     'sites_map': Bundle(
-        'portal_ui/js/generalMapping.js',
-        'portal_ui/js/providerSitesMap.js',
-        'portal_ui/js/providerSitesMapOnReady.js',
+        Bundle(
+            'vendor/js/underscore.js',
+            'vendor/js/leaflet.js',
+            'vendor/js/leaflet-providers.js',
+            'vendor/js/leaflet.markercluster.js',
+            'vendor/js/esri-leaflet.js'
+        ),
+        Bundle(
+            'portal_ui/js/generalMapping.js',
+            'portal_ui/js/providerSitesMap.js',
+            'portal_ui/js/providerSitesMapOnReady.js'
+        ),
         filters='jsmin',
         output='gen/sitesMap.js'),
     'site_map': Bundle(
-        'portal_ui/js/generalMapping.js',
-        'portal_ui/js/providerSiteMap.js',
-        'portal_ui/js/nldiMapping.js',
-        'portal_ui/js/providerSiteMapOnReady.js',
+        Bundle(
+            'vendor/js/leaflet.js',
+            'vendor/js/leaflet-providers.js',
+            'vendor/js/leaflet.markercluster.js',
+            'vendor/js/esri-leaflet.js'
+        ),
+        Bundle(
+            'portal_ui/js/generalMapping.js',
+            'portal_ui/js/providerSiteMap.js',
+            'portal_ui/js/nldiMapping.js',
+            'portal_ui/js/providerSiteMapOnReady.js'
+        ),
         filters='jsmin',
         output='gen/siteMap.js')
 }

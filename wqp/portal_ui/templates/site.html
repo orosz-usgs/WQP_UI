@@ -16,12 +16,9 @@
 {% endblock %}
 
 {% block page_style %}
-    <link rel="stylesheet" type="text/css"
-		  href="{{ url_for('bower.static', filename='css/leaflet/leaflet.css') }}" />
-    <link rel="stylesheet" type="text/css"
-		  href="{{ url_for('bower.static', filename='css/MarkerCluster.Default.css') }}"/>
-    <link rel="stylesheet" type="text/css"
-		  href="{{ url_for('bower.static', filename='css/MarkerCluster.css') }}"/>
+	{% assets "site_css" %}
+		<link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}" />
+	{% endassets %}
 {% endblock %}
 
 {% block page_content %}
@@ -99,12 +96,6 @@
 {% endblock %}
 
 {% block body_page_script %}
-	<script type="text/javascript"
-		src="{{ url_for('bower.static', filename='js/underscore-min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('bower.static', filename='js/leaflet.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('bower.static', filename='js/leaflet-providers.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('bower.static', filename='js/leaflet.markercluster.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('bower.static', filename='js/esri-leaflet.js') }}"></script>
 	<script type="text/javascript">
 		Config.site = {{ site|tojson }};
 		Config.localBaseUrl = '{{ config.LOCAL_BASE_URL }}';
