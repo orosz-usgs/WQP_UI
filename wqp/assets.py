@@ -38,11 +38,9 @@ bundles = {
     'portal_vendor_css': Bundle(
         'vendor/css/select2.css',
         'vendor/css/select2-bootstrap.css',
-        'vendor/css/leaflet/leaflet.css',
         'vendor/css/easy-button.css',
         'vendor/css/MarkerCluster.css',
         'vendor/css/MarkerCluster.Default.css',
-        'vendor/css/leaflet-draw/leaflet.draw.css',
         filters='cssmin',
         output='gen/portal.css'
     ),
@@ -125,7 +123,6 @@ bundles = {
         filters='jsmin',
         output='gen/coverage.js'),
     'site_css' : Bundle(
-        'vendor/css/leaflet/leaflet.css',
         'vendor/css/MarkerCluster.Default.css',
         'vendor/css/MarkerCluster.css',
         filters='less,cssmin',

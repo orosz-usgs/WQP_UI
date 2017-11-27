@@ -1,12 +1,17 @@
 {% extends 'base.html' %}
 
 {% block page_style %}
+
 	{% assets "portal_vendor_css" %}
 		<link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}"/>
 	{% endassets %}
 	{# Once node has been updated, can add this to portal_vendor_css by using clean-css-cli #}
 	<link rel="stylesheet" type="text/css" ,
 		  href="{{ url_for('static', filename='vendor/css/jquery-ui.css') }}"/>
+	<link rel="stylesheet" type="text/css",
+		  href="{{ url_for('static', filename='vendor/css/leaflet/leaflet.css') }}" />
+	<link rel="stylesheet" type="text/css",
+		  href="{{ url_for('static', filename='vendor/css/leaflet-draw/leaflet.draw.css') }}" />
 {% endblock %}
 
 {% block page_header_title %}Water Quality Data{% endblock %}
