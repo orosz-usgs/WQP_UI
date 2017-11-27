@@ -30,17 +30,17 @@ copy([
 
 copy([
 	'node_modules/leaflet/dist/*.css'
-], 'wqp/static/vendor/css/leaflet');
+	], 'wqp/static/vendor/css/leaflet');
 copy([
 	'node_modules/leaflet/dist/images/*'
-], 'wqp/static/vendor/css/leaflet/images');
+	], 'wqp/static/vendor/css/leaflet/images');
 
 copy([
 	'node_modules/leaflet-draw/dist/*.css'
-], 'wqp/static/vendor/css/leaflet-draw');
+	], 'wqp/static/vendor/css/leaflet-draw');
 copy([
 	'node_modules/leaflet-draw/dist/images/*'
-], 'wqp/static/vendor/css/leaflet-draw/images')
+	], 'wqp/static/vendor/css/leaflet-draw/images')
 
 copy([
 	'node_modules/jquery-ui-dist/images/*'
@@ -55,6 +55,8 @@ copy([
 
 copy([
 	'node_modules/font-awesome/fonts/*',
-], 'wqp/static/vendor/fonts/font-awesome');
+	], 'wqp/static/vendor/fonts/font-awesome');
 
-copy(['node_modules/bootstrap/less/mixins/*.less'], 'wqp/static/vendor/less/bootstrap/mixins');
+copy([
+	'node_modules/bootstrap/less/mixins/*.less'
+	], 'wqp/static/vendor/less/bootstrap/mixins');
