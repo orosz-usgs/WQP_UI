@@ -36,7 +36,6 @@ bundles = {
         filters='less,cssmin', 
         output='gen/custom.css'),
     'portal_vendor_css': Bundle(
-        'vendor/css/jquery-ui.css',
         'vendor/css/select2.css',
         'vendor/css/select2-bootstrap.css',
         'vendor/css/leaflet/leaflet.css',
