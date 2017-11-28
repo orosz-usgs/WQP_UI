@@ -22,4 +22,4 @@ script:
   - coverage run --omit=tests/*.py,*/tests/*.py,/home/travis/virtualenv/* -m unittest
 
 after_success:
-  coveralls
+  - coveralls
