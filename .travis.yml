@@ -1,7 +1,7 @@
 language: python
 
-env:
-  - PYTHON="3.6"
+python:
+  - "3.6"
 
 before_install:
   - nvm install 6.10.2
@@ -20,6 +20,6 @@ before_script:
 
 script:
   - coverage run --omit=tests/*.py,*/tests/*.py,/home/travis/virtualenv/* -m unittest
-
-after_success:
+  - node_modules/karma/bin/karma start test/js/karma.conf.js --no-colors
   - coveralls
+
