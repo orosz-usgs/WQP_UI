@@ -15,10 +15,10 @@ MAX_HUC2 = 1
 MAX_HUC8 = 10
 
 
-sites = Blueprint('sites', __name__)
+sites_blueprint = Blueprint('sites', __name__)
 
 
-@sites.route('/', methods=['GET'])
+@sites_blueprint.route('/', methods=['GET'])
 def nwis_sites():
     """
     NWIS site geojson retrieval
@@ -172,7 +172,7 @@ def nwis_sites():
                 new_params['huc'] = [huc2]
                 params_list.append(new_params)
 
-            for index in range(((huc8_count - 1) / MAX_HUC8) + 1):
+            for index in range(((huc8_count - 1) // MAX_HUC8) + 1):
                 new_params = dict(site_request_params)
                 new_params['huc'] = [','.join(huc8s[index * MAX_HUC8:min(huc8_count, (index + 1) * MAX_HUC8)])]
                 params_list.append(new_params)

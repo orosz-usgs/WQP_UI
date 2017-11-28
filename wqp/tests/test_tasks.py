@@ -1,8 +1,7 @@
-from unittest import TestCase
+import pickle
+from unittest import TestCase, mock
 
 import arrow
-import cPickle as pickle
-import mock
 import requests_mock
 
 from .. import app

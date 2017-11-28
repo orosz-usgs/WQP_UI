@@ -3,8 +3,8 @@ from geojson import Feature, Point, dumps as geojson_dumps
 from pyproj import Proj, transform
 from requests import Session
 
-from .. import app
-from ..utils import create_request_resp_log_msg
+from wqp import app
+from wqp.utils import create_request_resp_log_msg
 
 NWIS_SITES_INVENTORY_ENDPOINT = app.config['NWIS_SITES_INVENTORY_ENDPOINT']
 NWIS_SITES_SERVICE_ENDPOINT = app.config['NWIS_SITES_SERVICE_ENDPOINT']
@@ -141,12 +141,12 @@ def site_feature_generator(iter_lines):
     found_header = False
     headers = []
     while not found_header:
-        line = iter_lines.next()
+        line = next(iter_lines)
         if line[0] != '#':
             headers = line.split('\t')
             try:
                 # Skip the line after the header
-                iter_lines.next()
+                next(iter_lines)
                 found_header = True
             except StopIteration as e:
                 app.logger.warning('{} - Header not found.'.format(repr(e)))
@@ -180,7 +180,7 @@ def site_geojson_generator(params_list):
             site_resp = session.get(NWIS_SITES_SERVICE_ENDPOINT,
                                     params=params, headers={'Accept-Encoding': 'gzip,default'}, stream=True)
             if site_resp.status_code == 200:
-                for site_feature in site_feature_generator(site_resp.iter_lines()):
+                for site_feature in site_feature_generator(site_resp.iter_lines(decode_unicode=True)):
                     if prev_feature:
                         yield geojson_dumps(prev_feature) + ', \n'
                     prev_feature = site_feature
