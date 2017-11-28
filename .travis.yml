@@ -1,13 +1,14 @@
 language: python
 
 env:
-  - PYTHON="2.7"
+  - PYTHON="3.6"
 
 before_install:
   - nvm install 6.10.2
 
 install:
   - pip install -r requirements.txt
+  - pip install coverage
   - pip install coveralls
   - npm install
   - gem install coveralls-lcov
@@ -18,7 +19,7 @@ before_script:
   - echo "SECRET_KEY = 'key-for-testing'" > instance/config.py
 
 script:
-  - nosetests --logging-clear-handlers --with-coverage --cover-package=wqp
+  - coverage run --omit=*/tests*.py,/home/travis/virtualenv/* -m unittest
   - node_modules/karma/bin/karma start test/js/karma.conf.js --no-colors
 
 after_success:
