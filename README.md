@@ -6,7 +6,7 @@
 
 Water Quality Portal User Interface
 
-This application should be built using python 2.7.x and node version > 8.x.x. 
+This application should be built using python 3.6.x and node version > 8.x.x. 
 
 You will need to create a config.py file in the `instance` directory. It should contain the following:
 ```python
@@ -84,7 +84,7 @@ If you prefer to go through the setup manually:
 2. Install node (if you don't already have it installed.
 3. Run `npm install`
 5. Run `karma start test/js/karma.conf.js` (optional this runs the tests)
-6. Run `virtualenv --python=python2.7`
+6. Run `virtualenv --python=python3`
 7. Activate your virtualenv
 8. Run `pip install -r requirements.txt`
 
