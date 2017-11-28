@@ -3,7 +3,7 @@ PORTAL.hucValidator = function () {
 
 	var INVALID = {
 		isValid: false,
-		errorMessage: 'HUCs should be entered as semi-colon separated numbers with 2, 4, 6, 8, or 12 digits with optional \'*\' wildcard'
+		errorMessage: 'HUCs should be entered as semi-colon separated numbers with 2, 4, 6, 8, 10 or 12 digits with optional \'*\' wildcard'
 	};
 	var VALID = {isValid: true};
 	var starReg = /\*$/g;
@@ -33,6 +33,7 @@ PORTAL.hucValidator = function () {
 				    thisHuc.length !== 4 &&
 				    thisHuc.length !== 6 &&
 				    thisHuc.length !== 8 &&
+				    thisHuc.length !== 10 &&
 				    thisHuc.length !== 12) {
 					return INVALID;
 				}
