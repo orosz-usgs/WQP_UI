@@ -19,7 +19,7 @@ before_script:
   - echo "SECRET_KEY = 'key-for-testing'" > instance/config.py
 
 script:
-  - coverage run --omit=*/tests*.py,/home/travis/virtualenv/* -m unittest
+  - coverage run --omit=tests/*.py,*/tests/*.py,/home/travis/virtualenv/* -m unittest
 
 after_success:
   coveralls
