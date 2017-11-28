@@ -4,17 +4,17 @@ describe('Tests PORTAL.hucValidator', function () {
             expect(PORTAL.hucValidator.validate('').isValid).toBe(true);
         });
 
-        it('Expects huc value with more than 8 characters to be invalid', function () {
-            var result = PORTAL.hucValidator.validate('123456789');
+        it('Expects huc value with more than 12 characters to be invalid', function () {
+            var result = PORTAL.hucValidator.validate('1234567890123');
             expect(result.isValid).toBe(false);
             expect(result.errorMessage).toBeDefined();
 
-            result = PORTAL.hucValidator.validate('12345678*');
+            result = PORTAL.hucValidator.validate('123456789012*');
             expect(result.isValid).toBe(false);
             expect(result.errorMessage).toBeDefined();
         });
 
-        it('Expects huc value to be 2, 4, 6, or 8 digits', function () {
+        it('Expects huc value to be 2, 4, 6, 8, or 12 digits', function () {
             var result = PORTAL.hucValidator.validate('123');
             expect(result.isValid).toBe(false);
             expect(result.errorMessage).toBeDefined();
@@ -35,6 +35,9 @@ describe('Tests PORTAL.hucValidator', function () {
             expect(result.isValid).toBe(false);
             expect(result.errorMessage).toBeDefined();
 
+            result = PORTAL.hucValidator.validate('12345678901*')
+            expect(result.isValid).toBe(false);
+            expect(result.errorMessage).toBeDefined();
         });
 
         it('Expects huc value which contains non numerical characters to be invalid', function () {
