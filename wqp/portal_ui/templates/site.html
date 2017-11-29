@@ -87,7 +87,7 @@
 	<h2>Detailed Metadata</h2>
     <p>For the definitions of the metadata elements, please go to the Water Quality Portal <a href="{{ url_for('portal_ui.portal_userguide-canonical') }}">user guide</a> </p>
     <table class="table table-striped">
-        {% for key, value in site.iteritems() %}
+        {% for key, value in site.items() %}
          {% if value %}
             <tr>
                 <td>{{key}}</td>

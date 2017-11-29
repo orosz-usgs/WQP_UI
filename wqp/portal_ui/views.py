@@ -384,9 +384,9 @@ def manage_cache():
             app.logger.debug(msg)
             r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db_number,
                                   password=redis_config.get('password'))
-            provider_site_load_status = r.get(provider+'_sites_load_status')
+            provider_site_load_status = r.get('{0}_sites_load_status'.format(provider))
             if provider_site_load_status:
-                load_status = pickle.loads(provider_site_load_status)
+                load_status = pickle.loads(provider_site_load_status, encoding='bytes')
                 time = arrow.get(load_status['time_utc'])
                 load_status['time_zulu'] = time.format('YYYY-MM-DD HH:mm:ss ZZ')
                 load_status['time_human'] = time.humanize()
