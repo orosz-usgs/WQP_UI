@@ -21,6 +21,8 @@ before_script:
 script:
   - coverage run --omit=tests/*.py,*/tests/*.py,/home/travis/virtualenv/* -m unittest
   - node_modules/karma/bin/karma start test/js/karma.conf.js --no-colors
+
+after_success:
   - find coverage/ -mindepth 2 -iname '*.info' -exec cp -t coverage/ '{}' +
   - coveralls-lcov -v -n coverage/lcov.info > coverage/coverage.json
   - coveralls --merge=coverage/coverage.json
