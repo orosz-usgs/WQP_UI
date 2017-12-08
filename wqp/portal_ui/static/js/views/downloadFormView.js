@@ -71,7 +71,7 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 		var boundingBoxInputView = PORTAL.VIEWS.boundingBoxInputView({
 			$container : options.$form.find('#bounding-box')
 		});
-		var siteParameterInputView = PORTAL.VIEWS.siteParameterInputView({
+		var siteParameterInputView = PORTAL.VIEWS.siteParameterInputView({ //add code here
 			$container : options.$form.find('#site-params'),
 			siteTypeModel : PORTAL.MODELS.cachedCodes({codes : 'sitetype'}),
 			organizationModel : PORTAL.MODELS.cachedCodes({codes : 'organization'})
@@ -106,7 +106,7 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 
 		// Initialize form sub view
 		var initPlaceInputView = placeInputView.initialize();
-		var initSiteParameterInputView = siteParameterInputView.initialize();
+		var initSiteParameterInputView = siteParameterInputView.initialize(); //add code here
 		var initSamplingParametersInputView = samplingParametersInputView.initialize();
 		var initBiologicalSamplingInputInputView = biologicalSamplingInputView.initialize();
 		var initComplete = $.when(
