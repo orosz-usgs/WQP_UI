@@ -34,6 +34,6 @@ Write-Output "Running Javascript tests."
 node node_modules\karma\bin\karma start test\js\karma.conf.js
 
 Write-Output "Running Python tests"
-env\Scripts\nosetests --logging-clear-handlers
+env\Scripts\python -m unittest
 
 Write-Output "Finished setting up WQP-UI."
