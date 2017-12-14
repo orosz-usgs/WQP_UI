@@ -387,6 +387,7 @@ def manage_cache():
             provider_site_load_status = r.get('{0}_sites_load_status'.format(provider))
             if provider_site_load_status:
                 load_status = pickle.loads(provider_site_load_status, encoding='bytes')
+                app.logger.debug("load_status: {0}".format(str(load_status)))
                 time = arrow.get(load_status['time_utc'])
                 load_status['time_zulu'] = time.format('YYYY-MM-DD HH:mm:ss ZZ')
                 load_status['time_human'] = time.humanize()
