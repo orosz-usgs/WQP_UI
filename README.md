@@ -1,8 +1,8 @@
 # WQP_UI
 ===================
 
-[![Build Status](https://travis-ci.org/USGS-CIDA/WQP_UI.svg?branch=master)](https://travis-ci.org/USGS-CIDA/WQP_UI)
-[![Coverage Status](https://coveralls.io/repos/github/USGS-CIDA/WQP_UI/badge.svg)](https://coveralls.io/github/USGS-CIDA/WQP_UI)
+[![Build Status](https://travis-ci.org/NWQMC/WQP_UI.svg?branch=master)](https://travis-ci.org/NWQMC/WQP_UI)
+[![Coverage Status](https://coveralls.io/repos/github/NWQMC/WQP_UI/badge.svg?branch=master)](https://coveralls.io/github/NWQMC/WQP_UI?branch=master)
 
 Water Quality Portal User Interface
 
