@@ -3,8 +3,8 @@ from flask import Blueprint, request, make_response, Response
 from requests import head as requests_head
 
 from .utils import site_geojson_generator, is_huc2, is_huc8
-from ..utils import create_request_resp_log_msg
 from .. import app
+from ..utils import create_request_resp_log_msg
 
 NWIS_SITES_SERVICE_ENDPOINT = app.config['NWIS_SITES_SERVICE_ENDPOINT']
 REQUIRED_SERVICE_ARGUMENTS = ('sites', 'statecd', 'huc', 'bbox', 'countycd')
@@ -15,10 +15,10 @@ MAX_HUC2 = 1
 MAX_HUC8 = 10
 
 
-sites = Blueprint('sites', __name__)
+sites_blueprint = Blueprint('sites', __name__)
 
 
-@sites.route('/', methods=['GET'])
+@sites_blueprint.route('/', methods=['GET'])
 def nwis_sites():
     """
     NWIS site geojson retrieval
@@ -172,7 +172,7 @@ def nwis_sites():
                 new_params['huc'] = [huc2]
                 params_list.append(new_params)
 
-            for index in range(((huc8_count - 1) / MAX_HUC8) + 1):
+            for index in range(((huc8_count - 1) // MAX_HUC8) + 1):
                 new_params = dict(site_request_params)
                 new_params['huc'] = [','.join(huc8s[index * MAX_HUC8:min(huc8_count, (index + 1) * MAX_HUC8)])]
                 params_list.append(new_params)
