@@ -6,11 +6,12 @@ from celery import Celery
 from celery.signals import after_setup_task_logger
 from flask import Flask, jsonify, request
 from flask_swagger import swagger
-from flask_swagger_ui import get_swaggerui_blueprint
 from requests import Session
 
+from .flask_swagger_blueprint import get_swaggerui_blueprint
 
-__version__ = '4.17.0dev'
+
+__version__ = '5.1.0dev'
 
 
 def _create_log_handler(log_directory=None, log_name=__name__):
@@ -96,19 +97,18 @@ def log_after(response):
     return response
 
 
-import assets
-
+import wqp.assets
 
 session = Session()
 session.verify = app.config.get('VERIFY_CERT', True)
 
-from portal_ui.views import portal_ui
-from sites.views import sites
-from wqx.views import wqx
+from .portal_ui.views import portal_ui
+from .sites.views import sites_blueprint
+from .wqx.views import wqx
 
 
 app.register_blueprint(portal_ui, url_prefix='')
-app.register_blueprint(sites, url_prefix='/sites')
+app.register_blueprint(sites_blueprint, url_prefix='/sites')
 app.register_blueprint(wqx, url_prefix='/portal/schemas')
 
 

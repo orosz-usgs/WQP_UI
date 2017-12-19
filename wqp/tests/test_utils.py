@@ -1,6 +1,5 @@
-from unittest import TestCase
+from unittest import TestCase, mock
 
-import mock
 from requests import Response
 import requests_mock
 from werkzeug.exceptions import NotFound
