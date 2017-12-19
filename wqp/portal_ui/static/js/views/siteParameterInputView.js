@@ -46,6 +46,33 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 		});
 	};
 
+	var initializeSiteIDSelect = function($select, model) {
+		var formatData = function(data) {
+			return {
+				id : data.id,
+				text : data.id + ' - ' + data.desc
+			};
+		};
+		var isMatch = function(searchTerm, data) {
+			var termMatcher;
+			if (searchTerm) {
+				termMatcher = new RegExp(searchTerm, 'i');
+				return (termMatcher.test(data.id) || termMatcher.test(data.desc));
+			}
+			else {
+				return true;
+			}
+		};
+		PORTAL.VIEWS.createCodeSelect($select, {
+			model : model,
+			formatData : formatData,
+			isMatch : isMatch
+		}, {
+			minimumInputLength: 2,
+			closeOnSelect : false
+		});
+	};
+
 	/*
 	 * Initialize the widgets and DOM event handlers
 	 * @return Jquery promise
@@ -55,13 +82,14 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 	self.initialize = function() {
 		var $siteTypeSelect = options.$container.find('#siteType');
 		var $organizationSelect = options.$container.find('#organization');
-		var $siteIdInput = options.$container.find('#siteid');
+		var $siteIDSelect = options.$container.find('#siteid');
 		var $hucInput = options.$container.find('#huc');
 		var $minActivitiesInput = options.$container.find('#min-activities');
 
 		var fetchSiteType = options.siteTypeModel.fetch();
 		var fetchOrganization = options.organizationModel.fetch();
-		var fetchComplete = $.when(fetchSiteType, fetchOrganization);
+		var fetchSiteID = options.siteIDModel.fetch();
+		var fetchComplete = $.when(fetchSiteType, fetchOrganization, fetchSiteID);
 
 		fetchSiteType.done(function() {
 			PORTAL.VIEWS.createCodeSelect($siteTypeSelect, {model : options.siteTypeModel});
@@ -70,11 +98,17 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 			initializeOrganizationSelect($organizationSelect, options.organizationModel);
 		});
 
-		// Add event handlers
-		PORTAL.VIEWS.inputValidation({
-			inputEl: $siteIdInput,
-			validationFnc: PORTAL.validators.siteIdValidator
+		fetchSiteID.done(function() {
+			initializeSiteIDSelect($siteIDSelect, options.siteIDModel);
+			// PORTAL.VIEWS.createCodeSelect($siteIDSelect, {model: options.siteIDModel});
 		});
+
+
+		// Add event handlers
+		// PORTAL.VIEWS.inputValidation({
+		// 	inputEl: $siteIdInput,
+		// 	validationFnc: PORTAL.validators.siteIdValidator
+		// });
 		PORTAL.VIEWS.inputValidation({
 			inputEl: $hucInput,
 			validationFnc: PORTAL.hucValidator.validate,

@@ -253,7 +253,7 @@ def uri_organization(provider_id, organization_id):
         elif not organization:
             abort(404)
 
-        sites = retrieve_sites_geojson(provider_id, organization_id)
+        sites = retrieve_sites_geojson(provider_id, organization_id);
         if sites is None:
             abort(500)
         else:

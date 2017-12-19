@@ -74,7 +74,8 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 		var siteParameterInputView = PORTAL.VIEWS.siteParameterInputView({ //add code here
 			$container : options.$form.find('#site-params'),
 			siteTypeModel : PORTAL.MODELS.cachedCodes({codes : 'sitetype'}),
-			organizationModel : PORTAL.MODELS.cachedCodes({codes : 'organization'})
+			organizationModel : PORTAL.MODELS.cachedCodes({codes : 'organization'}),
+			siteIDModel: PORTAL.MODELS.cachedCodes({codes: 'site_id'}) //why doesn't this work
 		});
 		var nldiView = PORTAL.VIEWS.nldiView({
 			insetMapDivId : 'nldi-inset-map',
@@ -104,9 +105,10 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 					PORTAL.MODELS.providers.getIds());
 			});
 
+
 		// Initialize form sub view
 		var initPlaceInputView = placeInputView.initialize();
-		var initSiteParameterInputView = siteParameterInputView.initialize(); //add code here
+		var initSiteParameterInputView = siteParameterInputView.initialize();
 		var initSamplingParametersInputView = samplingParametersInputView.initialize();
 		var initBiologicalSamplingInputInputView = biologicalSamplingInputView.initialize();
 		var initComplete = $.when(
