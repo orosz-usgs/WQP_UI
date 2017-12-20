@@ -75,7 +75,6 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 			$container : options.$form.find('#site-params'),
 			siteTypeModel : PORTAL.MODELS.cachedCodes({codes : 'sitetype'}),
 			organizationModel : PORTAL.MODELS.cachedCodes({codes : 'organization'}),
-			siteIDModel: PORTAL.MODELS.cachedCodes({codes: 'site_id'}) //why doesn't this work
 		});
 		var nldiView = PORTAL.VIEWS.nldiView({
 			insetMapDivId : 'nldi-inset-map',

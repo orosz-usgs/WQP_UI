@@ -46,32 +46,42 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 		});
 	};
 
-	var initializeSiteIDSelect = function($select, model) {
+	var initializeSiteIdSelect = function($select, getOrganization) {
 		var formatData = function(data) {
 			return {
 				id : data.id,
 				text : data.id + ' - ' + data.desc
 			};
 		};
-		var isMatch = function(searchTerm, data) {
-			var termMatcher;
-			if (searchTerm) {
-				termMatcher = new RegExp(searchTerm, 'i');
-				return (termMatcher.test(data.id) || termMatcher.test(data.desc));
-			}
-			else {
-				return true;
-			}
+
+		// var isMatch = function (searchTerm, lookup) {
+		// 	var termMatcher;
+		// 	var codes;
+		// 	if (searchTerm) {
+		// 		termMatcher = new RegExp(searchTerm, 'i');
+		// 		codes = lookup.id;
+		// 		return (termMatcher.test(lookup.id) ||
+		// 			termMatcher.test(lookup.desc));
+		// 	}
+		// 	else {
+		// 		return true;
+		// 	}
+		// };
+
+		var spec = {
+			// model: model,
+			// isMatch: isMatch,
+			getKeys: getOrganization
 		};
-		PORTAL.VIEWS.createCodeSelect($select, {
-			model : model,
+
+		PORTAL.VIEWS.createPagedCodeSelect($select, {
+            codes: 'monitoringlocation',
 			formatData : formatData,
-			isMatch : isMatch
-		}, {
-			minimumInputLength: 2,
-			closeOnSelect : false
-		});
+			}, {
+            minimumInputLength: 2
+        });
 	};
+
 
 	/*
 	 * Initialize the widgets and DOM event handlers
@@ -82,14 +92,18 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 	self.initialize = function() {
 		var $siteTypeSelect = options.$container.find('#siteType');
 		var $organizationSelect = options.$container.find('#organization');
-		var $siteIDSelect = options.$container.find('#siteid');
+		var $siteIdInput = options.$container.find('#siteid');
 		var $hucInput = options.$container.find('#huc');
 		var $minActivitiesInput = options.$container.find('#min-activities');
 
 		var fetchSiteType = options.siteTypeModel.fetch();
 		var fetchOrganization = options.organizationModel.fetch();
-		var fetchSiteID = options.siteIDModel.fetch();
-		var fetchComplete = $.when(fetchSiteType, fetchOrganization, fetchSiteID);
+		var fetchComplete = $.when(fetchSiteType, fetchOrganization);
+
+		var getOrganization = function () {
+			var results = $organizationSelect.val();
+			return (results.length > 0) ? results : [];
+		};
 
 		fetchSiteType.done(function() {
 			PORTAL.VIEWS.createCodeSelect($siteTypeSelect, {model : options.siteTypeModel});
@@ -97,18 +111,29 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 		fetchOrganization.done(function() {
 			initializeOrganizationSelect($organizationSelect, options.organizationModel);
 		});
+		initializeSiteIdSelect($siteIdInput, getOrganization);
 
-		fetchSiteID.done(function() {
-			initializeSiteIDSelect($siteIDSelect, options.siteIDModel);
-			// PORTAL.VIEWS.createCodeSelect($siteIDSelect, {model: options.siteIDModel});
-		});
+		// $organizationSelect.on('change', function (ev) {
+		// 	var organization = $(ev.target).val();
+		// 	var siteids = $siteIdInput.val();
+		// 	// var isInStates = function(county) {
+		// 	// 	var codes = county.split(':');
+		// 	// 	var stateCode = codes[0] + ':' + codes[1];
+		// 	// 	return _.contains(states, stateCode);
+		// 	// };
+         //    //
+		// 	// $countySelect.val(_.filter(counties, isInStates)).trigger('change');
+		// });
+
+
+
 
 
 		// Add event handlers
-		// PORTAL.VIEWS.inputValidation({
-		// 	inputEl: $siteIdInput,
-		// 	validationFnc: PORTAL.validators.siteIdValidator
-		// });
+		PORTAL.VIEWS.inputValidation({
+			inputEl: $siteIdInput,
+			validationFnc: PORTAL.validators.siteIdValidator
+		});
 		PORTAL.VIEWS.inputValidation({
 			inputEl: $hucInput,
 			validationFnc: PORTAL.hucValidator.validate,
