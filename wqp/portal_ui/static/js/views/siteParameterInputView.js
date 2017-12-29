@@ -46,34 +46,15 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 		});
 	};
 
-	var initializeSiteIdSelect = function($select, getOrganization) {
+	var initializeSiteIdSelect = function($select) {
 		var formatData = function(data) {
-			return {
-				id : data.id,
-				text : data.id + ' - ' + data.desc
-			};
+			return data.value + ' - ' + data.desc;
 		};
 
-		// var isMatch = function (searchTerm, lookup) {
-		// 	var termMatcher;
-		// 	var codes;
-		// 	if (searchTerm) {
-		// 		termMatcher = new RegExp(searchTerm, 'i');
-		// 		codes = lookup.id;
-		// 		return (termMatcher.test(lookup.id) ||
-		// 			termMatcher.test(lookup.desc));
-		// 	}
-		// 	else {
-		// 		return true;
-		// 	}
+
+		// var spec = {
+		// 	getKeys: getOrganization
 		// };
-
-		var spec = {
-			// model: model,
-			// isMatch: isMatch,
-			getKeys: getOrganization
-		};
-
 		PORTAL.VIEWS.createPagedCodeSelect($select, {
             codes: 'monitoringlocation',
 			formatData : formatData,
@@ -100,10 +81,10 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 		var fetchOrganization = options.organizationModel.fetch();
 		var fetchComplete = $.when(fetchSiteType, fetchOrganization);
 
-		var getOrganization = function () {
-			var results = $organizationSelect.val();
-			return (results.length > 0) ? results : [];
-		};
+		// var getOrganization = function () {
+		// 	var results = $organizationSelect.val();
+		// 	return (results.length > 0) ? results : [];
+		// };
 
 		fetchSiteType.done(function() {
 			PORTAL.VIEWS.createCodeSelect($siteTypeSelect, {model : options.siteTypeModel});
@@ -111,16 +92,16 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 		fetchOrganization.done(function() {
 			initializeOrganizationSelect($organizationSelect, options.organizationModel);
 		});
-		initializeSiteIdSelect($siteIdInput, getOrganization);
+		initializeSiteIdSelect($siteIdInput);
 
 		// $organizationSelect.on('change', function (ev) {
 		// 	var organization = $(ev.target).val();
 		// 	var siteids = $siteIdInput.val();
-		// 	// var isInStates = function(county) {
-		// 	// 	var codes = county.split(':');
-		// 	// 	var stateCode = codes[0] + ':' + codes[1];
-		// 	// 	return _.contains(states, stateCode);
-		// 	// };
+		// 	var isInOrganization = function(siteid) {
+		// 		var codes = county.split(':');
+		// 		var stateCode = codes[0] + ':' + codes[1];
+		// 		return _.contains(states, stateCode);
+		// 	};
          //    //
 		// 	// $countySelect.val(_.filter(counties, isInStates)).trigger('change');
 		// });
@@ -130,10 +111,10 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 
 
 		// Add event handlers
-		PORTAL.VIEWS.inputValidation({
-			inputEl: $siteIdInput,
-			validationFnc: PORTAL.validators.siteIdValidator
-		});
+		// PORTAL.VIEWS.inputValidation({
+		// 	inputEl: $siteIdInput,
+		// 	validationFnc: PORTAL.validators.siteIdValidator
+		// });
 		PORTAL.VIEWS.inputValidation({
 			inputEl: $hucInput,
 			validationFnc: PORTAL.hucValidator.validate,
@@ -149,5 +130,3 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 
 	return self;
 };
-
-
