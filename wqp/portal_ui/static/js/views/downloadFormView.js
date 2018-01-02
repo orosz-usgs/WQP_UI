@@ -71,10 +71,10 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 		var boundingBoxInputView = PORTAL.VIEWS.boundingBoxInputView({
 			$container : options.$form.find('#bounding-box')
 		});
-		var siteParameterInputView = PORTAL.VIEWS.siteParameterInputView({ //add code here
+		var siteParameterInputView = PORTAL.VIEWS.siteParameterInputView({
 			$container : options.$form.find('#site-params'),
 			siteTypeModel : PORTAL.MODELS.cachedCodes({codes : 'sitetype'}),
-			organizationModel : PORTAL.MODELS.cachedCodes({codes : 'organization'}),
+			organizationModel : PORTAL.MODELS.cachedCodes({codes : 'organization'})
 		});
 		var nldiView = PORTAL.VIEWS.nldiView({
 			insetMapDivId : 'nldi-inset-map',
@@ -103,7 +103,6 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 				PORTAL.VIEWS.createStaticSelect2(options.$form.find('#providers-select'),
 					PORTAL.MODELS.providers.getIds());
 			});
-
 
 		// Initialize form sub view
 		var initPlaceInputView = placeInputView.initialize();

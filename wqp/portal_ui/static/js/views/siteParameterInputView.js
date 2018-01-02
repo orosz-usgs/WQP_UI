@@ -21,7 +21,6 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 
 	var initializeOrganizationSelect = function($select, model) {
 		var formatData = function(data) {
-			// console.log(data);
 			return {
 				id : data.id,
 				text : data.id + ' - ' + data.desc
@@ -99,7 +98,6 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 		});
 
 		initializeSiteIdSelect($siteIdInput, getOrganization());
-
 
 		$organizationSelect.on('change', function(ev) {
 			var organizations = $organizationSelect.val();
