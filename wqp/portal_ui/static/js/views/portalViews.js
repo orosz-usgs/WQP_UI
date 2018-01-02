@@ -34,7 +34,6 @@ PORTAL.VIEWS.createStaticSelect2 = function (el, ids, select2Options) {
  */
 PORTAL.VIEWS.createPagedCodeSelect = function (el, spec, select2Options) {
 	"use strict";
-	console.log(select2Options);
 	spec.pagesize = (spec.pagesize) ? spec.pagesize : 20;
 
 	if (!('formatData' in spec)) {

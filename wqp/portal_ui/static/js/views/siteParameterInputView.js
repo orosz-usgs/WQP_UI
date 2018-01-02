@@ -21,6 +21,7 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 
 	var initializeOrganizationSelect = function($select, model) {
 		var formatData = function(data) {
+			// console.log(data);
 			return {
 				id : data.id,
 				text : data.id + ' - ' + data.desc
@@ -46,15 +47,19 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 		});
 	};
 
-	var initializeSiteIdSelect = function($select) {
+	var initializeSiteIdSelect = function($select, organizations) {
 		var formatData = function(data) {
-			return data.value + ' - ' + data.desc;
+			if (organizations.length !== 0) { //if an organization is selected, return only those sites
+				if ($.inArray(data.value, organizations) !== -1) {
+					return data.value + ' - ' + data.desc;
+				}
+			}
+			else {
+                return data.value + ' - ' + data.desc;
+            }
 		};
 
 
-		// var spec = {
-		// 	getKeys: getOrganization
-		// };
 		PORTAL.VIEWS.createPagedCodeSelect($select, {
             codes: 'monitoringlocation',
 			formatData : formatData,
@@ -81,33 +86,30 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 		var fetchOrganization = options.organizationModel.fetch();
 		var fetchComplete = $.when(fetchSiteType, fetchOrganization);
 
-		// var getOrganization = function () {
-		// 	var results = $organizationSelect.val();
-		// 	return (results.length > 0) ? results : [];
-		// };
-
 		fetchSiteType.done(function() {
 			PORTAL.VIEWS.createCodeSelect($siteTypeSelect, {model : options.siteTypeModel});
 		});
+
+		var getOrganization = function () {
+			return $organizationSelect.val();
+		};
+
 		fetchOrganization.done(function() {
 			initializeOrganizationSelect($organizationSelect, options.organizationModel);
 		});
-		initializeSiteIdSelect($siteIdInput);
 
-		// $organizationSelect.on('change', function (ev) {
-		// 	var organization = $(ev.target).val();
-		// 	var siteids = $siteIdInput.val();
-		// 	var isInOrganization = function(siteid) {
-		// 		var codes = county.split(':');
-		// 		var stateCode = codes[0] + ':' + codes[1];
-		// 		return _.contains(states, stateCode);
-		// 	};
-         //    //
-		// 	// $countySelect.val(_.filter(counties, isInStates)).trigger('change');
-		// });
+		initializeSiteIdSelect($siteIdInput, getOrganization());
 
 
-
+		$organizationSelect.on('change', function(ev) {
+			var organizations = $organizationSelect.val();
+			var sites = $siteIdInput.val();
+			var isInOrganization = function(site) {
+				return _.contains(organizations, site);
+			};
+			$siteIdInput.val(_.filter(sites, isInOrganization)).trigger('change');
+			initializeSiteIdSelect($siteIdInput, organizations);
+		});
 
 
 		// Add event handlers
