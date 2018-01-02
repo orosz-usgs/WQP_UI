@@ -113,10 +113,6 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 
 
 		// Add event handlers
-		// PORTAL.VIEWS.inputValidation({
-		// 	inputEl: $siteIdInput,
-		// 	validationFnc: PORTAL.validators.siteIdValidator
-		// });
 		PORTAL.VIEWS.inputValidation({
 			inputEl: $hucInput,
 			validationFnc: PORTAL.hucValidator.validate,
