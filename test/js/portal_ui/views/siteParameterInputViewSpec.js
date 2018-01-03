@@ -40,7 +40,7 @@ describe('Tests for PORTAL.VIEWS.siteParameterInputView', function() {
 			fetch : jasmine.createSpy('organizationFetch').and.returnValue(fetchOrgDeferred)
 		};
 
-		spyOn(PORTAL.VIEWS, 'createCodeSelect');
+		spyOn(PORTAL.VIEWS, 'createPagedCodeSelect');
 
 		testView = PORTAL.VIEWS.siteParameterInputView(({
 			$container : $testDiv,
