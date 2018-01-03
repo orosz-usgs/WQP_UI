@@ -48,23 +48,17 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 
 	var initializeSiteIdSelect = function($select, organizations) {
 		var formatData = function(data) {
-			if (organizations.length !== 0) { //if an organization is selected, return only those sites
-				if ($.inArray(data.value, organizations) !== -1) {
-					return data.value + ' - ' + data.desc;
-				}
-			}
-			else {
-                return data.value + ' - ' + data.desc;
-            }
+			return data.value + ' - ' + data.desc;
 		};
 
 
 		PORTAL.VIEWS.createPagedCodeSelect($select, {
-            codes: 'monitoringlocation',
-			formatData : formatData,
+			codes: 'monitoringlocation',
+			organizationid: organizations,
+			formatData: formatData
 			}, {
-            minimumInputLength: 2
-        });
+			minimumInputLength: 2
+		});
 	};
 
 

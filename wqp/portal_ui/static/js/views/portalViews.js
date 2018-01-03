@@ -44,6 +44,18 @@ PORTAL.VIEWS.createPagedCodeSelect = function (el, spec, select2Options) {
 		};
 	}
 
+	var orgurl = "";
+	if (spec.organizationid) {
+        if (spec.organizationid.length > 0) {
+            orgurl = "?organizationid=" + spec.organizationid[0];
+			if (spec.organizationid.length > 1) {
+				for (var i = 1; i < spec.organizationid.length; i++) {
+					orgurl += "&organizationid=" + spec.organizationid[i];
+				}
+			}
+        }
+    }
+
 	var defaultOptions = {
 		allowClear: true,
 		theme: 'bootstrap',
@@ -51,7 +63,7 @@ PORTAL.VIEWS.createPagedCodeSelect = function (el, spec, select2Options) {
 			return (_.has(object, 'id')) ? object.id : null;
 		},
 		ajax: {
-			url: Config.CODES_ENDPOINT + '/' + spec.codes,
+			url: Config.CODES_ENDPOINT + '/' + spec.codes + orgurl,
 			dataType: 'json',
 			data: function (params) {
 				return {
