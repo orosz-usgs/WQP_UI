@@ -79,19 +79,20 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 		var fetchOrganization = options.organizationModel.fetch();
 		var fetchComplete = $.when(fetchSiteType, fetchOrganization);
 
-		fetchSiteType.done(function() {
-			PORTAL.VIEWS.createCodeSelect($siteTypeSelect, {model : options.siteTypeModel});
-		});
-
 		var getOrganization = function () {
 			return $organizationSelect.val();
 		};
+
+		initializeSiteIdSelect($siteIdInput, getOrganization());
+
+		fetchSiteType.done(function() {
+			PORTAL.VIEWS.createCodeSelect($siteTypeSelect, {model : options.siteTypeModel});
+		});
 
 		fetchOrganization.done(function() {
 			initializeOrganizationSelect($organizationSelect, options.organizationModel);
 		});
 
-		initializeSiteIdSelect($siteIdInput, getOrganization());
 
 		$organizationSelect.on('change', function(ev) {
 			var organizations = $organizationSelect.val();
