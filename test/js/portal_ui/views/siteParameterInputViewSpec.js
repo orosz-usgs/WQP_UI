@@ -41,6 +41,7 @@ describe('Tests for PORTAL.VIEWS.siteParameterInputView', function() {
 		};
 
 		spyOn(PORTAL.VIEWS, 'createPagedCodeSelect');
+		spyOn(PORTAL.VIEWS, 'createCodeSelect');
 
 		testView = PORTAL.VIEWS.siteParameterInputView(({
 			$container : $testDiv,
