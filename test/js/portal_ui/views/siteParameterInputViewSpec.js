@@ -114,15 +114,6 @@ describe('Tests for PORTAL.VIEWS.siteParameterInputView', function() {
 		});
 	});
 
-	it('Expects that invalid site ids are flagged with an error message', function() {
-		testView.initialize();
-		$siteId.val('abc').trigger('change');
-		expect($testDiv.has('.error-message').length).toBe(1);
-
-		$siteId.val('USGS-1234').trigger('change');
-		expect($testDiv.has('.error-message').length).toBe(0);
-	});
-
 	it('Expects that invalid huc ids are flagged with an error message', function() {
 		testView.initialize();
 		$huc.val('071').trigger('change');
