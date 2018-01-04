@@ -46,17 +46,19 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 		});
 	};
 
-	var initializeSiteIdSelect = function($select, getorg, orgsel) {
+	var initializeSiteIdSelect = function($select, $orgsel) {
 		var formatData = function(data) {
 			return data.value + ' - ' + data.desc;
 		};
+
+		var parametername = "organizationid";
 
 		PORTAL.VIEWS.createPagedCodeSelect($select, {
 			codes: 'monitoringlocation',
 			formatData: formatData
 			}, {
 			minimumInputLength: 2
-		}, getorg, orgsel);
+		}, $orgsel, parametername);
 	};
 
 
@@ -81,7 +83,7 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 			return $organizationSelect.val();
 		};
 
-		initializeSiteIdSelect($siteIdInput, getOrganization, $organizationSelect);
+		initializeSiteIdSelect($siteIdInput, $organizationSelect);
 
 		fetchSiteType.done(function() {
 			PORTAL.VIEWS.createCodeSelect($siteTypeSelect, {model : options.siteTypeModel});
@@ -90,17 +92,6 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 		fetchOrganization.done(function() {
 			initializeOrganizationSelect($organizationSelect, options.organizationModel);
 		});
-
-
-		$organizationSelect.on('change', function(ev) {
-			var organizations = $organizationSelect.val();
-			var sites = $siteIdInput.val();
-			var isInOrganization = function(site) {
-				return _.contains(organizations, site);
-			};
-			$siteIdInput.val(_.filter(sites, isInOrganization)).trigger('change');
-		});
-
 
 		// Add event handlers
 		PORTAL.VIEWS.inputValidation({

@@ -31,10 +31,10 @@ PORTAL.VIEWS.createStaticSelect2 = function (el, ids, select2Options) {
  *    @prop {Number} pagesize (optional) - page size to use in request. Defaults to 20
  *    @prop {Function} formatData (optional) - Function takes an Object with value, desc (optional), and providers properties and returns a string.
  * @param {Object} select2Options
- * @param {Function} func (optional) function used to modify the PagedCodeSelect
- * @param {Object} sel (optional) select used in modifying the PagedCodeSelect
+ * @param {jquery element} $sel (optional) select used in modifying the PagedCodeSelect
+ * @param {String} parametername - parameter name to be used in additional lookup
  */
-PORTAL.VIEWS.createPagedCodeSelect = function (el, spec, select2Options, func, sel) {
+PORTAL.VIEWS.createPagedCodeSelect = function (el, spec, select2Options, $sel, parametername) {
 	"use strict";
 	spec.pagesize = (spec.pagesize) ? spec.pagesize : 20;
 
@@ -46,20 +46,24 @@ PORTAL.VIEWS.createPagedCodeSelect = function (el, spec, select2Options, func, s
 		};
 	}
 
-    function geturl(org) {
-    	var orgurl = "";
-    	if (org.length > 0) {
-    		orgurl = "?organizationid=";
-    		orgurl += org.join("&organizationid=");
+    function getParentParams(parentValue) {
+    	var suffix = "";
+    	if (parentValue.length > 0) {
+    		suffix = "?" + parametername + "=";
+    		suffix += parentValue.join("&" + parametername + "=");
     	}
-		return orgurl;
+		return suffix;
 	};
 
-	var orgs;
-    if (sel) {
-        sel.on('change', function (ev) {
-        	orgs = func();
-        	defaultOptions.ajax.url = Config.CODES_ENDPOINT + '/' + spec.codes + geturl(orgs);
+    if ($sel) {
+        $sel.on('change', function (ev) {
+            var parents = $sel.val();
+			var children = el.val();
+			var isInOrganization = function(child) {
+				return _.contains(parents, child);
+			};
+			el.val(_.filter(children, isInOrganization)).trigger('change');
+        	defaultOptions.ajax.url = Config.CODES_ENDPOINT + '/' + spec.codes + getParentParams(parents);
             el.select2($.extend(defaultOptions, select2Options));
         });
     }
