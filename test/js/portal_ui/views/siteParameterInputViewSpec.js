@@ -9,15 +9,15 @@ describe('Tests for PORTAL.VIEWS.siteParameterInputView', function() {
 	var testView;
 	var $testDiv;
 	var $siteType, $organization, $siteId, $huc, $minActivities;
-	var fetchSiteTypeDeferred, fetchOrgDeferred;
+	var fetchSiteTypeDeferred, fetchOrgDeferred, fetchSiteIdDeferred;
 
 	var siteTypeModel, organizationModel;
 
 	beforeEach(function() {
-		$('body').append('<div id="test-div">' +
+		$('body').append('<select id="test-div">' +
 			'<select multiple id="siteType"></select>' +
 			'<select multiple id="organization"></select>' +
-			'<input type="text" id="siteid" />' +
+			'<select multiple id="siteid" /></select>' +
 			'<input type="text" id="huc" />' +
 			'<input type="text" id="min-activities" />' +
 			'</div>'
@@ -32,6 +32,7 @@ describe('Tests for PORTAL.VIEWS.siteParameterInputView', function() {
 
 		fetchSiteTypeDeferred = $.Deferred();
 		fetchOrgDeferred = $.Deferred();
+		fetchSiteIdDeferred = $.Deferred();
 
 		siteTypeModel = {
 			fetch : jasmine.createSpy('siteTypeFetch').and.returnValue(fetchSiteTypeDeferred)
@@ -66,6 +67,7 @@ describe('Tests for PORTAL.VIEWS.siteParameterInputView', function() {
 	it('Expects that the site select and organization selects are not initialized until their model fetches succeed', function() {
 		testView.initialize();
 		expect(PORTAL.VIEWS.createCodeSelect).not.toHaveBeenCalled();
+		expect(PORTAL.VIEWS.createPagedCodeSelect).not.toHaveBeenCalled();
 
 		fetchSiteTypeDeferred.resolve();
 		expect(PORTAL.VIEWS.createCodeSelect.calls.count()).toBe(1);
@@ -74,6 +76,10 @@ describe('Tests for PORTAL.VIEWS.siteParameterInputView', function() {
 		fetchOrgDeferred.resolve();
 		expect(PORTAL.VIEWS.createCodeSelect.calls.count()).toBe(2);
 		expect(PORTAL.VIEWS.createCodeSelect.calls.argsFor(1)[0].attr('id')).toEqual($organization.attr('id'));
+
+		fetchSiteIdDeferred.resolve();
+		expect(PORTAL.VIEWS.createPagedCodeSelect.calls.count()).toBe(2);
+		expect(PORTAL.VIEWS.createPagedCodeSelect.calls.argsFor(0)[0].attr('id')).toEqual($siteId.attr('id'));
 	});
 
 	describe('Tests for promise returned from initialize', function() {
