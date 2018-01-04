@@ -31,8 +31,10 @@ PORTAL.VIEWS.createStaticSelect2 = function (el, ids, select2Options) {
  *    @prop {Number} pagesize (optional) - page size to use in request. Defaults to 20
  *    @prop {Function} formatData (optional) - Function takes an Object with value, desc (optional), and providers properties and returns a string.
  * @param {Object} select2Options
+ * @param {Function} func (optional) function used to modify the PagedCodeSelect
+ * @param {Object} sel (optional) select used in modifying the PagedCodeSelect
  */
-PORTAL.VIEWS.createPagedCodeSelect = function (el, spec, select2Options) {
+PORTAL.VIEWS.createPagedCodeSelect = function (el, spec, select2Options, func, sel) {
 	"use strict";
 	spec.pagesize = (spec.pagesize) ? spec.pagesize : 20;
 
@@ -44,16 +46,22 @@ PORTAL.VIEWS.createPagedCodeSelect = function (el, spec, select2Options) {
 		};
 	}
 
-	var orgurl = "";
-	if (spec.organizationid) {
-        if (spec.organizationid.length > 0) {
-            orgurl = "?organizationid=" + spec.organizationid[0];
-			if (spec.organizationid.length > 1) {
-				for (var i = 1; i < spec.organizationid.length; i++) {
-					orgurl += "&organizationid=" + spec.organizationid[i];
-				}
-			}
-        }
+    function geturl(org) {
+    	var orgurl = "";
+    	if (org.length > 0) {
+    		orgurl = "?organizationid=";
+    		orgurl += org.join("&organizationid=");
+    		}
+		return orgurl;
+	};
+
+	var orgs;
+    if (sel) {
+        sel.on('change', function (ev) {
+        	orgs = func();
+        	defaultOptions.ajax.url = Config.CODES_ENDPOINT + '/' + spec.codes + geturl(orgs);
+            el.select2($.extend(defaultOptions, select2Options));
+        });
     }
 
 	var defaultOptions = {
@@ -63,7 +71,7 @@ PORTAL.VIEWS.createPagedCodeSelect = function (el, spec, select2Options) {
 			return (_.has(object, 'id')) ? object.id : null;
 		},
 		ajax: {
-			url: Config.CODES_ENDPOINT + '/' + spec.codes + orgurl,
+			url: Config.CODES_ENDPOINT + '/' + spec.codes,
 			dataType: 'json',
 			data: function (params) {
 				return {

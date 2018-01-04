@@ -46,19 +46,17 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 		});
 	};
 
-	var initializeSiteIdSelect = function($select, organizations) {
+	var initializeSiteIdSelect = function($select, getorg, orgsel) {
 		var formatData = function(data) {
 			return data.value + ' - ' + data.desc;
 		};
 
-
 		PORTAL.VIEWS.createPagedCodeSelect($select, {
 			codes: 'monitoringlocation',
-			organizationid: organizations,
 			formatData: formatData
 			}, {
 			minimumInputLength: 2
-		});
+		}, getorg, orgsel);
 	};
 
 
@@ -83,7 +81,7 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 			return $organizationSelect.val();
 		};
 
-		initializeSiteIdSelect($siteIdInput, getOrganization());
+		initializeSiteIdSelect($siteIdInput, getOrganization, $organizationSelect);
 
 		fetchSiteType.done(function() {
 			PORTAL.VIEWS.createCodeSelect($siteTypeSelect, {model : options.siteTypeModel});
@@ -101,15 +99,10 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 				return _.contains(organizations, site);
 			};
 			$siteIdInput.val(_.filter(sites, isInOrganization)).trigger('change');
-			initializeSiteIdSelect($siteIdInput, organizations);
 		});
 
 
 		// Add event handlers
-		PORTAL.VIEWS.inputValidation({
-			inputEl: $siteIdInput,
-			validationFnc: PORTAL.validators.siteIdValidator
-		});
 		PORTAL.VIEWS.inputValidation({
 			inputEl: $hucInput,
 			validationFnc: PORTAL.hucValidator.validate,
