@@ -78,7 +78,7 @@ describe('Tests for PORTAL.VIEWS.siteParameterInputView', function() {
 		expect(PORTAL.VIEWS.createCodeSelect.calls.argsFor(1)[0].attr('id')).toEqual($organization.attr('id'));
 
 		fetchSiteIdDeferred.resolve();
-		expect(PORTAL.VIEWS.createPagedCodeSelect.calls.count()).toBe(2);
+		expect(PORTAL.VIEWS.createPagedCodeSelect.calls.count()).toBe(1);
 		expect(PORTAL.VIEWS.createPagedCodeSelect.calls.argsFor(0)[0].attr('id')).toEqual($siteId.attr('id'));
 	});
 
