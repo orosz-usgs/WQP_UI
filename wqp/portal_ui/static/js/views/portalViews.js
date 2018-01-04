@@ -51,7 +51,7 @@ PORTAL.VIEWS.createPagedCodeSelect = function (el, spec, select2Options, func, s
     	if (org.length > 0) {
     		orgurl = "?organizationid=";
     		orgurl += org.join("&organizationid=");
-    		}
+    	}
 		return orgurl;
 	};
 
