@@ -17,7 +17,7 @@ describe('Tests for PORTAL.VIEWS.siteParameterInputView', function() {
 		$('body').append('<select id="test-div">' +
 			'<select multiple id="siteType"></select>' +
 			'<select multiple id="organization"></select>' +
-			'<select multiple id="siteid" /></select>' +
+			'<input type="text" id="siteid" />' +
 			'<input type="text" id="huc" />' +
 			'<input type="text" id="min-activities" />' +
 			'</div>'
