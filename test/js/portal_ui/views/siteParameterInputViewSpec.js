@@ -32,7 +32,7 @@ describe('Tests for PORTAL.VIEWS.siteParameterInputView', function() {
 
 		fetchSiteTypeDeferred = $.Deferred();
 		fetchOrgDeferred = $.Deferred();
-		fetchSiteIdDeferred = $.Deferred();
+		// fetchSiteIdDeferred = $.Deferred();
 
 		siteTypeModel = {
 			fetch : jasmine.createSpy('siteTypeFetch').and.returnValue(fetchSiteTypeDeferred)
