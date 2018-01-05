@@ -79,10 +79,6 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 		var fetchOrganization = options.organizationModel.fetch();
 		var fetchComplete = $.when(fetchSiteType, fetchOrganization);
 
-		var getOrganization = function () {
-			return $organizationSelect.val();
-		};
-
 		initializeSiteIdSelect($siteIdInput, $organizationSelect);
 
 		fetchSiteType.done(function() {
