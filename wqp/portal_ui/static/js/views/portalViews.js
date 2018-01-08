@@ -37,7 +37,6 @@ PORTAL.VIEWS.createStaticSelect2 = function (el, ids, select2Options) {
 PORTAL.VIEWS.createPagedCodeSelect = function (el, spec, select2Options, $sel, parametername) {
 	"use strict";
 	spec.pagesize = (spec.pagesize) ? spec.pagesize : 20;
-
 	if (!('formatData' in spec)) {
 		spec.formatData = function (data) {
 			var desc = (data.hasOwnProperty('desc') && (data.desc) ? data.desc
@@ -48,9 +47,12 @@ PORTAL.VIEWS.createPagedCodeSelect = function (el, spec, select2Options, $sel, p
 
     function getParentParams(parentValue) {
     	var suffix = "";
+    	//add parentValue to URL, using .join if it is an array and simply appending if a string
     	if (parentValue.length > 0) {
     		suffix = "?" + parametername + "=";
-    		suffix += parentValue.join("&" + parametername + "=");
+    		if (typeof parentValue !== "string") {
+    			suffix += parentValue.join("&" + parametername + "=");
+			}
     	}
 		return suffix;
 	};
