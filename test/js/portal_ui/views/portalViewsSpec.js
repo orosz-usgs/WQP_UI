@@ -80,11 +80,11 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
 			expect(options.placeholder).toEqual('Pick one');
 		});
 
-		it('Expects the filter select parameters will be used when provided', function () {
+		it('Expects the filter parameters will be used when provided', function () {
 			PORTAL.VIEWS.createPagedCodeSelect($('#test-select2'), testSpec, {}, testFilter, testParam);
-			testFilter.val(testParam).trigger('change');
+			testFilter.val("param1").trigger('change');
 			var ajaxOption = $.fn.select2.calls.argsFor(0)[0].ajax;
-			expect(ajaxOption.url).toContain(testParam);
+			expect(ajaxOption.url).toContain("?test=param1");
 		});
 
 		it('Expects the select2\'s ajax parameter to be configured to use the specified codes service', function () {
