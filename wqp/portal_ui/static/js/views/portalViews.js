@@ -50,12 +50,19 @@ PORTAL.VIEWS.createPagedCodeSelect = function (el, spec, select2Options, $filter
 		//add parentValue to URL, using .join if it is an array and simply appending if a string
 		if (parentValue.length > 0) {
 			suffix = "?" + parametername + "=";
+			if (typeof parentValue === "string") {
+				//val() converts arrays to strings if not called on a select multiple. In this case, convert it back.
+				if (parentValue.includes(",")) {
+					parentValue = parentValue.split(",");
+				}
+				else {
+					suffix += parentValue;
+				}
+			}
 			if (Array.isArray(parentValue)) {
 				suffix += parentValue.join("&" + parametername + "=");
 			}
-			else if (typeof parentValue === "string") {
-				suffix += parentValue;
-			}
+
 		}
 		return suffix;
 	}

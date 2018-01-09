@@ -52,7 +52,7 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
 				'</div>');
 			testSpec = {codes: 'codeitems'};
 			testParam = "test";
-			testFilter = $("#filtertext")
+			testFilter = $("#filtertext");
 
 			spyOn($.fn, 'select2');
 		});
@@ -85,6 +85,9 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
 			testFilter.val("param1").trigger('change');
 			var ajaxOption = $.fn.select2.calls.argsFor(0)[0].ajax;
 			expect(ajaxOption.url).toContain("?test=param1");
+			testFilter.val(["param2", "param3"]).trigger('change');
+			expect(ajaxOption.url).toContain("?test=param2&test=param3");
+
 		});
 
 		it('Expects the select2\'s ajax parameter to be configured to use the specified codes service', function () {
