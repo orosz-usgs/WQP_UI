@@ -42,13 +42,17 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
 	describe('Tests for PORTAL.VIEWS.createPagedCodeSelect', function () {
 		var server;
 		var testSpec;
+		var testParam, testFilter;
 
 		beforeEach(function () {
 			server = sinon.fakeServer.create();
 			$('body').append('<div id="test-div">' +
 				'<select multiple id="test-select2" />' +
+				'<input type="text" id="filtertext" />' +
 				'</div>');
 			testSpec = {codes: 'codeitems'};
+			testParam = "test";
+			testFilter = $("#filtertext");
 
 			spyOn($.fn, 'select2');
 		});
@@ -60,7 +64,7 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
 		});
 
 		it('Expects select2 to be initialized with defaults properties', function () {
-			PORTAL.VIEWS.createPagedCodeSelect($('#test-div'), testSpec, {});
+			PORTAL.VIEWS.createPagedCodeSelect($('#test-select2'), testSpec, {});
 			expect($.fn.select2).toHaveBeenCalled();
 
 			var options = $.fn.select2.calls.argsFor(0)[0];
@@ -70,22 +74,31 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
 		});
 
 		it('Expects select2 defaults to be overriden and additional parameters used to create the select2', function () {
-			PORTAL.VIEWS.createPagedCodeSelect($('#test-div'), testSpec, {placeholder: 'Pick one'});
+			PORTAL.VIEWS.createPagedCodeSelect($('#test-select2'), testSpec, {placeholder: 'Pick one'});
 			var options = $.fn.select2.calls.argsFor(0)[0];
 			expect(options.allowClear).toEqual(true);
 			expect(options.placeholder).toEqual('Pick one');
+		});
+
+		it('Expects the filter parameters will be used when provided', function () {
+			PORTAL.VIEWS.createPagedCodeSelect($('#test-select2'), testSpec, {}, testFilter, testParam);
+			testFilter.val("param1").trigger('change');
+			var ajaxOption = $.fn.select2.calls.argsFor(0)[0].ajax;
+			expect(ajaxOption.url).toContain("?test=param1");
+			testFilter.val(["param2", "param3"]).trigger('change');
+			expect(ajaxOption.url).toContain("?test=param2&test=param3");
 
 		});
 
 		it('Expects the select2\'s ajax parameter to be configured to use the specified codes service', function () {
-			PORTAL.VIEWS.createPagedCodeSelect($('#test-div'), testSpec, {});
+			PORTAL.VIEWS.createPagedCodeSelect($('#test-select2'), testSpec, {});
 			var ajaxOption = $.fn.select2.calls.argsFor(0)[0].ajax;
 			expect(ajaxOption.url).toContain(testSpec.codes);
 		});
 
 		it('Expects the select2\'s ajax parameter\'s data function to set query params', function () {
 			testSpec.pagesize = 15;
-			PORTAL.VIEWS.createPagedCodeSelect($('#test-div'), testSpec, {});
+			PORTAL.VIEWS.createPagedCodeSelect($('#test-select2'), testSpec, {});
 			var dataFnc = $.fn.select2.calls.argsFor(0)[0].ajax.data;
 			var params = dataFnc({term: 'ab', page: 2});
 			expect(params).toEqual({
@@ -98,7 +111,7 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
 		it('Expects the select2\'s ajax parameter\'s results function to format the data into a form that select2 can use', function () {
 			testSpec.formatData = jasmine.createSpy('formatDataSpy').and.returnValue('formatted data');
 			testSpec.pagesize = 15;
-			PORTAL.VIEWS.createPagedCodeSelect($('#test-div'), testSpec, {});
+			PORTAL.VIEWS.createPagedCodeSelect($('#test-select2'), testSpec, {});
 			var resultsFnc = $.fn.select2.calls.argsFor(0)[0].ajax.processResults;
 
 			var DATA = $.parseJSON('{"codes" : [{"value" : "v1", "desc" : "Text1", "providers" : "P1"},' +
