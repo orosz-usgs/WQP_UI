@@ -84,7 +84,7 @@ def geoserver_proxy_request(target_url, cert_verification):
     :return:
     """
     if request.method == 'GET':
-        resp = session.get(target_url + '?' + request.query_string, verify=cert_verification)
+        resp = session.get(target_url + '?' + request.query_string.decode("utf-8"), verify=cert_verification)
         # This fixed an an ERR_INVALID_CHUNKED_ENCODING when the app was run on the deployment server.
         if 'transfer-encoding' in resp.headers:
             del resp.headers['transfer-encoding']
