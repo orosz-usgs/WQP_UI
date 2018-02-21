@@ -1,7 +1,6 @@
 
-from unittest import TestCase
+from unittest import TestCase, mock
 
-import mock
 from requests_mock import Mocker as Requests_Mocker
 
 from ..views import nwis_sites, US_HUC2s
@@ -18,7 +17,7 @@ class TestSitesViewTestCase(TestCase):
             response = nwis_sites()
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data, 'Invalid parameters')
+        self.assertEqual(response.data.decode(), 'Invalid parameters')
 
     @mock.patch('wqp.sites.views.site_geojson_generator')
     def test_valid_parameters(self, m, mock_gen):

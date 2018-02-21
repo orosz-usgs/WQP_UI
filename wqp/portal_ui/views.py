@@ -1,9 +1,7 @@
-import cPickle as pickle
-import sys
+import pickle
 
-
-from flask import render_template, request, make_response, redirect, url_for, abort, Response, jsonify, Blueprint
 import arrow
+from flask import render_template, request, make_response, redirect, url_for, abort, Response, jsonify, Blueprint
 import redis
 
 from .. import app, session
@@ -18,12 +16,6 @@ portal_ui = Blueprint('portal_ui', __name__,
                       template_folder='templates',
                       static_folder='static',
                       static_url_path='/portal_ui/static')
-# fix a mysterious encoding issue, see
-# http://stackoverflow.com/questions/21129020/how-to-fix-unicodedecodeerror-ascii-codec-cant-decode-byte
-# this is a great reason to update to python 3,
-# which is unicode by default and doesn't suffer from so many weird problems due to encoding
-reload(sys)
-sys.setdefaultencoding('utf8')
 
 # set some useful local variables from the global config variables
 code_endpoint = app.config['CODES_ENDPOINT']
@@ -392,9 +384,10 @@ def manage_cache():
             app.logger.debug(msg)
             r = redis.StrictRedis(host=redis_config['host'], port=redis_config['port'], db=redis_db_number,
                                   password=redis_config.get('password'))
-            provider_site_load_status = r.get(provider+'_sites_load_status')
+            provider_site_load_status = r.get('{0}_sites_load_status'.format(provider))
             if provider_site_load_status:
-                load_status = pickle.loads(provider_site_load_status)
+                load_status = pickle.loads(provider_site_load_status, encoding='bytes')
+                app.logger.debug("load_status: {0}".format(str(load_status)))
                 time = arrow.get(load_status['time_utc'])
                 load_status['time_zulu'] = time.format('YYYY-MM-DD HH:mm:ss ZZ')
                 load_status['time_human'] = time.humanize()

@@ -14,13 +14,13 @@ class WqxTestCase(TestCase):
 
     def test_wqx_index_xsd(self):
         resp = self.client.get('/WQX-Outbound/2_0/index.xsd')
-        self.assertIn('xsd:schema', resp.data)
+        self.assertIn('xsd:schema', resp.data.decode())
         self.assertEqual('application/xml', resp.headers['Content-Type'])
 
     def test_wqx_index_html(self):
         resp = self.client.get('/WQX-Outbound/2_0/index.html')
-        self.assertIn('WQX-Outbound Schema Info', resp.data)
+        self.assertIn('WQX-Outbound Schema Info', resp.data.decode())
 
     def test_wqx_doc_index_html(self):
         resp = self.client.get('/WQX-Outbound/2_0/docs/index.html')
-        self.assertIn('Schema', resp.data)
+        self.assertIn('Schema', resp.data.decode())

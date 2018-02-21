@@ -2,7 +2,7 @@
 
 ARG1=${1:-"--update"};
 
-echo "You must have npm, python 2.7 and virtualenv installed"
+echo "You must have npm, python 3.x and virtualenv installed"
 if [ ! -s instance/config.py ]; then
 	echo "Please create an instance/config.py file before proceeding. See the README.md for what's required."
 	return
@@ -12,27 +12,16 @@ if [ "$ARG1" == '--clean' ]; then
 	echo "Cleaning out current dependencies";
 
     rm -rf node_modules;
-	rm -rf wqp/bower_components;
+	rm -rf wqp/static;
 	rm -rf env;
-	rm -rf wqp/static/.webassets-cache;
-	rm -rf wqp/static/gen;
 fi
 
-if [ "$ARG1" == '--update' ]; then
-	echo "Updating npm and bower dependencies";
-	npm update;
-	node_modules/bower/bin/bower update;
-fi
-
-if [ "$ARG1" == '--clean' ]; then
-    echo "Installing npm and bower dependencies";
-	npm install;
-	node_modules/bower/bin/bower install;
-fi
+echo "Installing npm dependencies";
+npm install;
 
 if [ ! -s env ]; then
     echo "Creating the virtualenv env";
-	virtualenv --python=python2.7 --no-download env;
+	virtualenv --python=python3 --no-download env;
 fi
 echo "Installing python requirements";
 env/bin/pip install -r requirements.txt;
@@ -41,6 +30,6 @@ echo "Running Javascript tests";
 node_modules/karma/bin/karma start test/js/karma.conf.js;
 
 echo "Running Python tests";
-env/bin/nosetests --logging-clear-handlers
+env/bin/python -m unittest
 
 echo "Finished setting up WQP-UI";

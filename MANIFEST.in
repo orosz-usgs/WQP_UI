@@ -1,7 +1,6 @@
 include *.md
 recursive-include wqp/static *
 recursive-include wqp/portal_ui/static *
-recursive-include wqp/bower_components *
 recursive-include test *
 recursive-include docs *
 recursive-include wqp/portal_ui/templates *

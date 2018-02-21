@@ -71,7 +71,7 @@ def pull_feed(feed_url):
         links = feed_div.select('a[href^="' + base + '"]')
         for link in links:
             link['href'] = link['href'].replace(base, '')
-        post = unicode(soup)
+        post = str(soup)
 
     return post
 
@@ -84,7 +84,7 @@ def geoserver_proxy_request(target_url, cert_verification):
     :return:
     """
     if request.method == 'GET':
-        resp = session.get(target_url + '?' + request.query_string, verify=cert_verification)
+        resp = session.get(target_url + '?' + request.query_string.decode("utf-8"), verify=cert_verification)
         # This fixed an an ERR_INVALID_CHUNKED_ENCODING when the app was run on the deployment server.
         if 'transfer-encoding' in resp.headers:
             del resp.headers['transfer-encoding']
@@ -202,8 +202,8 @@ def retrieve_county(country, state, county):
     countycode = statecode + ':' + county
     county_lookups = retrieve_lookups('/countycode', {'statecode': statecode, 'text': countycode})
 
-    if county_lookups and county_lookups.has_key('recordCount'):
-        if county_lookups.get('recordCount') == 1 and county_lookups.has_key('codes'):
+    if county_lookups and 'recordCount' in county_lookups:
+        if county_lookups.get('recordCount') == 1 and 'codes' in county_lookups:
             country_state_county = county_lookups.get('codes', [{}])[0].get('desc', '').split(',')
             if len(country_state_county) > 2:
                 county_data = {'StateName': country_state_county[1], 'CountyName': country_state_county[2]}
@@ -309,7 +309,7 @@ def tsv_dict_generator(tsv_iter_lines):
         returned. Otherwise the dictionary representing the line is returned using the headers as keys
     """
 
-    header_line = tsv_iter_lines.next()
+    header_line = next(tsv_iter_lines)
     headers = header_line.split('\t')
     column_count = len(headers)
 

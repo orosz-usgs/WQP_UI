@@ -4,7 +4,7 @@
 
 {% block page_style %}
 	<link rel="stylesheet" type="text/css"
-		  href="{{ url_for('bower.static', filename='leaflet/dist/leaflet.css') }}" />
+		  href="{{ url_for('static', filename='vendor/css/leaflet/leaflet.css') }}" />
 {% endblock %}
 
 {% block page_header_title %}Water Quality Portal National Results Coverage{% endblock %}
@@ -64,16 +64,6 @@
 {% endblock %}
 
 {% block body_page_script %}
-	<script type="text/javascript"
-			src="{{ url_for('bower.static', filename='underscore/underscore-min.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet/dist/leaflet.js') }}"></script>
-	<script type="text/javascript"
-			src="{{ url_for('bower.static', filename='leaflet-providers/leaflet-providers.js') }}"></script>
-	<script type="text/javascript"
-			src="{{ url_for('bower.static', filename='esri-leaflet/dist/esri-leaflet.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('bower.static', filename='handlebars/handlebars.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('bower.static', filename='numeral/min/numeral.min.js') }}"></script>
-
 	{% assets "coverage_js" %}
 		<script type="text/javascript" src="{{ ASSET_URL }}"></script>
 	{% endassets %}

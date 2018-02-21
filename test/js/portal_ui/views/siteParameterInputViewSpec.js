@@ -17,7 +17,7 @@ describe('Tests for PORTAL.VIEWS.siteParameterInputView', function() {
 		$('body').append('<div id="test-div">' +
 			'<select multiple id="siteType"></select>' +
 			'<select multiple id="organization"></select>' +
-			'<input type="text" id="siteid" />' +
+			'<select multiple id="siteid"></select>' +
 			'<input type="text" id="huc" />' +
 			'<input type="text" id="min-activities" />' +
 			'</div>'
@@ -40,6 +40,7 @@ describe('Tests for PORTAL.VIEWS.siteParameterInputView', function() {
 			fetch : jasmine.createSpy('organizationFetch').and.returnValue(fetchOrgDeferred)
 		};
 
+		spyOn(PORTAL.VIEWS, 'createPagedCodeSelect');
 		spyOn(PORTAL.VIEWS, 'createCodeSelect');
 
 		testView = PORTAL.VIEWS.siteParameterInputView(({
@@ -60,6 +61,12 @@ describe('Tests for PORTAL.VIEWS.siteParameterInputView', function() {
 		testView.initialize();
 		expect(siteTypeModel.fetch).toHaveBeenCalled();
 		expect(organizationModel.fetch).toHaveBeenCalled();
+	});
+
+	it('Expects that the siteid select is initialized', function() {
+		testView.initialize();
+		expect(PORTAL.VIEWS.createPagedCodeSelect).toHaveBeenCalled();
+		expect(PORTAL.VIEWS.createPagedCodeSelect.calls.argsFor(0)[0].attr('id')).toEqual($siteId.attr('id'));
 	});
 
 	it('Expects that the site select and organization selects are not initialized until their model fetches succeed', function() {
@@ -113,15 +120,6 @@ describe('Tests for PORTAL.VIEWS.siteParameterInputView', function() {
 		});
 	});
 
-	it('Expects that invalid site ids are flagged with an error message', function() {
-		testView.initialize();
-		$siteId.val('abc').trigger('change');
-		expect($testDiv.has('.error-message').length).toBe(1);
-
-		$siteId.val('USGS-1234').trigger('change');
-		expect($testDiv.has('.error-message').length).toBe(0);
-	});
-
 	it('Expects that invalid huc ids are flagged with an error message', function() {
 		testView.initialize();
 		$huc.val('071').trigger('change');
@@ -147,4 +145,6 @@ describe('Tests for PORTAL.VIEWS.siteParameterInputView', function() {
 
 		expect($testDiv.has('.error-message').length).toBe(0);
 	});
+
+
 });

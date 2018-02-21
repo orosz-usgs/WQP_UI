@@ -1,12 +1,12 @@
 # WQP_UI
 ===================
 
-[![Build Status](https://travis-ci.org/USGS-CIDA/WQP_UI.svg?branch=master)](https://travis-ci.org/USGS-CIDA/WQP_UI)
-[![Coverage Status](https://coveralls.io/repos/github/USGS-CIDA/WQP_UI/badge.svg)](https://coveralls.io/github/USGS-CIDA/WQP_UI)
+[![Build Status](https://travis-ci.org/NWQMC/WQP_UI.svg?branch=master)](https://travis-ci.org/NWQMC/WQP_UI)
+[![Coverage Status](https://coveralls.io/repos/github/NWQMC/WQP_UI/badge.svg?branch=master)](https://coveralls.io/github/NWQMC/WQP_UI?branch=master)
 
 Water Quality Portal User Interface
 
-This application should be built using python 2.7.x. You also should have node installed on your development machine.
+This application should be built using python 3.6.x and node version > 8.x.x. 
 
 You will need to create a config.py file in the `instance` directory. It should contain the following:
 ```python
@@ -83,9 +83,8 @@ If you prefer to go through the setup manually:
 1. If you want to clean, remove the env, node, node_modules, portal_ui/bower_components, portal_ui/static/gen, and portal_ui/static/.webassets-cache directories
 2. Install node (if you don't already have it installed.
 3. Run `npm install`
-4. Run `bower install`
 5. Run `karma start test/js/karma.conf.js` (optional this runs the tests)
-6. Run `virtualenv --python=python2.7`
+6. Run `virtualenv --python=python3`
 7. Activate your virtualenv
 8. Run `pip install -r requirements.txt`
 

@@ -31,17 +31,53 @@ PORTAL.VIEWS.createStaticSelect2 = function (el, ids, select2Options) {
  *    @prop {Number} pagesize (optional) - page size to use in request. Defaults to 20
  *    @prop {Function} formatData (optional) - Function takes an Object with value, desc (optional), and providers properties and returns a string.
  * @param {Object} select2Options
+ * @param {jquery element} $filter (optional) input, select, or textarea used in filtering the PagedCodeSelect
+ * @param {String} parametername - parameter name to be used in additional lookup
  */
-PORTAL.VIEWS.createPagedCodeSelect = function (el, spec, select2Options) {
+PORTAL.VIEWS.createPagedCodeSelect = function (el, spec, select2Options, $filter, parametername) {
 	"use strict";
 	spec.pagesize = (spec.pagesize) ? spec.pagesize : 20;
-
 	if (!('formatData' in spec)) {
 		spec.formatData = function (data) {
 			var desc = (data.hasOwnProperty('desc') && (data.desc) ? data.desc
 				: data.value);
 			return desc + ' (' + PORTAL.MODELS.providers.formatAvailableProviders(data.providers) + ')';
 		};
+	}
+
+	function getParentParams(parentValue) {
+		var suffix = "";
+		//add parentValue to URL, using .join if it is an array and simply appending if a string
+		if (parentValue.length > 0) {
+			suffix = "?" + parametername + "=";
+			if (typeof parentValue === "string") {
+				//val() converts arrays to strings if not called on a select multiple. In this case, convert it back.
+				if (parentValue.includes(",")) {
+					parentValue = parentValue.split(",");
+				}
+				else {
+					suffix += parentValue;
+				}
+			}
+			if (Array.isArray(parentValue)) {
+				suffix += parentValue.join("&" + parametername + "=");
+			}
+
+		}
+		return suffix;
+	}
+
+	if ($filter) {
+		$filter.on('change', function (ev) {
+			var parents = $filter.val();
+			var children = el.val();
+			var isInOrganization = function(child) {
+				return _.contains(parents, child);
+			};
+			el.val(_.filter(children, isInOrganization)).trigger('change');
+			defaultOptions.ajax.url = Config.CODES_ENDPOINT + '/' + spec.codes + getParentParams(parents);
+			el.select2($.extend(defaultOptions, select2Options));
+		});
 	}
 
 	var defaultOptions = {

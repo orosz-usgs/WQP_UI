@@ -1,4 +1,0 @@
-[report]
-omit =
-    wqp/tests/*.py
-    wqp/*/tests/*.py

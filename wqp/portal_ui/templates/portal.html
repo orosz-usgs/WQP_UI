@@ -1,22 +1,17 @@
 {% extends 'base.html' %}
 
 {% block page_style %}
-	<link rel="stylesheet" type="text/css"
-		  href="{{ url_for('bower.static', filename='jquery-ui/themes/smoothness/jquery-ui.min.css') }}"/>
-	<link rel="stylesheet" type="text/css"
-		  href="{{ url_for('bower.static', filename='select2/dist/css/select2.min.css') }}"/>
-	<link rel="stylesheet" type="text/css"
-		  href="{{ url_for('bower.static', filename='select2-bootstrap-theme/dist/select2-bootstrap.min.css') }}"/>
-	<link rel="stylesheet" type="text/css"
-		  href="{{ url_for('bower.static', filename='leaflet/dist/leaflet.css') }}" />
-	<link rel="stylesheet" type="text/css"
-		  href="{{ url_for('bower.static', filename='Leaflet.EasyButton/src/easy-button.css') }}" />
-	<link rel="stylesheet" type="text/css"
-		  href="{{ url_for('bower.static', filename='leaflet.markercluster/dist/MarkerCluster.css') }}" />
-	<link rel="stylesheet" type="text/css"
-		  href="{{ url_for('bower.static', filename='leaflet.markercluster/dist/MarkerCluster.Default.css') }}" />
-	<link rel="stylesheet" type="text/css"
-		  href="{{ url_for('bower.static', filename='leaflet-draw/dist/leaflet.draw.css') }}" />
+
+	{% assets "portal_vendor_css" %}
+		<link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}"/>
+	{% endassets %}
+	{# Once node has been updated, can add this to portal_vendor_css by using clean-css-cli #}
+	<link rel="stylesheet" type="text/css" ,
+		  href="{{ url_for('static', filename='vendor/css/jquery-ui.css') }}"/>
+	<link rel="stylesheet" type="text/css",
+		  href="{{ url_for('static', filename='vendor/css/leaflet/leaflet.css') }}" />
+	<link rel="stylesheet" type="text/css",
+		  href="{{ url_for('static', filename='vendor/css/leaflet-draw/leaflet.draw.css') }}" />
 {% endblock %}
 
 {% block page_header_title %}Water Quality Data{% endblock %}
@@ -175,7 +170,8 @@
 						<div class="form-group">
 							<label class="control-label" for="siteid">Site ID:</label>
 							<div>
-								<input class="form-control" type="text" name="siteid" id="siteid"/>
+								<select multiple class="form-control" id="siteid" name="siteid"
+										data-placeholder="All"></select>
 							</div>
 							<button type="button" class="help-link popover-help" id="siteHelp" data-help="siteID">?
 							</button>
@@ -188,9 +184,11 @@
 							<button type="button" class="help-link popover-help" id="hucHelp" data-help="huc">?</button>
 						</div>
 						<div class="form-group" id='min-activities-div'>
-							<label class="control-label" for="min-activities">Minimum sampling activities per site:</label>
+							<label class="control-label" for="min-activities">Minimum sampling activities per
+								site:</label>
 							<div>
-								<input class="form-control" type="number" min="1" name="minactivities" id="min-activites"/>
+								<input class="form-control" type="number" min="1" name="minactivities"
+									   id="min-activites"/>
 							</div>
 							<button type="button" class="help-link popover-help" id="min-activities-help"
 									data-help="minactivities">?
@@ -198,7 +196,8 @@
 						</div>
 						<div id="nldi-container">
 							<label for="nldi-picker">Search Upstream and Downstream (BETA)</label>
-							<button type="button" class="help-link popover-help" id="nldiHelp" data-help="nldi">?</button>
+							<button type="button" class="help-link popover-help" id="nldiHelp" data-help="nldi">?
+							</button>
 						</div>
 						<div id="nldi-param-container"></div>
 						<div id="nldi-inset-map"></div>
@@ -270,7 +269,8 @@
 								<div class="form-group" id='minresults-div'>
 									<label class="control-label" for="minresults">Minimum results per site:</label>
 									<div>
-										<input class="form-control" type="number" min="1" name="minresults" id="minresults"/>
+										<input class="form-control" type="number" min="1" name="minresults"
+											   id="minresults"/>
 									</div>
 									<button type="button" class="help-link popover-help" id="minresultsHelp"
 											data-help="minresults">?
@@ -355,7 +355,8 @@
 							   title="Click in box and select one or more sources, otherwise data will be retrieved from all available providers">Select
 							database:</label>
 						<div>
-							<select class="form-control modern" id="providers-select" name="providers" style="width: 100%"
+							<select class="form-control modern" id="providers-select" name="providers"
+									style="width: 100%"
 									multiple>
 							</select>
 						</div>
@@ -375,7 +376,8 @@
 							<label>Style sites:&nbsp;</label>
 							<select id="sld-select-input" class="form-control">
 								{% for sld in config.SITE_SLDS %}
-									<option value="{{ sld.id }}" {% if loop.first %}checked{% endif %}>{{ sld.text }}</option>
+									<option value="{{ sld.id }}"
+											{% if loop.first %}checked{% endif %}>{{ sld.text }}</option>
 								{% endfor %}
 							</select>
 						</div>
@@ -423,15 +425,17 @@
 									<label for="narrowsamples">Sample results (narrow)</label>
 								</li>
 								<li>
-									<input type="radio" class="result-type" id="activity-input" value="Activity" />
+									<input type="radio" class="result-type" id="activity-input" value="Activity"/>
 									<label for="activity-input">Sampling Activity</label>
 								</li>
 								<li>
-									<input type="radio" class="result-type" id="activitymetric-input" value="ActivityMetric" />
+									<input type="radio" class="result-type" id="activitymetric-input"
+										   value="ActivityMetric"/>
 									<label for="activitymetric-input">Sampling Activity Metrics</label>
 								</li>
 								<li>
-									<input type="radio" class="result-type" id="resultdetection" value="ResultDetectionQuantitationLimit" />
+									<input type="radio" class="result-type" id="resultdetection"
+										   value="ResultDetectionQuantitationLimit"/>
 									<label for="resultdetection">Result Detection Quantitation Limit Data</label>
 								</li>
 							</ul>
@@ -471,7 +475,8 @@
 				<div id="show-queries-div" class="panel-body">
 					<button class="btn" id="show-queries-button" type="button">Show Web Service Calls</button>
 					&nbsp;
-					<button class="btn" id="show-arcgis-online-help" type="button">Show ArcGIS Online Parameters</button>
+					<button class="btn" id="show-arcgis-online-help" type="button">Show ArcGIS Online Parameters
+					</button>
 					&nbsp;
 					<button type="button" id="WQXSchemaHelp" class="popover-help" data-help="xmlSchema">?</button>
 					<div id="api-queries-div">
@@ -560,11 +565,12 @@
 						<label for="dialog-activities">Sampling Activity</label>
 					</li>
 					<li>
-						<input type="radio" class="resultType" id="dialog-activitymetric" value="ActivityMetric" />
+						<input type="radio" class="resultType" id="dialog-activitymetric" value="ActivityMetric"/>
 						<label for="dialog-activitymetric">Sampling Activity Metrics</label>
 					</li>
 					<li>
-						<input type="radio" name="resultType" id="dialog-resultdetection" value="ResultDetectionQuantitationLimit" />
+						<input type="radio" name="resultType" id="dialog-resultdetection"
+							   value="ResultDetectionQuantitationLimit"/>
 						<label for="dialog-resultdetection">Result Detection Quantitation Limit Data</label>
 					</li>
 				</ul>
@@ -603,7 +609,8 @@
 				</div>
 				<div class="modal-body"></div>
 				<div class="modal-footer">
-					<button id="validate-close-button" type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+					<button id="validate-close-button" type="button" class="btn btn-default" data-dismiss="modal">Ok
+					</button>
 				</div>
 			</div>
 		</div>
@@ -616,9 +623,11 @@
 					<h4>Error</h4>
 				</div>
 				<div class="modal-body">Unable to connect to the Water Quality Portal. To report the issue, please
-					<a href="/contact_us/?comments=Unable to initialize the download form.">contact us</a>.</div>
+					<a href="/contact_us/?comments=Unable to initialize the download form.">contact us</a>.
+				</div>
 				<div class="modal-footer">
-					<button id="validate-close-button" type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+					<button id="validate-close-button" type="button" class="btn btn-default" data-dismiss="modal">Ok
+					</button>
 				</div>
 			</div>
 		</div>
@@ -626,17 +635,6 @@
 {% endblock %}
 
 {% block body_page_script %}
-	<script type="text/javascript" src="{{ url_for('bower.static', filename='underscore/underscore.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('bower.static', filename='select2/dist/js/select2.full.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('bower.static', filename='jquery-ui/jquery-ui.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('bower.static', filename='numeral/min/numeral.min.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('bower.static', filename='handlebars/handlebars.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet/dist/leaflet.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet-providers/leaflet-providers.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('bower.static', filename='esri-leaflet/dist/esri-leaflet.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('bower.static', filename='Leaflet.EasyButton/src/easy-button.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet.markercluster/dist/leaflet.markercluster.js') }}"></script>
-	<script type="text/javascript" src="{{ url_for('bower.static', filename='leaflet-draw/dist/leaflet.draw.js') }}"></script>
 	{% assets "portal_js" %}
 		<script type="text/javascript" src="{{ ASSET_URL }}"></script>
 	{% endassets %}

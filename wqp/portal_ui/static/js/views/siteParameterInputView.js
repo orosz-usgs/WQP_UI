@@ -46,6 +46,22 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 		});
 	};
 
+	var initializeSiteIdSelect = function($select, $orgsel) {
+		var formatData = function(data) {
+			return data.value + ' - ' + data.desc;
+		};
+
+		var parametername = "organizationid";
+
+		PORTAL.VIEWS.createPagedCodeSelect($select, {
+			codes: 'monitoringlocation',
+			formatData: formatData
+			}, {
+			minimumInputLength: 2
+		}, $orgsel, parametername);
+	};
+
+
 	/*
 	 * Initialize the widgets and DOM event handlers
 	 * @return Jquery promise
@@ -63,18 +79,17 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 		var fetchOrganization = options.organizationModel.fetch();
 		var fetchComplete = $.when(fetchSiteType, fetchOrganization);
 
+		initializeSiteIdSelect($siteIdInput, $organizationSelect);
+
 		fetchSiteType.done(function() {
 			PORTAL.VIEWS.createCodeSelect($siteTypeSelect, {model : options.siteTypeModel});
 		});
+
 		fetchOrganization.done(function() {
 			initializeOrganizationSelect($organizationSelect, options.organizationModel);
 		});
 
 		// Add event handlers
-		PORTAL.VIEWS.inputValidation({
-			inputEl: $siteIdInput,
-			validationFnc: PORTAL.validators.siteIdValidator
-		});
 		PORTAL.VIEWS.inputValidation({
 			inputEl: $hucInput,
 			validationFnc: PORTAL.hucValidator.validate,
@@ -90,5 +105,3 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 
 	return self;
 };
-
-

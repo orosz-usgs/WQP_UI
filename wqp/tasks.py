@@ -1,10 +1,10 @@
 import datetime
 import os
+import pickle
 
 import arrow
-from celery.utils.log import get_task_logger
 from celery.schedules import crontab
-import cPickle as pickle
+from celery.utils.log import get_task_logger
 import redis
 
 from . import app, celery, session
@@ -54,7 +54,7 @@ def load_sites_into_cache_async(self, provider_id):
         if resp.status_code == 200:
             result['total_count'] = int(resp.headers['Total-Site-Count'])
             logger.debug('Parsing sites from TSV for {}.'.format(provider_id))
-            for site in tsv_dict_generator(resp.iter_lines()):
+            for site in tsv_dict_generator(resp.iter_lines(decode_unicode=True)):
                 current_count += 1
                 if site:
                     result['cached_count'] += 1
