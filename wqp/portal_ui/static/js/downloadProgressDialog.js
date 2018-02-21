@@ -40,6 +40,8 @@ PORTAL.VIEWS.downloadProgressDialog = function (el) {
 
 	var countsHbTemplate = Handlebars.compile('Your query will return ' +
 		'{{#if isResults}} <b>{{total.results}}</b> sample results from {{/if}}' +
+		'{{#if isProjects }}data on <b>{{total.projects}}</b> projects {{/if}}' +
+		'{{#if isProjectMonitoringLocationWeightings }}data on <b>{{total.projectmonitoringlocationweightings}}</b> project monitoring location weightings {{/if}}' +
 		'{{#if isActivities }}data on <b>{{total.activities}}</b> sampling activities at {{/if}}' +
 		'{{#if isActivityMetrics }}data on <b>{{total.activitymetrics }}</b> activity metrics in {{total.activities}} activities {{/if}}' +
 		'{{#if isResultDetection}}data on <b>{{total.resultdetections}}</b> result detection quantitation limit data {{/if}}' +
@@ -49,6 +51,8 @@ PORTAL.VIEWS.downloadProgressDialog = function (el) {
 		'<br/>' +
 		'{{/if}}' +
 		'{{#each providers}} From {{id}}: ' +
+		'{{#if ../isProjects}}{{counts.projects}} projects {{/if}}' +
+		'{{#if ../isProjectMonitoringLocationWeightings}}{{counts.projectmonitoringlocationweightings}} project monitoring location weightings  {{/if}}' +
 		'{{#if ../isResults}}{{counts.results}} sample results from {{/if}}' +
 		'{{#if ../isActivities}}{{counts.activities}} sampling activities from {{/if}}' +
 		'{{#if ../isActivityMetrics}}{{counts.activitymetrics}} activity metrics in {{counts.activities}} activities{{/if}}' +
@@ -89,6 +93,8 @@ PORTAL.VIEWS.downloadProgressDialog = function (el) {
 			var context = {
 				total: counts.total,
 				showSites: (resultType === 'Station') || (resultType === 'Result') || (resultType === 'Activity'),
+				isProjects: resultType === 'Project',
+				isProjectMonitoringLocationWeightings: resultType === 'ProjectMonitoringLocationWeighting',
 				isResults : resultType === 'Result',
 				isActivities : resultType === 'Activity',
 				isActivityMetrics : resultType === 'ActivityMetric',
