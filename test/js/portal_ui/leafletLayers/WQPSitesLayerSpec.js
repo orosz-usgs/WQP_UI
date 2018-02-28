@@ -14,14 +14,14 @@ describe('leafletLayers.WQPSitesLayer', function() {
 		});
 
 		it('Expects that the layer created is an extension of L.TileLayer.WMS', function() {
-			var queryParamArray = [{name : 'statecode', value : 'US:55'}];
+			var queryParamArray = [{name : 'statecode', value : ['US:55']}];
 			L.wqpSitesLayer(queryParamArray, {});
 
 			expect(L.TileLayer.WMS.prototype.initialize).toHaveBeenCalled();
 		});
 
 		it('Expects that options specified are passed through to the TileLayer.WMS constructor', function() {
-			var queryParamArray = [{name : 'statecode', value : 'US:55'}];
+			var queryParamArray = [{name : 'statecode', value : ['US:55']}];
 			var options = {styles : 'style1'};
 			L.wqpSitesLayer(queryParamArray, options);
 
@@ -32,13 +32,12 @@ describe('leafletLayers.WQPSitesLayer', function() {
 			var queryParamArray = [
 				{
 					name: 'statecode',
-					value : 'US:55'
+					value : ['US:55'],
+					multiple: false
 				}, {
 					name: 'countycode',
-					value : 'US:55:025'
-				}, {
-					name: 'countycode',
-					value : 'US:55:001'
+					value : ['US:55:025', 'US:55:001'],
+					multiple: false
 				}
 			];
 			var testLayer = L.wqpSitesLayer(queryParamArray, {});
@@ -50,7 +49,8 @@ describe('leafletLayers.WQPSitesLayer', function() {
 			var queryParamArray = [
 				{
 					name: 'huc',
-					value: '0701*;0702*'
+					value: '0701*;0702*',
+					multiple: true
 				}
 			];
 			var testLayer = L.wqpSitesLayer(queryParamArray, {});
@@ -62,19 +62,19 @@ describe('leafletLayers.WQPSitesLayer', function() {
 			var queryParamArray = [
 				{
 					name: 'statecode',
-					value : 'US:55'
+					value : ['US:55'],
+					multiple: false
 				}, {
 					name: 'countycode',
-					value : 'US:55:025'
-				}, {
-					name: 'countycode',
-					value : 'US:55:001'
+					value : ['US:55:025', 'US:55:001'],
+					multiple: false
 				}, {
 					name : 'zip',
-					value : 'yes'
+					value : 'yes',
+					multiple: false
 				}, {
 					name: 'mimeType',
-					value : 'csv'
+					value : 'csv', multiple: false
 				}
 			];
 			var testLayer = L.wqpSitesLayer(queryParamArray, {});
@@ -88,13 +88,12 @@ describe('leafletLayers.WQPSitesLayer', function() {
 			var queryParamArray = [
 				{
 					name: 'statecode',
-					value : 'US:55'
+					value : ['US:55'],
+					multiple: false
 				}, {
 					name: 'countycode',
-					value : 'US:55:025'
-				}, {
-					name: 'countycode',
-					value : 'US:55:001'
+					value : ['US:55:025', 'US:55:001'],
+					multiple: false
 				}
 			];
 			var testLayer = L.wqpSitesLayer(queryParamArray, {});
@@ -104,10 +103,12 @@ describe('leafletLayers.WQPSitesLayer', function() {
 			queryParamArray = [
 				{
 					name: 'statecode',
-					value : 'US:55'
+					value : ['US:55'],
+					multiple: false
 				}, {
 					name: 'countycode',
-					value : 'US:55:002'
+					value : ['US:55:002'],
+					multiple: false
 				}
 			];
 			testLayer.updateQueryParams(queryParamArray);
@@ -120,7 +121,7 @@ describe('leafletLayers.WQPSitesLayer', function() {
 		var testLayer;
 
 		beforeEach(function() {
-			var queryParamArray = [{name : 'statecode', value : 'US:50'}];
+			var queryParamArray = [{name : 'statecode', value : ['US:50']}];
 			testLayer = L.wqpSitesLayer(queryParamArray, {});
 		});
 
@@ -128,13 +129,12 @@ describe('leafletLayers.WQPSitesLayer', function() {
 			var queryParamArray = [
 				{
 					name: 'statecode',
-					value : 'US:55'
+					value : ['US:55'],
+					multiple: false
 				}, {
 					name: 'countycode',
-					value : 'US:55:025'
-				}, {
-					name: 'countycode',
-					value : 'US:55:001'
+					value : ['US:55:025', 'US:55:001'],
+					multiple: false
 				}
 			];
 			testLayer.updateQueryParams(queryParamArray);
@@ -146,19 +146,20 @@ describe('leafletLayers.WQPSitesLayer', function() {
 			var queryParamArray = [
 				{
 					name: 'statecode',
-					value : 'US:55'
+					value : ['US:55'],
+					multiple: false
 				}, {
 					name: 'countycode',
-					value : 'US:55:025'
-				}, {
-					name: 'countycode',
-					value : 'US:55:001'
+					value : ['US:55:025', 'US:55:001'],
+					multiple: false
 				}, {
 					name : 'zip',
-					value : 'yes'
+					value : 'yes',
+					multiple: false
 				}, {
 					name: 'mimeType',
-					value : 'csv'
+					value : 'csv',
+					multiple: false
 				}
 			];
 			testLayer.updateQueryParams(queryParamArray);
@@ -171,7 +172,7 @@ describe('leafletLayers.WQPSitesLayer', function() {
 		var testLayer;
 
 		beforeEach(function() {
-			var queryParamArray = [{name : 'statecode', value : 'US:50'}];
+			var queryParamArray = [{name : 'statecode', value : ['US:50'], multiple: false}];
 			testLayer = L.wqpSitesLayer(queryParamArray, {styles: 'style1'});
 		});
 
@@ -187,13 +188,12 @@ describe('leafletLayers.WQPSitesLayer', function() {
 			var queryParamArray = [
 				{
 					name: 'statecode',
-					value : 'US:55'
+					value : ['US:55'],
+					multiple: false
 				}, {
 					name: 'countycode',
-					value : 'US:55:025'
-				}, {
-					name: 'countycode',
-					value : 'US:55:001'
+					value : ['US:55:025', 'US:55:001'],
+					multiple: false
 				}
 			];
 			testLayer.updateQueryParams(queryParamArray);
@@ -216,7 +216,7 @@ describe('leafletLayers.WQPSitesLayer', function() {
 		beforeEach(function() {
 			spyOn($, 'ajax');
 
-			var queryParamArray = [{name : 'statecode', value : 'US:50'}];
+			var queryParamArray = [{name : 'statecode', value : ['US:50'], multiple: false}];
 			testLayer = L.wqpSitesLayer(queryParamArray);
 		});
 
@@ -233,7 +233,7 @@ describe('leafletLayers.WQPSitesLayer', function() {
 
 	describe('Tests for getWFSGetFeatureUrl', function() {
 		it('Expects that the SEARCHPARAMS query parameter reflects the queryParamArray', function() {
-			var queryParamArray = [{name : 'statecode', value : 'US:50'}];
+			var queryParamArray = [{name : 'statecode', value : ['US:50'], multiple: false}];
 			var url = L.WQPSitesLayer.getWfsGetFeatureUrl(queryParamArray);
 			expect(url).toContain('SEARCHPARAMS=' + encodeURIComponent('statecode:US:50'));
 		});
@@ -242,8 +242,8 @@ describe('leafletLayers.WQPSitesLayer', function() {
 	describe('Tests for getSearchParams', function() {
 		it('Expects that the returned string represents the correct SEARCHPARAMS query parameters', function() {
 			var queryParamArray =[
-				{name : 'statecode', value : 'US:50'},
-				{name: 'nldiurl', value: 'http://fakenldi.com/service/nldi/nwissite/04050626/navigate/UM/wqp?distance=50'}
+				{name : 'statecode', value : ['US:50'], multiple: false},
+				{name: 'nldiurl', value: 'http://fakenldi.com/service/nldi/nwissite/04050626/navigate/UM/wqp?distance=50', multiple: false}
 			];
 			var param = L.WQPSitesLayer.getSearchParams(queryParamArray);
 			expect(param).toContain('statecode:US:50');

@@ -14,7 +14,7 @@ PORTAL.queryServices = (function () {
 
 	/*
 	 * @param {String} resultType - 'Station' or 'Result'
-	 * @param {Array of Objects with name and value properties representing query parameters} queryParamArray
+	 * @param {Array of Objects with name, value and multiple properties representing query parameters} queryParamArray
 	 * @param {Array of Strings} providers - The application's providers.
 	 * @return {Jquery.Promise}
 	 * 		@resolve {Object} - If the counts are successfully fetched this object will contain a 'total' property and

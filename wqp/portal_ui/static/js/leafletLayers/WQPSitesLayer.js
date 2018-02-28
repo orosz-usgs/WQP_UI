@@ -95,13 +95,18 @@
 	L.extend(L.WQPSitesLayer, {
 		/*
 		 * @static
+		 * @param {Array of Object} queryParamArray - each object contains name, value, and multiple properties.
 		 * @returns {String} - Returns the value of the SEARCHPARAMS query parameter that is sent in OGC request
 		 */
 		getSearchParams : function(queryParamArray) {
 			var queryJson = PORTAL.UTILS.getQueryParamJson(queryParamArray);
 			var resultJson = _.omit(queryJson, ['mimeType', 'zip']);
 			resultJson = _.mapObject(resultJson, function(value) {
-				return value.join('|');
+				if (typeof value === 'string') {
+					return value;
+				} else {
+                    return value.join('|');
+                }
 			});
 			var resultArray =  _.map(resultJson, function(value, name) {
 				return name + ':' + value;

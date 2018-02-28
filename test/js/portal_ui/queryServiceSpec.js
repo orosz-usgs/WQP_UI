@@ -11,12 +11,13 @@ describe('Tests for queryService', function() {
 		var fakeServer;
 
 		var testQuery = [
-			{name : 'statecode', value: 'US:55'},
-			{name : 'sitetype', value : 'Well'},
-			{name : 'statecode', value : 'US:30'},
-			{name : 'mimeType', value : 'csv'},
-			{name : 'zip', value : 'yes'},
-			{name : 'sorted', value : 'no'}
+			{name : 'statecode', value: ['US:55', 'US:30'], multiple: false},
+			{name : 'sitetype', value : 'Well', multiple: true},
+			{name: 'huc', value: '07*;08*', multiple: true},
+			{name: 'pcode', value: '123', multiple: false},
+			{name : 'mimeType', value : 'csv', multiple: false},
+			{name : 'zip', value : 'yes', multiple: false},
+			{name : 'sorted', value : 'no', multiple: false}
 		];
 
 		var successSpy, errorSpy;
@@ -46,9 +47,14 @@ describe('Tests for queryService', function() {
 			expect(fakeServer.requests.length).toBe(1);
 			expect(fakeServer.requests[0].method).toEqual('POST');
 			requestBody = $.parseJSON(fakeServer.requests[0].requestBody);
+			expect(requestBody.statecode.length).toBe(2);
 			expect(requestBody.statecode).toContain('US:55');
 			expect(requestBody.statecode).toContain('US:30');
 			expect(requestBody.sitetype).toEqual(['Well']);
+			expect(requestBody.huc.length).toBe(2);
+			expect(requestBody.huc).toContain('07*');
+			expect(requestBody.huc).toContain('08*');
+			expect(requestBody.pcode).toEqual('123');
 			expect(requestBody.mimeType).not.toBeDefined();
 			expect(requestBody.zip).not.toBeDefined();
 			expect(requestBody.sorted).not.toBeDefined();

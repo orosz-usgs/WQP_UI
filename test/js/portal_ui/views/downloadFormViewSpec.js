@@ -25,8 +25,12 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
 				'<div id="sampling"></div>' +
 				'<div id="biological"></div>' +
 				'<div id="download-box-input-div"></div>' +
-				'<select id="providers-select" multiple></select>' +
+				'<select id="empty-one", name="empty-one" multiple></select>' +
+			    '<input id="empty-two", name="empty-two" type="hidden" />' +
+				'<select id="providers-select" name="provider" multiple><option selected value="S1">Select1</option></select>' +
 				'<input type="hidden" name="fake-param" value="Fake1" />' +
+				'<input type="hidden" name="fake-param-with-multi" data-multiple="true" value="Fake2"/>' +
+
 				'<div id="mapping-div"><input type="hidden" name="map-param" value="Value1" /></div>' +
 				'<button id="main-button" type="submit">Download</button>' +
 				'</form></div>'
@@ -131,8 +135,13 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
 		expect(PORTAL.VIEWS.createStaticSelect2).not.toHaveBeenCalled();
 	});
 
-	it('Expects getQueryParams to return the form parameters, omitting those within the mapping-div', function() {
-		expect(testView.getQueryParamArray()).toEqual([{name : 'fake-param', value: 'Fake1'}]);
+	it('Expects getQueryParamArray to return the form parameters with name, value, and multiple attributes, omitting those within the mapping-div', function() {
+		var result = testView.getQueryParamArray();
+
+		expect(result.length).toBe(3);
+		expect(result).toContain({name: 'fake-param', value: 'Fake1', multiple: false});
+		expect(result).toContain({name: 'fake-param-with-multi', value: 'Fake2', multiple: true});
+		expect(result).toContain({name: 'provider', value: ['S1'], multiple: false});
 	});
 
 	describe('Tests for promise returned from initialize', function() {
@@ -216,8 +225,27 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
 		it('Expects that if the form does validate, the downloadProgressDialog is shown and a counts request is made', function() {
 			success = true;
 			$('#main-button').trigger('click');
+
 			expect(mockDownloadDialog.show).toHaveBeenCalled();
-			expect(PORTAL.queryServices.fetchQueryCounts).toHaveBeenCalledWith('Result', [ Object({ name: 'fake-param', value: 'Fake1' }) ], [ 'Src1', 'Src2', 'Src3' ]);
+			expect(PORTAL.queryServices.fetchQueryCounts).toHaveBeenCalled();
+			var args = PORTAL.queryServices.fetchQueryCounts.calls.argsFor(0);
+			expect(args[0]).toEqual('Result');
+			expect(args[1].length).toBe(3);
+			expect(args[1]).toContain({
+				name: 'fake-param',
+				value: 'Fake1',
+				multiple: false
+			});
+			expect(args[1]).toContain({
+				name: 'fake-param-with-multi',
+				value: 'Fake2',
+				multiple: true
+			});
+			expect(args[1]).toContain({
+				name: 'provider',
+				value: ['S1'],
+				multiple: false
+			});
 		});
 
 		it('Expects that if the count request is successful, the dialog is updated', function() {
