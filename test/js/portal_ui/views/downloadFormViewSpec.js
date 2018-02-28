@@ -26,7 +26,7 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
 				'<div id="biological"></div>' +
 				'<div id="download-box-input-div"></div>' +
 				'<select id="empty-one", name="empty-one" multiple></select>' +
-			    '<input id="empty-two", name="empty-two" type="hidden" />' +
+				'<input id="empty-two", name="empty-two" type="hidden" />' +
 				'<select id="providers-select" name="provider" multiple><option selected value="S1">Select1</option></select>' +
 				'<input type="hidden" name="fake-param" value="Fake1" />' +
 				'<input type="hidden" name="fake-param-with-multi" data-multiple="true" value="Fake2"/>' +
