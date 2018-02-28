@@ -14,12 +14,9 @@ describe('Test PORTAl.UTILS package', function () {
 
 		var testParamArray = [
 			{name : 'P1', value : 'Value1'},
-			{name : 'P2', value : 'Value2_1'},
-			{name : 'P2', value : 'Value2_2'},
-			{name : 'P2', value : 'Value2_3'},
+			{name : 'P2', value : ['Value2_1', 'Value2_2', 'Value2_3']},
 			{name : 'P3', value : 'Value3'},
-			{name : 'P4', value : 'Value4_1'},
-			{name : 'P4', value : 'Value4_2'}
+			{name : 'P4', value : ['Value4_1', 'Value4_2']},
 		];
 
 		it('Expects that if ignoreList and mulitSelectDelimited are not specified that the array is serialized', function() {
@@ -64,11 +61,10 @@ describe('Test PORTAl.UTILS package', function () {
 	describe('Test getQueryParamJson', function() {
 
 		var testArray = [
-			{name : 'statecode', value : 'US:55'},
-			{name : 'statecode', value : 'US:54'},
-			{name : 'huc', value: '0701*;0702*'},
-			{name : 'siteType', value : 'Well'},
-			{name : 'mimeType', value : 'csv'}
+			{name : 'statecode', value : ['US:55', 'US:54'], multiple: false},
+			{name : 'huc', value: '0701*;0702*', multiple: true},
+			{name : 'siteType', value : 'Well', multiple: true},
+			{name : 'mimeType', value : 'csv', multiple: false}
 		];
 
 		it('Expects that the calling the function produces the currently encoded json object', function() {
@@ -76,7 +72,7 @@ describe('Test PORTAl.UTILS package', function () {
 
 			expect(result.statecode).toEqual(['US:55', 'US:54']);
 			expect(result.siteType).toEqual(['Well']);
-			expect(result.mimeType).toEqual(['csv']);
+			expect(result.mimeType).toEqual('csv');
 			expect(result.huc).toEqual(['0701*', '0702*']);
 		});
 

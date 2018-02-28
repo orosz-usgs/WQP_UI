@@ -204,16 +204,30 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 	};
 
 	/*
-	 * Return an array of Objects with name and value properties representing the current state of the form. Empty
-	 * values are removed from the array
-	 * @return {Array of Objects with name and value properties}
+	 * Return an array of Objects with name, value, and data-multiple attributes representing the current state
+	 * of the form. Empty
+	 * values are removed from the array. For selects that can have multiple values value will be an array, otherwise
+	 * it will be a string.
+	 * @return {Array of Objects with name, value, and multiple properties}
 	 */
 	self.getQueryParamArray = function () {
 		// Need to eliminate form parameters within the mapping-div
 		var $formInputs = options.$form.find(':input').not('#mapping-div :input, #nldi-inset-map :input, #nldi-map :input');
-		return _.filter($formInputs.serializeArray(), function(param) {
-			return (param.value);
+
+		var result = [];
+		$formInputs.each(function() {
+			var value = $(this).val();
+			var valueIsNotEmpty = (typeof value === 'string') ? value : value.length > 0;
+			var name = $(this).attr('name');
+			if ((valueIsNotEmpty) && (name)) {
+				result.push({
+					name: name,
+					value: value,
+					multiple: ($(this).data('multiple')) ? true: false
+				});
+			}
 		});
+		return result;
 	};
 	
 	return self;

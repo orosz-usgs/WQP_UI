@@ -14,9 +14,10 @@ PORTAL.UTILS = function() {
 	/*
 	 * Returns a query string suitable for use as a URL query string with parameters on the ignoreList
 	 * removed.
-	 * @param {Array of Object} queryParamArray - Each object has a name property and a value property both with string values
+	 * @param {Array of Object} queryParamArray - Each object has a string name property, a value property that can be an
+	 *         an array or a string and a boolean multiple property (not used in this function).
 	 * @param {Array of String} ignoreList - Names to be removed from paramArray before serializing
-	 * @param {Boolean} multiSelectDelimited - if true param names that appear more than once are serialized as a single param with ';' separated values
+	 * @param {Boolean} multiSelectDelimited - if True, values that are arrays are serialized as a single param with ';' separated values
 	 * @return {String} - String suitable for use as a URL query string.
 	 */
 	self.getQueryString = function(queryParamArray, ignoreList, multiSelectDelimited) {
@@ -25,49 +26,45 @@ PORTAL.UTILS = function() {
 			return _.contains(thisIgnoreList, param.name);
 		});
 
-		if (multiSelectDelimited) {
-			resultArray = _.chain(resultArray)
-				.groupBy('name')
-				.map(function(groupedParam, name) {
-					return {
-						name : name,
-						value : _.pluck(groupedParam, 'value').join(';')
-					};
-				})
-				.value();
-		}
-		return $.param(resultArray);
+		var paramArray = [];
+
+		_.each(resultArray, function(param) {
+			// If not string than it is assumed to be an array
+			if (typeof param.value === 'string') {
+				paramArray.push(param);
+			} else if (multiSelectDelimited) {
+				paramArray.push({
+					name: param.name,
+					value: param.value.join(';')
+				});
+			} else {
+				_.each(param.value, function(val) {
+					paramArray.push({
+						name: param.name,
+						value: val
+					});
+				});
+			}
+		});
+
+		return $.param(paramArray);
 	};
 
 	/*
-	 * @param {Array of Object containing name and value properties} queryParamArray
-	 * @returns {Object} where the properties are the name property from queryParamArray. If the same name
-	 * property appears in queryParamArray, it's values are concatenated in the property value. If a value contains
-	 * semicolon separated values, these are also concatenated in the property value.
+	 * @param {Array of Object containing string name, value (string or array) and multiple properties} queryParamArray
+	 * @returns {Object} where the properties are the name property from queryParamArray. If an object contains a true
+	 * multiple property and the value property is a string then the value is split into an array using the string in
+	 * the multiple property.
 	 */
 	self.getQueryParamJson = function(queryParamArray) {
-		var resultArray = [];
 		var result = {};
-
-		// Handles splitting semicolon separated values into separate name-value pairs
 		_.each(queryParamArray, function(param) {
-			var values = param.value.split(';');
-			_.each(values, function(value) {
-				resultArray.push({
-					name: param.name,
-					value : value
-				});
-			});
+			if ((typeof param.value === 'string') && (param.multiple)) {
+				result[param.name] = param.value.split(';');
+			} else {
+				result[param.name] = param.value;
+			}
 		});
-
-		_.chain(resultArray)
-			.groupBy(function(param) {
-				return param.name;
-			})
-			.each(function(values, name) {
-				result[name] = _.pluck(values, 'value');
-			});
-
 		return result;
 	};
 
