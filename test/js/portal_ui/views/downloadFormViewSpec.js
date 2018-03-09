@@ -30,7 +30,6 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
 				'<select id="providers-select" name="provider" multiple><option selected value="S1">Select1</option></select>' +
 				'<input type="hidden" name="fake-param" value="Fake1" />' +
 				'<input type="hidden" name="fake-param-with-multi" data-multiple="true" value="Fake2"/>' +
-
 				'<div id="mapping-div"><input type="hidden" name="map-param" value="Value1" /></div>' +
 				'<button id="main-button" type="submit">Download</button>' +
 				'</form></div>'
