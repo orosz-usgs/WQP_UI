@@ -220,11 +220,13 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 			var valueIsNotEmpty = (typeof value === 'string') ? value : value.length > 0;
 			var name = $(this).attr('name');
 			if ((valueIsNotEmpty) && (name)) {
-				result.push({
-					name: name,
-					value: value,
-					multiple: ($(this).data('multiple')) ? true: false
-				});
+				if ($(this).attr('type') === 'radio' && $(this).prop('checked') || $(this).attr('type')!== 'radio') {
+					result.push({
+						name: name,
+						value: value,
+						multiple: ($(this).data('multiple')) ? true : false
+					});
+				}
 			}
 		});
 		return result;
