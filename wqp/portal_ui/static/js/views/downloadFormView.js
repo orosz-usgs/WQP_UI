@@ -216,11 +216,11 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 
 		var result = [];
 		$formInputs.each(function() {
-			var value = $(this).val();
-			var valueIsNotEmpty = (typeof value === 'string') ? value : value.length > 0;
-			var name = $(this).attr('name');
-			if ((valueIsNotEmpty) && (name)) {
-				if ($(this).attr('type') === 'radio' && $(this).prop('checked') || $(this).attr('type')!== 'radio') {
+			if ($(this).attr('type') !== 'radio' || $(this).prop('checked')) {
+				var value = $(this).val();
+				var valueIsNotEmpty = (typeof value === 'string') ? value : value.length > 0;
+				var name = $(this).attr('name');
+				if ((valueIsNotEmpty) && (name)) {
 					result.push({
 						name: name,
 						value: value,
