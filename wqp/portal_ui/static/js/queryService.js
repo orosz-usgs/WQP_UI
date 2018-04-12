@@ -43,6 +43,8 @@ PORTAL.queryServices = (function () {
 				var result = {
 					total : {
 						sites : formatCount(data, 'Total-Site-Count'),
+						projects : formatCount(data, 'Total-Project-Count'),
+						projectmonitoringlocationweightings: formatCount(data, 'Total-ProjectMonitoringLocationWeighting-Count'),
 						results : formatCount(data, 'Total-Result-Count'),
 						activities : formatCount(data, 'Total-Activity-Count'),
 						activitymetrics : formatCount(data, 'Total-ActivityMetric-Count'),
@@ -52,6 +54,8 @@ PORTAL.queryServices = (function () {
 				_.each(providers, function(provider) {
 					result[provider] = {
 						sites : formatCount(data, provider + '-Site-Count'),
+						projects : formatCount(data, provider +'-Project-Count'),
+						projectmonitoringlocationweightings: formatCount(data, provider +'-ProjectMonitoringLocationWeighting-Count'),
 						results : formatCount(data, provider + '-Result-Count'),
 						activities : formatCount(data, provider + '-Activity-Count'),
 						activitymetrics: formatCount(data, provider + '-ActivityMetric-Count'),

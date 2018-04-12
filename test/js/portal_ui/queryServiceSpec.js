@@ -73,9 +73,12 @@ describe('Tests for queryService', function() {
 			expect(successSpy).toHaveBeenCalled();
 			expect(errorSpy).not.toHaveBeenCalled();
 			expect(successSpy.calls.argsFor(0)).toEqual([{
-				total : {sites : '492', results : '6,641', activities :'664', activitymetrics: '232', resultdetections: '45'},
-				NWIS : {sites : '492', results : '6,641', activities : '664', activitymetrics: '0', resultdetections: '45'},
-				STORET : {sites : '0', results : '0', activities : '0', activitymetrics: '232', resultdetections: '0'},
+				total : {sites : '492', results : '6,641', activities :'664', activitymetrics: '232',
+					resultdetections: '45', projects: '0', projectmonitoringlocationweightings: '0'},
+				NWIS : {sites : '492', results : '6,641', activities : '664', activitymetrics: '0',
+					resultdetections: '45', projects: '0', projectmonitoringlocationweightings: '0'},
+				STORET : {sites : '0', results : '0', activities : '0', activitymetrics: '232', resultdetections: '0',
+				    projects: '0', projectmonitoringlocationweightings: '0'},
 			}]);
 		});
 
