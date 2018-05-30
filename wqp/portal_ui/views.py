@@ -2,9 +2,10 @@ import pickle
 
 import arrow
 from flask import render_template, request, make_response, redirect, url_for, abort, Response, jsonify, Blueprint
+from flask import session as flask_session
 import redis
 
-from .. import app, session
+from .. import app, session, oauth
 from ..utils import pull_feed, geoserver_proxy_request, retrieve_providers, retrieve_organizations, \
     get_site_key, retrieve_organization, retrieve_sites_geojson, retrieve_site, retrieve_county, \
     generate_redis_db_number, create_request_resp_log_msg, create_redis_log_msg, invalid_usgs_view
@@ -23,6 +24,17 @@ base_url = app.config['SEARCH_QUERY_ENDPOINT']
 redis_config = app.config['REDIS_CONFIG']
 cache_timeout = app.config['CACHE_TIMEOUT']
 proxy_cert_verification = app.config.get('PROXY_CERT_VERIFY', False)
+
+@portal_ui.route('/login')
+def login():
+    redirect_uri = url_for('portal_ui.authorize', _external=True)
+    return oauth.waterauth.authorize_redirect(redirect_uri)
+
+@portal_ui.route('/authorize')
+def authorize():
+    token = oauth.waterauth.authorize_access_token(verify=False)
+    flask_session['authorize_token'] = token
+    return redirect(url_for('portal_ui.portal'))
 
 
 @portal_ui.route('/index.jsp')
@@ -47,6 +59,7 @@ def contact_us():
 @portal_ui.route('/portal.jsp')
 @portal_ui.route('/portal/', endpoint='portal-canonical')
 def portal():
+    print('Token {0}'.format(flask_session['authorize_token']))
     if request.path == '/portal.jsp':
         return redirect(url_for('portal_ui.portal-canonical')), 301
     return render_template('portal.html')

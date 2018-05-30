@@ -2,6 +2,7 @@ import logging
 import os
 import sys
 
+from authlib.flask.client import OAuth
 from celery import Celery
 from celery.signals import after_setup_task_logger
 from flask import Flask, jsonify, request
@@ -64,6 +65,20 @@ app.config.from_pyfile('config.py')
 
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
+
+# Authentication for USGS sites
+oauth = None
+if app.config.get('UI_THEME') == 'usgs':
+    oauth = OAuth(app)
+    oauth.register('waterauth',
+                  client_id='fooClientIdPassword',
+                  client_secret='secret',
+                  access_token_url='https://localhost:8443/localauth/oauth/token',
+                  authorize_url='https://localhost:8443/localauth/oauth/authorize',
+                   api_base_url='https://localhost:8443/localauth',
+                   client_kwargs={'verify': False, 'scope': 'foo'}
+                  )
+
 
 
 if app.config.get('LOGGING_ENABLED'):
