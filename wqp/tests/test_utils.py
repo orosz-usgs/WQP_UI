@@ -32,6 +32,7 @@ class RedisDbNumberTestCase(TestCase):
         """will any other value give back a db value of 0?"""
         assert generate_redis_db_number('RANDOM') == 0
 
+
 class RetrieveLookupsTestCase(TestCase):
 
     def setUp(self):
@@ -279,7 +280,7 @@ class RetrieveCountyTestCase(TestCase):
         self.assertIsNone(retrieve_county('US', '55', '005'))
 
 
-class RetrieveSitsGeojsonTestCase(TestCase):
+class RetrieveSitesGeojsonTestCase(TestCase):
 
     def setUp(self):
         self.sites_endpoint = 'mock://wqpfake.com/search/'
@@ -289,14 +290,17 @@ class RetrieveSitsGeojsonTestCase(TestCase):
     def test_request_parameters(self, mock_get):
         value = retrieve_sites_geojson('P1', 'Org1')
 
-        mock_get.assert_called_with(self.sites_endpoint + 'Station/search',
-                                    params={'organization': 'Org1',
-                                            'providers' : 'P1',
-                                            'mimeType': 'geojson',
-                                            'sorted': 'no',
-                                            'uripage': 'yes'
-                                            }
-                                    )
+        mock_get.assert_called_with(
+            self.sites_endpoint + 'Station/search',
+            params={
+                'organization': 'Org1',
+                'providers': 'P1',
+                'mimeType': 'geojson',
+                'sorted': 'no',
+                'minresults': 1,
+                'uripage': 'yes'
+            }
+        )
 
     @requests_mock.Mocker()
     def test_with_valid_response(self, m):
