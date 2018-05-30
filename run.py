@@ -11,6 +11,7 @@ if __name__ == '__main__':
         host = host_val
     else:
         host = '127.0.0.1'
+    #TODO: Make ssl_context configurable with command line parameters
     application.run(host=host, port=5050, threaded=True, ssl_context=('instance/cert.pem', 'instance/key.pem'))
     # run from the command line as follows
     # python run.py -ht <ip address of your choice>

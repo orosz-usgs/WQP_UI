@@ -59,7 +59,7 @@ def contact_us():
 @portal_ui.route('/portal.jsp')
 @portal_ui.route('/portal/', endpoint='portal-canonical')
 def portal():
-    print('Token {0}'.format(flask_session['authorize_token']))
+    print('Token {0}'.format(flask_session['authorize_token']['access_token']))
     if request.path == '/portal.jsp':
         return redirect(url_for('portal_ui.portal-canonical')), 301
     return render_template('portal.html')

@@ -20,6 +20,7 @@ Jinja2==2.10
 jsmin==2.2.2
 kombu==4.2.0
 MarkupSafe==1.0
+oauthlib==2.1.0
 pyproj==1.9.5.1
 python-dateutil==2.7.3
 pytz==2018.4
