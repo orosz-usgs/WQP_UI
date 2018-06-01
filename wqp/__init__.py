@@ -68,14 +68,15 @@ celery.conf.update(app.config)
 
 # Authentication for USGS sites
 oauth = None
+login_manager = None
 if app.config.get('UI_THEME') == 'usgs':
     oauth = OAuth(app)
     oauth.register('waterauth',
                   client_id='fooClientIdPassword',
                   client_secret='secret',
-                  access_token_url='https://localhost:8443/localauth/oauth/token',
-                  authorize_url='https://localhost:8443/localauth/oauth/authorize',
-                   api_base_url='https://localhost:8443/localauth',
+                  access_token_url='https://localhost:8445/localauth/oauth/token',
+                  authorize_url='https://localhost:8445/localauth/oauth/authorize',
+                   api_base_url='https://localhost:8445/localauth',
                    client_kwargs={'verify': False, 'scope': 'foo'}
                   )
 

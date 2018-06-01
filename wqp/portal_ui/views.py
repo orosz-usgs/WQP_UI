@@ -1,6 +1,9 @@
+from functools import wraps
+import time
 import pickle
 
 import arrow
+from authlib.client.errors import OAuthException
 from flask import render_template, request, make_response, redirect, url_for, abort, Response, jsonify, Blueprint
 from flask import session as flask_session
 import redis
@@ -10,6 +13,18 @@ from ..utils import pull_feed, geoserver_proxy_request, retrieve_providers, retr
     get_site_key, retrieve_organization, retrieve_sites_geojson, retrieve_site, retrieve_county, \
     generate_redis_db_number, create_request_resp_log_msg, create_redis_log_msg, invalid_usgs_view
 from ..tasks import load_sites_into_cache_async
+
+def authorization_required_when_usgs(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if app.config['UI_THEME'] == 'usgs' and (flask_session.get('access_token_expires_at', 0) < int(time.time())):
+            print('Token is: {0}'.format(request.cookies.get('access_token')))
+            print('Token expires at {0}. Now is {1}'.format(flask_session.get('access_token_expires_at', 0),
+                                                            int(time.time())))
+            return redirect('{0}?next={1}'.format(url_for('portal_ui.login'), request.url))
+        return f(*args, **kwargs)
+
+    return decorated_function
 
 
 # Create blueprint
@@ -27,14 +42,18 @@ proxy_cert_verification = app.config.get('PROXY_CERT_VERIFY', False)
 
 @portal_ui.route('/login')
 def login():
-    redirect_uri = url_for('portal_ui.authorize', _external=True)
+    redirect_uri = '{0}?next={1}'.format(url_for('portal_ui.authorize', _external=True), request.args.get('next'))
     return oauth.waterauth.authorize_redirect(redirect_uri)
 
 @portal_ui.route('/authorize')
 def authorize():
     token = oauth.waterauth.authorize_access_token(verify=False)
-    flask_session['authorize_token'] = token
-    return redirect(url_for('portal_ui.portal'))
+
+    response = redirect(request.args.get('next'))
+    response.set_cookie('access_token', token.get('access_token'), secure=True)
+    flask_session['access_token_expires_at'] = token.get('expires_at')
+    print('IN AUTHORIZE: Expires_at: {0}'.format(token.get('expires_at')))
+    return response
 
 
 @portal_ui.route('/index.jsp')
@@ -58,8 +77,8 @@ def contact_us():
 
 @portal_ui.route('/portal.jsp')
 @portal_ui.route('/portal/', endpoint='portal-canonical')
+@authorization_required_when_usgs
 def portal():
-    print('Token {0}'.format(flask_session['authorize_token']['access_token']))
     if request.path == '/portal.jsp':
         return redirect(url_for('portal_ui.portal-canonical')), 301
     return render_template('portal.html')
@@ -67,6 +86,7 @@ def portal():
 
 @portal_ui.route('/portal_userguide.jsp')
 @portal_ui.route('/portal_userguide/', endpoint='portal_userguide-canonical')
+@authorization_required_when_usgs
 def portal_userguide():
     if request.path == '/portal_userguide.jsp':
         return redirect(url_for('portal_ui.portal_userguide-canonical')), 301
@@ -171,6 +191,7 @@ def other_portal_links():
 
 @portal_ui.route('/public_srsnames.jsp')
 @portal_ui.route('/public_srsnames/', endpoint='public_srsnames-canonical')
+@authorization_required_when_usgs
 def public_srsnames():
     if request.path == '/public_srsnames.jsp':
         return redirect(url_for('portal_ui.public_srsnames-canonical')), 301
@@ -195,6 +216,7 @@ def sites_geoserverproxy(op):
 
 
 @portal_ui.route('/crossdomain.xml')
+@authorization_required_when_usgs
 def crossdomain():
     xml = render_template('crossdomain.xml')
     response = make_response(xml)
@@ -203,6 +225,7 @@ def crossdomain():
     
 
 @portal_ui.route('/kml/wqp_styles.kml')
+@authorization_required_when_usgs
 def kml():
     xml = render_template('wqp_styles.kml')
     response = make_response(xml)
@@ -216,6 +239,7 @@ def images(image_file):
 
 
 @portal_ui.route('/provider/', endpoint='uri_base')
+@authorization_required_when_usgs
 def uri_base():
     providers = retrieve_providers()
     if providers:
@@ -225,6 +249,7 @@ def uri_base():
 
 
 @portal_ui.route('/provider/<provider_id>/', endpoint='uri_provider')
+@authorization_required_when_usgs
 def uri_provider(provider_id):
     organizations = retrieve_organizations(provider_id)
     if organizations is None:
@@ -236,6 +261,7 @@ def uri_provider(provider_id):
 
 
 @portal_ui.route('/provider/<provider_id>/<organization_id>/', endpoint='uri_organization')
+@authorization_required_when_usgs
 def uri_organization(provider_id, organization_id):
     #Check for the information in redis first
     rendered_template = None
@@ -276,6 +302,7 @@ def uri_organization(provider_id, organization_id):
 
 
 @portal_ui.route('/provider/<provider_id>/<organization_id>/<path:site_id>/', endpoint='uri_site')
+@authorization_required_when_usgs
 def uris(provider_id, organization_id, site_id):
     site_data = None
     if redis_config:
@@ -330,6 +357,7 @@ def uris(provider_id, organization_id, site_id):
 
 
 @portal_ui.route('/clear_cache/<provider_id>/')
+@authorization_required_when_usgs
 def clear_cache(provider_id=None):
     if redis_config:
         redis_db_number = generate_redis_db_number(provider_id)
@@ -346,6 +374,7 @@ def clear_cache(provider_id=None):
 
 
 @portal_ui.route('/sites_cache_task/<provider_id>', methods=['POST'])
+@authorization_required_when_usgs
 def sitescachetask(provider_id):
     providers = retrieve_providers()
     if provider_id not in providers:
@@ -357,6 +386,7 @@ def sitescachetask(provider_id):
 
 
 @portal_ui.route('/status/<task_id>')
+@authorization_required_when_usgs
 def taskstatus(task_id):
     task = load_sites_into_cache_async.AsyncResult(task_id)
     if task.state == 'PENDING':
@@ -387,6 +417,7 @@ def taskstatus(task_id):
 
 
 @portal_ui.route('/manage_cache')
+@authorization_required_when_usgs
 def manage_cache():
     provider_list = ['NWIS', 'STORET', 'STEWARDS', 'BIODATA']
     status_list = []

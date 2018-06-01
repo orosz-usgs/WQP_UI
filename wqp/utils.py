@@ -401,3 +401,5 @@ def delete_old_files(files):
         days_since_last_mod = float((current_time-last_mod)) / 86400
         if days_since_last_mod > app.config.get('LOG_RETENTION', 30):
             os.remove(f)
+
+
