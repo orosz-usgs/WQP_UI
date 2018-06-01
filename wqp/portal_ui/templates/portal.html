@@ -19,7 +19,7 @@
 {% block page_content %}
 	<div id="page-content">
 		<form role="form" id="params" name="params" autocomplete="off"
-			  method="post" action="{{ config.SEARCH_QUERY_ENDPOINT }}Station/search">
+			  method="post" action="{{ url_for('portal_ui.wqp_download_proxy', op='Station')}}">
 			<div class="panel panel-default" id="location-parameters">
 				<div class="panel-heading">
 					LOCATION

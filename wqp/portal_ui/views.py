@@ -201,7 +201,13 @@ def public_srsnames():
     app.logger.info(msg)
 
     return render_template('public_srsnames.html', status_code=resp.status_code, content = resp.json())
-    
+
+@portal_ui.route('/wqp_download/<op>', methods=['POST'])
+def wqp_download_proxy(op):
+    target_url = app.config['SEARCH_QUERY_ENDPOINT'] + op + '/search'
+    print('Target URL: {0}'.format(target_url))
+    resp = session.post(target_url, data=request.form, headers=request.headers, verify=proxy_cert_verification)
+    return make_response(resp.content, resp.status_code, resp.headers.items())
 
 @portal_ui.route('/wqp_geoserver/<op>', methods=['GET', 'POST'])
 def wqp_geoserverproxy(op):
