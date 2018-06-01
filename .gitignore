@@ -59,9 +59,11 @@ docs/_build/
 # PyBuilder
 target/
 
-#Eclipse files
+# IDE/editor files
 .project
 .pydevproject
+*.sublime-project
+*.sublime-workspace
 
 
 /static/
