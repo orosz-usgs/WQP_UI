@@ -226,13 +226,17 @@ def retrieve_sites_geojson(provider, org_id):
         Return an empty object if the org_id does not exist in provider.
         Return None if the information can not be retrieved.
     """
-    resp = session.get(app.config['SEARCH_QUERY_ENDPOINT'] + 'Station/search',
-                       params={'organization': org_id,
-                               'providers': provider,
-                               'mimeType': 'geojson',
-                               'sorted': 'no',
-                               'uripage': 'yes'} # This is added to distinguish from normal web service queries
-                       )
+    resp = session.get(
+        app.config['SEARCH_QUERY_ENDPOINT'] + 'Station/search',
+        params={
+            'organization': org_id,
+            'providers': provider,
+            'mimeType': 'geojson',
+            'sorted': 'no',
+            'minresults': 1,  # exclude stations with no results
+            'uripage': 'yes'  # This is added to distinguish from normal web service queries
+        }
+    )
     if resp.status_code == 200:
         sites = resp.json()
     elif resp.status_code == 400:
