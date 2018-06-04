@@ -1,6 +1,6 @@
-/coverage
+coverage
 /node
-/node_modules
+node_modules
 /.settings
 /.idea
 # Byte-compiled / optimized / DLL files
@@ -62,6 +62,7 @@ target/
 # IDE/editor files
 .project
 .pydevproject
+.sublimelinterrc
 *.sublime-project
 *.sublime-workspace
 
