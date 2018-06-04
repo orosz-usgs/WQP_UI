@@ -118,11 +118,13 @@ import wqp.assets
 session = Session()
 session.verify = app.config.get('VERIFY_CERT', True)
 
+from .auth.views import auth
 from .portal_ui.views import portal_ui
 from .sites.views import sites_blueprint
 from .wqx.views import wqx
 
 
+app.register_blueprint(auth, url_prefix='')
 app.register_blueprint(portal_ui, url_prefix='')
 app.register_blueprint(sites_blueprint, url_prefix='/sites')
 app.register_blueprint(wqx, url_prefix='/portal/schemas')

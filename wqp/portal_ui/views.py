@@ -1,30 +1,17 @@
-from functools import wraps
-import time
+
 import pickle
 
 import arrow
-from authlib.client.errors import OAuthException
 from flask import render_template, request, make_response, redirect, url_for, abort, Response, jsonify, Blueprint
-from flask import session as flask_session
 import redis
+
+from ..auth.views import authorization_required_when_usgs
 
 from .. import app, session, oauth
 from ..utils import pull_feed, geoserver_proxy_request, retrieve_providers, retrieve_organizations, \
     get_site_key, retrieve_organization, retrieve_sites_geojson, retrieve_site, retrieve_county, \
     generate_redis_db_number, create_request_resp_log_msg, create_redis_log_msg, invalid_usgs_view
 from ..tasks import load_sites_into_cache_async
-
-def authorization_required_when_usgs(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if app.config['UI_THEME'] == 'usgs' and (flask_session.get('access_token_expires_at', 0) < int(time.time())):
-            print('Token is: {0}'.format(request.cookies.get('access_token')))
-            print('Token expires at {0}. Now is {1}'.format(flask_session.get('access_token_expires_at', 0),
-                                                            int(time.time())))
-            return redirect('{0}?next={1}'.format(url_for('portal_ui.login'), request.url))
-        return f(*args, **kwargs)
-
-    return decorated_function
 
 
 # Create blueprint
@@ -39,21 +26,6 @@ base_url = app.config['SEARCH_QUERY_ENDPOINT']
 redis_config = app.config['REDIS_CONFIG']
 cache_timeout = app.config['CACHE_TIMEOUT']
 proxy_cert_verification = app.config.get('PROXY_CERT_VERIFY', False)
-
-@portal_ui.route('/login')
-def login():
-    redirect_uri = '{0}?next={1}'.format(url_for('portal_ui.authorize', _external=True), request.args.get('next'))
-    return oauth.waterauth.authorize_redirect(redirect_uri)
-
-@portal_ui.route('/authorize')
-def authorize():
-    token = oauth.waterauth.authorize_access_token(verify=False)
-
-    response = redirect(request.args.get('next'))
-    response.set_cookie('access_token', token.get('access_token'), secure=True)
-    flask_session['access_token_expires_at'] = token.get('expires_at')
-    print('IN AUTHORIZE: Expires_at: {0}'.format(token.get('expires_at')))
-    return response
 
 
 @portal_ui.route('/index.jsp')
@@ -205,7 +177,9 @@ def public_srsnames():
 @portal_ui.route('/wqp_download/<op>', methods=['POST'])
 def wqp_download_proxy(op):
     target_url = app.config['SEARCH_QUERY_ENDPOINT'] + op + '/search'
-    print('Target URL: {0}'.format(target_url))
+    headers = request.headers
+    if app.config['UI_THEME'] == 'usgs':
+        headers['Authorization'] = 'Bearer {0}'.format(request.cookies.get('access_token'))
     resp = session.post(target_url, data=request.form, headers=request.headers, verify=proxy_cert_verification)
     return make_response(resp.content, resp.status_code, resp.headers.items())
 
