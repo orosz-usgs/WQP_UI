@@ -6,7 +6,7 @@
 /* global log */
 /* global numeral */
 
-var PORTAL = PORTAL || {};
+const PORTAL = window.PORTAL = window.PORTAL || {};
 
 PORTAL.queryServices = (function () {
 	"use strict";

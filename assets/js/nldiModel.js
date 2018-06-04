@@ -3,7 +3,7 @@
 /* global L */
 /* global _ */
 
-var PORTAL = PORTAL || {};
+const PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.MODELS = PORTAL.MODELS || {};
 
 PORTAL.MODELS.nldiModel = (function() {

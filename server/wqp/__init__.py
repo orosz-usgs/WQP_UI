@@ -97,8 +97,6 @@ def log_after(response):
     return response
 
 
-import wqp.assets
-
 session = Session()
 session.verify = app.config.get('VERIFY_CERT', True)
 

@@ -16,6 +16,9 @@
 
 		{% block custom_style %}{% endblock %}
 
+		<!-- TEMPORARY: ALL VENDOR JS IN ONE FILE -->
+		<script src="{{ 'scripts/vendor.js' | asset_url }}"></script>
+
 		{% block head_page_script %}{% endblock %}
 
 		<!-- If you need to remove google analytics from a page create a blank google_analytics_script block -->
@@ -109,10 +112,6 @@
 
 			</div>
 		</div>
-
-		{% assets "common_js" %}
-			<script type="text/javascript" src="{{ ASSET_URL }}"></script>
-		{% endassets %}
 
 		{% block body_page_script %}{% endblock %}
 

@@ -4,7 +4,7 @@
 /* global $ */
 
 /** @namespace */
-var NLDI = NLDI || {};
+const NLDI = window.NLDI = window.NLDI || {};
 
 /**
  * Add NLDI layer overlays to a leaflet map. An overlay is added for the flowlines

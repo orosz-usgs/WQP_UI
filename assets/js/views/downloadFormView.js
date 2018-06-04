@@ -5,7 +5,7 @@
 /* global _gaq */
 
 
-var PORTAL = PORTAL || {};
+const PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 
 /*
@@ -231,6 +231,6 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 		});
 		return result;
 	};
-	
+
 	return self;
 };

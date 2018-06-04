@@ -3,7 +3,7 @@
 /* global Config */
 /* global log */
 
-var PORTAL = PORTAL || {};
+const PORTAL = window.PORTAL = window.PORTAL || {};
 
 $(document).ready(function () {
 	"use strict";

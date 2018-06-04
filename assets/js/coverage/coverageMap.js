@@ -4,7 +4,7 @@
 /* global _ */
 /* global $ */
 
-var COVERAGE = COVERAGE || {};
+var COVERAGE = window.COVERAGE = window.COVERAGE || {};
 
 /*
  * @param {Object} options

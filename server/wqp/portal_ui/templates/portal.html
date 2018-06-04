@@ -633,7 +633,5 @@
 {% endblock %}
 
 {% block body_page_script %}
-	{% assets "portal_js" %}
-		<script type="text/javascript" src="{{ ASSET_URL }}"></script>
-	{% endassets %}
+	<script type="text/javascript" src="{{ 'scripts/portal.js' | asset_url }}"></script>
 {% endblock %}

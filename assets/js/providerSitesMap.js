@@ -6,7 +6,7 @@
 
 
 /** @namespace */
-var SITES = SITES || {};
+var SITES = window.SITES = window.SITES || {};
 
 /**
  * Create a leaflet map for all the sites in an organization that

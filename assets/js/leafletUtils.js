@@ -1,6 +1,6 @@
 /* jslint browser: true */
 
-var WQP = WQP || {};
+var WQP = window.WQP = window.WQP || {};
 WQP.L = WQP.L || {};
 WQP.L.Util = WQP.L.Util || {};
 

@@ -1,7 +1,7 @@
 /* jslint browser: true */
 /* global log */
 
-var PORTAL = PORTAL || {};
+const PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 
 /*

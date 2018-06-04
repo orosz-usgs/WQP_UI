@@ -3,7 +3,7 @@
 /* global _ */
 /* global Config */
 
-var PORTAL = PORTAL || {};
+const PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.UTILS = function() {
 	"use strict";
 	var self = {};

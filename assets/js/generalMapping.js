@@ -1,7 +1,7 @@
 /* jslint browser: true */
 /* global L */
 
-var WQP = WQP || {};
+var WQP = window.WQP = window.WQP || {};
 /** @namespace */
 
 WQP.MAPS = WQP.MAPS || {};

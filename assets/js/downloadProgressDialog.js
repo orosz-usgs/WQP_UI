@@ -3,7 +3,7 @@
 /* global _ */
 /* global $ */
 
-var PORTAL = PORTAL || {};
+const PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 
 PORTAL.VIEWS.downloadProgressDialog = function (el) {

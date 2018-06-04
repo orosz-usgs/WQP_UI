@@ -1,4 +1,4 @@
-var PORTAL = PORTAL || {};
+const PORTAL = window.PORTAL = window.PORTAL || {};
 
 PORTAL.validators = function () {
     "use strict";

@@ -34,6 +34,10 @@
     "process": true,
     "XMLHttpRequest": true,
     "window": true,
-    "PORTAL": true
+    "PORTAL": true,
+    "SITES": true,
+    "COVERAGE": true,
+    "NLDI": true,
+    "WQP": true
   }
 }

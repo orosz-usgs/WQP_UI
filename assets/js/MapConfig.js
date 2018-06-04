@@ -1,6 +1,6 @@
 /* jslint browser: true */
 
-var WQP = WQP || {};
+var WQP = window.WQP = window.WQP || {};
 
 WQP.MapConfig = (function() {
 	"use strict";

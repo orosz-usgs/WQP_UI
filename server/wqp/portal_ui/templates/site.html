@@ -102,7 +102,5 @@
 		Config.localBaseUrl = '{{ config.LOCAL_BASE_URL }}';
 	</script>
 
-	{% assets "site_map" %}
-		<script type="text/javascript" src="{{ ASSET_URL }}"></script>
-	{% endassets %}
+    <script src="{{ 'scripts/site_map.js' | asset_url }}"></script>
 {% endblock body_page_script %}

@@ -8,10 +8,6 @@ COLLECT_STATIC_ROOT = '../../../assets/static/'
 
 VERIFY_CERT = True  # verify SSL certs during web service calls by requests, can be a path to a cert bundle
 
-#Config for Flask-Assets
-ASSETS_DEBUG = False #To not compress the js and css set this to True
-ASSETS_AUTO_BUILD = False #Local developers will typically set this to True in their instance/config.py.
-
 # Application defined config variables
 WQP_GEOSERVER_ENDPOINT = ''
 SITES_MAP_GEOSERVER_ENDPOINT = ''
@@ -39,8 +35,6 @@ GA_TRACKING_CODE = ''
 
 # set to false in instance/config.py if you want to turn off the NLDI feature
 NLDI_ENABLED = True
-
-LESS_BIN = os.path.abspath(os.path.join(PROJECT_HOME, '..', 'assets', 'node_modules', 'less', 'bin', 'lessc'))
 
 # set REDIS Config if it exists
 REDIS_CONFIG = None

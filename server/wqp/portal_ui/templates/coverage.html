@@ -64,8 +64,6 @@
 {% endblock %}
 
 {% block body_page_script %}
-	{% assets "coverage_js" %}
-		<script type="text/javascript" src="{{ ASSET_URL }}"></script>
-	{% endassets %}
+	<script src="{{ 'scripts/coverage.js' | asset_url }}"></script>
 {% endblock %}
 

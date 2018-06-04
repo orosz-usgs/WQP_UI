@@ -4,7 +4,7 @@
 /*global stateFIPS */
 /*global alert */
 
-var PORTAL = PORTAL || {};
+const PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 
 /*

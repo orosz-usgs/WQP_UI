@@ -1,4 +1,4 @@
-var PORTAL = PORTAL || {};
+const PORTAL = window.PORTAL = window.PORTAL || {};
 
 PORTAL.CONTROLLERS = PORTAL.CONTROLLERS || {};
 

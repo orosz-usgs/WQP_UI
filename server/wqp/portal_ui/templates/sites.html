@@ -39,8 +39,6 @@
 			Config.sitesData = {{ sites_geojson|tojson }};
 			Config.localBaseUrl = '{{ config.LOCAL_BASE_URL }}';
 		</script>
-		{% assets "sites_map" %}
-			<script type="text/javascript" src="{{ ASSET_URL }}"></script>
-		{% endassets %}
+		<script src="{{ 'scripts/sites_map.js' | asset_url }}"></script>
 	{% endif %}
 {% endblock %}
