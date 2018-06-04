@@ -40,10 +40,10 @@ def _create_log_handler(log_directory=None, log_name=__name__):
 def _custom_celery_handler(logger=None, *args, **kwargs):
     """
     Function to modify the logger object used by Celery.
-    
+
     This function should be passed to celery's logging
     setup signals.
-    
+
     :param logging.logger logger: Logger object provided by a celery signal
 
     """
@@ -105,6 +105,7 @@ session.verify = app.config.get('VERIFY_CERT', True)
 from .portal_ui.views import portal_ui
 from .sites.views import sites_blueprint
 from .wqx.views import wqx
+from . import filters  # pylint: disable=C0413
 
 
 app.register_blueprint(portal_ui, url_prefix='')

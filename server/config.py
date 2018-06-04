@@ -75,3 +75,6 @@ LOGGING_LEVEL = logging.DEBUG
 LOG_RETENTION = 30
 LOG_ROLLOVER_TIME = (0, 0)  # tuple of format (hour, minute)
 LOG_DELETE_TIME = (1, 0)  # tuple of format (hour, minute)
+
+# To use hashed assets, set this to the gulp-rev-all rev-manifest.json path
+ASSET_MANIFEST_PATH = None

@@ -3,9 +3,7 @@
 {% block title %}NWIS QW{% endblock %}
 
 {% block custom_style %}
-	{% assets "nwis_qw_custom_less" %}
-		<link rel="stylesheet"  type="text/css" href="{{ ASSET_URL }}" >
-	{% endassets %}
+	<link rel="stylesheet" href="{{ 'css/nwis_qw_custom.css' | asset_url }}">
 {% endblock %}
 
 {% block page_header %}

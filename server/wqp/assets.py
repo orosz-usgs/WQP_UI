@@ -4,46 +4,6 @@ from flask_assets import Environment, Bundle
 from . import app
 
 bundles = {
-    'nwis_qw_custom_less' : Bundle(
-        'portal_ui/less/usgs_theme/custom.less',
-        depends=[
-            'portal_ui/less/variables.less',
-            'portal_ui/less/page_content.less',
-            'portal_ui/less/portal_form.less',
-            'portal_ui/less/site_nav.less',
-            'portal_ui/less/sites.less',
-            'portal_ui/less/public_srsnames.less',
-            'portal_ui/less/usgs_theme/variables.less',
-            'portal_ui/less/usgs_theme/header_footer.less'
-        ],
-        filters='less,cssmin',
-        output='gen/nwis_qw_custom.css'),
-    'custom_less' : Bundle(
-        'portal_ui/less/wqp_theme/custom.less',
-        depends=[
-            'portal_ui/less/variables.less',
-            'portal_ui/less/coverage.less',
-            'portal_ui/less/index.less',
-            'portal_ui/less/page_content.less',
-            'portal_ui/less/portal_form.less',
-            'portal_ui/less/site_nav.less',
-            'portal_ui/less/sites.less',
-            'portal_ui/less/public_srsnames.less',
-            'portal_ui/less/wqp_theme/footer.less',
-            'portal_ui/less/wqp_theme/header.less',
-            'portal_ui/less/wqp_theme/variables.less',
-            ],
-        filters='less,cssmin', 
-        output='gen/custom.css'),
-    'portal_vendor_css': Bundle(
-        'vendor/css/select2.css',
-        'vendor/css/select2-bootstrap.css',
-        'vendor/css/easy-button.css',
-        'vendor/css/MarkerCluster.css',
-        'vendor/css/MarkerCluster.Default.css',
-        filters='cssmin',
-        output='gen/portal.css'
-    ),
     'common_js' : Bundle(
         'vendor/js/jquery.js',
         'vendor/js/bootstrap.js',
@@ -122,12 +82,6 @@ bundles = {
         ),
         filters='jsmin',
         output='gen/coverage.js'),
-    'site_css' : Bundle(
-        'vendor/css/MarkerCluster.Default.css',
-        'vendor/css/MarkerCluster.css',
-        filters='less,cssmin',
-        output='gen/site.css'
-    ),
     'sites_map': Bundle(
         Bundle(
             'vendor/js/underscore.js',
@@ -159,8 +113,7 @@ bundles = {
         filters='jsmin',
         output='gen/siteMap.js')
 }
-    
+
 assets = Environment(app)
 assets.versions = 'hash'
 assets.register(bundles)
-

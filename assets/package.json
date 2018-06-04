@@ -8,7 +8,15 @@
   },
   "scripts": {
     "test": "node_modules/karma/bin/karma start test/js/karma.conf.js --no-single-run --reporters progress",
-    "postinstall": "node post_install.js"
+    "postinstall": "node post_install.js",
+    "build:css": "mkdir -p dist/css && run-p build:css:*",
+    "build:css:site": "lessc less/site.less > dist/css/site.css && uglifycss --output dist/css/site.css dist/css/site.css && postcss dist/css/site.css --no-map --use autoprefixer -o dist/css/site.css",
+    "build:css:theme_usgs": "lessc less/usgs_theme/custom.less > dist/css/nwis_qw_custom.css && uglifycss --output dist/css/nwis_qw_custom.css dist/css/nwis_qw_custom.css && postcss dist/css/nwis_qw_custom.css --no-map --use autoprefixer -o dist/css/nwis_qw_custom.css",
+    "build:css:wqp_theme": "lessc less/wqp_theme/custom.less > dist/css/custom.css && uglifycss --output dist/css/custom.css dist/css/custom.css && postcss dist/css/custom.css --no-map --use autoprefixer -o dist/css/custom.css",
+    "build:css:vendor": "lessc less/vendor.less > dist/css/vendor.css && uglifycss --output dist/css/vendor.css dist/css/vendor.css && postcss dist/css/vendor.css --no-map --use autoprefixer -o dist/css/vendor.css",
+    "serve:static": "live-server --port=9000 --cors --no-browser dist",
+    "watch": "run-p watch:* serve:static",
+    "watch:css": "nodemon -w less -e less -x \"npm run build:css\""
   },
   "repository": {
     "type": "git",
@@ -21,6 +29,7 @@
   },
   "homepage": "https://github.com/USGS-CIDA/WQP_UI",
   "devDependencies": {
+    "autoprefixer": "^8.6.0",
     "cpy": "7.0.0",
     "jasmine-core": "2.99.1",
     "karma": "2.0.2",
@@ -29,7 +38,12 @@
     "karma-js-coverage": "0.4.0",
     "karma-sinon": "1.0.5",
     "less": "3.0.4",
-    "sinon": "5.0.7"
+    "live-server": "^1.2.0",
+    "nodemon": "^1.17.5",
+    "npm-run-all": "^4.1.3",
+    "postcss-cli": "^5.0.0",
+    "sinon": "5.0.7",
+    "uglifycss": "0.0.29"
   },
   "dependencies": {
     "bootstrap": "3.3.7",
