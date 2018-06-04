@@ -1,6 +1,6 @@
 var Config = {
 	CODES_ENDPOINT : 'http:fakecodesservice/codes',
-	STATIC_ENDPOINT : 'base/wqp/portal_ui/static/',
+	STATIC_ENDPOINT : 'base/',
 	QUERY_URLS: {
 		Station: 'http://fakestationservice/Station',
 		Result : 'http://fakeresultservice/Result',

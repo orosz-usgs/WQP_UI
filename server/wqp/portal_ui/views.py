@@ -33,7 +33,7 @@ def home():
     if request.path == '/index.jsp' or request.path == '/index/':
         return redirect(url_for('portal_ui.home-canonical')), 301
     return render_template('index.html')
- 
+
 
 @portal_ui.route('/contact_us.jsp')
 @portal_ui.route('/contact_us/', endpoint='contact_us-canonical')
@@ -167,13 +167,13 @@ def public_srsnames():
     app.logger.info(msg)
 
     return render_template('public_srsnames.html', status_code=resp.status_code, content = resp.json())
-    
+
 
 @portal_ui.route('/wqp_geoserver/<op>', methods=['GET', 'POST'])
 def wqp_geoserverproxy(op):
     target_url = app.config['WQP_MAP_GEOSERVER_ENDPOINT'] + '/' + op
     return geoserver_proxy_request(target_url, proxy_cert_verification)
-    
+
 
 @portal_ui.route('/sites_geoserver/<op>', methods=['GET', 'POST'])
 def sites_geoserverproxy(op):
@@ -185,9 +185,9 @@ def sites_geoserverproxy(op):
 def crossdomain():
     xml = render_template('crossdomain.xml')
     response = make_response(xml)
-    response.headers["Content-Type"] = "application/xml"  
-    return response   
-    
+    response.headers["Content-Type"] = "application/xml"
+    return response
+
 
 @portal_ui.route('/kml/wqp_styles.kml')
 def kml():

@@ -14,7 +14,7 @@ module.exports = function (config) {
 	config.set({
 
 		// base path that will be used to resolve all patterns (eg. files, exclude)
-		basePath: '../..',
+        basePath: '',
 
 
 		// frameworks to use
@@ -24,33 +24,33 @@ module.exports = function (config) {
 
 		// list of files / patterns to load in the browser
 		files: [
-			'wqp/static/vendor/js/underscore-min.js',
-			'wqp/static/vendor/js/jquery.min.js',
-			'wqp/static/vendor/js/bootstrap.js',
-			'wqp/static/vendor/js/jquery-ui.js',
-			'wqp/static/vendor/js/numeral.js',
-			'wqp/static/vendor/js/select2.js',
-			'wqp/static/vendor/js/handlebars.js',
-			'wqp/static/vendor/js/loglevel.js',
-			'wqp/static/vendor/js/leaflet.js',
-			'wqp/static/vendor/js/leaflet-providers.js',
-			'wqp/static/vendor/js/esri-leaflet.js',
-			'wqp/static/vendor/js/leaflet.markercluster.js',
-			'wqp/static/vendor/js/easy-button.js',
+			'../server/wqp/static/vendor/js/underscore-min.js',
+			'../server/wqp/static/vendor/js/jquery.min.js',
+			'../server/wqp/static/vendor/js/bootstrap.js',
+			'../server/wqp/static/vendor/js/jquery-ui.js',
+			'../server/wqp/static/vendor/js/numeral.js',
+			'../server/wqp/static/vendor/js/select2.js',
+			'../server/wqp/static/vendor/js/handlebars.js',
+			'../server/wqp/static/vendor/js/loglevel.js',
+			'../server/wqp/static/vendor/js/leaflet.js',
+			'../server/wqp/static/vendor/js/leaflet-providers.js',
+			'../server/wqp/static/vendor/js/esri-leaflet.js',
+			'../server/wqp/static/vendor/js/leaflet.markercluster.js',
+			'../server/wqp/static/vendor/js/easy-button.js',
 			'test/resources/testConfig.js',
-			'wqp/portal_ui/static/js/**/*.js',
-			{pattern: 'wqp/portal_ui/static/js/hbTemplates/*.hbs', included: false},
+			'js/**/*.js',
+			{pattern: 'js/hbTemplates/*.hbs', included: false},
 			'test/js/portal_ui/**/*.js'
 		],
 
 
 		// list of files to exclude
 		exclude: [
-			'wqp/portal_ui/static/js/portalOnReady.js',
-			'wqp/portal_ui/static/js/coverage/coverageOnReady.js',
-			'wqp/portal_ui/static/js/providerSiteMapOnReady.js',
-			'wqp/portal_ui/static/js/providerSitesMapOnReady.js',
-			'wqp/portal_ui/static/js/angular/**/*.js'
+			'js/portalOnReady.js',
+			'js/coverage/coverageOnReady.js',
+			'js/providerSiteMapOnReady.js',
+			'js/providerSitesMapOnReady.js',
+			'js/angular/**/*.js'
 		],
 
 		// preprocess matching files before serving them to the browser
@@ -59,7 +59,7 @@ module.exports = function (config) {
 			// source files, that you wanna generate coverage for
 			// do not include tests or libraries
 			// (these files will be instrumented by Istanbul)
-			'wqp/portal_ui/static/js/**/*.js': sourcePreprocessors
+			'js/**/*.js': sourcePreprocessors
 		},
 
 		// test results reporter to use

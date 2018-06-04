@@ -4,7 +4,7 @@ import os
 
 PROJECT_HOME = os.path.dirname(__file__)
 #Config for Flask-Collect
-COLLECT_STATIC_ROOT = 'static/'
+COLLECT_STATIC_ROOT = '../../../assets/static/'
 
 VERIFY_CERT = True  # verify SSL certs during web service calls by requests, can be a path to a cert bundle
 
@@ -40,7 +40,7 @@ GA_TRACKING_CODE = ''
 # set to false in instance/config.py if you want to turn off the NLDI feature
 NLDI_ENABLED = True
 
-LESS_BIN = os.path.join(PROJECT_HOME, 'node_modules', 'less', 'bin', 'lessc')
+LESS_BIN = os.path.abspath(os.path.join(PROJECT_HOME, '..', 'assets', 'node_modules', 'less', 'bin', 'lessc'))
 
 # set REDIS Config if it exists
 REDIS_CONFIG = None
