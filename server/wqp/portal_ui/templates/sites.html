@@ -4,10 +4,7 @@
 
 {% block page_style %}
 	{% if total_site_count < 60000 %}
-		<link rel="stylesheet" href="{{ 'css/site.css' | asset_url }}">
-		{# Once node has been updated, can add this to portal_vendor_css by using clean-css-cli #}
-		<link rel="stylesheet" type="text/css",
-			  href="{{ url_for('static', filename='vendor/css/leaflet/leaflet.css') }}" />
+		<link rel="stylesheet" href="{{ 'site.css' | asset_url }}">
 	{% endif %}
 {% endblock %}
 
