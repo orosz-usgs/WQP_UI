@@ -3,7 +3,7 @@
 /* global $ */
 /* global _ */
 
-const PORTAL = window.PORTAL = window.PORTAL || {};
+var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 /*
  * Managed the Site map and its controls.

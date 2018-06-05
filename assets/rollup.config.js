@@ -65,7 +65,6 @@ const getBundleConfig = function (src, dest) {
 };
 
 module.exports = [
-    getBundleConfig('js/bundles/common.js', 'dist/scripts/common.js'),
     getBundleConfig('js/bundles/portal.js', 'dist/scripts/portal.js'),
     getBundleConfig('js/bundles/coverage.js', 'dist/scripts/coverage.js'),
     getBundleConfig('js/bundles/site_map.js', 'dist/scripts/site_map.js'),

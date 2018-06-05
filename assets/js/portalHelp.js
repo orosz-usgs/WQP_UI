@@ -1,4 +1,4 @@
-const PORTAL = window.PORTAL = window.PORTAL || {};
+var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.MODELS = PORTAL.MODELS || {};
 
 // A placement of left does not work well on xs devices as it goes off the

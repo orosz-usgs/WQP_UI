@@ -4,7 +4,7 @@
 /* global Config */
 /* global log */
 
-const PORTAL = window.PORTAL = window.PORTAL || {};
+var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.MODELS = PORTAL.MODELS || {};
 
 PORTAL.MODELS.providers = function () {

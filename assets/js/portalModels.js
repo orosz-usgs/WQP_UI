@@ -5,7 +5,7 @@
 /*global log */
 
 
-const PORTAL = window.PORTAL = window.PORTAL || {};
+var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.MODELS = PORTAL.MODELS || {};
 
 /*

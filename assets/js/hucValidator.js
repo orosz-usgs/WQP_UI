@@ -1,4 +1,4 @@
-const PORTAL = window.PORTAL = window.PORTAL || {};
+var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.hucValidator = function () {
 
 	var INVALID = {

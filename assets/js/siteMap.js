@@ -2,7 +2,7 @@
 /* global L */
 /* global Config */
 
-const PORTAL = window.PORTAL = window.PORTAL || {};
+var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.MAP = PORTAL.MAP || {};
 /*
  * Manages the site map and its controls

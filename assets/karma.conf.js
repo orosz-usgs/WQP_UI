@@ -1,108 +1,128 @@
 /* global process, module */
+var istanbul = require('rollup-plugin-istanbul');
 
-var sourcePreprocessors = ['coverage'];
+
 function isDebug(argument) {
-    "use strict";
     return argument === '--debug';
 }
-if (process.argv.some(isDebug)) {
-    sourcePreprocessors = [];
-}
+
 
 module.exports = function (config) {
-	"use strict";
-	config.set({
+    /**
+     * Base configuration shared by all run configurations
+     */
+    let karmaConfig = {
 
-		// base path that will be used to resolve all patterns (eg. files, exclude)
+        // base path that will be used to resolve all patterns (eg. files, exclude)
         basePath: '',
 
 
-		// frameworks to use
-		// available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-		frameworks: ['jasmine', 'sinon'],
+        // frameworks to use
+        // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
+        frameworks: ['jasmine', 'sinon'],
 
 
-		// list of files / patterns to load in the browser
-		files: [
-			'../server/wqp/static/vendor/js/underscore-min.js',
-			'../server/wqp/static/vendor/js/jquery.min.js',
-			'../server/wqp/static/vendor/js/bootstrap.js',
-			'../server/wqp/static/vendor/js/jquery-ui.js',
-			'../server/wqp/static/vendor/js/numeral.js',
-			'../server/wqp/static/vendor/js/select2.js',
-			'../server/wqp/static/vendor/js/handlebars.js',
-			'../server/wqp/static/vendor/js/loglevel.js',
-			'../server/wqp/static/vendor/js/leaflet.js',
-			'../server/wqp/static/vendor/js/leaflet-providers.js',
-			'../server/wqp/static/vendor/js/esri-leaflet.js',
-			'../server/wqp/static/vendor/js/leaflet.markercluster.js',
-			'../server/wqp/static/vendor/js/easy-button.js',
-			'test/resources/testConfig.js',
-			'js/**/*.js',
-			{pattern: 'js/hbTemplates/*.hbs', included: false},
-			'test/js/portal_ui/**/*.js'
-		],
+        // list of files / patterns to load in the browser
+        files: [
+            'dist/scripts/vendor.js',
+            'test/resources/testConfig.js',
+            'js/**/*.js',
+            {pattern: 'js/hbTemplates/*.hbs', included: false},
+            'test/js/portal_ui/**/*.js'
+        ],
 
 
-		// list of files to exclude
-		exclude: [
-			'js/portalOnReady.js',
-			'js/coverage/coverageOnReady.js',
-			'js/providerSiteMapOnReady.js',
-			'js/providerSitesMapOnReady.js',
-			'js/angular/**/*.js'
-		],
+        // list of files to exclude
+        exclude: [
+            'js/bundles/*.js',
+            'js/portalOnReady.js',
+            'js/coverage/coverageOnReady.js',
+            'js/providerSiteMapOnReady.js',
+            'js/providerSitesMapOnReady.js'
+        ],
 
-		// preprocess matching files before serving them to the browser
-		// available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-		preprocessors: {
-			// source files, that you wanna generate coverage for
-			// do not include tests or libraries
-			// (these files will be instrumented by Istanbul)
-			'js/**/*.js': sourcePreprocessors
-		},
+        // preprocess matching files before serving them to the browser
+        // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
+        preprocessors: {
+            // source files, that you wanna generate coverage for
+            // do not include tests or libraries
+            // (these files will be instrumented by Istanbul)
+            //'js/**/*.js': ['rollup']
+        },
 
-		// test results reporter to use
-		// possible values: 'dots', 'progress'
-		// available reporters: https://npmjs.org/browse/keyword/karma-reporter
-		reporters: ['dots', 'coverage'],
+        rollupPreprocessor: {
+            /**
+             * This is just a normal Rollup config object,
+             * except that `input` is handled for you.
+             */
+            ...require('./rollup.config')[0]
+        },
 
-		coverageReporter: {
-			reporters: [
-				{type: 'html', dir: 'coverage/'},
-				{type: 'cobertura', dir: 'coverage/'},
-				{type: 'lcovonly', dir: 'coverage/'}
-			]
-		},
+        // test results reporter to use
+        // possible values: 'dots', 'progress'
+        // available reporters: https://npmjs.org/browse/keyword/karma-reporter
+        reporters: ['progress'],
 
-		// web server port
-		port: 9876,
-
-
-		// enable / disable colors in the output (reporters and logs)
-		colors: true,
+        // web server port
+        port: 9876,
 
 
-		// level of logging
-		// possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-		logLevel: config.LOG_INFO,
+        // enable / disable colors in the output (reporters and logs)
+        colors: true,
 
 
-		// enable / disable watching file and executing tests whenever any file changes
-		autoWatch: true,
+        // level of logging
+        // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
+        logLevel: config.LOG_INFO,
 
 
-		// start these browsers
-		// available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-		browsers: ['Firefox'],
+        // enable / disable watching file and executing tests whenever any file changes
+        autoWatch: true,
 
 
-		// Continuous Integration mode
-		// if true, Karma captures browsers, runs the tests and exits
-		singleRun: true,
+        // start these browsers
+        // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
+        browsers: ['Firefox'],
 
-		// Concurrency level
-		// how many browser should be started simultaneous
-		concurrency: Infinity
-	});
+
+        // Continuous Integration mode
+        // if true, Karma captures browsers, runs the tests and exits
+        singleRun: true,
+
+        // Concurrency level
+        // how many browser should be started simultaneous
+        concurrency: Infinity
+    };
+
+    /**
+     * Produce a code coverage report
+     */
+    //if (!process.argv.some(isDebug)) {
+    if (false) {
+        karmaConfig = {
+            ...karmaConfig,
+            rollupPreprocessor: {
+                ...karmaConfig.rollupPreprocessor,
+                plugins: [
+                    ...karmaConfig.rollupPreprocessor.plugins,
+                    istanbul()
+                ]
+            },
+            reporters: [
+                ...karmaConfig.reporters,
+                'coverage'
+            ],
+            coverageReporter: {
+                reporters: [
+                    //{type: 'html', dir: 'coverage/'},
+                    {type: 'cobertura', dir: 'coverage/'},
+                    {type: 'lcovonly', dir: 'coverage/'}
+                ]
+            }
+        };
+    } else {
+        console.log('Skipping code coverage report...');
+    }
+
+    config.set(karmaConfig);
 };

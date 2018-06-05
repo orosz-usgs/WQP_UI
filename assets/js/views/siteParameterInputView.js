@@ -2,7 +2,7 @@
 /* global $ */
 /* Config */
 
-const PORTAL = window.PORTAL = window.PORTAL || {};
+var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 
 /*
