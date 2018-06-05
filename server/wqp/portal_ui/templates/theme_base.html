@@ -1,120 +1,120 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		{% block meta_tags %}{% endblock %}
-		<title>
-			{% block title %}{% endblock %}
-		</title>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        {% block meta_tags %}{% endblock %}
+        <title>
+            {% block title %}{% endblock %}
+        </title>
 
-		{% block page_style %}{% endblock %}
+        {% block page_style %}{% endblock %}
 
-		<link rel="shortcut icon" href="{{ 'img/favicon.ico' | asset_url }}"
-			  type="image/vnd.microsoft.icon"/>
+        <link rel="shortcut icon" href="{{ 'img/favicon.ico' | asset_url }}"
+              type="image/vnd.microsoft.icon"/>
 
-		{% block custom_style %}{% endblock %}
-		<script src="{{ 'scripts/vendor.js' | asset_url }}"></script>
-		<link rel="stylesheet" href="{{ 'vendor.css' | asset_url }}">
+        {% block custom_style %}{% endblock %}
+        <script src="{{ 'scripts/vendor.js' | asset_url }}"></script>
+        <link rel="stylesheet" href="{{ 'vendor.css' | asset_url }}">
 
-		<!-- TEMPORARY: ALL VENDOR JS IN ONE FILE -->
+        <!-- TEMPORARY: ALL VENDOR JS IN ONE FILE -->
 
-		{% block head_page_script %}{% endblock %}
+        {% block head_page_script %}{% endblock %}
 
-		<!-- If you need to remove google analytics from a page create a blank google_analytics_script block -->
-		<script type="text/javascript">
-			Config = {};
+        <!-- If you need to remove google analytics from a page create a blank google_analytics_script block -->
+        <script type="text/javascript">
+            Config = {};
 
-			Config.SLD_ENDPOINT = "{{ config.SLD_ENDPOINT }}";
-			Config.CODES_ENDPOINT = "{{ config.CODES_ENDPOINT }}";
-			Config.SEARCH_QUERY_ENDPOINT = "{{ config.SEARCH_QUERY_ENDPOINT }}";
-			Config.PUBLIC_SRSNAMES_ENDPOINT = "{{ config.PUBLIC_SRSNAMES_ENDPOINT }}";
-			Config.DEBUG = "{{ config.DEBUG }}" === 'True';
+            Config.SLD_ENDPOINT = '{{ config.SLD_ENDPOINT }}';
+            Config.CODES_ENDPOINT = '{{ config.CODES_ENDPOINT }}';
+            Config.SEARCH_QUERY_ENDPOINT = '{{ config.SEARCH_QUERY_ENDPOINT }}';
+            Config.PUBLIC_SRSNAMES_ENDPOINT = '{{ config.PUBLIC_SRSNAMES_ENDPOINT }}';
+            Config.DEBUG = '{{ config.DEBUG }}' === 'True';
 
-			Config.QUERY_URLS = {
-				Station: Config.SEARCH_QUERY_ENDPOINT + 'Station/search',
-				Project: Config.SEARCH_QUERY_ENDPOINT + 'Project/search',
-				ProjectMonitoringLocationWeighting: Config.SEARCH_QUERY_ENDPOINT + 'ProjectMonitoringLocationWeighting/search',
-				Result: Config.SEARCH_QUERY_ENDPOINT + 'Result/search',
-				Activity: Config.SEARCH_QUERY_ENDPOINT + 'Activity/search',
-				ActivityMetric: Config.SEARCH_QUERY_ENDPOINT + 'ActivityMetric/search',
-				ResultDetectionQuantitationLimit: Config.SEARCH_QUERY_ENDPOINT + 'ResultDetectionQuantitationLimit/search',
-				biologicalresult: Config.SEARCH_QUERY_ENDPOINT + 'biologicalresult/search'
-			};
+            Config.QUERY_URLS = {
+                Station: Config.SEARCH_QUERY_ENDPOINT + 'Station/search',
+                Project: Config.SEARCH_QUERY_ENDPOINT + 'Project/search',
+                ProjectMonitoringLocationWeighting: Config.SEARCH_QUERY_ENDPOINT + 'ProjectMonitoringLocationWeighting/search',
+                Result: Config.SEARCH_QUERY_ENDPOINT + 'Result/search',
+                Activity: Config.SEARCH_QUERY_ENDPOINT + 'Activity/search',
+                ActivityMetric: Config.SEARCH_QUERY_ENDPOINT + 'ActivityMetric/search',
+                ResultDetectionQuantitationLimit: Config.SEARCH_QUERY_ENDPOINT + 'ResultDetectionQuantitationLimit/search',
+                biologicalresult: Config.SEARCH_QUERY_ENDPOINT + 'biologicalresult/search'
+            };
 
-			Config.SITES_GEOSERVER_ENDPOINT = "{{ config.SITES_MAP_GEOSERVER_ENDPOINT }}/";
-			Config.WQP_MAP_GEOSERVER_ENDPOINT = "{{ url_for('portal_ui.wqp_geoserverproxy', op='') }}";
-			Config.NLDI_SERVICES_ENDPOINT = "{{ config.NLDI_SERVICES_ENDPOINT }}";
-			Config.GEO_SEARCH_API_ENDPOINT = "{{ config.GEO_SEARCH_API_ENDPOINT }}";
-			Config.HYDRO_LAYER_ENDPOINT = "{{ config.HYDRO_LAYER_ENDPOINT }}";
-			Config.NHDPLUS_FLOWLINE_ENDPOINT = "{{ config.NHDPLUS_FLOWLINE_ENDPOINT }}";
-			Config.NHDPLUS_FLOWLINE_LAYER_NAME = "{{ config.NHDPLUS_FLOWLINE_LAYER_NAME }}";
-			Config.STATIC_ENDPOINT = "{{ config.STATIC_ROOT }}/";
-			Config.IS_PROD = location.hostname == 'www.waterqualitydata.us';
-			Config.NLDI_ENABLED = "{{ config.NLDI_ENABLED }}" === "True";
-			Config.GA_TRACKING_CODE = "{{ config.GA_TRACKING_CODE }}";
-			Config.NAWQA_ONLY_PROJECTS = "{{ config.NAWQA_ONLY_PROJECTS }}";
-		</script>
-		{% block google_analytics_script %}
-			<script type="text/javascript">
-				var _gaq = _gaq || [];
-				_gaq.push(['_setAccount', Config.GA_TRACKING_CODE]);
-				_gaq.push(['_gat._anonymizeIp']);
-				_gaq.push(['_trackPageview']);
+            Config.SITES_GEOSERVER_ENDPOINT = '{{ config.SITES_MAP_GEOSERVER_ENDPOINT }}/';
+            Config.WQP_MAP_GEOSERVER_ENDPOINT = '{{ url_for("portal_ui.wqp_geoserverproxy", op="") }}';
+            Config.NLDI_SERVICES_ENDPOINT = '{{ config.NLDI_SERVICES_ENDPOINT }}';
+            Config.GEO_SEARCH_API_ENDPOINT = '{{ config.GEO_SEARCH_API_ENDPOINT }}';
+            Config.HYDRO_LAYER_ENDPOINT = '{{ config.HYDRO_LAYER_ENDPOINT }}';
+            Config.NHDPLUS_FLOWLINE_ENDPOINT = '{{ config.NHDPLUS_FLOWLINE_ENDPOINT }}';
+            Config.NHDPLUS_FLOWLINE_LAYER_NAME = '{{ config.NHDPLUS_FLOWLINE_LAYER_NAME }}';
+            Config.STATIC_ENDPOINT = '{{ config.STATIC_ROOT }}/';
+            Config.IS_PROD = location.hostname == 'www.waterqualitydata.us';
+            Config.NLDI_ENABLED = '{{ config.NLDI_ENABLED }}" === "True';
+            Config.GA_TRACKING_CODE = '{{ config.GA_TRACKING_CODE }}';
+            Config.NAWQA_ONLY_PROJECTS = '{{ config.NAWQA_ONLY_PROJECTS }}';
+        </script>
+        {% block google_analytics_script %}
+            <script type="text/javascript">
+                var _gaq = _gaq || [];
+                _gaq.push(['_setAccount', Config.GA_TRACKING_CODE]);
+                _gaq.push(['_gat._anonymizeIp']);
+                _gaq.push(['_trackPageview']);
 
-				(function () {
-					var ga = document.createElement('script');
-					ga.type = 'text/javascript';
-					ga.async = true;
-					ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-					var s = document.getElementsByTagName('script')[0];
-					s.parentNode.insertBefore(ga, s);
-				})();
-			</script>
-		{% endblock %}
+                (function () {
+                    var ga = document.createElement('script');
+                    ga.type = 'text/javascript';
+                    ga.async = true;
+                    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                    var s = document.getElementsByTagName('script')[0];
+                    s.parentNode.insertBefore(ga, s);
+                })();
+            </script>
+        {% endblock %}
 
-		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-		<!--[if lt IE 9]>
-			   <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-			   <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-			<![endif]-->        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-	</head>
-	<body>
-		<div id="wqp-page">
-			<div id="page-header">
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+               <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+               <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+            <![endif]-->        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    </head>
+    <body>
+        <div id="wqp-page">
+            <div id="page-header">
 
-				{% block page_header %}{% endblock %}
+                {% block page_header %}{% endblock %}
 
-			</div>
+            </div>
 
-			{% block nav_bar %}
-				<nav class="navbar" role="navigation">
+            {% block nav_bar %}
+                <nav class="navbar" role="navigation">
 
-					{% block navbar_navigation %}{% endblock %}
+                    {% block navbar_navigation %}{% endblock %}
 
-				</nav>
-			{% endblock %}
+                </nav>
+            {% endblock %}
 
-			{% if config.ANNOUNCEMENT_BANNER %}
-				<div id="announcement"></div>
-				<script>
-					document.getElementById("announcement").innerHTML = '{{ config.ANNOUNCEMENT_BANNER|safe }}';
-				</script>
-			{% endif %}
+            {% if config.ANNOUNCEMENT_BANNER %}
+                <div id="announcement"></div>
+                <script>
+                    document.getElementById('announcement').innerHTML = '{{ config.ANNOUNCEMENT_BANNER|safe }}';
+                </script>
+            {% endif %}
 
-			{% block page_content %}{% endblock %}
+            {% block page_content %}{% endblock %}
 
-			<div id="footer-content">
+            <div id="footer-content">
 
-				{% block page_footer %}{% endblock %}
+                {% block page_footer %}{% endblock %}
 
-			</div>
-		</div>
+            </div>
+        </div>
 
-		{% block body_page_script %}{% endblock %}
+        {% block body_page_script %}{% endblock %}
 
-	</body>
+    </body>
 </html>

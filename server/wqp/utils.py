@@ -1,12 +1,12 @@
 
-from bs4 import BeautifulSoup
-import feedparser
 from functools import wraps
 from ntpath import basename
 import os
 import tarfile
 import time
 
+from bs4 import BeautifulSoup
+import feedparser
 from flask import request, make_response, abort
 
 from . import app, session
@@ -16,29 +16,28 @@ def create_request_resp_log_msg(response):
     """
     Generate a string for logging results of web service requests
     from the requests package.
-    
-    :param requests.Response response: a requests Response object 
+
+    :param requests.Response response: a requests Response object
     :return: a string that can be used in a logging statement
     :rtype: str
-    
+
     """
     msg = 'Status Code: {0}, URL: {1}, Response headers: {2}'.format(response.status_code,
                                                                      response.url,
-                                                                     response.headers
-                                                                     )
+                                                                     response.headers)
     return msg
 
 
 def create_redis_log_msg(redis_host, redis_port, db_number):
     """
     Generate a logging statement for connections to redis.
-    
+
     :param redis_host: name of the redis host
     :param redis_port: redis port number
     :param db_number: redis database number
     :return: a string that can be used in a logging statement
     :rtype: str
-    
+
     """
     msg = 'Connecting to Redis database {0} on {1}:{2}.'.format(db_number, redis_host, redis_port)
     return msg
@@ -50,12 +49,12 @@ def pull_feed(feed_url):
     :param feed_url: the url of the feed, created in confluence feed builder
     :return: the html of the page itself, stripped of header and footer
     """
-    app.logger.debug('Parsing content from {}.'.format(format))
+    app.logger.debug('Parsing content from %s.', feed_url)
     feed = feedparser.parse(feed_url)
 
     # Process html to remove unwanted mark-up and fix links
     post = ''
-    if len(feed['entries']) > 0:
+    if feed['entries']:
         soup = BeautifulSoup(feed['entries'][0].summary, 'html.parser')
 
         # Remove edited by paragraph
@@ -91,17 +90,17 @@ def geoserver_proxy_request(target_url, cert_verification):
         # This fixed an net::ERR_CONTENT_DECODING_FAILED
         if 'content-encoding' in resp.headers:
             del resp.headers['content-encoding']
-            
+
     else:
         resp = session.post(target_url, data=request.data, headers=request.headers, verify=cert_verification)
-        if 'content-encoding' in resp.headers: 
+        if 'content-encoding' in resp.headers:
             del resp.headers['content-encoding']
     msg = create_request_resp_log_msg(resp)
     app.logger.info(msg)
     return make_response(resp.content, resp.status_code, resp.headers.items())
 
 
-def retrieve_lookups(code_uri, params={}):
+def retrieve_lookups(code_uri, params=None):
     """
 
     :param code_uri: string - The part of the url that identifies what kind of information to lookup. Should start with a slash
@@ -109,7 +108,7 @@ def retrieve_lookups(code_uri, params={}):
     :return: list of dictionaries representing the json object returned by the code lookup. Return None if
         the information can not be retrieved
     """
-    local_params = dict(params)
+    local_params = dict(params or {})
     local_params['mimeType'] = 'json'
     resp = session.get(app.config['CODES_ENDPOINT'] + code_uri, params=local_params)
     msg = create_request_resp_log_msg(resp)
@@ -263,8 +262,7 @@ def retrieve_site(provider_id, organization_id, site_id):
                                'siteid': site_id,
                                'mimeType' : 'tsv',
                                'sorted': 'no',
-                               'uripage': 'yes'} # This is added to distinguish from normal web service queries
-                       )
+                               'uripage': 'yes'})  # This is added to distinguish from normal web service queries
     msg = create_request_resp_log_msg(resp)
     if resp.status_code == 200 and resp.text:
         app.logger.debug(msg)
@@ -339,7 +337,7 @@ def get_site_key(provider_id, organization_id, site_id):
 def invalid_usgs_view(func):
     """
     If the theme is usgs return a function which will return a 404 response, otherwise return the passed in func
-    :param func: 
+    :param func:
     :return: function
     """
     @wraps(func)
@@ -347,8 +345,7 @@ def invalid_usgs_view(func):
     def decorated_function(*args, **kwargs):
         if app.config['UI_THEME'] == 'usgs':
             abort(404)
-        else:
-            return func(*args, **kwargs)
+        return func(*args, **kwargs)
 
     return decorated_function
 
@@ -357,11 +354,11 @@ def list_directory_contents(directory):
     """
     List of the contents of a directory
     with their full paths.
-    
-    :param str directory: path to a directory 
+
+    :param str directory: path to a directory
     :return: fullpaths to the content of the directory
     :rtype: list
-    
+
     """
     contents = os.listdir(directory)
     fullpaths = [os.path.join(directory, content) for content in contents]
@@ -371,10 +368,10 @@ def list_directory_contents(directory):
 def create_targz(archive_name, archive_contents):
     """
     Given a list of files add those to a tar.gz.
-    
+
     :param str archive_name: name of the tar.gz archive
     :param list archive_contents: list of contents for the archive
-    
+
     """
     with tarfile.open(archive_name, 'w:gz') as tar:
         for archive_content in archive_contents:
@@ -391,7 +388,7 @@ def create_targz(archive_name, archive_contents):
 def delete_old_files(files):
     """
     Delete files older than the retention time in days.
-    
+
     :param list files: list of files -- can either be absolute or relative paths
 
     """

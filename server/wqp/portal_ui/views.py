@@ -166,7 +166,7 @@ def public_srsnames():
     msg = create_request_resp_log_msg(resp)
     app.logger.info(msg)
 
-    return render_template('public_srsnames.html', status_code=resp.status_code, content = resp.json())
+    return render_template('public_srsnames.html', status_code=resp.status_code, content=resp.json())
 
 
 @portal_ui.route('/wqp_geoserver/<op>', methods=['GET', 'POST'])
@@ -205,10 +205,9 @@ def images(image_file):
 @portal_ui.route('/provider/', endpoint='uri_base')
 def uri_base():
     providers = retrieve_providers()
-    if providers:
-        return render_template('provider_base.html', providers=sorted(providers))
-    else:
+    if not providers:
         abort(500)
+    return render_template('provider_base.html', providers=sorted(providers))
 
 
 @portal_ui.route('/provider/<provider_id>/', endpoint='uri_provider')
@@ -218,8 +217,7 @@ def uri_provider(provider_id):
         abort(500)
     elif not organizations:
         abort(404)
-    else:
-        return render_template('provider_page.html', provider=provider_id, organizations = organizations)
+    return render_template('provider_page.html', provider=provider_id, organizations=organizations)
 
 
 @portal_ui.route('/provider/<provider_id>/<organization_id>/', endpoint='uri_organization')
@@ -253,8 +251,7 @@ def uri_organization(provider_id, organization_id):
                                                      provider=provider_id,
                                                      organization=organization_id,
                                                      sites_geojson=sites,
-                                                     total_site_count=len(sites['features'])
-                                                     )
+                                                     total_site_count=len(sites['features']))
 
         if redis_config:
             redis_session.set(redis_key, pickle.dumps(rendered_template, protocol=2))
@@ -300,20 +297,19 @@ def uris(provider_id, organization_id, site_id):
 
     if provider_id == 'NWIS':
         org_and_number = site_data['MonitoringLocationIdentifier'].split('-')
-        additional_data['NWISOrg'] = org_and_number[0];
-        additional_data['NWISNumber'] = org_and_number[1];
+        additional_data['NWISOrg'] = org_and_number[0]
+        additional_data['NWISNumber'] = org_and_number[1]
 
-    if 'mimetype' in request.args and request.args.get("mimetype") == 'json':
+    if 'mimetype' in request.args and request.args.get('mimetype') == 'json':
         return jsonify(site_data)
 
-    else:
-        return render_template('site.html',
-                               site=site_data,
-                               site_data_additional=additional_data,
-                               provider=provider_id,
-                               organization=organization_id,
-                               site_id=site_id,
-                               cache_timeout=cache_timeout) # Why are we using this here and nowhere else
+    return render_template('site.html',
+                           site=site_data,
+                           site_data_additional=additional_data,
+                           provider=provider_id,
+                           organization=organization_id,
+                           site_id=site_id,
+                           cache_timeout=cache_timeout)  # Why are we using this here and nowhere else
 
 
 @portal_ui.route('/clear_cache/<provider_id>/')
@@ -387,7 +383,7 @@ def manage_cache():
             provider_site_load_status = r.get('{0}_sites_load_status'.format(provider))
             if provider_site_load_status:
                 load_status = pickle.loads(provider_site_load_status, encoding='bytes')
-                app.logger.debug("load_status: {0}".format(str(load_status)))
+                app.logger.debug('load_status: %s', str(load_status))
                 time = arrow.get(load_status['time_utc'])
                 load_status['time_zulu'] = time.format('YYYY-MM-DD HH:mm:ss ZZ')
                 load_status['time_human'] = time.humanize()

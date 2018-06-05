@@ -5,8 +5,7 @@ wqx = Blueprint('wqx',
                 __name__,
                 template_folder='templates',
                 static_folder='static',
-                static_url_path='/wqx/static'
-                )
+                static_url_path='/wqx/static')
 
 
 @wqx.route('/WQX-Outbound/2_0/index.xsd', endpoint='wqx-index')

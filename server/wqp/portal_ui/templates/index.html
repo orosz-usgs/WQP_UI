@@ -8,7 +8,7 @@
 {% block nav_bar %}{% endblock %}
 
 {% block page_content %}
-	<div class="index-header hidden-xs">
+    <div class="index-header hidden-xs">
         <h1> Water Quality Portal</h1>
         <p>The Water Quality Portal (WQP) is a cooperative service sponsored by the United States Geological Survey (USGS),
         the Environmental Protection Agency (EPA), and the National Water Quality Monitoring Council (NWQMC).
@@ -52,24 +52,24 @@
                 </ul>
             </div>
         </div>
-	</div>
+    </div>
 {% endblock %}
 
 {% block body_page_script %}
-	{% include "partials/hide_non_usgs_epa_logos.html" %}
-	
-	<script type="text/javascript">
+    {% include "partials/hide_non_usgs_epa_logos.html" %}
+
+    <script type="text/javascript">
         // The following code makes interior links clickable
         $(document).ready(function(){
-            $(".index-box-primary").click(function(){
-                window.location=$(this).find("a").attr("href");
+            $('.index-box-primary').click(function(){
+                window.location=$(this).find('a').attr('href');
                 return false;
              });
-            $(".index-box-secondary").click(function(){
-                window.location=$(this).find("a").attr("href");
-            })
-            $(".index-box-secondary .interior-list").click(function(){
-                window.location=$(this).find("a").attr("href");
+            $('.index-box-secondary').click(function(){
+                window.location=$(this).find('a').attr('href');
+            });
+            $('.index-box-secondary .interior-list').click(function(){
+                window.location=$(this).find('a').attr('href');
             });
         });
     </script>

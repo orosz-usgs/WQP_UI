@@ -192,4 +192,3 @@ def nwis_sites():
         response = Response(site_geojson_generator(params_list), content_type='application/json')
 
     return response
-

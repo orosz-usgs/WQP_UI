@@ -5,60 +5,60 @@
 {% block page_header_title %}Water Quality Portal National Results Coverage{% endblock %}
 
 {% block page_content %}
-	<div id="page-content">
-		<div id="data-content">
-			<div id="map-options-div">
-				<div id="display-options" class="panel">
-					<div class="panel-heading">
-						DISPLAY OPTIONS
-					</div>
+    <div id="page-content">
+        <div id="data-content">
+            <div id="map-options-div">
+                <div id="display-options" class="panel">
+                    <div class="panel-heading">
+                        DISPLAY OPTIONS
+                    </div>
 
-					<div id="display-options-body" class="panel-body">
-						<div id="display-by-div">
-							<span class="options-label">Display by:</span><br/>
-							<input type="radio" name="displayBy" value="states" checked="checked"/>&nbsp;State<br/>
-							<input type="radio" name="displayBy" value="counties"/>&nbsp;County<br/>
-							<input type="radio" name="displayBy" value="huc8"/>&nbsp;HUC 8
-						</div>
+                    <div id="display-options-body" class="panel-body">
+                        <div id="display-by-div">
+                            <span class="options-label">Display by:</span><br/>
+                            <input type="radio" name="displayBy" value="states" checked="checked"/>&nbsp;State<br/>
+                            <input type="radio" name="displayBy" value="counties"/>&nbsp;County<br/>
+                            <input type="radio" name="displayBy" value="huc8"/>&nbsp;HUC 8
+                        </div>
 
-						<div id="date-filter-div">
-							<span class="options-label">Date:</span><br/>
-							<input type="radio" name="timeSpan" value="past_12_months"/>&nbsp;Last 12 months<br/>
-							<input type="radio" name="timeSpan" value="past_60_months"/>&nbsp;Last 5 years<br/>
-							<input type="radio" name="timeSpan" value="all_time" checked="checked"/>&nbsp;All<br/>
-						</div>
+                        <div id="date-filter-div">
+                            <span class="options-label">Date:</span><br/>
+                            <input type="radio" name="timeSpan" value="past_12_months"/>&nbsp;Last 12 months<br/>
+                            <input type="radio" name="timeSpan" value="past_60_months"/>&nbsp;Last 5 years<br/>
+                            <input type="radio" name="timeSpan" value="all_time" checked="checked"/>&nbsp;All<br/>
+                        </div>
 
-						<div id="data-source">
-							<span class="options-label">Source:</span><br/>
-							<input type="radio" name="dataSource" value="storet"/>&nbsp;EPA Storet
-							<br/>
-							<input type="radio" name="dataSource" value="nwis"/>&nbsp;NWIS
-							<br/>
-							<input type="radio" name="dataSource" value="all" checked="checked"/>&nbsp;All
-							<br/>
-						</div>
-					</div>
-				</div>
-				<div id="legend" class="panel">
-					<div class="panel-heading">
-						MAP LEGEND
-					</div>
-					<div id="legend-img-div" class="panel-body">
-						<span>Number of all discrete samples</span><br/>
-						<img id="legend-img" src="" alt="No legend available"/>
-					</div>
+                        <div id="data-source">
+                            <span class="options-label">Source:</span><br/>
+                            <input type="radio" name="dataSource" value="storet"/>&nbsp;EPA Storet
+                            <br/>
+                            <input type="radio" name="dataSource" value="nwis"/>&nbsp;NWIS
+                            <br/>
+                            <input type="radio" name="dataSource" value="all" checked="checked"/>&nbsp;All
+                            <br/>
+                        </div>
+                    </div>
+                </div>
+                <div id="legend" class="panel">
+                    <div class="panel-heading">
+                        MAP LEGEND
+                    </div>
+                    <div id="legend-img-div" class="panel-body">
+                        <span>Number of all discrete samples</span><br/>
+                        <img id="legend-img" src="" alt="No legend available"/>
+                    </div>
 
-				</div>
-			</div>
-			<div id="coverage-map-container">
-				<div class="map-loading-indicator"><i class="fa fa-spin fa-spinner fa-5x"></i></div>
-				<div id="coverage-map-area"></div>
-			</div>
-		</div>
-	</div>
+                </div>
+            </div>
+            <div id="coverage-map-container">
+                <div class="map-loading-indicator"><i class="fa fa-spin fa-spinner fa-5x"></i></div>
+                <div id="coverage-map-area"></div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block body_page_script %}
-	<script src="{{ 'scripts/coverage.js' | asset_url }}"></script>
+    <script src="{{ 'scripts/coverage.js' | asset_url }}"></script>
 {% endblock %}
 
