@@ -11,14 +11,14 @@
 
 		{% block page_style %}{% endblock %}
 
-		<link rel="shortcut icon" href="{{ url_for('portal_ui.static', filename='img/favicon.ico') }}"
+		<link rel="shortcut icon" href="{{ 'img/favicon.ico' | asset_url }} }}"
 			  type="image/vnd.microsoft.icon"/>
 
 		{% block custom_style %}{% endblock %}
-
-		<!-- TEMPORARY: ALL VENDOR JS IN ONE FILE -->
 		<script src="{{ 'scripts/vendor.js' | asset_url }}"></script>
 		<link rel="stylesheet" href="{{ 'vendor.css' | asset_url }}">
+
+		<!-- TEMPORARY: ALL VENDOR JS IN ONE FILE -->
 
 		{% block head_page_script %}{% endblock %}
 
@@ -50,7 +50,7 @@
 			Config.HYDRO_LAYER_ENDPOINT = "{{ config.HYDRO_LAYER_ENDPOINT }}";
 			Config.NHDPLUS_FLOWLINE_ENDPOINT = "{{ config.NHDPLUS_FLOWLINE_ENDPOINT }}";
 			Config.NHDPLUS_FLOWLINE_LAYER_NAME = "{{ config.NHDPLUS_FLOWLINE_LAYER_NAME }}";
-			Config.STATIC_ENDPOINT = "{{ url_for('portal_ui.static', filename='') }}";
+			Config.STATIC_ENDPOINT = "{{ config.STATIC_ROOT }}";
 			Config.IS_PROD = location.hostname == 'www.waterqualitydata.us';
 			Config.NLDI_ENABLED = "{{ config.NLDI_ENABLED }}" === "True";
 			Config.GA_TRACKING_CODE = "{{ config.GA_TRACKING_CODE }}";

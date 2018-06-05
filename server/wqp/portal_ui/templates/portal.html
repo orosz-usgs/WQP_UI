@@ -10,7 +10,7 @@
 				<div class="panel-heading">
 					LOCATION
 					<button type="button" class="show-hide-toggle" title="Show subsection">
-						<img src="{{ url_for('portal_ui.static', filename='img/expand.png') }}" alt="show"/>
+						<img src="{{ 'img/expand.png' | asset_url }}" alt="show"/>
 					</button>
 				</div>
 				<div class="panel-body">
@@ -18,7 +18,7 @@
 						<div class="subpanel-heading">
 							Place:
 							<button type="button" class="show-hide-toggle" title="Show subsection">
-								<img src="{{ url_for('portal_ui.static', filename='img/expand.png') }}" alt="show"/>
+								<img src="{{ 'img/expand.png' | asset_url }}" alt="show"/>
 							</button>
 						</div>
 						<div class="subpanel-body">
@@ -60,7 +60,7 @@
 							<button type="button" id="proximityHelp" class="popover-help" data-help="pointLocation">?
 							</button>
 							<button type="button" class="show-hide-toggle" title="Show subsection">
-								<img src="{{ url_for ('portal_ui.static', filename='img/expand.png') }}" alt="show"/>
+								<img src="{{ 'img/expand.png' | asset_url }}" alt="show"/>
 							</button>
 						</div>
 						<div class="subpanel-body">
@@ -91,7 +91,7 @@
 							Bounding Box:
 							<button type="button" id="bboxHelp" class="popover-help" data-help="boundingBox">?</button>
 							<button type="button" class="show-hide-toggle" title="Show subsection">
-								<img src="{{ url_for('portal_ui.static', filename='img/expand.png') }}" alt="show"/>
+								<img src="{{ 'img/expand.png' | asset_url }}" alt="show"/>
 							</button>
 						</div>
 						<div class="subpanel-body">
@@ -129,7 +129,7 @@
 					<div class="panel-heading">
 						SITE PARAMETERS
 						<button type="button" class="show-hide-toggle" title="Show subsection">
-							<img src="{{ url_for('portal_ui.static', filename='img/expand.png') }}" alt="show"/>
+							<img src="{{ 'img/expand.png' | asset_url }}" alt="show"/>
 						</button>
 					</div>
 					<div class="panel-body">
@@ -193,7 +193,7 @@
 					<div class="panel-heading">
 						SAMPLING PARAMETERS
 						<button type="button" class="show-hide-toggle" title="Show subsection">
-							<img src="{{ url_for('portal_ui.static', filename='img/expand.png') }}" alt="show"/>
+							<img src="{{ 'img/expand.png' | asset_url }}" alt="show"/>
 						</button>
 					</div>
 					<div class="panel-body">
@@ -332,7 +332,7 @@
 				<div class="panel-heading">
 					DATA SOURCE
 					<button type="button" class="show-hide-toggle" title="Show subsection">
-						<img src="{{ url_for('portal_ui.static', filename='img/expand.png') }}" alt="show"/>
+						<img src="{{ 'img/expand.png' | asset_url }}" alt="show"/>
 					</button>
 				</div>
 				<div class="panel-body">
@@ -354,7 +354,7 @@
 					<div id="map-ops-button-div" class="form-inline">
 						<div id="show-on-map-button-div" class="form-group">
 							<button type="button" class="show-hide-toggle" title="Show subsection">
-								<img src="{{ url_for('portal_ui.static', filename='img/expand.png') }}" alt="show"/>
+								<img src="{{ 'img/expand.png' | asset_url }}" alt="show"/>
 							</button>
 							<button type="button" class="btn" id="show-on-map-button">Show sites on map</button>
 						</div>

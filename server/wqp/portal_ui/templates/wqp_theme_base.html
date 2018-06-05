@@ -10,7 +10,7 @@
 	<div id="page-header-small">
 		<a href="http://acwi.gov/monitoring/">
 			<div id="page-header-logo">
-				<img src="{{ url_for('portal_ui.static', filename='img/NWQMC_newlogo.jpg') }}"/>
+				<img src="{{ 'img/NWQMC_newlogo.jpg' | asset_url }}"/>
 			</div>
 			<div id="page-header-text-div">
 				<div id="page-header-sponser-div">NATIONAL WATER QUALITY MONITORING COUNCIL</div>
@@ -21,7 +21,7 @@
 
 	<div id="page-header-full">
 		<a href="http://acwi.gov/monitoring/">
-			<img src="{{ url_for('portal_ui.static', filename='img/NWQMC_header_web_960w.png') }}"/>
+			<img src="{{ 'img/NWQMC_header_web_960w.png' | asset_url }}"/>
 		</a>
 		<div id="page-title">
 			<a href="{{ url_for('portal_ui.home-canonical') }}">
@@ -72,15 +72,15 @@
 		<div id="contact-us-div"><a href="{{ url_for('portal_ui.contact_us-canonical') }}">Contact us</a></div>
 		<div class="logo">
 			<a href="http://usgs.gov"><img alt="USGS Science for a changing world"
-										   src="{{ url_for('portal_ui.static', filename='img/USGS_logo.gif') }}"/></a>
+										   src="{{ 'img/USGS_logo.gif' | asset_url }}"/></a>
 		</div>
 		<div class="logo">
 			<a href="http://epa.gov"><img alt="EPA"
-										  src="{{ url_for('portal_ui.static', filename='img/EPA_logo.gif') }}"/></a>
+										  src="{{ 'img/EPA_logo.gif' | asset_url }}"/></a>
 		</div>
 		<div class="logo" id="USDA-logo-div">
 			<a href="http://www.ars.usda.gov/"><img alt="USDA-ARS"
-													src="{{ url_for('portal_ui.static', filename='img/USDA-Logo.png') }}"/></a>
+													src="{{ 'img/USDA-Logo.png' | asset_url }}"/></a>
 		</div>
 	</div>
 {% endblock %}
