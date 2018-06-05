@@ -74,7 +74,7 @@ PORTAL.CONTROLLERS.validateDateRange = function (spec) {
 	// Assumes that individual input validation has already been done.
 
 	var getDate = function (value) {
-		dateArray = value.split('-');
+		var dateArray = value.split('-');
 		return new Date(dateArray[2], dateArray[0] - 1, dateArray[1], 0, 0, 0, 0);
 	};
 

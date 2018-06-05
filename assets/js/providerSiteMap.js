@@ -5,7 +5,7 @@
 
 
 /** @namespace */
-var SITE = SITE || {};
+var SITE = window.SITE = window.SITE || {};
 
 
 /**

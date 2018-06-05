@@ -2,7 +2,6 @@
 /* global $ */
 /* global _ */
 /* global Config */
-/* global _gaq */
 
 
 var PORTAL = window.PORTAL = window.PORTAL || {};
@@ -159,7 +158,7 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 			var queryString = decodeURIComponent(PORTAL.UTILS.getQueryString(queryParamArray));
 
 			var startDownload = function(totalCount) {
-				_gaq.push([
+				window._gaq.push([
 					'_trackEvent',
 					'Portal Page',
 					dataDetailsView.getResultType() + 'Download',
@@ -175,7 +174,7 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 				return;
 			}
 
-			_gaq.push([
+			window._gaq.push([
 				'_trackEvent',
 				'Portal Page',
 				resultType + 'Count',

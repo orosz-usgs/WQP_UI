@@ -1,4 +1,4 @@
-var stateFIPS = {
+window.stateFIPS = {
 	fipsMap: {
 		'01': {name: 'Alabama', postalCode: 'AL'},
 		'02': {name: 'Alaska', postalCode: 'AK'},

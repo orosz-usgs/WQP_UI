@@ -37,7 +37,7 @@ describe ('Tests for SITE.siteMap', function() {
 		});
 		var latitude = Config.site.LatitudeMeasure;
 		var longitude = Config.site.LongitudeMeasure;
-		SITE.siteMap(latitude, longitude, {mapDivId : mapDiv, mapZoom : 10});
+		window.SITE.siteMap(latitude, longitude, {mapDivId : mapDiv, mapZoom : 10});
 	});
 
 	afterEach(function() {

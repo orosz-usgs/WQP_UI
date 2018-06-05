@@ -4,8 +4,6 @@
 /* global Config */
 /* global PORTAL */
 
-var _gaq = [];
-
 describe('Test identifyDialog', function () {
 	"use strict";
 	var $dialog;

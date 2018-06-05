@@ -1,5 +1,4 @@
 /* jslint browser: true */
-/* global _gaq */
 /* global $ */
 /* global _ */
 
@@ -87,7 +86,7 @@ PORTAL.VIEWS.siteMapView = function(options) {
 					$showHideBtn.click();
 				}
 
-				_gaq.push([
+				window._gaq.push([
 					'_trackEvent',
 					'Portal Map',
 					'MapCreate',
@@ -107,7 +106,7 @@ PORTAL.VIEWS.siteMapView = function(options) {
 					'Unable to map sites. The query contains too many sites to be mapped. Downloads are still available');
 			}
 			else {
-				_gaq.push([
+				window._gaq.push([
 					'_trackEvent',
 					'Portal Map',
 					'MapCount',

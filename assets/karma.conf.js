@@ -26,9 +26,10 @@ module.exports = function (config) {
         files: [
             'dist/scripts/vendor.js',
             'test/resources/testConfig.js',
-            'js/**/*.js',
+            'temp-test-manifest.js',
+            //'js/**/*.js',
             {pattern: 'js/hbTemplates/*.hbs', included: false},
-            'test/js/portal_ui/**/*.js'
+            //'test/js/portal_ui/**/*.js'
         ],
 
 
@@ -47,7 +48,8 @@ module.exports = function (config) {
             // source files, that you wanna generate coverage for
             // do not include tests or libraries
             // (these files will be instrumented by Istanbul)
-            //'js/**/*.js': ['rollup']
+            'js/**/*.js': ['rollup'],
+            'temp-test-manifest.js': ['rollup']
         },
 
         rollupPreprocessor: {

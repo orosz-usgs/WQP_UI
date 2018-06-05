@@ -1,7 +1,6 @@
 /* jslint browser: true */
 /* global Handlebars */
 /* global Config */
-/* global _gaq */
 /* global _ */
 
 var PORTAL = window.PORTAL = window.PORTAL || {};
@@ -64,7 +63,7 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
 				var url = Config.QUERY_URLS[resultType];
 
 				$form.attr('action', url);
-				_gaq.push(['_trackEvent', 'Portal Page', 'IdentifyDownload' + resultType, url + '?' + $form.serialize()]);
+				window._gaq.push(['_trackEvent', 'Portal Page', 'IdentifyDownload' + resultType, url + '?' + $form.serialize()]);
 				$form.submit();
 			});
 

@@ -193,7 +193,7 @@ describe('Tests for PORTAL.CONTROLLERS.validateDateRange', function () {
 	it('Expects a from date greater than a to date to be invalid', function () {
 		fields.fromDateEl.val('01-01-2000');
 		fields.toDateEl.val('12-31-1999');
-		result = PORTAL.CONTROLLERS.validateDateRange(fields);
+		var result = PORTAL.CONTROLLERS.validateDateRange(fields);
 		expect(result.isValid).toBe(false);
 		expect(result.errorMessage).toBeDefined();
 	});

@@ -1,3 +1,5 @@
+window._gaq = [];
+
 var Config = {
 	CODES_ENDPOINT : 'http:fakecodesservice/codes',
 	STATIC_ENDPOINT : 'base/',
