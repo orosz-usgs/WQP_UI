@@ -34,9 +34,19 @@ PORTAL.queryServices = (function () {
 			return (result === '0') ? '0' : result;
 		};
 
+		var headers = {};
+		var accessToken = PORTAL.UTILS.getCookie('access_token');
+		if (accessToken) {
+			headers.Authorization = 'Bearer ' + accessToken;
+			headers['Content-Type'] = 'application/json';
+		}
 		$.ajax({
 			url : Config.QUERY_URLS[resultType] + '/count?mimeType=json',
 			method : 'POST',
+			headers: headers,
+			//xhrFields: {
+			//	withCredentials: true
+			//},
 			contentType : 'application/json',
 			data : JSON.stringify(countQueryJson),
 			success : function(data) {
@@ -80,7 +90,7 @@ PORTAL.queryServices = (function () {
 	 * @returns {String} - the url and query params to download data
 	 */
 	self.getFormUrl = function (resultType, queryParams) {
-		var result = Config.QUERY_URLS[resultType];
+		var result = Config.DOWNLOAD_URLS[resultType];
 		if (queryParams) {
 			result = result + '?' + queryParams;
 		}

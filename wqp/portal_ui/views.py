@@ -174,13 +174,13 @@ def public_srsnames():
 
     return render_template('public_srsnames.html', status_code=resp.status_code, content = resp.json())
 
-@portal_ui.route('/wqp_download/<op>', methods=['POST'])
+@portal_ui.route('/wqp_download/<op>', methods=['GET', 'POST'])
 def wqp_download_proxy(op):
     target_url = app.config['SEARCH_QUERY_ENDPOINT'] + op + '/search'
-    headers = request.headers
+    headers = {}
     if app.config['UI_THEME'] == 'usgs':
-        headers['Authorization'] = 'Bearer {0}'.format(request.cookies.get('access_token'))
-    resp = session.post(target_url, data=request.form, headers=request.headers, verify=proxy_cert_verification)
+        headers['Authorization'] =  'Bearer {0}'.format(request.cookies.get('access_token'))
+    resp = session.post(target_url, data=request.form, headers=headers, verify=proxy_cert_verification)
     return make_response(resp.content, resp.status_code, resp.headers.items())
 
 @portal_ui.route('/wqp_geoserver/<op>', methods=['GET', 'POST'])
