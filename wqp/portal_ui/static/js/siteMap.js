@@ -183,7 +183,9 @@ PORTAL.MAP.siteMap = function(options) {
 				});
 				wqpSitesLayer.on('load', function() {
 					options.$loadingIndicator.hide();
-					options.$legendDiv.html('<img  src="' + wqpSitesLayer.getLegendGraphicURL() + '" />');
+					wqpSitesLayer.getLegendGraphic(function(src) {
+						options.$legendDiv.html('<img  src="' + src + '" />');
+					});
 				});
 				map.addLayer(wqpSitesLayer);
 			}

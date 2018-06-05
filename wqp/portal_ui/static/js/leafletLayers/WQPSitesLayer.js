@@ -43,6 +43,35 @@
 			return this.queryParamArray;
 		},
 
+		_getImageSrc : function(url, done) {
+			var accessToken = PORTAL.UTILS.getCookie('access_token');
+			var xhr = new XMLHttpRequest();
+			xhr.open('GET', url, true);
+			xhr.responseType = 'blob';
+			if (accessToken) {
+				xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+			}
+			xhr.onload = function() {
+				var reader = new FileReader();
+				reader.readAsDataURL(this.response);
+				reader.onloadend = function() {
+					done(reader.result);
+				};
+			};
+			xhr.send();
+		},
+
+		createTile: function(coords, done) {
+			var url = this.getTileUrl(coords);
+			var img = document.createElement('img');
+			this._getImageSrc(url, function(src) {
+				img.src = src;
+				done();
+			});
+
+			return img;
+		},
+
 		/*
 		 * Updates the layer to show the sites represented by queryParamArray
 		 * @param {Array of Objects with name and value properties} queryParamArray - This represents the query
@@ -60,7 +89,7 @@
 		 * Returns a url string which can be used to retrieve an legend image that represents the layer.
 		 * @returns {String}
 		 */
-		getLegendGraphicURL : function() {
+		getLegendGraphic : function(done) {
 			var queryParams = {
 				request : 'GetLegendGraphic',
 				format : 'image/png',
@@ -74,7 +103,7 @@
 				queryParams.WIDTH = 50;
 				queryParams.HEIGHT = 45;
 			}
-			return Config.SITES_GEOSERVER_ENDPOINT + 'wms?' + $.param(queryParams);
+			this._getImageSrc(Config.SITES_GEOSERVER_ENDPOINT + 'wms?' + $.param(queryParams), done);
 		},
 
 		/*
