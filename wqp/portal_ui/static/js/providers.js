@@ -21,6 +21,7 @@ PORTAL.MODELS.providers = function () {
 			$.ajax({
 				url: Config.CODES_ENDPOINT + '/providers',
 				data: {mimeType: 'json'},
+				headers: PORTAL.UTILS.getHeaders(),
 				type: 'GET',
 				success: function (data, textStatus, jqXHR) {
 					ids = [];

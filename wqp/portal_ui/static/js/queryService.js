@@ -44,9 +44,6 @@ PORTAL.queryServices = (function () {
 			url : Config.QUERY_URLS[resultType] + '/count?mimeType=json',
 			method : 'POST',
 			headers: headers,
-			//xhrFields: {
-			//	withCredentials: true
-			//},
 			contentType : 'application/json',
 			data : JSON.stringify(countQueryJson),
 			success : function(data) {

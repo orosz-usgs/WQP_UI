@@ -31,6 +31,7 @@ def authorization_required_when_usgs(f):
 @auth.route('/login')
 def login():
     redirect_uri = '{0}?next={1}'.format(url_for('auth.authorize', _external=True), request.args.get('next'))
+
     return oauth.waterauth.authorize_redirect(redirect_uri)
 
 @auth.route('/authorize')

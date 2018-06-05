@@ -11,7 +11,6 @@ from requests import Session
 
 from .flask_swagger_blueprint import get_swaggerui_blueprint
 
-
 __version__ = '5.7.0dev'
 
 
@@ -51,7 +50,7 @@ def _custom_celery_handler(logger=None, *args, **kwargs):
     log_directory = app.config.get('LOGGING_DIRECTORY')
     log_level = app.config.get('LOGGING_LEVEL')
     celery_handler = _create_log_handler(log_directory,
-                                         log_name=Celery.__name__.lower()+'_tasks'
+                                         log_name=Celery.__name__.lower() + '_tasks'
                                          )
     logger.setLevel(log_level)
     logger.addHandler(celery_handler)
@@ -68,19 +67,11 @@ celery.conf.update(app.config)
 
 # Authentication for USGS sites
 oauth = None
-login_manager = None
-if app.config.get('UI_THEME') == 'usgs':
+if app.config.get('WATERAUTH_AUTHORIZE_URL'):
     oauth = OAuth(app)
     oauth.register('waterauth',
-                  client_id='fooClientIdPassword',
-                  client_secret='secret',
-                  access_token_url='https://localhost:8445/localauth/oauth/token',
-                  authorize_url='https://localhost:8445/localauth/oauth/authorize',
-                   api_base_url='https://localhost:8445/localauth',
-                   client_kwargs={'verify': False, 'scope': 'foo'}
-                  )
-
-
+                   client_kwargs={'verify': app.config.get('VERIFY_CERT', True)}
+                   )
 
 if app.config.get('LOGGING_ENABLED'):
     log_directory = app.config.get('LOGGING_DIRECTORY')
@@ -123,7 +114,6 @@ from .portal_ui.views import portal_ui
 from .sites.views import sites_blueprint
 from .wqx.views import wqx
 
-
 app.register_blueprint(auth, url_prefix='')
 app.register_blueprint(portal_ui, url_prefix='')
 app.register_blueprint(sites_blueprint, url_prefix='/sites')
@@ -143,6 +133,7 @@ def spec():
                                    "title": "WQP Sites service"
                                }
                            }))
+
 
 # Create swagger ui blueprint
 SWAGGER_URL = '/apidocs'

@@ -128,5 +128,14 @@ PORTAL.UTILS = function() {
 		return "";
 	};
 
+	self.getHeaders = function() {
+		var accessToken = PORTAL.UTILS.getCookie('access_token');
+		var headers = {};
+		if (accessToken) {
+			headers.Authorization = 'Bearer ' + accessToken;
+		}
+		return headers;
+	};
+
 	return self;
 }();

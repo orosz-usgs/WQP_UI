@@ -22,6 +22,8 @@ PORTAL.MODELS.cachedCodes = function (options) {
 
 	var cachedData = [];
 
+	var HEADERS = PORTAL.UTILS.getHeaders();
+
 	/*
 	 * @return {$.Promise}.
 	 * 		@resolve {Array of Objects} - Each object has String properties: id, desc, and providers.
@@ -33,6 +35,7 @@ PORTAL.MODELS.cachedCodes = function (options) {
 		$.ajax({
 			url: URL,
 			type: 'GET',
+			headers: HEADERS,
 			data: {
 				mimeType: 'json'
 			},
@@ -94,6 +97,7 @@ PORTAL.MODELS.codesWithKeys = function (options) {
 	var self = {};
 
 	var cachedData = [];
+	var HEADERS = PORTAL.UTILS.getHeaders();
 	/* Each object where each value is an array of objects with properties id, desc, and providers */
 
 	/*
@@ -112,6 +116,7 @@ PORTAL.MODELS.codesWithKeys = function (options) {
 			data: {
 				mimeType: 'json'
 			},
+			headers: HEADERS,
 			success: function (data, textStatus, jqXHR) {
 				cachedData = _.map(keys, function (key) {
 					return {
