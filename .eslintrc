@@ -45,7 +45,6 @@
     "$": true,
     "Config": true,
     "log": true,
-    "numeral": true,
     "sinon": true
   }
 }

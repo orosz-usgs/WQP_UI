@@ -1,3 +1,6 @@
+import numeral from 'numeral';
+
+
 var PORTAL = window.PORTAL = window.PORTAL || {};
 
 PORTAL.queryServices = (function () {
