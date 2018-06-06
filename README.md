@@ -24,7 +24,7 @@ To run all development servers in a watch mode at the same time, use the make ta
 
 ```bash
 make watch
-``
+```
 
 ... and to run each dev server individually:
 
