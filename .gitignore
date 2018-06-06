@@ -1,6 +1,6 @@
-/coverage
+coverage
 /node
-/node_modules
+node_modules
 /.settings
 /.idea
 # Byte-compiled / optimized / DLL files
@@ -59,9 +59,12 @@ docs/_build/
 # PyBuilder
 target/
 
-#Eclipse files
+# IDE/editor files
 .project
 .pydevproject
+.sublimelinterrc
+*.sublime-project
+*.sublime-workspace
 
 
 /static/

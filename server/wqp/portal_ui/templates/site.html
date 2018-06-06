@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+
+{% block title %}{{ site['MonitoringLocationName'] }} ({{ site['MonitoringLocationIdentifier'] }}) site data in the {{ super }}{% endblock %}
+
+{% block meta_tags %}
+	<meta name="description" content="This {{ site['MonitoringLocationTypeName']|lower }} site, maintained by the {{ site['OrganizationFormalName'] }} (identifier {{ site['OrganizationIdentifier'] }}),
+     	has the name "{{ site['MonitoringLocationName'] }}" and has the identifier {{ site['MonitoringLocationIdentifier'] }}.
+    {% if  site['HUCEightDigitCode'] %}
+    	This site is in the watershed defined by the 8 digit Hydrologic Unit Code (HUC) {{ site['HUCEightDigitCode'] }}.
+	{% endif %}
+    {% if site_data_additional['StateName'] and site_data_additional['CountyName']  %}
+    	This site is located in {{ site_data_additional['CountyName'] |title}} County, {{ site_data_additional['StateName']|title }}
+	{% endif %}
+	">
+{% endblock %}
+
+{% block page_style %}
+    <link rel="stylesheet" href="{{ 'site.css' | asset_url }}">
+{% endblock %}
+
+{% block page_content %}
+
+    <p>
+		<a href="{{ url_for('portal_ui.home-canonical') }}">WQP Home</a> > <a href="{{ url_for('portal_ui.uri_base') }}">Providers</a> > <a href="{{ url_for('portal_ui.uri_provider',provider_id=provider) }}">{{ provider }}</a> > <a href="{{ url_for('portal_ui.uri_organization',provider_id=provider, organization_id=organization) }}">{{ organization }}</a>
+         > <a href="{{ url_for('portal_ui.uri_site',provider_id=provider, organization_id=organization, site_id=site_id) }}">{{ site_id }}</a>
+    </p>
+
+    <h1>{{ site['MonitoringLocationName'] }} ({{ site['MonitoringLocationIdentifier'] }}) site data in the Water Quality Portal</h1>
+
+    <p>Data Provider: <strong>{{ site['ProviderName'] }}</strong> (<a href="{{ url_for('portal_ui.wqp_description-canonical') }}">Learn more about Water Quality Portal Data Providers</a>)</p>
+    <p>
+		This {{ site['MonitoringLocationTypeName']|lower }} site, maintained by the {{ site['OrganizationFormalName'] }} (identifier {{ site['OrganizationIdentifier'] }}),
+		 has the name "{{ site['MonitoringLocationName'] }}" and has the identifier {{ site['MonitoringLocationIdentifier'] }}.
+		{% if  site['HUCEightDigitCode'] %}
+			This site is in the watershed defined by the 8 digit <a href="http://water.usgs.gov/GIS/huc.html" title="Learn more about HUCs" target="_blank"> Hydrologic Unit Code (HUC)</a>
+		{{ site['HUCEightDigitCode'] }}.  You can learn more about what is happening in this HUC at the
+		<a href="https://cfpub.epa.gov/surf/huc.cfm?huc_code={{ site['HUCEightDigitCode'] }}" title="go to the EPA's site about this HUC" target="_blank"> EPA's Surf Your Watershed site</a> or at the <a target="_blank" href="http://water.usgs.gov/lookup/getwatershed?{{ site['HUCEightDigitCode']  }}" title="Go to the USGS Science in Your watershed site">USGS Science In Your Watershed site</a>.
+			To learn more about water use in this watershed, you can go to the <a target="_blank" title="Go to the National Water Census Water Use Data Portal " href="http://cida.usgs.gov/nwc/#!waterbudget/huc/{{ site['HUCEightDigitCode'] }}">National Water Census Data Portal</a>. {% endif %}
+		{% if site['ProviderName'] == 'NWIS' %}See more details of this site the the <a target="_blank" title="Go to the USGS NWIS site summary page" href="http://waterdata.usgs.gov/nwis/inventory?agency_code={{ site_data_additional['NWISOrg'] }}&site_no={{ site_data_additional['NWISNumber'] }}">USGS NWIS Web page for this site</a>. {% endif %}
+		{% if site['DrainageAreaMeasure/MeasureValue'] %} This site has a drainage area of {{ site['DrainageAreaMeasure/MeasureValue'] }} {{ site['DrainageAreaMeasure/MeasureUnitCode'] }}{% if site['ContributingDrainageAreaMeasure/MeasureValue'] %} and the contributing drainage area is {{ site['ContributingDrainageAreaMeasure/MeasureValue'] }} {{ site['ContributingDrainageAreaMeasure/MeasureUnitCode'] }}{% endif %}.{% endif %}
+	</p>
+
+    <p>
+		{% if site['LatitudeMeasure'] and site['LongitudeMeasure'] %}
+			This site is located
+			{% if site_data_additional['StateName'] and site_data_additional['CountyName']  %}in {{ site_data_additional['CountyName'] |title}} County, {{ site_data_additional['StateName']|title }}{% endif %} at {{ site['LatitudeMeasure'] }} degrees latitude and {{ site['LongitudeMeasure'] }} degrees longitude
+			{% if site['HorizontalCoordinateReferenceSystemDatumName'] %} using the datum {{ site['HorizontalCoordinateReferenceSystemDatumName'] }}{% endif %}.
+			{% if site['HorizontalAccuracyMeasure/MeasureValue'] and site['HorizontalAccuracyMeasure/MeasureUnitCode'] and site['HorizontalCollectionMethodName'] %}
+				The horizontal location collection method was "{{ site['HorizontalCollectionMethodName'] }}" and the accuracy is {{ site['HorizontalAccuracyMeasure/MeasureValue'] }} {{ site['HorizontalAccuracyMeasure/MeasureUnitCode'] }}.
+				{% if site['SourceMapScaleNumeric'] %}The source map scale is 1:{{ site['SourceMapScaleNumeric'] }}.{% endif %}
+			{% else %} No horizontal location accuracy metadata is available.
+			{% endif %}
+		{% elif site_data_additional['StateName'] and site_data_additional['CountyName']  %}This site is located in {{ site_data_additional['CountyName'] |title}} County, {{ site_data_additional['StateName']|title }}
+		{% endif %}
+
+		{% if  site['VerticalMeasure/MeasureValue'] and site['VerticalMeasure/MeasureUnitCode']%} This site is at an elevation of {{ site['VerticalMeasure/MeasureValue'] }} {{ site['VerticalMeasure/MeasureUnitCode'] }}
+			{% if site['VerticalAccuracyMeasure/MeasureValue'] and site['VerticalAccuracyMeasure/MeasureUnitCode'] and site['VerticalCollectionMethodName']  %}
+				and the accuracy of the elevation measurement, collected using the method "{{ site['VerticalCollectionMethodName'] }}" is {{ site['VerticalAccuracyMeasure/MeasureValue'] }} {{ site['VerticalAccuracyMeasure/MeasureUnitCode'] }}.
+				{% if site['VerticalCoordinateReferenceSystemDatumName'] %} The vertical coordinate reference system is {{ site['VerticalCoordinateReferenceSystemDatumName'] }}.{% endif %}
+			{% else %} No vertical location accuracy metadata is available.
+			{% endif %}
+		{% endif %}
+	</p>
+
+	<p>{% if site['AquiferName'] %}This site is located in the "{{ site['AquiferName'] }}" aquifer. {% endif %}
+		{% if site['FormationTypeText'] %} The geologic formation type is {{ site['FormationTypeText'] }}.{% endif %}
+		{% if site['AquiferTypeName'] %}The aquifer is a {{ site['AquiferTypeName'] }} type.{% endif %}
+		{% if site['ConstructionDateText'] %}The well was contructed on {{ site['ConstructionDateText'] }}.{% endif %}
+		{% if site['WellDepthMeasure/MeasureValue'] and site['WellDepthMeasure/MeasureUnitCode'] %}The well depth is {{ site['WellDepthMeasure/MeasureValue'] }} {{ site['WellDepthMeasure/MeasureUnitCode'] }}.{% endif %}
+		{% if site['WellHoleDepthMeasure/MeasureValue'] and site['WellHoleDepthMeasure/MeasureUnitCode'] %}The well hole depth is {{ site['WellHoleDepthMeasure/MeasureValue'] }} {{ site['WellHoleDepthMeasure/MeasureUnitCode'] }}.{% endif %}
+	</p>
+
+	To download the metadata about this site along with water quality data, go to the <a href="{{ url_for("portal_ui.portal-canonical") }}">Portal Page</a> and enter "{{ site['MonitoringLocationIdentifier'] }}" into the "Site ID" box under Site Parameters
+
+    <h2>Upstream and downstream stations</h2>
+    <p> This map shows all Water Quality Portal stations that are 10 miles upstream (dashed dark blue) and 10 miles downstream (solid light blue) of this monitoring location (indicated by the large blue circle).
+        The upstream and downstream functionality is provided by the National Linked Data Index, part of the <a title="Link to ACWI Open Water Data Initiative page" href="http://acwi.gov/spatial/owdi/">Open Water Data Initiative</a>.
+    </p>
+    <div id="sites_map"></div>
+
+	<h2>Detailed Metadata</h2>
+    <p>For the definitions of the metadata elements, please go to the Water Quality Portal <a href="{{ url_for('portal_ui.portal_userguide-canonical') }}">user guide</a> </p>
+    <table class="table table-striped">
+        {% for key, value in site.items() %}
+         {% if value %}
+            <tr>
+                <td>{{key}}</td>
+                <td>{{value}}</td>
+            </tr>
+         {% endif %}
+        {% endfor %}
+    </table>
+{% endblock %}
+
+{% block body_page_script %}
+	<script type="text/javascript">
+		Config.site = {{ site|tojson }};
+		Config.localBaseUrl = '{{ config.LOCAL_BASE_URL }}';
+	</script>
+
+    <script src="{{ 'scripts/site_map.js' | asset_url }}"></script>
+{% endblock body_page_script %}
