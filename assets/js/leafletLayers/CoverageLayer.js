@@ -1,3 +1,6 @@
+import map from 'lodash/collection/map';
+
+
 (function() {
     var WMS_VERSION = '1.1.0';
     var WFS_VERSION = '2.0.0';
@@ -128,7 +131,7 @@
                 success : function(resp) {
                     if (this.wmsParams.VIEWPARAMS.search(VIEWPARAMS_SOURCE.nwis) !== -1 ||
                         this.wmsParams.VIEWPARAMS.search(VIEWPARAMS_SOURCE.storet) !== -1) {
-                        resp.features = _.map(resp.features, function(feature) {
+                        resp.features = map(resp.features, function(feature) {
                             delete feature.properties.EPA_DISCRETE_SAMPLE_COUNT;
                             delete feature.properties.NWIS_DISCRETE_SAMPLE_COUNT;
                             return feature;

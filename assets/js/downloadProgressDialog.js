@@ -1,3 +1,6 @@
+import map from 'lodash/collection/map';
+
+
 var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 
@@ -93,7 +96,7 @@ PORTAL.VIEWS.downloadProgressDialog = function (el) {
                 isActivityMetrics : resultType === 'ActivityMetric',
                 isResultDetection: resultType === 'ResultDetectionQuantitationLimit'
             };
-            context.providers = _.map(PORTAL.MODELS.providers.getIds(), function (provider) {
+            context.providers = map(PORTAL.MODELS.providers.getIds(), function (provider) {
                 return {
                     id: provider,
                     counts: counts[provider]

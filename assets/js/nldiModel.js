@@ -1,3 +1,6 @@
+import find from 'lodash/collection/find';
+
+
 var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.MODELS = PORTAL.MODELS || {};
 
@@ -65,7 +68,7 @@ PORTAL.MODELS.nldiModel = (function() {
     };
 
     self.setFeatureSource = function(featureSourceId) {
-        modelData.featureSource = _.find(self.FEATURE_SOURCES, function(source) {
+        modelData.featureSource = find(self.FEATURE_SOURCES, function(source) {
             return source.id === featureSourceId;
         });
     };

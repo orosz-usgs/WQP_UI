@@ -1,3 +1,6 @@
+import has from 'lodash/object/has';
+
+
 var COVERAGE = window.COVERAGE = window.COVERAGE || {};
 
 /*
@@ -32,9 +35,9 @@ COVERAGE.coverageMap = function(options) {
 
     var getTitle = function (properties) {
         var result;
-        if (_.has(properties, 'COUNTY_NAME')) {
+        if (has(properties, 'COUNTY_NAME')) {
             result = properties.COUNTY_NAME + ', ' + properties.STATE;
-        } else if (_.has(properties, 'STATE')) {
+        } else if (has(properties, 'STATE')) {
             result = properties.STATE;
         } else {
             result = properties.HUC8;

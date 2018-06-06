@@ -1,3 +1,8 @@
+import bind from 'lodash/function/bind';
+import each from 'lodash/collection/each';
+import reject from 'lodash/collection/reject';
+
+
 /**
  * This function returns a stateful mixin.
  */
@@ -29,7 +34,7 @@ L.singleClickEventMixin = function(){
                 if (this._singleClickHandlers.length > 0) {
                     window.clearTimeout(timeout);
                     timeout = window.setTimeout(function() {
-                        _.each(self._singleClickHandlers, function(handler) {
+                        each(self._singleClickHandlers, function(handler) {
                             handler.boundHandler(ev);
                         });
                     }, this.dblclickInterval);
@@ -50,12 +55,12 @@ L.singleClickEventMixin = function(){
 
             this._singleClickHandlers.push({
                 handler : handler,
-                boundHandler : _.bind(handler, context)
+                boundHandler : bind(handler, context)
             });
         },
 
         removeSingleClickHandler : function(handler) {
-            this._singleClickHandlers = _.reject(this._singleClickHandlers, function(thisHandler) {
+            this._singleClickHandlers = reject(this._singleClickHandlers, function(thisHandler) {
                 return thisHandler.handler === handler;
             });
         },

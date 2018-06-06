@@ -1,3 +1,11 @@
+import filter from 'lodash/collection/filter';
+import find from 'lodash/collection/find';
+import flatten from 'lodash/array/flatten';
+import has from 'lodash/object/has';
+import map from 'lodash/collection/map';
+import pluck from 'lodash/collection/pluck';
+
+
 var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.MODELS = PORTAL.MODELS || {};
 
@@ -29,10 +37,10 @@ PORTAL.MODELS.cachedCodes = function (options) {
                 mimeType: 'json'
             },
             success: function (data) {
-                cachedData = _.map(data.codes, function (code) {
+                cachedData = map(data.codes, function (code) {
                     return {
                         id: code.value,
-                        desc: _.has(code, 'desc') && code.desc ? code.desc : code.value, // defaults to value
+                        desc: has(code, 'desc') && code.desc ? code.desc : code.value, // defaults to value
                         providers: code.providers
                     };
                 });
@@ -61,7 +69,7 @@ PORTAL.MODELS.cachedCodes = function (options) {
      *      properties. Return undefined if no object exists
      */
     self.getLookup = function (id) {
-        return _.find(cachedData, function (lookup) {
+        return find(cachedData, function (lookup) {
             return lookup.id === id;
         });
     };
@@ -104,21 +112,19 @@ PORTAL.MODELS.codesWithKeys = function (options) {
                 mimeType: 'json'
             },
             success: function (data) {
-                cachedData = _.map(keys, function (key) {
+                cachedData = map(keys, function (key) {
+                    var filtered = filter(data.codes, function (lookup) {
+                        return options.parseKey(lookup.value) === key;
+                    });
                     return {
                         key: key,
-                        data: _.chain(data.codes)
-                            .filter(function (lookup) {
-                                return options.parseKey(lookup.value) === key;
-                            })
-                            .map(function (lookup) {
-                                return {
-                                    id: lookup.value,
-                                    desc: _.has(lookup, 'desc') && lookup.desc ? lookup.desc : lookup.value, // defaults to value
-                                    providers: lookup.providers
-                                };
-                            })
-                            .value()
+                        data: map(filtered, function (lookup) {
+                            return {
+                                id: lookup.value,
+                                desc: has(lookup, 'desc') && lookup.desc ? lookup.desc : lookup.value, // defaults to value
+                                providers: lookup.providers
+                            };
+                        })
                     };
                 });
                 fetchDeferred.resolve(self.getAll());
@@ -136,14 +142,15 @@ PORTAL.MODELS.codesWithKeys = function (options) {
      * @return {Array of Object} - Object has id, desc, and providers string properties
      */
     self.getAll = function () {
-        return _.chain(cachedData).pluck('data').flatten().value();
+        var all = pluck(cachedData, 'data');
+        return flatten(all);
     };
 
     /*
      * @return {Array of String}
      */
     self.getAllKeys = function () {
-        return _.pluck(cachedData, 'key');
+        return pluck(cachedData, 'key');
     };
 
     /*
@@ -154,7 +161,7 @@ PORTAL.MODELS.codesWithKeys = function (options) {
         var isMatch = function (object) {
             return object.key === key;
         };
-        var lookup = _.find(cachedData, isMatch);
+        var lookup = find(cachedData, isMatch);
         if (lookup) {
             return lookup.data;
         } else {

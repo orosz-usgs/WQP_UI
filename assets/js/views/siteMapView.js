@@ -1,3 +1,6 @@
+import filter from 'lodash/collection/filter';
+
+
 var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 /*
@@ -69,7 +72,7 @@ PORTAL.VIEWS.siteMapView = function(options) {
         options.$container.find('#show-on-map-button').click(function () {
             var queryParamArray = options.downloadFormView.getQueryParamArray();
             var queryString = PORTAL.UTILS.getQueryString(queryParamArray);
-            var siteIds = _.filter(queryParamArray, function(param) {
+            var siteIds = filter(queryParamArray, function(param) {
                 return param.name === 'siteid';
             });
 

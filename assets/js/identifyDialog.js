@@ -1,3 +1,6 @@
+import reject from 'lodash/collection/reject';
+
+
 var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 
@@ -93,7 +96,7 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
                 features: showOptions.features,
                 exceedsFeatureLimit: exceedsFeatureLimit,
                 boundingBox: showOptions.boundingBox,
-                queryParamArray: _.reject(showOptions.queryParamArray, function (param) {
+                queryParamArray: reject(showOptions.queryParamArray, function (param) {
                     return param.name === 'bBox' || param.name === 'mimeType';
                 })
             };

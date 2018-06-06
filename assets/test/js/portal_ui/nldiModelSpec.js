@@ -1,13 +1,16 @@
+import has from 'lodash/object/has';
+
+
 describe('nldiModel', function() {
     var nldiModel = PORTAL.MODELS.nldiModel;
 
     it('Expects that the modelData.getData initially returns an object containing the default properties', function() {
         var data = nldiModel.getData();
 
-        expect(_.has(data, 'featureSource')).toBe(true);
-        expect(_.has(data, 'featureId')).toBe(true);
-        expect(_.has(data, 'navigation')).toBe(true);
-        expect(_.has(data, 'distance')).toBe(true);
+        expect(has(data, 'featureSource')).toBe(true);
+        expect(has(data, 'featureId')).toBe(true);
+        expect(has(data, 'navigation')).toBe(true);
+        expect(has(data, 'distance')).toBe(true);
 
         expect(data.featureSource.id).toEqual('nwissite');
         expect(data.featureId).toBeFalsy();
@@ -47,11 +50,11 @@ describe('nldiModel', function() {
         nldiModel.reset();
         data = nldiModel.getData();
 
-        expect(_.has(data, 'featureSource')).toBe(true);
-        expect(_.has(data, 'featureId')).toBe(true);
-        expect(_.has(data, 'navigation')).toBe(true);
-        expect(_.has(data, 'distance')).toBe(true);
-        expect(_.has(data, 'newProp')).toBe(false);
+        expect(has(data, 'featureSource')).toBe(true);
+        expect(has(data, 'featureId')).toBe(true);
+        expect(has(data, 'navigation')).toBe(true);
+        expect(has(data, 'distance')).toBe(true);
+        expect(has(data, 'newProp')).toBe(false);
 
         expect(data.featureSource.id).toEqual('nwissite');
         expect(data.featureId).toBeFalsy();
