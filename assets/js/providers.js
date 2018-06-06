@@ -1,5 +1,6 @@
 import filter from 'lodash/collection/filter';
 import includes from 'lodash/collection/includes';
+import log from 'loglevel';
 
 
 var PORTAL = window.PORTAL = window.PORTAL || {};

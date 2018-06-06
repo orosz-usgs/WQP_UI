@@ -1,3 +1,6 @@
+import log from 'loglevel';
+
+
 var PORTAL = window.PORTAL = window.PORTAL || {};
 
 $(document).ready(function () {

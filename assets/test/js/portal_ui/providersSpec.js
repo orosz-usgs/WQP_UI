@@ -1,3 +1,6 @@
+import log from 'loglevel';
+
+
 describe('Tests for PORTAL.MODELS.providers', function () {
     var server;
     var successSpy, failureSpy;

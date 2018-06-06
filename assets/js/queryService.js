@@ -1,6 +1,7 @@
 import each from 'lodash/collection/each';
 import has from 'lodash/object/has';
 import omit from 'lodash/object/omit';
+import log from 'loglevel';
 import numeral from 'numeral';
 
 

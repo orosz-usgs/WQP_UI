@@ -4,6 +4,7 @@ import flatten from 'lodash/array/flatten';
 import has from 'lodash/object/has';
 import map from 'lodash/collection/map';
 import pluck from 'lodash/collection/pluck';
+import log from 'loglevel';
 
 
 var PORTAL = window.PORTAL = window.PORTAL || {};

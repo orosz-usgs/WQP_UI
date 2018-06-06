@@ -1,3 +1,4 @@
+import log from 'loglevel';
 import partial from 'lodash/function/partial';
 
 

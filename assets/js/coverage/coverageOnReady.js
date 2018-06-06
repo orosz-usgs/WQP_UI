@@ -1,3 +1,6 @@
+import log from 'loglevel';
+
+
 $(document).ready(function() {
     // Set the loglevel
     if (Config.DEBUG) {

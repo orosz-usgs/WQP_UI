@@ -39,7 +39,6 @@
     "L": true,
     "$": true,
     "Config": true,
-    "log": true,
     "sinon": true
   }
 }
