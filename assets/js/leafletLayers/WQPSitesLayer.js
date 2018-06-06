@@ -86,7 +86,7 @@
 		},
 
 		/*
-		 * Returns a url string which can be used to retrieve an legend image that represents the layer.
+		 * Returns an png image which can be used to display the image that represents the layer.
 		 * @returns {String}
 		 */
 		getLegendGraphic : function(done) {

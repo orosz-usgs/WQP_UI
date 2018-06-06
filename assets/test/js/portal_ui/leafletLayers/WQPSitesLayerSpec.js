@@ -4,7 +4,7 @@
 /* global L */
 /* global $ */
 
-describe('leafletLayers.WQPSitesLayer', function() {
+fdescribe('leafletLayers.WQPSitesLayer', function() {
 	"use strict";
 
 	describe('Tests for initializing a layer', function() {
@@ -165,48 +165,6 @@ describe('leafletLayers.WQPSitesLayer', function() {
 			testLayer.updateQueryParams(queryParamArray);
 
 			expect(testLayer.wmsParams.SEARCHPARAMS).toEqual('statecode:US:55;countycode:US:55:025|US:55:001');
-		});
-	});
-
-	describe('Tests for getLegendGraphicUrl', function() {
-		var testLayer;
-
-		beforeEach(function() {
-			var queryParamArray = [{name : 'statecode', value : ['US:50'], multiple: false}];
-			testLayer = L.wqpSitesLayer(queryParamArray, {styles: 'style1'});
-		});
-
-		it('Expects that a call to getLegendGraphicURL after initialization reflects those parameters and styles', function() {
-			var url = testLayer.getLegendGraphicURL();
-
-			expect(url).toContain('layer=' + testLayer.wmsParams.layers);
-			expect(url).toContain('style=style1');
-			expect(url).toContain('SEARCHPARAMS=' + encodeURIComponent('statecode:US:50'));
-		});
-
-		it('Expects that a call to getLegendGraphicURL after calling updateQueryParams reflects the new parameters', function() {
-			var queryParamArray = [
-				{
-					name: 'statecode',
-					value : ['US:55'],
-					multiple: false
-				}, {
-					name: 'countycode',
-					value : ['US:55:025', 'US:55:001'],
-					multiple: false
-				}
-			];
-			testLayer.updateQueryParams(queryParamArray);
-
-			expect(testLayer.getLegendGraphicURL()).toContain('SEARCHPARAMS=' + encodeURIComponent('statecode:US:55;countycode:US:55:025|US:55:001'));
-		});
-
-		it('Expects that updating the style and updates the style parameter in getLegendGraphicURL', function() {
-			testLayer.setParams({
-				styles : 'style2'
-			});
-
-			expect(testLayer.getLegendGraphicURL()).toContain('style=style2');
 		});
 	});
 
