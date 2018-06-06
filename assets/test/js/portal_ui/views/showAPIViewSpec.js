@@ -4,7 +4,7 @@
 /* global PORTAL */
 /* global Config */
 
-describe('Tests for PORTAL.VIEWS.showAPIViewSpec', function() {
+fdescribe('Tests for PORTAL.VIEWS.showAPIViewSpec', function() {
 	"use strict";
 
 	var $testDiv;

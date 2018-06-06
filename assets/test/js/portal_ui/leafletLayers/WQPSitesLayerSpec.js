@@ -4,7 +4,7 @@
 /* global L */
 /* global $ */
 
-fdescribe('leafletLayers.WQPSitesLayer', function() {
+describe('leafletLayers.WQPSitesLayer', function() {
 	"use strict";
 
 	describe('Tests for initializing a layer', function() {
