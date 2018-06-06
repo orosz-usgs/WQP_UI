@@ -1,0 +1,36 @@
+#
+# Entrypoint Makefile for Water Quality Portal
+#
+
+default: build
+
+help:
+	@echo  'Water Quality Portal Makefile targets:'
+	@echo  '  build (default) - Produce the build artifact for each project'
+	@echo  '  env - Create a local development environment'
+	@echo  '  watch - Run local development servers'
+	@echo  '  test - Run all project tests'
+	@echo  '  clean - Remove all build artifacts'
+	@echo  '  cleanenv - Remove all environment artifacts'
+
+include assets/Makefile
+include server/Makefile
+
+.PHONY: help env test clean cleanenv coverage
+
+MAKEPID:= $(shell echo $$PPID)
+
+env: env-assets env-server
+test: test-assets test-server
+clean: clean-assets clean-server
+cleanenv: cleanenv-assets cleanenv-server
+build: env build-assets build-server
+watch:
+	(make watch-server & \
+	 make watch-assets & \
+	 wait) || kill -TERM $(MAKEPID)
+coverage:
+	mkdir -p ./coverage
+	find assets/coverage/ -mindepth 2 -iname '*.info' -exec cp {} ./coverage \;
+	coveralls-lcov -v -n coverage/lcov.info > coverage/coverage.json
+	server/env/bin/coveralls --merge=coverage/coverage.json

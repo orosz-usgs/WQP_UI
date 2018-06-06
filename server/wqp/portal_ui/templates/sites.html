@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Water Quality Portal Data Sites for {{ organization }}{% endblock %}
+
+{% block page_style %}
+	{% if total_site_count < 60000 %}
+		<link rel="stylesheet" href="{{ 'site.css' | asset_url }}">
+	{% endif %}
+{% endblock %}
+
+
+{% block page_content %}
+	<a href="{{ url_for('portal_ui.home-canonical') }}">WQP Home</a> >
+	<a href="{{ url_for('portal_ui.uri_base') }}">Providers</a> >
+	<a href="{{ url_for('portal_ui.uri_provider',provider_id=provider) }}">{{ provider }}</a> >
+	<a href="{{ url_for('portal_ui.uri_organization',provider_id=provider, organization_id=organization) }}">{{ organization }}</a>
+	<h1>Water Quality Portal Data Sites for {{ organization }}</h1>
+	{% if total_site_count >= 60000 %}
+		<p>This organization has over {{ total_site_count }} sites, and their locations are not mapped</p>
+	{% else %}
+		<div id="sites_map"></div>
+		<p>This organization has {{ total_site_count }} sites. Click on a grouped icon to zoom and expand</p>
+	{% endif %}
+	<br/>
+
+	{% for site in sites_geojson['features'] %}
+		<a href="{{ url_for('portal_ui.uri_site', organization_id = organization, provider_id = provider, site_id=site['properties']['MonitoringLocationIdentifier']) }}">- {{ site['properties']['MonitoringLocationName'] }}
+			- {{ site['properties']['MonitoringLocationIdentifier'] }}
+			({{ site['properties']['ResolvedMonitoringLocationTypeName'] }})</a><br/>
+	{% endfor %}
+{% endblock %}
+
+{% block body_page_script %}
+	{% if total_site_count < 60000 %}
+		<script type="text/javascript">
+			Config.sitesData = {{ sites_geojson|tojson }};
+			Config.localBaseUrl = '{{ config.LOCAL_BASE_URL }}';
+		</script>
+		<script src="{{ 'scripts/sites_map.js' | asset_url }}"></script>
+	{% endif %}
+{% endblock %}

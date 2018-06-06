@@ -1,0 +1,55 @@
+DEBUG = True
+VERIFY_CERT = True or False
+
+# Do not use the same key as any of the deployment servers
+SECRET_KEY = 'local_secret_key'
+
+# points to the geoserver endpoint you want to use.
+WQP_MAP_GEOSERVER_ENDPOINT = 'http://cida-eros-wqpgsprod.er.usgs.gov:8080/geoserver'
+SITES_MAP_GEOSERVER_ENDPOINT = 'https://www.waterqualitydata.us/ogcservices'
+
+#points to the sld endpoint you want to use.
+SLD_ENDPOINT = 'http://www.waterqualitydata.us/Summary'
+
+# points to the endpoint which returns flow lines and sites for a comid
+NLDI_SERVICES_ENDPOINT = 'https://cida.usgs.gov/nldi/'
+
+#points to the codes endpoint
+CODES_ENDPOINT = 'https://www.waterqualitydata.us/Codes'
+
+#points to the query endpoint. Does not include the type of data or 'search' part of the endpoint
+SEARCH_QUERY_ENDPOINT = 'https://www.waterqualitydata.us/'
+
+#points to the public srsnames endpoint you want to use.
+PUBLIC_SRSNAMES_ENDPOINT = 'https://www.waterqualitydata.us/Services/public_srsnames/'
+
+#A list of dictionaries that associate user-facing text with an identifier for the style
+#
+# In each dictionary,
+#    The 'id' key should be given a string value - the name of a style present on GeoServer
+#    The 'text' key should be given a string value - user-facing text that appears in the web ui's dropdown for selecting styles
+SITE_SLDS = [
+    {'id' : 'wqp_sources', 'text' : 'By source'},
+    {'id' : 'site_type', 'text' : 'By site type'},
+    {'id' : 'activity_visual', 'text' : 'By activity'}
+]
+
+
+# set REDIS Config if it exists.
+REDIS_CONFIG = None
+# REDIS_CONFIG = {
+#     'host': 'localhost',
+#     'port': 6379,
+#     'db': 0
+# }
+
+# set the local base url, this deals with the weird way we do wsgi around here, for local development
+# use http://127.0.0.1:5050
+LOCAL_BASE_URL = 'http://127.0.0.1:5050'
+
+# Sets the theme to be used for the portal_ui app pages. Valid values are 'wqp' and 'usgs'
+UI_THEME = 'wqp' or 'usgs'
+
+#ASSET_MANIFEST_PATH = '/Users/dnaab/src/WQP_UI/assets/dist/rev-manifest.json'
+
+STATIC_ROOT = 'http://localhost:9000'
