@@ -65,7 +65,7 @@ app.config.from_pyfile('config.py')
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
 
-# Authentication for USGS sites
+# Enable authentication if configured.
 oauth = None
 if app.config.get('WATERAUTH_AUTHORIZE_URL'):
     oauth = OAuth(app)

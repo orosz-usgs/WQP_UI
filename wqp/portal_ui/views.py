@@ -5,7 +5,7 @@ import arrow
 from flask import render_template, request, make_response, redirect, url_for, abort, Response, jsonify, Blueprint
 import redis
 
-from ..auth.views import authorization_required_when_usgs
+from ..auth.views import authentication_required_when_configured
 
 from .. import app, session, oauth
 from ..utils import pull_feed, geoserver_proxy_request, retrieve_providers, retrieve_organizations, \
@@ -49,7 +49,7 @@ def contact_us():
 
 @portal_ui.route('/portal.jsp')
 @portal_ui.route('/portal/', endpoint='portal-canonical')
-@authorization_required_when_usgs
+@authentication_required_when_configured
 def portal():
     if request.path == '/portal.jsp':
         return redirect(url_for('portal_ui.portal-canonical')), 301
@@ -58,7 +58,7 @@ def portal():
 
 @portal_ui.route('/portal_userguide.jsp')
 @portal_ui.route('/portal_userguide/', endpoint='portal_userguide-canonical')
-@authorization_required_when_usgs
+@authentication_required_when_configured
 def portal_userguide():
     if request.path == '/portal_userguide.jsp':
         return redirect(url_for('portal_ui.portal_userguide-canonical')), 301
@@ -163,7 +163,7 @@ def other_portal_links():
 
 @portal_ui.route('/public_srsnames.jsp')
 @portal_ui.route('/public_srsnames/', endpoint='public_srsnames-canonical')
-@authorization_required_when_usgs
+@authentication_required_when_configured
 def public_srsnames():
     if request.path == '/public_srsnames.jsp':
         return redirect(url_for('portal_ui.public_srsnames-canonical')), 301
@@ -196,7 +196,7 @@ def sites_geoserverproxy(op):
 
 
 @portal_ui.route('/crossdomain.xml')
-@authorization_required_when_usgs
+@authentication_required_when_configured
 def crossdomain():
     xml = render_template('crossdomain.xml')
     response = make_response(xml)
@@ -205,7 +205,7 @@ def crossdomain():
     
 
 @portal_ui.route('/kml/wqp_styles.kml')
-@authorization_required_when_usgs
+@authentication_required_when_configured
 def kml():
     xml = render_template('wqp_styles.kml')
     response = make_response(xml)
@@ -219,7 +219,7 @@ def images(image_file):
 
 
 @portal_ui.route('/provider/', endpoint='uri_base')
-@authorization_required_when_usgs
+@authentication_required_when_configured
 def uri_base():
     providers = retrieve_providers()
     if providers:
@@ -229,7 +229,7 @@ def uri_base():
 
 
 @portal_ui.route('/provider/<provider_id>/', endpoint='uri_provider')
-@authorization_required_when_usgs
+@authentication_required_when_configured
 def uri_provider(provider_id):
     organizations = retrieve_organizations(provider_id)
     if organizations is None:
@@ -241,7 +241,7 @@ def uri_provider(provider_id):
 
 
 @portal_ui.route('/provider/<provider_id>/<organization_id>/', endpoint='uri_organization')
-@authorization_required_when_usgs
+@authentication_required_when_configured
 def uri_organization(provider_id, organization_id):
     #Check for the information in redis first
     rendered_template = None
@@ -282,7 +282,7 @@ def uri_organization(provider_id, organization_id):
 
 
 @portal_ui.route('/provider/<provider_id>/<organization_id>/<path:site_id>/', endpoint='uri_site')
-@authorization_required_when_usgs
+@authentication_required_when_configured
 def uris(provider_id, organization_id, site_id):
     site_data = None
     if redis_config:
@@ -337,7 +337,7 @@ def uris(provider_id, organization_id, site_id):
 
 
 @portal_ui.route('/clear_cache/<provider_id>/')
-@authorization_required_when_usgs
+@authentication_required_when_configured
 def clear_cache(provider_id=None):
     if redis_config:
         redis_db_number = generate_redis_db_number(provider_id)
@@ -354,7 +354,7 @@ def clear_cache(provider_id=None):
 
 
 @portal_ui.route('/sites_cache_task/<provider_id>', methods=['POST'])
-@authorization_required_when_usgs
+@authentication_required_when_configured
 def sitescachetask(provider_id):
     providers = retrieve_providers()
     if provider_id not in providers:
@@ -366,7 +366,7 @@ def sitescachetask(provider_id):
 
 
 @portal_ui.route('/status/<task_id>')
-@authorization_required_when_usgs
+@authentication_required_when_configured
 def taskstatus(task_id):
     task = load_sites_into_cache_async.AsyncResult(task_id)
     if task.state == 'PENDING':
@@ -397,7 +397,7 @@ def taskstatus(task_id):
 
 
 @portal_ui.route('/manage_cache')
-@authorization_required_when_usgs
+@authentication_required_when_configured
 def manage_cache():
     provider_list = ['NWIS', 'STORET', 'STEWARDS', 'BIODATA']
     status_list = []
