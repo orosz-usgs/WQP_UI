@@ -4,8 +4,7 @@ describe('Tests for PORTAL.VIEWS.inputValidation', function () {
         validationFnc = function (value) {
             if (value === 'Val1') {
                 return {isValid: true};
-            }
-            else {
+            } else {
                 return {
                     isValid: false,
                     errorMessage: 'Value must be Val1'

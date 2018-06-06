@@ -51,8 +51,12 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
         };
         dataDetailsMock  = {
             initialize : jasmine.createSpy('dataDetailsInitialize'),
-            getMimeType : function() { return 'csv'; },
-            getResultType : function() { return 'Result'; }
+            getMimeType : function() {
+                return 'csv';
+            },
+            getResultType : function() {
+                return 'Result';
+            }
         };
         nldiMock = {
             initialize : jasmine.createSpy('nldiInitialize')
@@ -201,7 +205,9 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
     describe('Tests for clicking the download button', function() {
         var success;
         beforeEach(function() {
-            spyOn(PORTAL.CONTROLLERS, 'validateDownloadForm').and.callFake(function() { return success;});
+            spyOn(PORTAL.CONTROLLERS, 'validateDownloadForm').and.callFake(function() {
+                return success;
+            });
             testView.initialize();
         });
 
