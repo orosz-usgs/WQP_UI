@@ -8,6 +8,7 @@
   },
   "scripts": {
     "test": "mkdir -p dist/scripts && run-p build:vendorjs && karma start",
+    "test:watch": "karma start --debug --no-single-run --auto-watch --browsers Chrome",
     "postinstall": "node post_install.js",
     "build": "run-p build:*",
     "build:css": "run-p buildcss:*",
@@ -47,6 +48,7 @@
     "cpy": "7.0.0",
     "jasmine-core": "2.99.1",
     "karma": "2.0.2",
+    "karma-chrome-launcher": "^2.2.0",
     "karma-firefox-launcher": "1.1.0",
     "karma-jasmine": "1.1.2",
     "karma-js-coverage": "0.4.0",
