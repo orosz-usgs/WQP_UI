@@ -1,0 +1,11 @@
+{{#if exceedsFeatureLimit}}
+<input type="hidden" name="bBox" value="{{boundingBox}}" />
+{{#each queryParamArray}}
+<input type="hidden" name="{{name}}" value="{{value}}" />
+{{/each}}
+{{else}}
+{{#each features}}
+<input type="hidden" name="siteid" value="{{properties.name}}" />
+{{/each}}
+<input type="hidden" name="zip" checked="checked" id="zip" value="yes"/>
+{{/if}}

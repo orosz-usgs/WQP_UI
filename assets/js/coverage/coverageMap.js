@@ -1,5 +1,7 @@
 import has from 'lodash/object/has';
 
+import coverageMapPopup from '../hbTemplates/coverageMapPopup.hbs';
+
 
 var COVERAGE = window.COVERAGE = window.COVERAGE || {};
 
@@ -22,16 +24,6 @@ COVERAGE.coverageMap = function(options) {
     var MapWithSingleClickHandler = L.Map.extend({
         includes: L.singleClickEventMixin()
     });
-
-    var DIALOG_TEMPLATE = Handlebars.compile('<div id="coverage-map-popup">' +
-        '<div class="popup-title">' +
-        '{{title}}</div>' +
-        '<button type="button" class="btn">Zoom to feature</button><br/>' +
-        '<div>' +
-        '<div><b>Total discrete samples: </b>{{DISCRETE_SAMPLE_COUNT}}</div>' +
-        '{{#if EPA_DISCRETE_SAMPLE_COUNT}}<div><b>EPA STORET discrete samples: </b>{{EPA_DISCRETE_SAMPLE_COUNT}}</div>{{/if}}' +
-        '{{#if NWIS_DISCRETE_SAMPLE_COUNT}}<div><b>USGS NWIS discrete samples: </b>{{NWIS_DISCRETE_SAMPLE_COUNT}}</div>{{/if}}' +
-        '</div>');
 
     var getTitle = function (properties) {
         var result;
@@ -96,7 +88,7 @@ COVERAGE.coverageMap = function(options) {
                 if (resp.features.length > 0) {
                     context = resp.features[0].properties;
                     context.title = getTitle(resp.features[0].properties);
-                    content = DIALOG_TEMPLATE(context);
+                    content = coverageMapPopup(context);
                 } else {
                     content = 'Did not find a coverage map feature. \n Please click within a feature';
                 }

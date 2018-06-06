@@ -1,0 +1,9 @@
+<div id="coverage-map-popup">
+<div class="popup-title">
+{{title}}</div>
+<button type="button" class="btn">Zoom to feature</button><br/>
+<div>
+<div><b>Total discrete samples: </b>{{DISCRETE_SAMPLE_COUNT}}</div>
+{{#if EPA_DISCRETE_SAMPLE_COUNT}}<div><b>EPA STORET discrete samples: </b>{{EPA_DISCRETE_SAMPLE_COUNT}}</div>{{/if}}
+{{#if NWIS_DISCRETE_SAMPLE_COUNT}}<div><b>USGS NWIS discrete samples: </b>{{NWIS_DISCRETE_SAMPLE_COUNT}}</div>{{/if}}
+</div>

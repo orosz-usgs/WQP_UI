@@ -1,27 +1,10 @@
+import dialogBodyTemplate from '../hbTemplates/arcGisHelp.hbs';
+
+
 var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 
 (function() {
-    /* Need to preload the dialog. */
-    var NULL_TEMPLATE = function() {
-        return 'Template has not been loaded';
-    };
-
-    var dialogBodyTemplate =  NULL_TEMPLATE;
-
-    /*
-     * Read handlebar template
-     */
-    var template_loaded_promise = $.ajax({
-        url: Config.STATIC_ENDPOINT + 'js/hbTemplates/arcGisHelp.hbs',
-        cache: false,
-        success: function (response) {
-            dialogBodyTemplate = Handlebars.compile(response);
-        },
-        error: function () {
-            log.error('Unable to read template hbTemplates/nldiFeatureSourcePopup.hbs');
-        }
-    });
     /*
      * @param {Jquery element} $button - Arc GIS help button
      * @param {Jquery element} $dialog - Arc GIS help dialog
@@ -67,7 +50,6 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
             });
         };
 
-        self.template_loaded = template_loaded_promise;
         return self;
     };
 })();

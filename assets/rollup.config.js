@@ -5,6 +5,7 @@
 
 const buble = require('rollup-plugin-buble');
 const commonjs = require('rollup-plugin-commonjs');
+var handlebars = require('rollup-plugin-handlebars-plus');
 const json = require('rollup-plugin-json');
 const resolve = require('rollup-plugin-node-resolve');
 const replace = require('rollup-plugin-replace');
@@ -38,6 +39,14 @@ const getBundleConfig = function (src, dest) {
             }),
             json(),
             commonjs(),
+            handlebars({
+                handlebars: {
+                    options: {
+                        sourceMap: ENV !== 'production' ? 'inline' : false
+                    }
+                },
+                templateExtension: '.hbs'
+            }),
             buble({
                 objectAssign: 'Object.assign',
                 transforms: {
