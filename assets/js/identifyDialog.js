@@ -1,6 +1,5 @@
 /* jslint browser: true */
 /* global Handlebars */
-/* global Config */
 /* global _ */
 
 var PORTAL = window.PORTAL = window.PORTAL || {};

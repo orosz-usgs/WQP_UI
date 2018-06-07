@@ -107,10 +107,10 @@ def log_after(response):
 session = Session()
 session.verify = app.config.get('VERIFY_CERT', True)
 
-from .auth.views import auth_blueprint
-from .portal_ui.views import portal_ui
-from .sites.views import sites_blueprint
-from .wqx.views import wqx
+from .auth.views import auth_blueprint # pylint: disable=C0413
+from .portal_ui.views import portal_ui # pylint: disable=C0413
+from .sites.views import sites_blueprint # pylint: disable=C0413
+from .wqx.views import wqx # pylint: disable=C0413
 from . import filters  # pylint: disable=C0413
 
 app.register_blueprint(auth_blueprint, url_prefix='')

@@ -1,3 +1,7 @@
+'''
+Views and a view decorator that implement an Oauth2 client.
+'''
+
 import pickle
 
 import arrow
@@ -176,6 +180,11 @@ def public_srsnames():
 
 @portal_ui.route('/wqp_download/<op>', methods=['GET', 'POST'])
 def wqp_download_proxy(op):
+    '''
+    Proxies the download request and adds the authorization header if an access_token is present.
+    :param String op: The kind of download to request
+    :return Response:
+    '''
     target_url = app.config['SEARCH_QUERY_ENDPOINT'] + op + '/search'
     headers = {}
     access_token = request.cookies.get('access_token')
