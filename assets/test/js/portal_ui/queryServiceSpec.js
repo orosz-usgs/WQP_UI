@@ -1,5 +1,5 @@
 /* jslint browser: true */
-/* global describe, beforeEach, afterEach, it, expect, jasmine, log */
+/* global describe, beforeEach, afterEach, it, expect, jasmine, log, spyOn */
 /* global sinon */
 /* global $ */
 /* global PORTAL */
@@ -46,6 +46,7 @@ describe('Tests for queryService', function() {
 
 			expect(fakeServer.requests.length).toBe(1);
 			expect(fakeServer.requests[0].method).toEqual('POST');
+			expect(fakeServer.requests[0].requestHeaders.Authorization).not.toBeDefined();
 			requestBody = $.parseJSON(fakeServer.requests[0].requestBody);
 			expect(requestBody.statecode.length).toBe(2);
 			expect(requestBody.statecode).toContain('US:55');
@@ -91,6 +92,13 @@ describe('Tests for queryService', function() {
 			expect(successSpy).not.toHaveBeenCalled();
 			expect(errorSpy).toHaveBeenCalled();
 
+		});
+
+		it('Expects that a authorization header is added if an access_token cookie is present', function() {
+			spyOn(PORTAL.UTILS, 'getCookie').and.returnValue('dummy_token');
+			PORTAL.queryServices.fetchQueryCounts('Station', testQuery, ['NWIS', 'STORET']);
+
+			expect(fakeServer.requests[0].requestHeaders.Authorization).toEqual('Bearer dummy_token');
 		});
 	});
 });

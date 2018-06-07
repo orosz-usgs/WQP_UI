@@ -44,13 +44,15 @@
 		},
 
 		_getImageSrc : function(url, done) {
-			var accessToken = PORTAL.UTILS.getCookie('access_token');
+			var headers = PORTAL.UTILS.getHeaders();
 			var xhr = new XMLHttpRequest();
 			xhr.open('GET', url, true);
 			xhr.responseType = 'blob';
-			if (accessToken) {
-				xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-			}
+
+			Object.keys(headers).forEach(function(name) {
+				xhr.setRequestHeader(name, headers[name]);
+			});
+
 			xhr.onload = function() {
 				var reader = new FileReader();
 				reader.readAsDataURL(this.response);
