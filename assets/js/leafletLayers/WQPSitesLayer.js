@@ -54,7 +54,7 @@
 			});
 
 			xhr.onload = function() {
-				var reader = new FileReader();
+				var reader = new window.FileReader();
 				reader.readAsDataURL(this.response);
 				reader.onloadend = function() {
 					done(reader.result);

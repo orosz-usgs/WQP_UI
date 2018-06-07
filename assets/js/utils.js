@@ -116,7 +116,7 @@ PORTAL.UTILS = function() {
 	 * @return String containing the cookie value for name or the empty string if none exists.
 	 */
 	self.getCookie = function(cname) {
-		var name = cname + "=";
+		var name = cname + '=';
 		var decodedCookie = decodeURIComponent(document.cookie);
 		var ca = decodedCookie.split(';');
 		for(var i = 0; i <ca.length; i++) {
@@ -128,7 +128,7 @@ PORTAL.UTILS = function() {
 				return c.substring(name.length, c.length);
 			}
 		}
-		return "";
+		return '';
 	};
 
 	/*

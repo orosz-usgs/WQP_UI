@@ -16,10 +16,10 @@ if __name__ == '__main__':
 
     # If you want to run with https, you will need to specify a certfile and a privatekeyfile.
     # See here for reference: https://blog.miguelgrinberg.com/post/running-your-flask-application-over-https
+    ssl_context = None
     if args.certfile and args.privatekeyfile:
         ssl_context = (args.certfile, args.privatekeyfile)
-    else:
-        ssl_context = None
+
     application.run(host=host, port=5050, threaded=True, ssl_context=ssl_context)
 
     # run from the command line as follows
