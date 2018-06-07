@@ -1,6 +1,7 @@
 import downloadFormController from '../downloadFormController';
 import BiologicalSamplingInputView from './biologicalSamplingInputView';
 import BoundingBoxInputView from './boundingBoxInputView';
+import DataDetailsView from './dataDetailsView';
 
 
 var PORTAL = window.PORTAL = window.PORTAL || {};
@@ -86,7 +87,7 @@ PORTAL.VIEWS.downloadFormView = function(options) {
             $container : options.$form.find('#biological'),
             assemblageModel : PORTAL.MODELS.cachedCodes({codes: 'assemblage'})
         });
-        var dataDetailsView = PORTAL.VIEWS.dataDetailsView({
+        var dataDetailsView = new DataDetailsView({
             $container : options.$form.find('#download-box-input-div'),
             updateResultTypeAction : function(resultType) {
                 options.$form.attr('action', PORTAL.queryServices.getFormUrl(resultType));

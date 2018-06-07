@@ -1,4 +1,7 @@
-describe('Tests for PORTAL.VIEWS.dataDetailsView', function() {
+import DataDetailsView from '../../../../js/views/dataDetailsView';
+
+
+describe('Tests for DataDetailsView', function() {
     var testView;
     var $testDiv;
     var $kml, $sites, $samples, $biosamples, $sorted, $hiddenSorted, $narrowsamples, $activity, $activitymetrics, $resultdet;
@@ -38,7 +41,7 @@ describe('Tests for PORTAL.VIEWS.dataDetailsView', function() {
 
         updateResultTypeAction = jasmine.createSpy('updateResultTypeAction');
 
-        testView = PORTAL.VIEWS.dataDetailsView({
+        testView = new DataDetailsView({
             $container : $testDiv,
             updateResultTypeAction : updateResultTypeAction
         });

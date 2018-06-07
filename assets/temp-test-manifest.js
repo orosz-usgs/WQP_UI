@@ -30,7 +30,6 @@ require('./js/queryService');
 require('./js/siteMap');
 require('./js/stateFIPS');
 require('./js/utils');
-require('./js/views/dataDetailsView');
 require('./js/views/downloadFormView');
 require('./js/views/inputValidationView');
 require('./js/views/nldiNavPopupView');

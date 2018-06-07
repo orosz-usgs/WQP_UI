@@ -1,13 +1,13 @@
 import downloadFormController from '../../../../js/downloadFormController';
 import BiologicalSamplingInputView from '../../../../js/views/biologicalSamplingInputView';
 import BoundingBoxInputView from '../../../../js/views/boundingBoxInputView';
+import DataDetailsView from '../../../../js/views/dataDetailsView';
 
 
 describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
     var testView;
 
-    var placeMock, pointLocationMock, siteParameterMock, samplingParametersMock,
-        dataDetailsMock, nldiMock;
+    var placeMock, pointLocationMock, siteParameterMock, samplingParametersMock, nldiMock;
     var fetchProvidersDeferred, fetchCountsDeferred;
     var placeInitDeferred, siteParameterInitDeferred, samplingInitDeferred, bioSamplingInitDeferred;
     var mockDownloadDialog;
@@ -48,15 +48,6 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
         samplingParametersMock  = {
             initialize : jasmine.createSpy('samplingParametersInitialize').and.returnValue(samplingInitDeferred)
         };
-        dataDetailsMock  = {
-            initialize : jasmine.createSpy('dataDetailsInitialize'),
-            getMimeType : function() {
-                return 'csv';
-            },
-            getResultType : function() {
-                return 'Result';
-            }
-        };
         nldiMock = {
             initialize : jasmine.createSpy('nldiInitialize')
         };
@@ -66,7 +57,9 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
         spyOn(PORTAL.VIEWS, 'siteParameterInputView').and.returnValue(siteParameterMock);
         spyOn(PORTAL.VIEWS, 'samplingParameterInputView').and.returnValue(samplingParametersMock);
         spyOn(BiologicalSamplingInputView.prototype, 'initialize').and.returnValue(bioSamplingInitDeferred);
-        spyOn(PORTAL.VIEWS, 'dataDetailsView').and.returnValue(dataDetailsMock);
+        spyOn(DataDetailsView.prototype, 'initialize');
+        spyOn(DataDetailsView.prototype, 'getMimeType').and.returnValue('csv');
+        spyOn(DataDetailsView.prototype, 'getResultType').and.returnValue('Result');
         spyOn(PORTAL.VIEWS, 'nldiView').and.returnValue(nldiMock);
 
         fetchProvidersDeferred = $.Deferred();
@@ -103,7 +96,7 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
         expect(siteParameterMock.initialize).toHaveBeenCalled();
         expect(samplingParametersMock.initialize).toHaveBeenCalled();
         expect(BiologicalSamplingInputView.prototype.initialize).toHaveBeenCalled();
-        expect(dataDetailsMock.initialize).toHaveBeenCalled();
+        expect(DataDetailsView.prototype.initialize).toHaveBeenCalled();
         expect(nldiMock.initialize).toHaveBeenCalled();
     });
 
