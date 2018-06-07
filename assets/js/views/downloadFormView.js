@@ -2,6 +2,7 @@ import downloadFormController from '../downloadFormController';
 import BiologicalSamplingInputView from './biologicalSamplingInputView';
 import BoundingBoxInputView from './boundingBoxInputView';
 import DataDetailsView from './dataDetailsView';
+import NldiView from './nldiView';
 
 
 var PORTAL = window.PORTAL = window.PORTAL || {};
@@ -75,7 +76,7 @@ export default class DownloadFormView {
             siteTypeModel : PORTAL.MODELS.cachedCodes({codes : 'sitetype'}),
             organizationModel : PORTAL.MODELS.cachedCodes({codes : 'organization'})
         });
-        var nldiView = PORTAL.VIEWS.nldiView({
+        var nldiView = new NldiView({
             insetMapDivId : 'nldi-inset-map',
             mapDivId : 'nldi-map',
             $inputContainer : this.$form.find('#nldi-param-container')

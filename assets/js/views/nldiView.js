@@ -12,67 +12,67 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
  * The map shown is changed by clicking the expand/collapse control in the upper right of each map.
  * Each map also contains the Navigation selector.
  * @param {Object} options
- *      @prop {String} insetMapDivId
+ *      @prop {String} this.insetMapDivId
  *      @prop {String} mapDivId
  *      @prop {Jquery element} $inputContainer
  */
-PORTAL.VIEWS.nldiView  = function(options) {
-    var self = {};
+export default class NldiView {
+    constructor({insetMapDivId, mapDivId, $inputContainer}) {
+        this.insetMapDivId = insetMapDivId;
+        this.mapDivId = mapDivId;
+        this.$inputContainer = $inputContainer;
 
-    var insetMap, map;
-    var $mapDiv = $('#' + options.mapDivId);
-    var $insetMapDiv = $('#' + options.insetMapDivId);
+        this.$mapDiv = $('#' + mapDivId);
+        this.$insetMapDiv = $('#' + insetMapDivId);
 
-    var nldiSiteCluster, nldiFlowlineLayers;
-    var insetNldiSiteCluster, insetNldiFlowlineLayers;
+        /* Functions return a geoJson layer with predefined options for flowLine and site layers respectively */
+        this.flowlineLayer = partial(L.geoJson);
+        this.siteLayer = partial(L.geoJson, partial.placeholder, {
+            pointToLayer: function (featureData, latlng) {
+                return L.circleMarker(latlng, {
+                    radius: 5,
+                    fillColor: '#ff3300',
+                    color: '#000',
+                    weight: 1,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                });
+            }
+        });
+    }
 
-    /* Functions return a geoJson layer with predefined options for flowLine and site layers respectively */
-    var flowlineLayer = partial(L.geoJson);
-    var siteLayer = partial(L.geoJson, partial.placeholder, {
-        pointToLayer: function (featureData, latlng) {
-            return L.circleMarker(latlng, {
-                radius: 5,
-                fillColor: '#ff3300',
-                color: '#000',
-                weight: 1,
-                opacity: 1,
-                fillOpacity: 0.8
-            });
-        }
-    });
-
-    var getRetrieveMessage = function() {
+    getRetrieveMessage() {
         var nldiData = PORTAL.MODELS.nldiModel.getData();
         return '<p>Retrieving sites ' + nldiData.navigation.text.toLowerCase() + (nldiData.distance ? ' ' + nldiData.distance + ' km' : '') + '.</p>';
-    };
+    }
 
-    var cleanUpMaps = function() {
-        if (nldiSiteCluster) {
-            nldiSiteCluster.clearLayers();
-            map.removeLayer(nldiSiteCluster);
+    cleanUpMaps() {
+        if (this.nldiSiteCluster) {
+            this.nldiSiteCluster.clearLayers();
+            this.map.removeLayer(this.nldiSiteCluster);
         }
-        if (nldiFlowlineLayers) {
-            map.removeLayer(nldiFlowlineLayers);
+        if (this.nldiFlowlineLayers) {
+            this.map.removeLayer(this.nldiFlowlineLayers);
         }
-        if (insetNldiSiteCluster) {
-            insetNldiSiteCluster.clearLayers();
-            insetMap.removeLayer(insetNldiSiteCluster);
+        if (this.insetNldiSiteCluster) {
+            this.insetNldiSiteCluster.clearLayers();
+            this.insetMap.removeLayer(this.insetNldiSiteCluster);
         }
-        if (insetNldiFlowlineLayers) {
-            insetMap.removeLayer(insetNldiFlowlineLayers);
+        if (this.insetNldiFlowlineLayers) {
+            this.insetMap.removeLayer(this.insetNldiFlowlineLayers);
         }
 
-        options.$inputContainer.html('');
-    };
+        this.$inputContainer.html('');
+    }
 
-    var updateNldiInput = function(url) {
+    updateNldiInput(url) {
         var html = '';
         if (url) {
             html = '<input type="hidden" name="nldiurl" value="' + url + '" />';
         }
 
-        options.$inputContainer.html(html);
-    };
+        this.$inputContainer.html(html);
+    }
 
     /*
      * @param {L.Point} point - This is the containerPoint where we are looking for a feature from the pour point endpoint
@@ -80,8 +80,8 @@ PORTAL.VIEWS.nldiView  = function(options) {
      *      @resolve - Returns {Object} - the json data received from the request
      *      @reject - If unable to fetch the pour point
      */
-    var fetchFeatureId = function(point) {
-        var mapBounds = map.getBounds();
+    fetchFeatureId(point) {
+        var mapBounds = this.map.getBounds();
         var nldiFeatureSource = PORTAL.MODELS.nldiModel.getData().featureSource.getFeatureInfoSource;
         return $.ajax({
             url : nldiFeatureSource.endpoint,
@@ -93,22 +93,22 @@ PORTAL.VIEWS.nldiView  = function(options) {
                 layers : nldiFeatureSource.layerName,
                 srs : 'EPSG:4326',
                 bbox : mapBounds.getSouth() + ',' + mapBounds.getWest() + ',' + mapBounds.getNorth() + ',' + mapBounds.getEast(),
-                width : map.getSize().x,
-                height : map.getSize().y,
+                width : this.map.getSize().x,
+                height : this.map.getSize().y,
                 'info_format' : 'application/json',
                 'query_layers' : nldiFeatureSource.layerName,
                 i : point.x,
                 j : point.y
             }
         });
-    };
+    }
 
 
     /*
      * Retrieve the NLDI sites and flow lines for the current state of PORTAL.MODELS.nldiModel and
-     * display them on both the insetMap and map.
+     * display them on both the this.insetMap and map.
      */
-    var updateNldiSites = function() {
+    updateNldiSites() {
         var nldiSiteUrl = PORTAL.MODELS.nldiModel.getUrl('wqp');
         var nldiFlowlinesUrl = PORTAL.MODELS.nldiModel.getUrl();
 
@@ -125,49 +125,49 @@ PORTAL.VIEWS.nldiView  = function(options) {
             });
         };
         if (nldiSiteUrl) {
-            $mapDiv.css('cursor', 'progress');
+            this.$mapDiv.css('cursor', 'progress');
             $.when(fetchNldiSites(), fetchNldiFlowlines())
-                .done(function (sitesResponse, flowlinesResponse) {
+                .done((sitesResponse, flowlinesResponse) => {
                     var flowlineBounds;
                     var sitesGeojson = sitesResponse[0];
                     var flowlinesGeojson = flowlinesResponse[0];
 
                     // These layers go into the siteCluster layer
-                    var nldiSiteLayers = siteLayer(sitesGeojson);
-                    var insetNldiSiteLayers = siteLayer(sitesGeojson);
+                    var nldiSiteLayers = this.siteLayer(sitesGeojson);
+                    var insetNldiSiteLayers = this.siteLayer(sitesGeojson);
 
                     log.debug('NLDI service has retrieved ' + sitesGeojson.features.length + ' sites.');
-                    map.closePopup();
+                    this.map.closePopup();
 
-                    nldiFlowlineLayers = flowlineLayer(flowlinesGeojson);
-                    insetNldiFlowlineLayers = flowlineLayer(flowlinesGeojson);
-                    map.addLayer(nldiFlowlineLayers);
-                    insetMap.addLayer(insetNldiFlowlineLayers);
+                    this.nldiFlowlineLayers = this.flowlineLayer(flowlinesGeojson);
+                    this.insetNldiFlowlineLayers = this.flowlineLayer(flowlinesGeojson);
+                    this.map.addLayer(this.nldiFlowlineLayers);
+                    this.insetMap.addLayer(this.insetNldiFlowlineLayers);
 
-                    flowlineBounds = nldiFlowlineLayers.getBounds();
-                    map.fitBounds(flowlineBounds);
+                    flowlineBounds = this.nldiFlowlineLayers.getBounds();
+                    this.map.fitBounds(flowlineBounds);
 
-                    nldiSiteCluster = L.markerClusterGroup({
+                    this.nldiSiteCluster = L.markerClusterGroup({
                         maxClusterRadius : 40
                     });
-                    insetNldiSiteCluster = L.markerClusterGroup();
+                    this.insetNldiSiteCluster = L.markerClusterGroup();
 
-                    nldiSiteCluster.addLayer(nldiSiteLayers);
-                    insetNldiSiteCluster.addLayer(insetNldiSiteLayers);
-                    map.addLayer(nldiSiteCluster);
-                    insetMap.addLayer(insetNldiSiteCluster);
+                    this.nldiSiteCluster.addLayer(nldiSiteLayers);
+                    this.insetNldiSiteCluster.addLayer(insetNldiSiteLayers);
+                    this.map.addLayer(this.nldiSiteCluster);
+                    this.insetMap.addLayer(this.insetNldiSiteCluster);
 
-                    updateNldiInput(PORTAL.MODELS.nldiModel.getUrl('wqp'));
+                    this.updateNldiInput(PORTAL.MODELS.nldiModel.getUrl('wqp'));
                 })
-                .fail(function () {
-                    map.openPopup('Unable to retrieve NLDI information', map.getCenter());
-                    updateNldiInput('');
+                .fail(() => {
+                    this.map.openPopup('Unable to retrieve NLDI information', this.map.getCenter());
+                    this.updateNldiInput('');
                 })
-                .always(function () {
-                    $mapDiv.css('cursor', '');
+                .always(() => {
+                    this.$mapDiv.css('cursor', '');
                 });
         }
-    };
+    }
 
     /*
      * Leaflet mouse event handler to find the sites associated with the feature source at the location in the event.
@@ -176,168 +176,166 @@ PORTAL.VIEWS.nldiView  = function(options) {
      *
      * @param {L.MouseEvent} ev
      */
-    var findSitesHandler = function(ev) {
+    findSitesHandler(ev) {
         var featureIdProperty = PORTAL.MODELS.nldiModel.getData().featureSource.getFeatureInfoSource.featureIdProperty;
 
         log.debug('Clicked at location: ' + ev.latlng.toString());
-        $mapDiv.css('cursor', 'progress');
+        this.$mapDiv.css('cursor', 'progress');
 
         PORTAL.MODELS.nldiModel.setData('featureId', '');
         PORTAL.MODELS.nldiModel.setData('navigation', undefined);
         PORTAL.MODELS.nldiModel.setData('distance', '');
-        cleanUpMaps();
-        map.closePopup();
+        this.cleanUpMaps();
+        this.map.closePopup();
 
-        fetchFeatureId(ev.containerPoint.round())
-            .done(function (result) {
-                var navHandler = function() {
-                    map.openPopup(getRetrieveMessage(), ev.latlng);
-                    updateNldiSites();
+        this.fetchFeatureId(ev.containerPoint.round())
+            .done((result) => {
+                var navHandler = () => {
+                    this.map.openPopup(this.getRetrieveMessage(), ev.latlng);
+                    this.updateNldiSites();
                 };
 
                 if (result.features.length === 0) {
-                    map.openPopup('<p>No query point has been selected. Please click on a point to query from.</p>', ev.latlng);
+                    this.map.openPopup('<p>No query point has been selected. Please click on a point to query from.</p>', ev.latlng);
 
                 } else if (result.features.length > 1) {
-                    map.openPopup('<p>More than one query point has been selected. Please zoom in and try again.</p>', ev.latlng);
+                    this.map.openPopup('<p>More than one query point has been selected. Please zoom in and try again.</p>', ev.latlng);
                 } else {
                     PORTAL.MODELS.nldiModel.setData('featureId',
                         result.features[0].properties[featureIdProperty]);
 
-                    new NldiNavPopupView(map, result.features[0], ev.latlng, navHandler);
+                    new NldiNavPopupView(this.map, result.features[0], ev.latlng, navHandler);
                 }
             })
-            .fail(function () {
-                map.openPopup('<p>Unable to retrieve points, service call failed</p>', ev.latlng);
+            .fail(() => {
+                this.map.openPopup('<p>Unable to retrieve points, service call failed</p>', ev.latlng);
             })
-            .always(function() {
-                $mapDiv.css('cursor', '');
+            .always(() => {
+                this.$mapDiv.css('cursor', '');
             });
-    };
+    }
 
     /*
      * Show the full size map and  hide the inset map
      */
-    var showMap = function () {
-        if ($mapDiv.is(':hidden')) {
-            $insetMapDiv.hide();
-            $mapDiv.parent().show();
-            map.invalidateSize();
-            map.setView(insetMap.getCenter(), insetMap.getZoom());
+    showMap() {
+        if (this.$mapDiv.is(':hidden')) {
+            this.$insetMapDiv.hide();
+            this.$mapDiv.parent().show();
+            this.map.invalidateSize();
+            this.map.setView(this.insetMap.getCenter(), this.insetMap.getZoom());
         }
-        map.closePopup();
-    };
+        this.map.closePopup();
+    }
 
     /*
      * Show the inset map and hide the full size map
      */
-    var showInsetMap = function () {
-        if ($insetMapDiv.is(':hidden')) {
-            $insetMapDiv.show();
-            $mapDiv.parent().hide();
-            insetMap.invalidateSize();
-            insetMap.setView(map.getCenter(), map.getZoom());
+    showInsetMap() {
+        if (this.$insetMapDiv.is(':hidden')) {
+            this.$insetMapDiv.show();
+            this.$mapDiv.parent().hide();
+            this.insetMap.invalidateSize();
+            this.insetMap.setView(this.map.getCenter(), this.map.getZoom());
         }
-    };
+    }
 
-    var featureSourceChangeHandler = function(ev) {
-        cleanUpMaps();
-        map.closePopup();
+    featureSourceChangeHandler(ev) {
+        this.cleanUpMaps();
+        this.map.closePopup();
         PORTAL.MODELS.nldiModel.setFeatureSource($(ev.currentTarget).val());
-    };
+    }
 
-    var clearHandler = function() {
+    clearHandler() {
         PORTAL.MODELS.nldiModel.reset();
-        cleanUpMaps();
-        map.closePopup();
-    };
-
-    var insetBaseLayers = {
-        'World Gray' : L.esri.basemapLayer('Gray')
-    };
-    var insetHydroLayer = L.esri.tiledMapLayer({
-        url : Config.HYDRO_LAYER_ENDPOINT
-    });
-
-    var baseLayers = {
-        'World Gray' : L.esri.basemapLayer('Gray'),
-        'World Topo' : L.tileLayer.provider('Esri.WorldTopoMap'),
-        'World Street' : L.tileLayer.provider('Esri.WorldStreetMap'),
-        'World Relief' : L.tileLayer.provider('Esri.WorldShadedRelief'),
-        'World Imagery' : L.tileLayer.provider('Esri.WorldImagery')
-    };
-    var hydroLayer = L.esri.tiledMapLayer({
-        url : Config.HYDRO_LAYER_ENDPOINT
-    });
-    var nhdlPlusFlowlineLayer = L.tileLayer.wms(Config.NHDPLUS_FLOWLINE_ENDPOINT,
-        {
-            layers : Config.NHDPLUS_FLOWLINE_LAYER_NAME,
-            format : 'image/png',
-            transparent : true,
-            opacity : 0.5
-        }
-    );
-
-    var featureSourceSelectControl = L.control.featureSourceSelectControl({
-        changeHandler : featureSourceChangeHandler,
-        featureSourceOptions : PORTAL.MODELS.nldiModel.FEATURE_SOURCES,
-        initialFeatureSourceValue : PORTAL.MODELS.nldiModel.getData().featureSource.id
-    });
-
-    var searchControl = L.control.searchControl(Config.GEO_SEARCH_API_ENDPOINT);
-
-    var expandControl = L.easyButton('fa-lg fa-expand', showMap, 'Expand NLDI Map', {
-        position : 'topright'
-    });
-    var collapseControl = L.easyButton('fa-lg fa-compress', showInsetMap, 'Collapse NLDI Map', {
-        position: 'topright'
-    });
-    var insetClearControl = L.easyButton('fa-lg fa-undo', clearHandler, 'Clear the sites', {
-        position: 'topleft'
-    });
-    var clearControl = L.easyButton('fa-lg fa-undo', clearHandler, 'Clear the sites', {
-        position: 'topleft'
-    });
-
-    var MapWithSingleClickHandler = L.Map.extend({
-        includes : L.singleClickEventMixin()
-    });
+        this.cleanUpMaps();
+        this.map.closePopup();
+    }
 
     /*
      * Initialize the inset and full size maps.
      */
-    self.initialize = function() {
-        insetMap = L.map(options.insetMapDivId, {
+    initialize() {
+        var insetBaseLayers = {
+            'World Gray' : L.esri.basemapLayer('Gray')
+        };
+        var insetHydroLayer = L.esri.tiledMapLayer({
+            url : Config.HYDRO_LAYER_ENDPOINT
+        });
+
+        var baseLayers = {
+            'World Gray' : L.esri.basemapLayer('Gray'),
+            'World Topo' : L.tileLayer.provider('Esri.WorldTopoMap'),
+            'World Street' : L.tileLayer.provider('Esri.WorldStreetMap'),
+            'World Relief' : L.tileLayer.provider('Esri.WorldShadedRelief'),
+            'World Imagery' : L.tileLayer.provider('Esri.WorldImagery')
+        };
+        var hydroLayer = L.esri.tiledMapLayer({
+            url : Config.HYDRO_LAYER_ENDPOINT
+        });
+        var nhdlPlusFlowlineLayer = L.tileLayer.wms(Config.NHDPLUS_FLOWLINE_ENDPOINT,
+            {
+                layers : Config.NHDPLUS_FLOWLINE_LAYER_NAME,
+                format : 'image/png',
+                transparent : true,
+                opacity : 0.5
+            }
+        );
+
+        var featureSourceSelectControl = L.control.featureSourceSelectControl({
+            changeHandler : this.featureSourceChangeHandler,
+            featureSourceOptions : PORTAL.MODELS.nldiModel.FEATURE_SOURCES,
+            initialFeatureSourceValue : PORTAL.MODELS.nldiModel.getData().featureSource.id
+        });
+
+        var searchControl = L.control.searchControl(Config.GEO_SEARCH_API_ENDPOINT);
+
+        var expandControl = L.easyButton('fa-lg fa-expand', this.showMap.bind(this), 'Expand NLDI Map', {
+            position : 'topright'
+        });
+        var collapseControl = L.easyButton('fa-lg fa-compress', this.showInsetMap.bind(this), 'Collapse NLDI Map', {
+            position: 'topright'
+        });
+        var insetClearControl = L.easyButton('fa-lg fa-undo', this.clearHandler.bind(this), 'Clear the sites', {
+            position: 'topleft'
+        });
+        var clearControl = L.easyButton('fa-lg fa-undo', this.clearHandler.bind(this), 'Clear the sites', {
+            position: 'topleft'
+        });
+
+        var MapWithSingleClickHandler = L.Map.extend({
+            includes : L.singleClickEventMixin()
+        });
+
+        this.insetMap = L.map(this.insetMapDivId, {
             center: [37.0, -100.0],
             zoom : 3,
             layers : [insetBaseLayers['World Gray']],
             scrollWheelZoom : false,
             zoomControl : false
         });
-        insetMap.addLayer(insetHydroLayer);
-        insetMap.addControl(expandControl);
-        insetMap.addControl(insetClearControl);
-        insetMap.addControl(L.control.zoom());
+        this.insetMap.addLayer(insetHydroLayer);
+        this.insetMap.addControl(expandControl);
+        this.insetMap.addControl(insetClearControl);
+        this.insetMap.addControl(L.control.zoom());
 
-        map = new MapWithSingleClickHandler(options.mapDivId, {
+        this.map = new MapWithSingleClickHandler(this.mapDivId, {
             center: [37.0, -100.0],
             zoom : 3,
             layers : [baseLayers['World Topo'], hydroLayer, nhdlPlusFlowlineLayer],
             zoomControl : false
         });
 
-        map.addControl(searchControl);
-        map.addControl(featureSourceSelectControl);
-        map.addControl(collapseControl);
-        map.addControl(L.control.layers(baseLayers, {
+        this.map.addControl(searchControl);
+        this.map.addControl(featureSourceSelectControl);
+        this.map.addControl(collapseControl);
+        this.map.addControl(L.control.layers(baseLayers, {
             'Hydro Reference' : hydroLayer,
             'NHDLPlus Flowline Network' : nhdlPlusFlowlineLayer
         }));
-        map.addControl(clearControl);
-        map.addControl(L.control.zoom());
+        this.map.addControl(clearControl);
+        this.map.addControl(L.control.zoom());
 
-        map.addSingleClickHandler(findSitesHandler);
-    };
-
-    return self;
-};
+        this.map.addSingleClickHandler(this.findSitesHandler.bind(this));
+    }
+}

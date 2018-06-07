@@ -19,7 +19,6 @@ require('../views/pointLocationInputView.js');
 require('../views/siteParameterInputView.js');
 require('../views/samplingParameterInputView.js');
 require('../views/showAPIView.js');
-require('../views/nldiView.js');
 require('../portalHelp.js');
 require('../stateFIPS.js');
 require('../downloadProgressDialog.js');

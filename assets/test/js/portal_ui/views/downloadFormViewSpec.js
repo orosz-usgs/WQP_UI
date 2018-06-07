@@ -3,12 +3,13 @@ import BiologicalSamplingInputView from '../../../../js/views/biologicalSampling
 import BoundingBoxInputView from '../../../../js/views/boundingBoxInputView';
 import DataDetailsView from '../../../../js/views/dataDetailsView';
 import DownloadFormView from '../../../../js/views/downloadFormView';
+import NldiView from '../../../../js/views/nldiView';
 
 
 describe('Tests for DownloadFormView', function() {
     var testView;
 
-    var placeMock, pointLocationMock, siteParameterMock, samplingParametersMock, nldiMock;
+    var placeMock, pointLocationMock, siteParameterMock, samplingParametersMock;
     var fetchProvidersDeferred, fetchCountsDeferred;
     var placeInitDeferred, siteParameterInitDeferred, samplingInitDeferred, bioSamplingInitDeferred;
     var mockDownloadDialog;
@@ -49,9 +50,6 @@ describe('Tests for DownloadFormView', function() {
         samplingParametersMock  = {
             initialize : jasmine.createSpy('samplingParametersInitialize').and.returnValue(samplingInitDeferred)
         };
-        nldiMock = {
-            initialize : jasmine.createSpy('nldiInitialize')
-        };
         spyOn(PORTAL.VIEWS, 'placeInputView').and.returnValue(placeMock);
         spyOn(PORTAL.VIEWS, 'pointLocationInputView').and.returnValue(pointLocationMock);
         spyOn(BoundingBoxInputView.prototype, 'initialize');
@@ -61,7 +59,7 @@ describe('Tests for DownloadFormView', function() {
         spyOn(DataDetailsView.prototype, 'initialize');
         spyOn(DataDetailsView.prototype, 'getMimeType').and.returnValue('csv');
         spyOn(DataDetailsView.prototype, 'getResultType').and.returnValue('Result');
-        spyOn(PORTAL.VIEWS, 'nldiView').and.returnValue(nldiMock);
+        spyOn(NldiView.prototype, 'initialize');
 
         fetchProvidersDeferred = $.Deferred();
         spyOn(PORTAL.MODELS.providers, 'fetch').and.returnValue(fetchProvidersDeferred);
@@ -98,7 +96,7 @@ describe('Tests for DownloadFormView', function() {
         expect(samplingParametersMock.initialize).toHaveBeenCalled();
         expect(BiologicalSamplingInputView.prototype.initialize).toHaveBeenCalled();
         expect(DataDetailsView.prototype.initialize).toHaveBeenCalled();
-        expect(nldiMock.initialize).toHaveBeenCalled();
+        expect(NldiView.prototype.initialize).toHaveBeenCalled();
     });
 
     it('Expects that the providers are fetched', function() {
