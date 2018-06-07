@@ -1,3 +1,6 @@
+import downloadFormController from '../downloadFormController';
+
+
 var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 
@@ -162,7 +165,7 @@ PORTAL.VIEWS.downloadFormView = function(options) {
 
             event.preventDefault();
 
-            if (!PORTAL.CONTROLLERS.validateDownloadForm(options.$form)) {
+            if (!downloadFormController.validateDownloadForm(options.$form)) {
                 return;
             }
 
@@ -191,7 +194,7 @@ PORTAL.VIEWS.downloadFormView = function(options) {
      * @return {Boolean}
      */
     self.validateDownloadForm = function() {
-        return PORTAL.CONTROLLERS.validateDownloadForm(options.$form);
+        return downloadFormController.validateDownloadForm(options.$form);
     };
 
     /*

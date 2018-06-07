@@ -1,3 +1,6 @@
+import downloadFormController from '../../../../js/downloadFormController';
+
+
 describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
     var testView;
 
@@ -205,7 +208,7 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
     describe('Tests for clicking the download button', function() {
         var success;
         beforeEach(function() {
-            spyOn(PORTAL.CONTROLLERS, 'validateDownloadForm').and.callFake(function() {
+            spyOn(downloadFormController, 'validateDownloadForm').and.callFake(function() {
                 return success;
             });
             testView.initialize();
