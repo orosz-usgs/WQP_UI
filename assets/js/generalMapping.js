@@ -1,6 +1,3 @@
-/* jslint browser: true */
-/* global L */
-
 var WQP = window.WQP = window.WQP || {};
 /** @namespace */
 
@@ -13,11 +10,11 @@ WQP.MAPS = WQP.MAPS || {};
  * @returns {L.map} A Leaflet map object
  */
 WQP.MAPS.create = function(mapDiv, basemapProvider) {
-	var map;
-	var basemapTiles;
+    var map;
+    var basemapTiles;
 
-	map = L.map(mapDiv);
-	basemapTiles = L.tileLayer.provider(basemapProvider);
-	basemapTiles.addTo(map);
-	return map;
+    map = L.map(mapDiv);
+    basemapTiles = L.tileLayer.provider(basemapProvider);
+    basemapTiles.addTo(map);
+    return map;
 };

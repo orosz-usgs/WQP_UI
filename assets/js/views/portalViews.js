@@ -1,8 +1,3 @@
-/*jslint browser: true */
-/*global $ */
-/*global _ */
-/*global Config */
-
 var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 
@@ -12,15 +7,14 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
  * @param {Object} select2Options
  */
 PORTAL.VIEWS.createStaticSelect2 = function (el, ids, select2Options) {
-	"use strict";
-	var defaultOptions = {
-		allowClear: true,
-		theme: 'bootstrap',
-		data: _.map(ids, function (id) {
-			return {id: id, text: id};
-		})
-	};
-	el.select2($.extend({}, defaultOptions, select2Options));
+    var defaultOptions = {
+        allowClear: true,
+        theme: 'bootstrap',
+        data: _.map(ids, function (id) {
+            return {id: id, text: id};
+        })
+    };
+    el.select2($.extend({}, defaultOptions, select2Options));
 };
 
 /*
@@ -35,88 +29,87 @@ PORTAL.VIEWS.createStaticSelect2 = function (el, ids, select2Options) {
  * @param {String} parametername - parameter name to be used in additional lookup
  */
 PORTAL.VIEWS.createPagedCodeSelect = function (el, spec, select2Options, $filter, parametername) {
-	"use strict";
-	spec.pagesize = (spec.pagesize) ? spec.pagesize : 20;
-	if (!('formatData' in spec)) {
-		spec.formatData = function (data) {
-			var desc = (data.hasOwnProperty('desc') && (data.desc) ? data.desc
-				: data.value);
-			return desc + ' (' + PORTAL.MODELS.providers.formatAvailableProviders(data.providers) + ')';
-		};
-	}
+    spec.pagesize = spec.pagesize ? spec.pagesize : 20;
+    if (!('formatData' in spec)) {
+        spec.formatData = function (data) {
+            var desc = data.hasOwnProperty('desc') && data.desc ? data.desc
+                : data.value;
+            return desc + ' (' + PORTAL.MODELS.providers.formatAvailableProviders(data.providers) + ')';
+        };
+    }
 
-	function getParentParams(parentValue) {
-		var suffix = "";
-		//add parentValue to URL, using .join if it is an array and simply appending if a string
-		if (parentValue.length > 0) {
-			suffix = "?" + parametername + "=";
-			if (typeof parentValue === "string") {
-				//val() converts arrays to strings if not called on a select multiple. In this case, convert it back.
-				if (parentValue.includes(",")) {
-					parentValue = parentValue.split(",");
-				}
-				else {
-					suffix += parentValue;
-				}
-			}
-			if (Array.isArray(parentValue)) {
-				suffix += parentValue.join("&" + parametername + "=");
-			}
+    function getParentParams(parentValue) {
+        var suffix = '';
+        //add parentValue to URL, using .join if it is an array and simply appending if a string
+        if (parentValue.length > 0) {
+            suffix = '?' + parametername + '=';
+            if (typeof parentValue === 'string') {
+                //val() converts arrays to strings if not called on a select multiple. In this case, convert it back.
+                if (parentValue.includes(',')) {
+                    parentValue = parentValue.split(',');
+                } else {
+                    suffix += parentValue;
+                }
+            }
+            if (Array.isArray(parentValue)) {
+                suffix += parentValue.join('&' + parametername + '=');
+            }
 
-		}
-		return suffix;
-	}
+        }
+        return suffix;
+    }
 
-	if ($filter) {
-		$filter.on('change', function (ev) {
-			var parents = $filter.val();
-			var children = el.val();
-			var isInOrganization = function(child) {
-				return _.contains(parents, child);
-			};
-			el.val(_.filter(children, isInOrganization)).trigger('change');
-			defaultOptions.ajax.url = Config.CODES_ENDPOINT + '/' + spec.codes + getParentParams(parents);
-			el.select2($.extend(defaultOptions, select2Options));
-		});
-	}
+    var defaultOptions = {
+        allowClear: true,
+        theme: 'bootstrap',
+        templateSelection: function (object) {
+            return _.has(object, 'id') ? object.id : null;
+        },
+        ajax: {
+            url: Config.CODES_ENDPOINT + '/' + spec.codes,
+            dataType: 'json',
+            data: function (params) {
+                return {
+                    text: params.term,
+                    pagesize: spec.pagesize,
+                    pagenumber: params.page,
+                    mimeType: 'json'
+                };
+            },
+            delay: 250,
+            processResults: function (data, params) {
+                var results = _.map(data.codes, function (code) {
+                    return {
+                        id: code.value,
+                        text: spec.formatData(code)
+                    };
+                });
+                var page = params.page || 1;
 
-	var defaultOptions = {
-		allowClear: true,
-		theme: 'bootstrap',
-		templateSelection: function (object) {
-			return (_.has(object, 'id')) ? object.id : null;
-		},
-		ajax: {
-			url: Config.CODES_ENDPOINT + '/' + spec.codes,
-			dataType: 'json',
-			data: function (params) {
-				return {
-					text: params.term,
-					pagesize: spec.pagesize,
-					pagenumber: params.page,
-					mimeType: 'json'
-				};
-			},
-			delay: 250,
-			processResults: function (data, params) {
-				var results = _.map(data.codes, function (code) {
-					return {
-						id: code.value,
-						text: spec.formatData(code)
-					};
-				});
-				var page = params.page || 1;
+                return {
+                    results: results,
+                    pagination: {
+                        more : spec.pagesize * page < data.recordCount
+                    }
+                };
+            }
+        }
+    };
 
-				return {
-					results: results,
-					pagination: {
-						more : ((spec.pagesize * page) < data.recordCount)
-					}
-				};
-			}
-		}
-	};
-	el.select2($.extend(defaultOptions, select2Options));
+    if ($filter) {
+        $filter.on('change', function () {
+            var parents = $filter.val();
+            var children = el.val();
+            var isInOrganization = function(child) {
+                return _.contains(parents, child);
+            };
+            el.val(_.filter(children, isInOrganization)).trigger('change');
+            defaultOptions.ajax.url = Config.CODES_ENDPOINT + '/' + spec.codes + getParentParams(parents);
+            el.select2($.extend(defaultOptions, select2Options));
+        });
+    }
+
+    el.select2($.extend(defaultOptions, select2Options));
 };
 /*
  @param {jquery element selecting a select input} el
@@ -129,145 +122,136 @@ PORTAL.VIEWS.createPagedCodeSelect = function (el, spec, select2Options, $filter
  @param {Object} select2Options
  */
 PORTAL.VIEWS.createCodeSelect = function (el, options, select2Options) {
-	"use strict";
-	var isMatch;
-	var formatData;
-	var defaultOptions;
+    var isMatch;
+    var formatData;
+    var defaultOptions;
 
-	// Assign defaults for optional parameters
-	if (_.has(options, 'isMatch')) {
-		isMatch = options.isMatch;
-	}
-	else {
-		isMatch = function (term, lookup) {
-			var termMatcher;
-			if (term) {
-				termMatcher = new RegExp(term, 'i');
-				return termMatcher.test(lookup.desc);
-			}
-			else {
-				return true;
-			}
-		};
-	}
-	if (_.has(options, 'formatData')) {
-		formatData = options.formatData;
-	}
-	else {
-		formatData = function (data) {
-			return {
-				id: data.id,
-				text: data.desc + ' (' + PORTAL.MODELS.providers.formatAvailableProviders(data.providers) + ')'
-			};
-		};
-	}
+    // Assign defaults for optional parameters
+    if (_.has(options, 'isMatch')) {
+        isMatch = options.isMatch;
+    } else {
+        isMatch = function (term, lookup) {
+            var termMatcher;
+            if (term) {
+                termMatcher = new RegExp(term, 'i');
+                return termMatcher.test(lookup.desc);
+            } else {
+                return true;
+            }
+        };
+    }
+    if (_.has(options, 'formatData')) {
+        formatData = options.formatData;
+    } else {
+        formatData = function (data) {
+            return {
+                id: data.id,
+                text: data.desc + ' (' + PORTAL.MODELS.providers.formatAvailableProviders(data.providers) + ')'
+            };
+        };
+    }
 
-	//Initialize the select2
-	defaultOptions = {
-		allowClear: true,
-		theme: 'bootstrap',
-		matcher: function (term, data) {
-			var searchTerm = (_.has(term, 'term')) ? term.term : '';
-			if (isMatch(searchTerm, options.model.getLookup(data.id))) {
-				return data;
-			}
-			else {
-				return null;
-			}
-		},
-		templateSelection: function (data) {
-			var result;
-			if (_.has(data, 'id')) {
-				result = data.id;
-			}
-			else {
-				result = null;
-			}
-			return result;
-		},
-		data: _.map(options.model.getAll(), formatData)
-	};
+    //Initialize the select2
+    defaultOptions = {
+        allowClear: true,
+        theme: 'bootstrap',
+        matcher: function (term, data) {
+            var searchTerm = _.has(term, 'term') ? term.term : '';
+            if (isMatch(searchTerm, options.model.getLookup(data.id))) {
+                return data;
+            } else {
+                return null;
+            }
+        },
+        templateSelection: function (data) {
+            var result;
+            if (_.has(data, 'id')) {
+                result = data.id;
+            } else {
+                result = null;
+            }
+            return result;
+        },
+        data: _.map(options.model.getAll(), formatData)
+    };
 
-	el.select2($.extend(defaultOptions, select2Options));
+    el.select2($.extend(defaultOptions, select2Options));
 };
 /*
  * @param {jquery element selecting a select input} el
  * @param {Object} options
- * 		@prop {Object} model - object which is created by a call to PORTAL.MODELS.codesWithKeys
- *		@prop {Function} isMatch - Optional function with two parameters - term {Object} which contains a term property for the search term and
- *			data {Object} representing an option. Should return Boolean.
- *		@prop {Function} formatData - Optional function takes data (object with id, desc, and providers) and produces a select2 result object
- *			with id and text properties.
- *		@prop {Function} getKeys - returns an array of keys to use when retrieving valid options for this select.
- *	@param {Object} select2Options
+ *      @prop {Object} model - object which is created by a call to PORTAL.MODELS.codesWithKeys
+ *      @prop {Function} isMatch - Optional function with two parameters - term {Object} which contains a term property for the search term and
+ *          data {Object} representing an option. Should return Boolean.
+ *      @prop {Function} formatData - Optional function takes data (object with id, desc, and providers) and produces a select2 result object
+ *          with id and text properties.
+ *      @prop {Function} getKeys - returns an array of keys to use when retrieving valid options for this select.
+ *  @param {Object} select2Options
  */
 PORTAL.VIEWS.createCascadedCodeSelect = function (el, options, select2Options) {
-	"use strict";
-	// Assign defaults for optional parameters
-	var defaultOptions = {
-		allowClear: true,
-		theme: 'bootstrap'
-	};
-	if (!_.has(options, 'isMatch')) {
-		options.isMatch = function (term, data) {
-			var termMatcher;
-			if (term) {
-				termMatcher = new RegExp(term.term, 'i');
-				return termMatcher.test(data.id);
-			}
-			else {
-				return true;
-			}
-		};
-	}
+    // Assign defaults for optional parameters
+    var defaultOptions = {
+        allowClear: true,
+        theme: 'bootstrap'
+    };
+    if (!_.has(options, 'isMatch')) {
+        options.isMatch = function (term, data) {
+            var termMatcher;
+            if (term) {
+                termMatcher = new RegExp(term.term, 'i');
+                return termMatcher.test(data.id);
+            } else {
+                return true;
+            }
+        };
+    }
 
-	if (!_.has(options, 'formatData')) {
-		options.formatData = function (data) {
-			return {
-				id: data.id,
-				text: data.desc + ' (' + PORTAL.MODELS.providers.formatAvailableProviders(data.providers) + ')'
-			};
-		};
-	}
+    if (!_.has(options, 'formatData')) {
+        options.formatData = function (data) {
+            return {
+                id: data.id,
+                text: data.desc + ' (' + PORTAL.MODELS.providers.formatAvailableProviders(data.providers) + ')'
+            };
+        };
+    }
 
-	// Set up the ajax transport property to fetch the options if they need to be refreshed,
-	// otherwise use what is in the model.
-	defaultOptions.ajax = {
-		transport: function (params, success, failure) {
-			var deferred = $.Deferred();
-			var modelKeys = options.model.getAllKeys().sort();
-			var selectedKeys = options.getKeys().sort();
-			var filteredLookups;
+    // Set up the ajax transport property to fetch the options if they need to be refreshed,
+    // otherwise use what is in the model.
+    defaultOptions.ajax = {
+        transport: function (params, success, failure) {
+            var deferred = $.Deferred();
+            var modelKeys = options.model.getAllKeys().sort();
+            var selectedKeys = options.getKeys().sort();
+            var filteredLookups;
 
-			if (_.isEqual(modelKeys, selectedKeys)) {
-				filteredLookups = _.filter(options.model.getAll(), function (lookup) {
-					return options.isMatch(params.data.term, lookup);
-				});
-				deferred.resolve(filteredLookups);
-			}
-			else {
-				options.model.fetch(selectedKeys)
-					.done(function (data) {
-						filteredLookups = _.filter(data, function(lookup) {
-							return options.isMatch(params.data.term, lookup);
-						});
-						deferred.resolve(filteredLookups);
-					})
-					.fail(function () {
-						deferred.reject();
-					});
-			}
-			deferred.done(success).fail(failure);
+            if (_.isEqual(modelKeys, selectedKeys)) {
+                filteredLookups = _.filter(options.model.getAll(), function (lookup) {
+                    return options.isMatch(params.data.term, lookup);
+                });
+                deferred.resolve(filteredLookups);
+            } else {
+                options.model.fetch(selectedKeys)
+                    .done(function (data) {
+                        filteredLookups = _.filter(data, function(lookup) {
+                            return options.isMatch(params.data.term, lookup);
+                        });
+                        deferred.resolve(filteredLookups);
+                    })
+                    .fail(function () {
+                        deferred.reject();
+                    });
+            }
+            deferred.done(success).fail(failure);
 
-			return deferred.promise();
-		},
-		processResults: function (resp) {
-			var result = _.map(resp, function (lookup) {
-				return options.formatData(lookup);
-			});
-			return {results: result};
-		}
-	};
+            return deferred.promise();
+        },
+        processResults: function (resp) {
+            var result = _.map(resp, function (lookup) {
+                return options.formatData(lookup);
+            });
+            return {results: result};
+        }
+    };
 
-	el.select2($.extend(defaultOptions, select2Options));
+    el.select2($.extend(defaultOptions, select2Options));
 };

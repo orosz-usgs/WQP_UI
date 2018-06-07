@@ -58,10 +58,10 @@ def identify_data_files(directory_names, exclusions=('.gitignore', '.webassets-c
     """
     directory_data_files = []
     for directory_name in directory_names:
-        for root, dirs, files in os.walk(directory_name):
+        for root, _, files in os.walk(directory_name):
             pathnames = [os.path.abspath(os.path.join(root, filename))
                          for filename in files if not any(ex in os.path.join(root, filename) for ex in exclusions)]
-            if len(pathnames) > 0:
+            if pathnames:
                 data_file_element = (root, pathnames)
                 directory_data_files.append(data_file_element)
     return directory_data_files
@@ -87,5 +87,4 @@ setup(name='usgs_flask_wqp_ui',
       py_modules=['config'],
       # include static files in the distributable
       # they will appear in the root of the virtualenv upon dist installation
-      data_files=data_files
-      )
+      data_files=data_files)

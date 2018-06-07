@@ -41,13 +41,12 @@ def load_sites_into_cache_async(self, provider_id):
                                           port=redis_config['port'],
                                           db=db_number,
                                           password=redis_config.get('password'))
-        resp = session.get(search_endpoint, params={"providers": provider_id,
-                                                    "mimeType": "tsv",
-                                                    "sorted": "no",
-                                                    "uripage": "yes"
-                                                    },
-                           stream=True
-                           )
+        resp = session.get(search_endpoint,
+                           params={'providers': provider_id,
+                                   'mimeType': 'tsv',
+                                   'sorted': 'no',
+                                   'uripage': 'yes'},
+                           stream=True)
         resp_log_msg = create_request_resp_log_msg(resp)
         logger.debug(resp_log_msg)
         result['status'] = resp.status_code
@@ -67,8 +66,7 @@ def load_sites_into_cache_async(self, provider_id):
                                   meta={'current': current_count,
                                         'errors': result['error_count'],
                                         'total': result['total_count'],
-                                        'status': 'working'}
-                                  )
+                                        'status': 'working'})
         else:
             logger.warning('No data to cache.')
         # Add loading stats to cache
@@ -112,7 +110,7 @@ def rollover_logs():
     if logging_directory is not None:
         logdir_contents = list_directory_contents(logging_directory)
         logfiles = [content_file for content_file in logdir_contents if content_file.endswith('.log')]
-        if len(logfiles) > 0:
+        if logfiles:
             yesterday = (datetime.datetime.now() - datetime.timedelta(days=1)).strftime('%Y-%m-%d')
             # name to archive as "wqp-YYYY-MM-DD"
             archive_name = '{0}-{1}.tar.gz'.format(__name__.split('.')[0], yesterday)
@@ -125,10 +123,10 @@ def rollover_logs():
 def add_periodic(sender, **kwargs):
     """
     Schedule tasks in celery beat.
-    
-    :param sender: 
-    :param kwargs: 
-    :return: 
+
+    :param sender:
+    :param kwargs:
+    :return:
     """
     if app.config.get('LOGGING_DIRECTORY') is not None:
         delete_time = app.config.get('LOG_DELETE_TIME', (1, 0))
@@ -136,8 +134,6 @@ def add_periodic(sender, **kwargs):
         del_hour, del_minute = delete_time
         roll_hour, roll_minute = rollover_time
         sender.add_periodic_task(schedule=crontab(hour=del_hour, minute=del_minute),
-                                 sig=delete_old_log_archives.s()
-                                 )
+                                 sig=delete_old_log_archives.s())
         sender.add_periodic_task(schedule=crontab(hour=roll_hour, minute=roll_minute),
-                                 sig=rollover_logs.s()
-                                 )
+                                 sig=rollover_logs.s())

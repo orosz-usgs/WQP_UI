@@ -5,52 +5,52 @@
 {% block nav_bar %}{% endblock %}
 
 {% block page_content %}
-	<div class="page-content">
-		<h1>NWIS Public SRS Names:
-			{% if status_code == 200 %}
-				{{ content.maxLastRevDate }}
-			{% else %}
-				Unavailable
-			{% endif %}
-		</h1>
-		<div id="csv-download"><a href="{{ config.PUBLIC_SRSNAMES_ENDPOINT }}?mimeType=csv">Download as csv</a></div>
-		<table id="public-srsnames-table" class="table table-striped table-bordered">
-			<thead>
-				<tr>
-					<th>Parm Code</th>
-					<th>Description</th>
-					<th>Characterstic Name</th>
-					<th>Measure Unit</th>
-					<th>Result Sample Fraction</th>
-					<th>Result Temp Basis</th>
-					<th>Result Statistical Basis</th>
-					<th>Result Time Basis</th>
-					<th>Result Weight Basis</th>
-					<th>Result Particle Size Basis</th>
-					<th>Last Revision Date</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for data in content.pcodes %}
-					<tr>
-						<th>{{ data.parm_cd}}</th>
-						<th>{{ data.description}}</th>
-						<th>{{ data.characteristicname}}</th>
-						<th>{{ data.measureunitcode}}</th>
-						<th>{{ data.resultsamplefraction}}</th>
-						<th>{{ data.resulttemperaturebasis}}</th>
-						<th>{{ data.resultstatisticalbasis}}</th>
-						<th>{{ data.resulttimebasis}}</th>
-						<th>{{ data.resultweightbasis}}</th>
-						<th>{{ data.resultparticlesizebasis}}</th>
-						<th>{{ data.last_rev_dt}}</th>
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-	</div>
+    <div class="page-content">
+        <h1>NWIS Public SRS Names:
+            {% if status_code == 200 %}
+                {{ content.maxLastRevDate }}
+            {% else %}
+                Unavailable
+            {% endif %}
+        </h1>
+        <div id="csv-download"><a href="{{ config.PUBLIC_SRSNAMES_ENDPOINT }}?mimeType=csv">Download as csv</a></div>
+        <table id="public-srsnames-table" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Parm Code</th>
+                    <th>Description</th>
+                    <th>Characterstic Name</th>
+                    <th>Measure Unit</th>
+                    <th>Result Sample Fraction</th>
+                    <th>Result Temp Basis</th>
+                    <th>Result Statistical Basis</th>
+                    <th>Result Time Basis</th>
+                    <th>Result Weight Basis</th>
+                    <th>Result Particle Size Basis</th>
+                    <th>Last Revision Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in content.pcodes %}
+                    <tr>
+                        <th>{{ data.parm_cd}}</th>
+                        <th>{{ data.description}}</th>
+                        <th>{{ data.characteristicname}}</th>
+                        <th>{{ data.measureunitcode}}</th>
+                        <th>{{ data.resultsamplefraction}}</th>
+                        <th>{{ data.resulttemperaturebasis}}</th>
+                        <th>{{ data.resultstatisticalbasis}}</th>
+                        <th>{{ data.resulttimebasis}}</th>
+                        <th>{{ data.resultweightbasis}}</th>
+                        <th>{{ data.resultparticlesizebasis}}</th>
+                        <th>{{ data.last_rev_dt}}</th>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}
 
 {% block body_page_script %}
-	{% include "partials/hide_non_usgs_epa_logos.html" %}
+    {% include "partials/hide_non_usgs_epa_logos.html" %}
 {% endblock %}

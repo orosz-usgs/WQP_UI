@@ -1,18 +1,16 @@
-import pickle
 from unittest import TestCase, mock
 
 import arrow
 import requests_mock
 
 from .. import app
-from ..utils import get_site_key
 from ..tasks import load_sites_into_cache_async
 
 class LoadSitesIntoCacheAsync(TestCase):
 
 
     @mock.patch('wqp.tasks.arrow.utcnow')
-    def setUp(self,  mock_utcnow):
+    def setUp(self, mock_utcnow):
         self.search_endpoint = 'mock://wqpfake.com/search/'
         self.redis_config = {
             'host' : 'localhost',
@@ -40,11 +38,12 @@ class LoadSitesIntoCacheAsync(TestCase):
     @mock.patch('wqp.tasks.load_sites_into_cache_async.update_state')
     @requests_mock.Mocker()
     def test_good_search_request(self, mock_redis_set, mock_celery, m):
-        m.get(self.search_endpoint + 'Station/search/',
-              headers={'Total-Site-Count' : '1'},
-              text='OrganizationIdentifier\tOrganizationFormalName\tMonitoringLocationIdentifier\tCountryCode\tStateCode\tCountyCode\tProviderName\n' +
-                'USGS-AZ\tUSGS Arizona Water Science Center\tAZ003-365613111285900\tUS\t04\t005\tNWIS'
-              )
+        m.get(
+            self.search_endpoint + 'Station/search/',
+            headers={'Total-Site-Count' : '1'},
+            text=('OrganizationIdentifier\tOrganizationFormalName\tMonitoringLocationIdentifier\tCountryCode\tStateCode\tCountyCode\tProviderName\n' +
+                  'USGS-AZ\tUSGS Arizona Water Science Center\tAZ003-365613111285900\tUS\t04\t005\tNWIS')
+        )
         result = load_sites_into_cache_async('NWIS')
 
         self.assertTrue(mock_redis_set.called)
@@ -56,11 +55,12 @@ class LoadSitesIntoCacheAsync(TestCase):
     @mock.patch('wqp.tasks.load_sites_into_cache_async.update_state')
     @requests_mock.Mocker()
     def test_error_search_request(self, mock_redis_set, mock_celery, m):
-        m.get(self.search_endpoint + 'Station/search/',
-              headers={'Total-Site-Count': '1'},
-              text='OrganizationIdentifier\tOrganizationFormalName\tMonitoringLocationIdentifier\tCountryCode\tStateCode\tCountyCode\tProviderName\n' +
-                   'USGS-AZ\tUSGS Arizona Water Science Center\tAZ003-365613111285900\tUS\t04\t005'
-              )
+        m.get(
+            self.search_endpoint + 'Station/search/',
+            headers={'Total-Site-Count': '1'},
+            text=('OrganizationIdentifier\tOrganizationFormalName\tMonitoringLocationIdentifier\tCountryCode\tStateCode\tCountyCode\tProviderName\n' +
+                  'USGS-AZ\tUSGS Arizona Water Science Center\tAZ003-365613111285900\tUS\t04\t005')
+        )
         result = load_sites_into_cache_async('NWIS')
 
         self.assertTrue(mock_redis_set.called)
