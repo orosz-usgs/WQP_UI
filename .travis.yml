@@ -22,4 +22,4 @@ script:
   - make test
 
 after_success:
-  - "[[ -n $COVERAGE ]] && make coverage"
+  - make coverage
