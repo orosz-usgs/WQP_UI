@@ -1,3 +1,6 @@
+import * as dateValidator from '../dateValidator';
+
+
 var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 
@@ -51,16 +54,16 @@ PORTAL.VIEWS.samplingParameterInputView = function(options) {
         });
         PORTAL.VIEWS.inputValidation({
             inputEl: $startDate,
-            validationFnc: PORTAL.dateValidator.validate,
+            validationFnc: dateValidator.validate,
             updateFnc: function (value) {
-                return PORTAL.dateValidator.format(value, true);
+                return dateValidator.format(value, true);
             }
         });
         PORTAL.VIEWS.inputValidation({
             inputEl: $endDate,
-            validationFnc: PORTAL.dateValidator.validate,
+            validationFnc: dateValidator.validate,
             updateFnc: function (value) {
-                return PORTAL.dateValidator.format(value, false);
+                return dateValidator.format(value, false);
             }
         });
 

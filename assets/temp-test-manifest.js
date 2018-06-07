@@ -3,7 +3,6 @@
  */
 require('./js/coverage/coverageMap');
 //require('./js/coverage/coverageOnReady');
-require('./js/dateValidator');
 require('./js/downloadFormController');
 require('./js/downloadProgressDialog');
 require('./js/generalMapping');
