@@ -3,6 +3,8 @@ import filter from 'lodash/collection/filter';
 import has from 'lodash/object/has';
 import last from 'lodash/array/last';
 
+import InputValidation from './inputValidationView';
+
 
 var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
@@ -199,7 +201,7 @@ PORTAL.VIEWS.placeInputView = function (options) {
 
             $countySelect.val(filter(counties, isInStates)).trigger('change');
         });
-        PORTAL.VIEWS.inputValidation({
+        new InputValidation({
             inputEl : $countySelect,
             validationFnc : function(val, ev) {
                 var result;

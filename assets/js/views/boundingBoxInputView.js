@@ -1,3 +1,6 @@
+import InputValidation from './inputValidationView';
+
+
 var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 
@@ -23,7 +26,7 @@ export default class BoundingBoxInputView {
         var $south = this.$container.find('#south');
         var $west = this.$container.find('#west');
         var $east = this.$container.find('#east');
-        PORTAL.VIEWS.inputValidation({
+        new InputValidation({
             inputEl: $textInputs,
             validationFnc: PORTAL.validators.realNumberValidator
         });

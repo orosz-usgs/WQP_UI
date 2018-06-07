@@ -1,5 +1,7 @@
 import log from 'loglevel';
 
+import InputValidation from './inputValidationView';
+
 
 var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
@@ -38,7 +40,7 @@ PORTAL.VIEWS.pointLocationInputView = function(options) {
      * Initializes all widgets and DOM event handlers
      */
     self.initialize = function() {
-        PORTAL.VIEWS.inputValidation({
+        new InputValidation({
             inputEl: options.$container.find('input[type="text"]'),
             validationFnc: PORTAL.validators.realNumberValidator
         });

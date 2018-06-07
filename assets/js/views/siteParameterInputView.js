@@ -1,3 +1,6 @@
+import InputValidation from './inputValidationView';
+
+
 var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 
@@ -83,12 +86,12 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
         });
 
         // Add event handlers
-        PORTAL.VIEWS.inputValidation({
+        new InputValidation({
             inputEl: $hucInput,
             validationFnc: PORTAL.hucValidator.validate,
             updateFnc: PORTAL.hucValidator.format
         });
-        PORTAL.VIEWS.inputValidation({
+        new InputValidation({
             inputEl : $minActivitiesInput,
             validationFnc : PORTAL.validators.positiveIntValidator
         });

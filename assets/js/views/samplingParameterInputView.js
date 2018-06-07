@@ -1,4 +1,5 @@
 import * as dateValidator from '../dateValidator';
+import InputValidation from './inputValidationView';
 
 
 var PORTAL = window.PORTAL = window.PORTAL || {};
@@ -48,18 +49,18 @@ PORTAL.VIEWS.samplingParameterInputView = function(options) {
         );
 
         // Add input validations and reformatting handlers
-        PORTAL.VIEWS.inputValidation({
+        new InputValidation({
             inputEl : $minresults,
             validationFnc : PORTAL.validators.positiveIntValidator
         });
-        PORTAL.VIEWS.inputValidation({
+        new InputValidation({
             inputEl: $startDate,
             validationFnc: dateValidator.validate,
             updateFnc: function (value) {
                 return dateValidator.format(value, true);
             }
         });
-        PORTAL.VIEWS.inputValidation({
+        new InputValidation({
             inputEl: $endDate,
             validationFnc: dateValidator.validate,
             updateFnc: function (value) {
