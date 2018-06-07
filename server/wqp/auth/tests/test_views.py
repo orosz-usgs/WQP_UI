@@ -6,6 +6,7 @@ from flask import session
 from ... import app
 from ..views import authentication_required_when_configured
 
+
 class TestAuthenticationRequiredWhenConfigured(TestCase):
     mock_time = mock.Mock()
     mock_time.return_value = 1234567
@@ -21,7 +22,7 @@ class TestAuthenticationRequiredWhenConfigured(TestCase):
 
         view_mock.assert_called()
 
-    def test_authentication_no_expire_time(self):
+    def test_authentication_no_expiration_time(self):
         view_mock = mock.Mock()
         app.config['WATERAUTH_AUTHORIZE_URL'] = 'https://fake.auth.com'
         with app.test_request_context('/mock'):
@@ -30,7 +31,7 @@ class TestAuthenticationRequiredWhenConfigured(TestCase):
         view_mock.assert_not_called()
 
     @mock.patch('time.time', mock_time)
-    def test_authentication_expire_time_earlier_than_current_time(self):
+    def test_authentication_expiration_time_earlier_than_current_time(self):
         view_mock = mock.Mock()
         app.config['WATERAUTH_AUTHORIZE_URL'] = 'https://fake.auth.com'
         with app.test_request_context('/mock'):
@@ -40,7 +41,7 @@ class TestAuthenticationRequiredWhenConfigured(TestCase):
         view_mock.assert_not_called()
 
     @mock.patch('time.time', mock_time)
-    def test_authentication_expire_time_later_than_current_time(self):
+    def test_authentication_expiration_time_later_than_current_time(self):
         view_mock = mock.Mock()
         app.config['WATERAUTH_AUTHORIZE_URL'] = 'https://fake.auth.com'
         with app.test_request_context('/mock'):

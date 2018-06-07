@@ -6,7 +6,7 @@ from flask import redirect, url_for, Blueprint, session, request
 
 from .. import app, oauth
 
-auth_blueprint = Blueprint('auth', __name__) # pylint: disable=C0103
+auth_blueprint = Blueprint('auth', __name__)  # pylint: disable=C0103
 
 
 def authentication_required_when_configured(f):

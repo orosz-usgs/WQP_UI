@@ -66,7 +66,7 @@ celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
 
 # Enable authentication if configured.
-oauth = None
+oauth = None  # pylint: disable=C0103
 if app.config.get('WATERAUTH_AUTHORIZE_URL'):
     oauth = OAuth(app)
     oauth.register('waterauth',
@@ -107,10 +107,10 @@ def log_after(response):
 session = Session()
 session.verify = app.config.get('VERIFY_CERT', True)
 
-from .auth.views import auth_blueprint # pylint: disable=C0413
-from .portal_ui.views import portal_ui # pylint: disable=C0413
-from .sites.views import sites_blueprint # pylint: disable=C0413
-from .wqx.views import wqx # pylint: disable=C0413
+from .auth.views import auth_blueprint  # pylint: disable=C0413
+from .portal_ui.views import portal_ui  # pylint: disable=C0413
+from .sites.views import sites_blueprint  # pylint: disable=C0413
+from .wqx.views import wqx  # pylint: disable=C0413
 from . import filters  # pylint: disable=C0413
 
 app.register_blueprint(auth_blueprint, url_prefix='')
