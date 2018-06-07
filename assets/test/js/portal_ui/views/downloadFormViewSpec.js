@@ -5,12 +5,13 @@ import DataDetailsView from '../../../../js/views/dataDetailsView';
 import DownloadFormView from '../../../../js/views/downloadFormView';
 import NldiView from '../../../../js/views/nldiView';
 import PlaceInputView from '../../../../js/views/placeInputView';
+import PointLocationInputView from '../../../../js/views/pointLocationInputView';
 
 
 describe('Tests for DownloadFormView', function() {
     var testView;
 
-    var pointLocationMock, siteParameterMock, samplingParametersMock;
+    var siteParameterMock, samplingParametersMock;
     var fetchProvidersDeferred, fetchCountsDeferred;
     var placeInitDeferred, siteParameterInitDeferred, samplingInitDeferred, bioSamplingInitDeferred;
     var mockDownloadDialog;
@@ -39,9 +40,6 @@ describe('Tests for DownloadFormView', function() {
         samplingInitDeferred = $.Deferred();
         bioSamplingInitDeferred = $.Deferred();
 
-        pointLocationMock  = {
-            initialize : jasmine.createSpy('pointLocationInitialize')
-        };
         siteParameterMock  = {
             initialize : jasmine.createSpy('siteParameterInitialize').and.returnValue(siteParameterInitDeferred)
         };
@@ -49,7 +47,7 @@ describe('Tests for DownloadFormView', function() {
             initialize : jasmine.createSpy('samplingParametersInitialize').and.returnValue(samplingInitDeferred)
         };
         spyOn(PlaceInputView.prototype, 'initialize').and.returnValue(placeInitDeferred);
-        spyOn(PORTAL.VIEWS, 'pointLocationInputView').and.returnValue(pointLocationMock);
+        spyOn(PointLocationInputView.prototype, 'initialize');
         spyOn(BoundingBoxInputView.prototype, 'initialize');
         spyOn(PORTAL.VIEWS, 'siteParameterInputView').and.returnValue(siteParameterMock);
         spyOn(PORTAL.VIEWS, 'samplingParameterInputView').and.returnValue(samplingParametersMock);
@@ -88,7 +86,7 @@ describe('Tests for DownloadFormView', function() {
     it('Expects that the sub views are initialized when the view is initialized', function() {
         testView.initialize();
         expect(PlaceInputView.prototype.initialize).toHaveBeenCalled();
-        expect(pointLocationMock.initialize).toHaveBeenCalled();
+        expect(PointLocationInputView.prototype.initialize).toHaveBeenCalled();
         expect(BoundingBoxInputView.prototype.initialize).toHaveBeenCalled();
         expect(siteParameterMock.initialize).toHaveBeenCalled();
         expect(samplingParametersMock.initialize).toHaveBeenCalled();

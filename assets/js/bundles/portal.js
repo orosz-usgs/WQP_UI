@@ -14,7 +14,6 @@ require('../providers.js');
 require('../portalModels.js');
 require('../nldiModel.js');
 require('../views/siteMapView.js');
-require('../views/pointLocationInputView.js');
 require('../views/siteParameterInputView.js');
 require('../views/samplingParameterInputView.js');
 require('../views/showAPIView.js');

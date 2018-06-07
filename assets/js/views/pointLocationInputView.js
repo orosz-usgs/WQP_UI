@@ -13,11 +13,13 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
  * @returns
  *      @func initialize;
  */
-PORTAL.VIEWS.pointLocationInputView = function(options) {
-    var self  = {};
+export default class PointLocationInputView {
+    constructor({$container}) {
+        this.$container = $container;
+    }
 
     // GeoLocation easter egg.
-    var updateMyLocation = function($lat, $lon) {
+    updateMyLocation($lat, $lon) {
         var updateInputs = function(position) {
             $lat.val(position.coords.latitude);
             $lon.val(position.coords.longitude);
@@ -34,29 +36,27 @@ PORTAL.VIEWS.pointLocationInputView = function(options) {
         });
 
         return false;
-    };
+    }
 
     /*
      * Initializes all widgets and DOM event handlers
      */
-    self.initialize = function() {
+    initialize() {
         new InputValidation({
-            inputEl: options.$container.find('input[type="text"]'),
+            inputEl: this.$container.find('input[type="text"]'),
             validationFnc: PORTAL.validators.realNumberValidator
         });
 
         // only give user the option if their browser supports geolocation
         if (window.navigator.geolocation && window.navigator.geolocation.getCurrentPosition) {
-            var $useMyLocationDiv = options.$container.find('#useMyLocation');
-            var $lat = options.$container.find('#lat');
-            var $lon = options.$container.find('#long');
+            var $useMyLocationDiv = this.$container.find('#useMyLocation');
+            var $lat = this.$container.find('#lat');
+            var $lon = this.$container.find('#long');
 
             $useMyLocationDiv.html('<button class="btn btn-info" type="button">Use my location</button>');
             $useMyLocationDiv.find('button').click(function () {
-                updateMyLocation($lat, $lon);
+                this.updateMyLocation($lat, $lon);
             });
         }
-    };
-
-    return self;
-};
+    }
+}

@@ -4,6 +4,7 @@ import BoundingBoxInputView from './boundingBoxInputView';
 import DataDetailsView from './dataDetailsView';
 import NldiView from './nldiView';
 import PlaceInputView from './placeInputView';
+import PointLocationInputView from './pointLocationInputView';
 
 
 var PORTAL = window.PORTAL = window.PORTAL || {};
@@ -66,7 +67,7 @@ export default class DownloadFormView {
      */
     initialize() {
         var placeInputView = this.getPlaceInputView();
-        var pointLocationInputView = PORTAL.VIEWS.pointLocationInputView({
+        var pointLocationInputView = new PointLocationInputView({
             $container : this.$form.find('#point-location')
         });
         var boundingBoxInputView = new BoundingBoxInputView({
