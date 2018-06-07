@@ -112,6 +112,10 @@ PORTAL.UTILS = function() {
 	};
 
 
+	/*
+	 * @param String name
+	 * @return String containing the cookie value for name or the empty string if none exists.
+	 */
 	self.getCookie = function(cname) {
 		var name = cname + "=";
 		var decodedCookie = decodeURIComponent(document.cookie);
@@ -128,6 +132,9 @@ PORTAL.UTILS = function() {
 		return "";
 	};
 
+	/*
+	 * @return {Object} containing the headers that should be used for service calls to WQP services.
+	 */
 	self.getHeaders = function() {
 		var accessToken = PORTAL.UTILS.getCookie('access_token');
 		var headers = {};
