@@ -1,3 +1,6 @@
+import NldiNavPopupView from '../../../../js/views/nldiNavPopupView';
+
+
 describe('PORTAL.VIEWS.nldiNavViewPopupView', function() {
     var $testDiv;
     var testMap;
@@ -12,7 +15,7 @@ describe('PORTAL.VIEWS.nldiNavViewPopupView', function() {
         });
 
         navHandlerSpy = jasmine.createSpy('navHandlerSpy');
-        PORTAL.VIEWS.nldiNavPopupView.createPopup(testMap, {}, L.latLng(43.0, -100.0), navHandlerSpy);
+        new NldiNavPopupView(testMap, {}, L.latLng(43.0, -100.0), navHandlerSpy);
     });
 
     afterEach(function() {

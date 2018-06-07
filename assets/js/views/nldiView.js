@@ -1,6 +1,8 @@
 import log from 'loglevel';
 import partial from 'lodash/function/partial';
 
+import NldiNavPopupView from './nldiNavPopupView';
+
 
 var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
@@ -202,7 +204,7 @@ PORTAL.VIEWS.nldiView  = function(options) {
                     PORTAL.MODELS.nldiModel.setData('featureId',
                         result.features[0].properties[featureIdProperty]);
 
-                    PORTAL.VIEWS.nldiNavPopupView.createPopup(map, result.features[0], ev.latlng, navHandler);
+                    new NldiNavPopupView(map, result.features[0], ev.latlng, navHandler);
                 }
             })
             .fail(function () {

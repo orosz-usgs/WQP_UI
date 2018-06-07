@@ -20,7 +20,6 @@ require('../views/siteParameterInputView.js');
 require('../views/samplingParameterInputView.js');
 require('../views/showAPIView.js');
 require('../views/nldiView.js');
-require('../views/nldiNavPopupView.js');
 require('../portalHelp.js');
 require('../stateFIPS.js');
 require('../downloadProgressDialog.js');

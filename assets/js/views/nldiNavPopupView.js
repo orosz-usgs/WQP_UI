@@ -4,9 +4,7 @@ import popupTemplate from '../hbTemplates/nldiFeatureSourcePopup.hbs';
 var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 
-PORTAL.VIEWS.nldiNavPopupView = (function() {
-    var self = {};
-
+export default class NldiNavPopupView {
     /*
      * Creates a nldi navigation popup onMap. The popup will contain information about the feature
      * and two inputs, a select and distance. When these are changed the PORTAL.MODELS.nldiModel is updated.
@@ -17,7 +15,7 @@ PORTAL.VIEWS.nldiNavPopupView = (function() {
      * @param {L.LatLng} atLatLng - The popup will be opened at this lat lng
      * #param {Function} navHandler - This event handler will get called when the Navigate button is clicked in the popup.
      */
-    self.createPopup = function(onMap, feature, atLatLng, navHandler) {
+    constructor(onMap, feature, atLatLng, navHandler) {
         var nldiData = PORTAL.MODELS.nldiModel.getData();
         var context = {
             nwisSite: nldiData.featureSource.id === 'nwissite',
@@ -44,7 +42,5 @@ PORTAL.VIEWS.nldiNavPopupView = (function() {
             PORTAL.MODELS.nldiModel.setData('distance', $(ev.target).val());
         });
         $navButton.click(navHandler);
-    };
-
-    return self;
-})();
+    }
+}
