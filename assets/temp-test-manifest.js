@@ -30,7 +30,6 @@ require('./js/queryService');
 require('./js/siteMap');
 require('./js/stateFIPS');
 require('./js/utils');
-require('./js/views/arcGisOnlineHelpView');
 require('./js/views/biologicalSamplingInputView');
 require('./js/views/boundingBoxInputView');
 require('./js/views/dataDetailsView');
