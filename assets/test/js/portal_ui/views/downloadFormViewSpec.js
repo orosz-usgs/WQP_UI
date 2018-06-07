@@ -1,10 +1,11 @@
 import downloadFormController from '../../../../js/downloadFormController';
+import BiologicalSamplingInputView from '../../../../js/views/biologicalSamplingInputView';
 
 
 describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
     var testView;
 
-    var placeMock, boundingBoxMock, pointLocationMock, siteParameterMock, samplingParametersMock, biologicalSamplingMock,
+    var placeMock, boundingBoxMock, pointLocationMock, siteParameterMock, samplingParametersMock,
         dataDetailsMock, nldiMock;
     var fetchProvidersDeferred, fetchCountsDeferred;
     var placeInitDeferred, siteParameterInitDeferred, samplingInitDeferred, bioSamplingInitDeferred;
@@ -49,9 +50,6 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
         samplingParametersMock  = {
             initialize : jasmine.createSpy('samplingParametersInitialize').and.returnValue(samplingInitDeferred)
         };
-        biologicalSamplingMock  = {
-            initialize : jasmine.createSpy('biologicalSamplingInitialize').and.returnValue(bioSamplingInitDeferred)
-        };
         dataDetailsMock  = {
             initialize : jasmine.createSpy('dataDetailsInitialize'),
             getMimeType : function() {
@@ -69,7 +67,7 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
         spyOn(PORTAL.VIEWS, 'boundingBoxInputView').and.returnValue(boundingBoxMock);
         spyOn(PORTAL.VIEWS, 'siteParameterInputView').and.returnValue(siteParameterMock);
         spyOn(PORTAL.VIEWS, 'samplingParameterInputView').and.returnValue(samplingParametersMock);
-        spyOn(PORTAL.VIEWS, 'biologicalSamplingInputView').and.returnValue(biologicalSamplingMock);
+        spyOn(BiologicalSamplingInputView.prototype, 'initialize').and.returnValue(bioSamplingInitDeferred);
         spyOn(PORTAL.VIEWS, 'dataDetailsView').and.returnValue(dataDetailsMock);
         spyOn(PORTAL.VIEWS, 'nldiView').and.returnValue(nldiMock);
 
@@ -106,7 +104,7 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
         expect(boundingBoxMock.initialize).toHaveBeenCalled();
         expect(siteParameterMock.initialize).toHaveBeenCalled();
         expect(samplingParametersMock.initialize).toHaveBeenCalled();
-        expect(biologicalSamplingMock.initialize).toHaveBeenCalled();
+        expect(BiologicalSamplingInputView.prototype.initialize).toHaveBeenCalled();
         expect(dataDetailsMock.initialize).toHaveBeenCalled();
         expect(nldiMock.initialize).toHaveBeenCalled();
     });

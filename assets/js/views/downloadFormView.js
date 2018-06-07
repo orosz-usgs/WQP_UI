@@ -1,4 +1,5 @@
 import downloadFormController from '../downloadFormController';
+import BiologicalSamplingInputView from './biologicalSamplingInputView';
 
 
 var PORTAL = window.PORTAL = window.PORTAL || {};
@@ -80,7 +81,7 @@ PORTAL.VIEWS.downloadFormView = function(options) {
             sampleMediaModel : PORTAL.MODELS.cachedCodes({codes: 'samplemedia'}),
             characteristicTypeModel : PORTAL.MODELS.cachedCodes({codes: 'characteristictype'})
         });
-        var biologicalSamplingInputView = PORTAL.VIEWS.biologicalSamplingInputView({
+        var biologicalSamplingInputViewInstance = new BiologicalSamplingInputView({
             $container : options.$form.find('#biological'),
             assemblageModel : PORTAL.MODELS.cachedCodes({codes: 'assemblage'})
         });
@@ -102,7 +103,7 @@ PORTAL.VIEWS.downloadFormView = function(options) {
         var initPlaceInputView = placeInputView.initialize();
         var initSiteParameterInputView = siteParameterInputView.initialize();
         var initSamplingParametersInputView = samplingParametersInputView.initialize();
-        var initBiologicalSamplingInputInputView = biologicalSamplingInputView.initialize();
+        var initBiologicalSamplingInputInputView = biologicalSamplingInputViewInstance.initialize();
         var initComplete = $.when(
             initBiologicalSamplingInputInputView,
             initializeProviders,

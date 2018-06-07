@@ -1,4 +1,7 @@
-describe('Tests for PORTAL.VIEWS.biologicalSamplingInputView', function() {
+import BiologicalSamplingInputView from '../../../../js/views/biologicalSamplingInputView';
+
+
+describe('Tests for biologicalSamplingInputView', function() {
     var testView;
     var $testDiv;
     var $assemblage, $taxonomicName;
@@ -24,7 +27,7 @@ describe('Tests for PORTAL.VIEWS.biologicalSamplingInputView', function() {
         spyOn(PORTAL.VIEWS, 'createPagedCodeSelect');
         spyOn(PORTAL.VIEWS, 'createCodeSelect');
 
-        testView = PORTAL.VIEWS.biologicalSamplingInputView({
+        testView = new BiologicalSamplingInputView({
             $container: $testDiv,
             assemblageModel : assemblageModel
         });

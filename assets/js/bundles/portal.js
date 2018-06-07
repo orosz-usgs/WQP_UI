@@ -20,7 +20,6 @@ require('../views/pointLocationInputView.js');
 require('../views/boundingBoxInputView.js');
 require('../views/siteParameterInputView.js');
 require('../views/samplingParameterInputView.js');
-require('../views/biologicalSamplingInputView.js');
 require('../views/dataDetailsView.js');
 require('../views/showAPIView.js');
 require('../views/nldiView.js');
