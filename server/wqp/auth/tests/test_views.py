@@ -3,8 +3,8 @@ from unittest import TestCase, mock
 
 from flask import session
 
-from .. import app
-from ..auth.views import authentication_required_when_configured
+from ... import app
+from ..views import authentication_required_when_configured
 
 class TestAuthenticationRequiredWhenConfigured(TestCase):
     mock_time = mock.Mock()
