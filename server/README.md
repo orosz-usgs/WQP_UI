@@ -29,6 +29,14 @@ To run the Flask development server at
 env/bin/python run.py
 ```
 
+If you want to run with https (which is needed if authorization is enabled), you will need to create a self-signed
+certificate and private key. See https://blog.miguelgrinberg.com/post/running-your-flask-application-over-https for
+reference. Run the developement server as follows (
+
+```bash
+env/bin/python run.py --certfile path/to/certfile --privatekeyfile part/to/private/key/file
+```
+
 ## Running tests
 
 The Python tests can be run as follows:
