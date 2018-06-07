@@ -4,14 +4,13 @@ from unittest import TestCase, mock
 from flask import session
 
 from .. import app
-from ..auth.views import auth, authentication_required_when_configured
+from ..auth.views import authentication_required_when_configured
 
 class TestAuthenticationRequiredWhenConfigured(TestCase):
     mock_time = mock.Mock()
     mock_time.return_value = 1234567
 
     def setUp(self):
-        app.register_blueprint(auth)
         self.app_client = app.test_client()
 
     def test_no_authentication(self):
@@ -49,3 +48,7 @@ class TestAuthenticationRequiredWhenConfigured(TestCase):
             authentication_required_when_configured(view_mock)()
 
         view_mock.assert_called()
+
+
+
+

@@ -6,7 +6,7 @@ from flask import redirect, url_for, Blueprint, session, request
 
 from .. import app, oauth
 
-auth = Blueprint('auth', __name__)
+auth_blueprint = Blueprint('auth', __name__)
 
 
 def authentication_required_when_configured(f):
@@ -25,14 +25,14 @@ def authentication_required_when_configured(f):
     return decorated_function
 
 
-@auth.route('/login')
+@auth_blueprint.route('/login')
 def login():
     redirect_uri = '{0}?next={1}'.format(url_for('auth.authorize', _external=True), request.args.get('next'))
 
     return oauth.waterauth.authorize_redirect(redirect_uri)
 
 
-@auth.route('/authorize')
+@auth_blueprint.route('/authorize')
 def authorize():
     token = oauth.waterauth.authorize_access_token(verify=False)
 

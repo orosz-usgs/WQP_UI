@@ -114,9 +114,15 @@
 		 *		@reject: Returns the jqXHR response.
 		 */
 		fetchSitesInBBox : function(bounds) {
+			var accessToken = PORTAL.UTILS.getCookie('access_token');
+			var headers = {};
+			if (accessToken) {
+				headers.Authorization = 'Bearer ' + accessToken;
+			}
 			return $.ajax({
 				url : L.WQPSitesLayer.getWfsGetFeatureUrl(this.queryParamArray) + '&bbox=' + WQP.L.Util.toBBoxString(bounds),
-				method : 'GET'
+				method : 'GET',
+				headers: headers
 			});
 		}
 	});
