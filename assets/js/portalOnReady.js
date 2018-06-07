@@ -1,6 +1,7 @@
 import log from 'loglevel';
 
 import ArcGisOnlineHelpView from './views/arcGisOnlineHelpView';
+import DownloadFormView from './views/downloadFormView';
 
 
 var PORTAL = window.PORTAL = window.PORTAL || {};
@@ -17,7 +18,7 @@ $(document).ready(function () {
 
     // Create sub views
     var downloadProgressDialog = PORTAL.VIEWS.downloadProgressDialog($('#download-status-dialog'));
-    var downloadFormView = PORTAL.VIEWS.downloadFormView({
+    var downloadFormView = new DownloadFormView({
         $form : $form,
         downloadProgressDialog : downloadProgressDialog
     });

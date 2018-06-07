@@ -2,9 +2,10 @@ import downloadFormController from '../../../../js/downloadFormController';
 import BiologicalSamplingInputView from '../../../../js/views/biologicalSamplingInputView';
 import BoundingBoxInputView from '../../../../js/views/boundingBoxInputView';
 import DataDetailsView from '../../../../js/views/dataDetailsView';
+import DownloadFormView from '../../../../js/views/downloadFormView';
 
 
-describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
+describe('Tests for DownloadFormView', function() {
     var testView;
 
     var placeMock, pointLocationMock, siteParameterMock, samplingParametersMock, nldiMock;
@@ -78,7 +79,7 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
         spyOn(window, 'alert');
         spyOn(window._gaq, 'push');
 
-        testView = PORTAL.VIEWS.downloadFormView({
+        testView = new DownloadFormView({
             $form : $('form'),
             downloadProgressDialog : mockDownloadDialog
         });

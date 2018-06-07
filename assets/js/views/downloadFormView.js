@@ -16,15 +16,17 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
  *      @func initialize
  *      @func getQueryParams
  */
-
-PORTAL.VIEWS.downloadFormView = function(options) {
-    var self = {};
+export default class DownloadFormView {
+    constructor({$form, downloadProgressDialog}) {
+        this.$form = $form;
+        this.downloadProgressDialog = downloadProgressDialog;
+    }
 
     /*
      * @return {PORTAL.VIEWS.placeInputView}
      */
-    var getPlaceInputView = function() {
-    // Initialize Place inputs
+    getPlaceInputView() {
+        // Initialize Place inputs
         var getCountryFromState = function(id) {
             return id ? id.split(':')[0] : '';
         };
@@ -52,7 +54,7 @@ PORTAL.VIEWS.downloadFormView = function(options) {
             stateModel : stateModel,
             countyModel : countyModel
         })  ;
-    };
+    }
 
     /*
      * Initializes the form and sets up the DOM event handlers
@@ -60,44 +62,44 @@ PORTAL.VIEWS.downloadFormView = function(options) {
      *      @resolve - if all initialization including successful fetches are complete
      *      @reject - if any fetches failed.
      */
-    self.initialize = function() {
-        var placeInputView = getPlaceInputView();
+    initialize() {
+        var placeInputView = this.getPlaceInputView();
         var pointLocationInputView = PORTAL.VIEWS.pointLocationInputView({
-            $container : options.$form.find('#point-location')
+            $container : this.$form.find('#point-location')
         });
         var boundingBoxInputView = new BoundingBoxInputView({
-            $container : options.$form.find('#bounding-box')
+            $container : this.$form.find('#bounding-box')
         });
         var siteParameterInputView = PORTAL.VIEWS.siteParameterInputView({
-            $container : options.$form.find('#site-params'),
+            $container : this.$form.find('#site-params'),
             siteTypeModel : PORTAL.MODELS.cachedCodes({codes : 'sitetype'}),
             organizationModel : PORTAL.MODELS.cachedCodes({codes : 'organization'})
         });
         var nldiView = PORTAL.VIEWS.nldiView({
             insetMapDivId : 'nldi-inset-map',
             mapDivId : 'nldi-map',
-            $inputContainer : options.$form.find('#nldi-param-container')
+            $inputContainer : this.$form.find('#nldi-param-container')
         });
         var samplingParametersInputView = PORTAL.VIEWS.samplingParameterInputView({
-            $container : options.$form.find('#sampling'),
+            $container : this.$form.find('#sampling'),
             sampleMediaModel : PORTAL.MODELS.cachedCodes({codes: 'samplemedia'}),
             characteristicTypeModel : PORTAL.MODELS.cachedCodes({codes: 'characteristictype'})
         });
         var biologicalSamplingInputViewInstance = new BiologicalSamplingInputView({
-            $container : options.$form.find('#biological'),
+            $container : this.$form.find('#biological'),
             assemblageModel : PORTAL.MODELS.cachedCodes({codes: 'assemblage'})
         });
         var dataDetailsView = new DataDetailsView({
-            $container : options.$form.find('#download-box-input-div'),
+            $container : this.$form.find('#download-box-input-div'),
             updateResultTypeAction : function(resultType) {
-                options.$form.attr('action', PORTAL.queryServices.getFormUrl(resultType));
+                this.$form.attr('action', PORTAL.queryServices.getFormUrl(resultType));
             }
         });
 
         // fetch the providers and initialize the providers select
         var initializeProviders = PORTAL.MODELS.providers.fetch()
-            .done(function () {
-                PORTAL.VIEWS.createStaticSelect2(options.$form.find('#providers-select'),
+            .done(() => {
+                PORTAL.VIEWS.createStaticSelect2(this.$form.find('#providers-select'),
                     PORTAL.MODELS.providers.getIds());
             });
 
@@ -119,16 +121,16 @@ PORTAL.VIEWS.downloadFormView = function(options) {
         if (Config.NLDI_ENABLED) {
             nldiView.initialize();
         } else {
-            options.$form.find('#nldi-container').hide();
-            options.$form.find('#nldi-inset-map').hide();
-            options.$form.find('#nldi-map').hide();
+            this.$form.find('#nldi-container').hide();
+            this.$form.find('#nldi-inset-map').hide();
+            this.$form.find('#nldi-map').hide();
         }
 
         // Create help popovers which close when you click anywhere else other than another popover trigger.
         $('html').click(function () {
             $('.popover-help').popover('hide');
         });
-        options.$form.find('.popover-help').each(function () {
+        this.$form.find('.popover-help').each(function () {
             var options = $.extend({}, PORTAL.MODELS.help[$(this).data('help')], {
                 html: true,
                 trigger: 'manual'
@@ -140,22 +142,22 @@ PORTAL.VIEWS.downloadFormView = function(options) {
         });
 
         // Add Click handler for form show/hide/button
-        options.$form.find('.panel-heading .show-hide-toggle').click(function () {
+        this.$form.find('.panel-heading .show-hide-toggle').click(function () {
             PORTAL.UTILS.toggleShowHideSections($(this), $(this).parents('.panel').find('.panel-body'));
         });
 
-        options.$form.find('.subpanel-heading .show-hide-toggle').click(function () {
+        this.$form.find('.subpanel-heading .show-hide-toggle').click(function () {
             PORTAL.UTILS.toggleShowHideSections($(this), $(this).parents('.subpanel').find('.subpanel-body'));
         });
 
         // Set up the Download button
-        options.$form.find('#main-button').click(function (event) {
+        this.$form.find('#main-button').click((event) => {
             var fileFormat = dataDetailsView.getMimeType();
             var resultType = dataDetailsView.getResultType();
-            var queryParamArray = self.getQueryParamArray();
+            var queryParamArray = this.getQueryParamArray();
             var queryString = decodeURIComponent(PORTAL.UTILS.getQueryString(queryParamArray));
 
-            var startDownload = function(totalCount) {
+            var startDownload = (totalCount) => {
                 window._gaq.push([
                     '_trackEvent',
                     'Portal Page',
@@ -163,12 +165,12 @@ PORTAL.VIEWS.downloadFormView = function(options) {
                     queryString,
                     parseInt(totalCount)]);
 
-                options.$form.submit();
+                this.$form.submit();
             };
 
             event.preventDefault();
 
-            if (!downloadFormController.validateDownloadForm(options.$form)) {
+            if (!downloadFormController.validateDownloadForm(this.$form)) {
                 return;
             }
 
@@ -179,26 +181,26 @@ PORTAL.VIEWS.downloadFormView = function(options) {
                 queryString
             ]);
 
-            options.downloadProgressDialog.show('download');
+            this.downloadProgressDialog.show('download');
             PORTAL.queryServices.fetchQueryCounts(resultType, queryParamArray, PORTAL.MODELS.providers.getIds())
-                .done(function(counts) {
-                    options.downloadProgressDialog.updateProgress(counts, resultType, fileFormat, startDownload);
+                .done((counts) => {
+                    this.downloadProgressDialog.updateProgress(counts, resultType, fileFormat, startDownload);
                 })
-                .fail(function(message) {
-                    options.downloadProgressDialog.cancelProgress(message);
+                .fail((message) => {
+                    this.downloadProgressDialog.cancelProgress(message);
                 });
         });
 
         return initComplete;
-    };
+    }
 
     /*
      * Validate the form and return true if it is valid, false otherwise
      * @return {Boolean}
      */
-    self.validateDownloadForm = function() {
-        return downloadFormController.validateDownloadForm(options.$form);
-    };
+    validateDownloadForm() {
+        return downloadFormController.validateDownloadForm(this.$form);
+    }
 
     /*
      * Return an array of Objects with name, value, and data-multiple attributes representing the current state
@@ -207,9 +209,9 @@ PORTAL.VIEWS.downloadFormView = function(options) {
      * it will be a string.
      * @return {Array of Objects with name, value, and multiple properties}
      */
-    self.getQueryParamArray = function () {
+    getQueryParamArray() {
         // Need to eliminate form parameters within the mapping-div
-        var $formInputs = options.$form.find(':input').not('#mapping-div :input, #nldi-inset-map :input, #nldi-map :input');
+        var $formInputs = this.$form.find(':input').not('#mapping-div :input, #nldi-inset-map :input, #nldi-map :input');
 
         var result = [];
         $formInputs.each(function() {
@@ -227,7 +229,5 @@ PORTAL.VIEWS.downloadFormView = function(options) {
             }
         });
         return result;
-    };
-
-    return self;
-};
+    }
+}

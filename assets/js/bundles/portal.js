@@ -13,7 +13,6 @@ require('../portalOnReady.js');
 require('../providers.js');
 require('../portalModels.js');
 require('../nldiModel.js');
-require('../views/downloadFormView.js');
 require('../views/siteMapView.js');
 require('../views/placeInputView.js');
 require('../views/pointLocationInputView.js');
