@@ -1,6 +1,6 @@
 import log from 'loglevel';
 
-import arcGisOnlineHelpView from './views/arcGisOnlineHelpView';
+import ArcGisOnlineHelpView from './views/arcGisOnlineHelpView';
 
 
 var PORTAL = window.PORTAL = window.PORTAL || {};
@@ -31,7 +31,7 @@ $(document).ready(function () {
         getQueryParamArray : downloadFormView.getQueryParamArray
     });
 
-    var arcGisOnlineHelpViewInstance = arcGisOnlineHelpView({
+    var arcGisOnlineHelpView = new ArcGisOnlineHelpView({
         $button : $('#show-arcgis-online-help'),
         $dialog : $('#arcgis-online-dialog'),
         $siteMapViewContainer : $('#mapping-div'),
@@ -42,7 +42,7 @@ $(document).ready(function () {
     var initDownloadForm = downloadFormView.initialize();
     siteMapView.initialize();
     showAPIView.initialize();
-    arcGisOnlineHelpViewInstance.initialize();
+    arcGisOnlineHelpView.initialize();
 
     initDownloadForm.fail(function() {
         $('#service-error-dialog').modal('show');

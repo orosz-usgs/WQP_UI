@@ -1,6 +1,9 @@
 import dialogBodyTemplate from '../hbTemplates/arcGisHelp.hbs';
 
 
+const HEADER = 'Using WQP Maps with ArcGIS online';
+
+
 /*
  * @param {Jquery element} $button - Arc GIS help button
  * @param {Jquery element} $dialog - Arc GIS help dialog
@@ -8,11 +11,13 @@ import dialogBodyTemplate from '../hbTemplates/arcGisHelp.hbs';
  * @param {Function} getQueryParamArray -
  *      @returns {Array of Objects with name and value properties} - The form's current query parameters.
  */
-export default function (options) {
-
-    var self = {};
-
-    var HEADER = 'Using WQP Maps with ArcGIS online';
+export default class ArcGisOnlineHelpView {
+    constructor({$button, $dialog, $siteMapViewContainer, getQueryParamArray}) {
+        this.$button = $button;
+        this.$dialog = $dialog;
+        this.$siteMapViewContainer = $siteMapViewContainer;
+        this.getQueryParamArray = getQueryParamArray;
+    }
 
     /*
      * Shows the Arc GIS help dialog with the content reflecting the parameters.
@@ -20,31 +25,29 @@ export default function (options) {
      *      will be in the dialog
      * @param {String} selectedSld - The SLD string that will be used to in the dialog
      */
-    var showDialog = function (queryParams, selectedSld) {
+    showDialog(queryParams, selectedSld) {
 
         var hbContext = {
             searchParams: L.WQPSitesLayer.getSearchParams(queryParams),
             style: selectedSld
         };
 
-        options.$dialog.find('.modal-body').html(dialogBodyTemplate(hbContext));
-        options.$dialog.modal('show');
-    };
+        this.$dialog.find('.modal-body').html(dialogBodyTemplate(hbContext));
+        this.$dialog.modal('show');
+    }
 
     /*
      * Initialize the Arc GIS online view, initializing content and setting up event handlers as needed.
      */
-    self.initialize = function () {
-        var $sldSelect = options.$siteMapViewContainer.find('#sld-select-input');
+    initialize() {
+        var $sldSelect = this.$siteMapViewContainer.find('#sld-select-input');
 
-        options.$dialog.find('.modal-header h4').html(HEADER);
+        this.$dialog.find('.modal-header h4').html(HEADER);
 
-        options.$button.click(function () {
-            var queryParamArray = options.getQueryParamArray();
+        this.$button.click(() => {
+            var queryParamArray = this.getQueryParamArray();
             var selectedSld = $sldSelect.val();
-            showDialog(queryParamArray, selectedSld);
+            this.showDialog(queryParamArray, selectedSld);
         });
-    };
-
-    return self;
+    }
 }
