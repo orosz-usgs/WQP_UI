@@ -17,7 +17,6 @@ require('../views/downloadFormView.js');
 require('../views/siteMapView.js');
 require('../views/placeInputView.js');
 require('../views/pointLocationInputView.js');
-require('../views/boundingBoxInputView.js');
 require('../views/siteParameterInputView.js');
 require('../views/samplingParameterInputView.js');
 require('../views/dataDetailsView.js');

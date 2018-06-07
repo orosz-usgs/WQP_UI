@@ -1,5 +1,6 @@
 import downloadFormController from '../downloadFormController';
 import BiologicalSamplingInputView from './biologicalSamplingInputView';
+import BoundingBoxInputView from './boundingBoxInputView';
 
 
 var PORTAL = window.PORTAL = window.PORTAL || {};
@@ -63,7 +64,7 @@ PORTAL.VIEWS.downloadFormView = function(options) {
         var pointLocationInputView = PORTAL.VIEWS.pointLocationInputView({
             $container : options.$form.find('#point-location')
         });
-        var boundingBoxInputView = PORTAL.VIEWS.boundingBoxInputView({
+        var boundingBoxInputView = new BoundingBoxInputView({
             $container : options.$form.find('#bounding-box')
         });
         var siteParameterInputView = PORTAL.VIEWS.siteParameterInputView({

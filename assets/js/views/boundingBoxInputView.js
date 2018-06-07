@@ -8,26 +8,28 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
  * @returns {Object}
  *      @func initialize;
  */
+export default class BoundingBoxInputView {
 
-PORTAL.VIEWS.boundingBoxInputView = function(options) {
-    var self = {};
+    constructor({$container}) {
+        this.$container = $container;
+    }
 
     /*
      * Initializes all input widgets and DOM event handlers
      */
-    self.initialize = function() {
-        var $textInputs = options.$container.find('input[type="text"]');
-        var $north = options.$container.find('#north');
-        var $south = options.$container.find('#south');
-        var $west = options.$container.find('#west');
-        var $east = options.$container.find('#east');
+    initialize() {
+        var $textInputs = this.$container.find('input[type="text"]');
+        var $north = this.$container.find('#north');
+        var $south = this.$container.find('#south');
+        var $west = this.$container.find('#west');
+        var $east = this.$container.find('#east');
         PORTAL.VIEWS.inputValidation({
             inputEl: $textInputs,
             validationFnc: PORTAL.validators.realNumberValidator
         });
 
         //Update bBox hidden input if any of the bounding box text fields are updated
-        $textInputs.change(function () {
+        $textInputs.change(() => {
             var north = $north.val();
             var south = $south.val();
             var east = $east.val();
@@ -36,9 +38,7 @@ PORTAL.VIEWS.boundingBoxInputView = function(options) {
             if (north && south && east && west) {
                 bboxVal = west + ',' + south + ',' + east + ',' + north;
             }
-            options.$container.find('input[name="bBox"]').val(bboxVal);
+            this.$container.find('input[name="bBox"]').val(bboxVal);
         });
-    };
-
-    return self;
-};
+    }
+}
