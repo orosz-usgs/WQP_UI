@@ -178,8 +178,9 @@ def public_srsnames():
 def wqp_download_proxy(op):
     target_url = app.config['SEARCH_QUERY_ENDPOINT'] + op + '/search'
     headers = {}
-    if app.config['UI_THEME'] == 'usgs':
-        headers['Authorization'] =  'Bearer {0}'.format(request.cookies.get('access_token'))
+    access_token = request.cookies.get('access_token')
+    if access_token:
+        headers['Authorization'] =  'Bearer {0}'.format(access_token)
     resp = session.post(target_url, data=request.form, headers=headers, verify=proxy_cert_verification)
     return make_response(resp.content, resp.status_code, resp.headers.items())
 
