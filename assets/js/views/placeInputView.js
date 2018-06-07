@@ -9,21 +9,27 @@ import InputValidation from './inputValidationView';
 var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 
+const USA = 'US';
+
 /*
  * Initializes and manages the Place inputs
  * @param {Object} options
  *      @prop {Jquery element} $container - div containing the place inputs.
- *      @prop {PORTAL.MODELS.cachedCodes} countryModel
- *      @prop {PORTAL.MODELS.codesWithKeys} statesModel
+ *      @prop {PORTAL.MODELS.cachedCodes} countyModel
+ *      @prop {PORTAL.MODELS.codesWithKeys} stateModel
  *      @prop {PORTAL.MODELS.codesWithKeys} countryModel
  * @returns {Object}
  *      @func initialize
  */
-PORTAL.VIEWS.placeInputView = function (options) {
-    var self = {};
-    var USA = 'US';
+export default class PlaceInputView {
+    constructor({$container, countyModel, stateModel, countryModel}) {
+        this.$container = $container;
+        this.countyModel = countyModel;
+        this.stateModel = stateModel;
+        this.countryModel = countryModel;
+    }
 
-    var initializeCountrySelect = function($select, model) {
+    initializeCountrySelect($select, model) {
         var isMatch = function (searchTerm, lookup) {
             var termMatcher;
 
@@ -50,9 +56,9 @@ PORTAL.VIEWS.placeInputView = function (options) {
         PORTAL.VIEWS.createCodeSelect($select, spec, {
             templateSelection: templateSelection
         });
-    };
+    }
 
-    var initializeStateSelect = function($select, model, getCountryKeys) {
+    initializeStateSelect($select, model, getCountryKeys) {
         var isMatch = function (searchTerm, lookup) {
             var termMatcher;
             var codes;
@@ -92,9 +98,9 @@ PORTAL.VIEWS.placeInputView = function (options) {
         PORTAL.VIEWS.createCascadedCodeSelect($select, spec, {
             templateSelection: templateSelection
         });
-    };
+    }
 
-    var initializeCountySelect = function($select, model, getStateKeys) {
+    initializeCountySelect($select, model, getStateKeys) {
         var isMatch = function(searchTerm, lookup) {
             var termMatcher;
             var county;
@@ -133,7 +139,7 @@ PORTAL.VIEWS.placeInputView = function (options) {
         PORTAL.VIEWS.createCascadedCodeSelect($select, countySpec, {
             templateSelection: templateSelection
         });
-    };
+    }
 
     /*
      * Initialize the select2's and add event handlers
@@ -141,18 +147,18 @@ PORTAL.VIEWS.placeInputView = function (options) {
      *      @resolve - When all models have been fetched successfully
      *      @reject - If any of the fetches failed.
      */
-    self.initialize = function() {
+    initialize() {
         //Initialize select els
-        var $countrySelect = options.$container.find('#countrycode');
-        var $stateSelect = options.$container.find('#statecode');
-        var $countySelect = options.$container.find('#countycode');
+        var $countrySelect = this.$container.find('#countrycode');
+        var $stateSelect = this.$container.find('#statecode');
+        var $countySelect = this.$container.find('#countycode');
 
         //Fetch initial model data
-        var fetchCountries = options.countryModel.fetch();
-        var fetchUSStates = options.stateModel.fetch([USA]);
+        var fetchCountries = this.countryModel.fetch();
+        var fetchUSStates = this.stateModel.fetch([USA]);
         var fetchComplete = $.when(fetchCountries, fetchUSStates);
 
-        options.stateModel.fetch([USA]);
+        this.stateModel.fetch([USA]);
 
         var getCountryKeys = function () {
             var results = $countrySelect.val();
@@ -165,14 +171,14 @@ PORTAL.VIEWS.placeInputView = function (options) {
         };
 
         //Initialize select2s
-        fetchCountries.done(function() {
-            initializeCountrySelect($countrySelect, options.countryModel);
+        fetchCountries.done(() => {
+            this.initializeCountrySelect($countrySelect, this.countryModel);
         });
         // Don't need to wait for stateModel to finish loading as the model is checked before display to see if
         // more data needs to be loaded
-        initializeStateSelect($stateSelect, options.stateModel, getCountryKeys);
+        this.initializeStateSelect($stateSelect, this.stateModel, getCountryKeys);
 
-        initializeCountySelect($countySelect, options.countyModel, getStateKeys);
+        this.initializeCountySelect($countySelect, this.countyModel, getStateKeys);
 
         //Add event handlers
         $countrySelect.on('change', function (ev) {
@@ -222,9 +228,5 @@ PORTAL.VIEWS.placeInputView = function (options) {
         });
 
         return fetchComplete;
-    };
-
-    return self;
-};
-
-
+    }
+}

@@ -1,3 +1,6 @@
+import PlaceInputView from '../../../../js/views/placeInputView';
+
+
 describe('Test PORTAL.VIEWS.placeInputView', function () {
     var testView;
 
@@ -57,7 +60,7 @@ describe('Test PORTAL.VIEWS.placeInputView', function () {
         initializeSuccessSpy = jasmine.createSpy('initializeSuccessSpy');
         initializeFailSpy = jasmine.createSpy('initializeFailSpy');
 
-        testView = PORTAL.VIEWS.placeInputView({
+        testView = new PlaceInputView({
             $container : $('#test-div'),
             countryModel : countryModel,
             stateModel : stateModel,

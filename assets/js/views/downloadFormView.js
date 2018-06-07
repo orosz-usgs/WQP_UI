@@ -3,6 +3,7 @@ import BiologicalSamplingInputView from './biologicalSamplingInputView';
 import BoundingBoxInputView from './boundingBoxInputView';
 import DataDetailsView from './dataDetailsView';
 import NldiView from './nldiView';
+import PlaceInputView from './placeInputView';
 
 
 var PORTAL = window.PORTAL = window.PORTAL || {};
@@ -24,7 +25,7 @@ export default class DownloadFormView {
     }
 
     /*
-     * @return {PORTAL.VIEWS.placeInputView}
+     * @return {PlaceInputView}
      */
     getPlaceInputView() {
         // Initialize Place inputs
@@ -49,12 +50,12 @@ export default class DownloadFormView {
             keyParameter : 'statecode',
             parseKey : getStateFromCounty
         });
-        return PORTAL.VIEWS.placeInputView({
+        return new PlaceInputView({
             $container : $('#place'),
             countryModel : countryModel,
             stateModel : stateModel,
             countyModel : countyModel
-        })  ;
+        });
     }
 
     /*
