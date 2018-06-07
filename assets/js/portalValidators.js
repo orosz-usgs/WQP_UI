@@ -1,7 +1,6 @@
 var PORTAL = window.PORTAL = window.PORTAL || {};
 
 PORTAL.validators = function () {
-    "use strict";
     var that = {};
 
     that.siteIdValidator = function (value) {
@@ -13,12 +12,10 @@ PORTAL.validators = function () {
                     isValid: false,
                     errorMessage: 'Format is AGENCY-STATION. NWIS sites should use "USGS" as the AGENCY.'
                 };
-            }
-            else {
+            } else {
                 return {isValid: true};
             }
-        }
-        else {
+        } else {
             return {isValid: true};
         }
     };
@@ -30,30 +27,26 @@ PORTAL.validators = function () {
                     isValid: false,
                     errorMessage: 'Enter a floating point number.'
                 };
-            }
-            else {
+            } else {
                 return {isValid: true};
             }
-        }
-        else {
+        } else {
             return {isValid: true};
         }
     };
 
     that.positiveIntValidator = function(value) {
         var result;
-        var MSG = "Enter a positive number";
+        var MSG = 'Enter a positive number';
         if (!value) {
-            result = {
-                isValid : true,
-            };
-        }
-        else if (value.match(/^[1-9]\d*$/g)) {
             result = {
                 isValid : true
             };
-        }
-        else {
+        } else if (value.match(/^[1-9]\d*$/g)) {
+            result = {
+                isValid : true
+            };
+        } else {
             result = {
                 isValid : false,
                 errorMessage : MSG
@@ -64,5 +57,3 @@ PORTAL.validators = function () {
 
     return that;
 }();
-
-

@@ -23,7 +23,7 @@ class TestSitesViewTestCase(TestCase):
     def test_valid_parameters(self, m, mock_gen):
         m.head('https://waterservices.usgs.gov/nwis/site/')
         with app.test_request_context('/sites/?statecd=WI&siteType=ST'):
-            response = nwis_sites()
+            nwis_sites()
         mock_gen.assert_called_with([{'format': 'rdb', 'statecd': [u'WI'], 'siteType': ['ST']}])
 
     @mock.patch('wqp.sites.views.site_geojson_generator')
@@ -39,7 +39,7 @@ class TestSitesViewTestCase(TestCase):
     def test_three_huc2(self, m, mock_gen):
         m.head('https://waterservices.usgs.gov/nwis/site/')
         with app.test_request_context('/sites/?huc=01,02,03'):
-            response = nwis_sites()
+            nwis_sites()
 
         gen_calls = mock_gen.call_args[0][0]
         self.assertEqual(len(gen_calls), 3)
@@ -51,9 +51,9 @@ class TestSitesViewTestCase(TestCase):
     @mock.patch('wqp.sites.views.site_geojson_generator')
     def test_ten_huc8(self, m, mock_gen):
         m.head('https://waterservices.usgs.gov/nwis/site/')
-        with app.test_request_context(
-                '/sites/?huc=01010101,01010102,01010103,01010104,01010105,01010106,01010107,01010108,01010109,01010110'):
-            response = nwis_sites()
+        url = '/sites/?huc=01010101,01010102,01010103,01010104,01010105,01010106,01010107,01010108,01010109,01010110'
+        with app.test_request_context(url):
+            nwis_sites()
 
         gen_calls = mock_gen.call_args[0][0]
         self.assertEqual(len(gen_calls), 1)
@@ -63,21 +63,21 @@ class TestSitesViewTestCase(TestCase):
     @mock.patch('wqp.sites.views.site_geojson_generator')
     def test_eleven_huc8(self, m, mock_gen):
         m.head('https://waterservices.usgs.gov/nwis/site/')
-        with app.test_request_context(
-                '/sites/?huc=01010101,01010102,01010103,01010104,01010105,01010106,01010107,01010108,01010109,01010110,02020202'):
-            response = nwis_sites()
+        url = '/sites/?huc=01010101,01010102,01010103,01010104,01010105,01010106,01010107,01010108,01010109,01010110,02020202'
+        with app.test_request_context(url):
+            nwis_sites()
 
         gen_calls = mock_gen.call_args[0][0]
         self.assertEqual(len(gen_calls), 2)
         self.assertTrue([param for param in gen_calls
-                        if param['huc'] == ['01010101,01010102,01010103,01010104,01010105,01010106,01010107,01010108,01010109,01010110']])
+                         if param['huc'] == ['01010101,01010102,01010103,01010104,01010105,01010106,01010107,01010108,01010109,01010110']])
         self.assertTrue([param for param in gen_calls if param['huc'] == ['02020202']])
 
     @mock.patch('wqp.sites.views.site_geojson_generator')
     def test_no_required_args(self, m, mock_gen):
         m.head('https://waterservices.usgs.gov/nwis/site/')
         with app.test_request_context('/sites/?siteType=ST'):
-            response = nwis_sites()
+            nwis_sites()
 
         gen_calls = mock_gen.call_args[0][0]
         self.assertEqual(len(gen_calls), len(US_HUC2s))

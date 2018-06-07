@@ -11,24 +11,25 @@ from requests import Session
 
 from .flask_swagger_blueprint import get_swaggerui_blueprint
 
+
 __version__ = '5.7.0dev'
 
 
-def _create_log_handler(log_directory=None, log_name=__name__):
+def _create_log_handler(log_dir=None, log_name=__name__):
     """
     Create a handler object. The logs will be streamed
     to stdout if a logfile is not specified using a StreamHandler.
     If a logfile is specified, a handler will be created so logs
     will be written to the file.
 
-    :param str log_directory: optional path of a directory where logs can be written to
+    :param str log_dir: optional path of a directory where logs can be written to
     :return: a handler
     :rtype: logging.Handler
 
     """
-    if log_directory is not None:
+    if log_dir is not None:
         log_file = '{}.log'.format(log_name)
-        log_path = os.path.join(log_directory, log_file)
+        log_path = os.path.join(log_dir, log_file)
         log_handler = logging.FileHandler(log_path)
     else:
         log_handler = logging.StreamHandler(sys.stdout)
@@ -47,11 +48,10 @@ def _custom_celery_handler(logger=None, *args, **kwargs):
     :param logging.logger logger: Logger object provided by a celery signal
 
     """
-    log_directory = app.config.get('LOGGING_DIRECTORY')
+    log_dir = app.config.get('LOGGING_DIRECTORY')
     log_level = app.config.get('LOGGING_LEVEL')
-    celery_handler = _create_log_handler(log_directory,
-                                         log_name=Celery.__name__.lower() + '_tasks'
-                                         )
+    celery_handler = _create_log_handler(log_dir,
+                                         log_name=Celery.__name__.lower() + '_tasks')
     logger.setLevel(log_level)
     logger.addHandler(celery_handler)
 
@@ -93,14 +93,14 @@ if app.config.get('LOGGING_ENABLED'):
 def log_before():
     url = request.path
     method = request.method
-    app.logger.debug('Request of type {method} made to {url}'.format(method=method, url=url))
+    app.logger.debug('Request of type %s made to %s', method, url)
 
 
 @app.after_request
 def log_after(response):
     resp_status = response.status
     resp_headers = response.headers
-    app.logger.debug('Response: {0}, {1}'.format(resp_status, resp_headers))
+    app.logger.debug('Response: %s, %s', resp_status, resp_headers)
     return response
 
 
@@ -132,7 +132,6 @@ def spec():
                                    "title": "WQP Sites service"
                                }
                            }))
-
 
 # Create swagger ui blueprint
 SWAGGER_URL = '/apidocs'

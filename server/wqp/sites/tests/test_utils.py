@@ -87,7 +87,7 @@ class TestSiteGeneratorTestCase(TestCase):
         site1 = '\t'.join(['USGS', '00336840', 'BISCUIT BROOK NTN SITE', 'AT', '41.9942589', '-74.5032094',
                            'S', 'NAD83', '2087', '4.3', 'NAVD88', '02040104'])
         site2 = '\t'.join(['USGS', '01300450', 'BEAVER SWAMP BROOK AT RYE NY	ST', '40.98', '-73.7019444',
-                          'S', 'NAD83',	'49', '4.3', 'NAVD88', '02030102'])
+                           'S', 'NAD83',	'49', '4.3', 'NAVD88', '02030102'])
         site_lines = ['#comment1', '#comment2', '#comment3', self.HEADERS, 'line to skip', site1, site2]
         iter_lines = (line for line in site_lines)
 
@@ -132,7 +132,7 @@ class TestSiteGeoJsonGeneatorTestCase(TestCase):
                            'S', 'NAD83', '49', '4.3', 'NAVD88', '02030102'])
 
         m.get('https://waterservices.usgs.gov/nwis/site/', [{'text': '\n'.join([headers, 'skip this line', site1])},
-                                                           {'text': '\n'.join([headers, 'skip this line', site2])}])
+                                                            {'text': '\n'.join([headers, 'skip this line', site2])}])
 
         result = tuple(site_geojson_generator([{'hucCd': '02'}, {'hucCd': '01'}]))
         feature = geojson_loads(''.join(result).replace('\n', ''))
