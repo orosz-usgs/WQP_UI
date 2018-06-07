@@ -111,7 +111,6 @@ PORTAL.UTILS = function() {
 		}
 	};
 
-
 	/*
 	 * @param String name
 	 * @return String containing the cookie value for name or the empty string if none exists.
