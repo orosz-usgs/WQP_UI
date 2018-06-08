@@ -8,6 +8,7 @@ import PointLocationInputView from './pointLocationInputView';
 import { StaticSelect2 } from './portalViews';
 import SamplingParameterInputView from './samplingParameterInputView';
 import SiteParameterInputView from './siteParameterInputView';
+import portalHelp from '../portalHelp';
 
 
 /*
@@ -134,7 +135,7 @@ export default class DownloadFormView {
             $('.popover-help').popover('hide');
         });
         this.$form.find('.popover-help').each(function () {
-            var options = $.extend({}, PORTAL.MODELS.help[$(this).data('help')], {
+            var options = $.extend({}, portalHelp[$(this).data('help')], {
                 html: true,
                 trigger: 'manual'
             });
