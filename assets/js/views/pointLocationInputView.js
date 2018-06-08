@@ -54,7 +54,7 @@ export default class PointLocationInputView {
             var $lon = this.$container.find('#long');
 
             $useMyLocationDiv.html('<button class="btn btn-info" type="button">Use my location</button>');
-            $useMyLocationDiv.find('button').click(function () {
+            $useMyLocationDiv.find('button').click(() => {
                 this.updateMyLocation($lat, $lon);
             });
         }
