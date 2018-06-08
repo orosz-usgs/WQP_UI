@@ -5,6 +5,7 @@ import last from 'lodash/array/last';
 
 import InputValidation from './inputValidationView';
 import { CodeSelect, CascadedCodeSelect } from './portalViews';
+import { getPostalCode } from '../stateFIPS';
 
 
 var PORTAL = window.PORTAL = window.PORTAL || {};
@@ -68,7 +69,7 @@ export default class PlaceInputView {
                 codes = lookup.id.split(':');
                 return termMatcher.test(lookup.id) ||
                     termMatcher.test(lookup.desc) ||
-                    termMatcher.test(window.stateFIPS.getPostalCode(codes[1]));
+                    termMatcher.test(getPostalCode(codes[1]));
             } else {
                 return true;
             }
@@ -86,7 +87,7 @@ export default class PlaceInputView {
                 codes = selectData.id.split(':');
 
                 if (codes[0] === USA) {
-                    result = codes[0] + ':' + window.stateFIPS.getPostalCode(codes[1]);
+                    result = codes[0] + ':' + getPostalCode(codes[1]);
                 } else {
                     result = selectData.id;
                 }
@@ -127,7 +128,7 @@ export default class PlaceInputView {
                 codes = selectData.id.split(':');
 
                 if (codes[0] === 'US') {
-                    result = codes[0] + ':' + window.stateFIPS.getPostalCode(codes[1]) + ':' + codes[2];
+                    result = codes[0] + ':' + getPostalCode(codes[1]) + ':' + codes[2];
                 } else {
                     result = selectData.id;
                 }

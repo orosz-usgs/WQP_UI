@@ -7,5 +7,4 @@ require('../leafletLayers/WQPSitesLayer.js');
 require('../leafletUtils.js');
 require('../siteMap.js');
 require('../portalOnReady.js');
-require('../stateFIPS.js');
 require('../downloadFormController.js');
