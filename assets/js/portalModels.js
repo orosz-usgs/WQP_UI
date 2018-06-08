@@ -9,27 +9,29 @@ PORTAL.MODELS = PORTAL.MODELS || {};
  *      @prop {Function} getAll
  *     @prop {Function} getLookups
  */
-PORTAL.MODELS.cachedCodes = function (options) {
+PORTAL.MODELS.cachedCodes = function(options) {
     var self = {};
 
     var cachedData = [];
+    var HEADERS = PORTAL.UTILS.getHeaders();
 
     /*
      * @return {$.Promise}.
      *      @resolve {Array of Objects} - Each object has String properties: id, desc, and providers.
      *      @reject {String} - the error message.
      */
-    self.fetch = function () {
+    self.fetch = function() {
         var fetchDeferred = $.Deferred();
         var URL = Config.CODES_ENDPOINT + '/' + options.codes;
         $.ajax({
             url: URL,
             type: 'GET',
+            headers: HEADERS,
             data: {
                 mimeType: 'json'
             },
-            success: function (data) {
-                cachedData = _.map(data.codes, function (code) {
+            success: function(data) {
+                cachedData = _.map(data.codes, function(code) {
                     return {
                         id: code.value,
                         desc: _.has(code, 'desc') && code.desc ? code.desc : code.value, // defaults to value
@@ -40,7 +42,7 @@ PORTAL.MODELS.cachedCodes = function (options) {
                 fetchDeferred.resolve(cachedData);
             },
 
-            error: function (jqXHR, textStatus, error) {
+            error: function(jqXHR, textStatus, error) {
                 log.error('Can\'t  get ' + options.codes + ', Server error: ' + error);
                 fetchDeferred.reject(error);
             }
@@ -52,7 +54,7 @@ PORTAL.MODELS.cachedCodes = function (options) {
      * @returns {Array of Objects} - Each object has String properties: id, desc, and providers. This is the
      * same object that is returned with the last successfully fetch.
      */
-    self.getAll = function () {
+    self.getAll = function() {
         return cachedData;
     };
 
@@ -60,8 +62,8 @@ PORTAL.MODELS.cachedCodes = function (options) {
      * @returns {Object} - The object in the model with the matching id property. Object contains id, desc, and providers
      *      properties. Return undefined if no object exists
      */
-    self.getLookup = function (id) {
-        return _.find(cachedData, function (lookup) {
+    self.getLookup = function(id) {
+        return _.find(cachedData, function(lookup) {
             return lookup.id === id;
         });
     };
@@ -81,10 +83,11 @@ PORTAL.MODELS.cachedCodes = function (options) {
  *          @prop {Function} getDataForKey
  *
  */
-PORTAL.MODELS.codesWithKeys = function (options) {
+PORTAL.MODELS.codesWithKeys = function(options) {
     var self = {};
 
     var cachedData = [];
+    var HEADERS = PORTAL.UTILS.getHeaders();
     /* Each object where each value is an array of objects with properties id, desc, and providers */
 
     /*
@@ -93,7 +96,7 @@ PORTAL.MODELS.codesWithKeys = function (options) {
      *      @resolve {Array of Objects} - each object is a lookup with id, desc, and providers properties.
      *      @reject {String} descriptive error string
      */
-    self.fetch = function (keys) {
+    self.fetch = function(keys) {
         var fetchDeferred = $.Deferred();
         var URL = Config.CODES_ENDPOINT + '/' + options.codes;
 
@@ -103,15 +106,16 @@ PORTAL.MODELS.codesWithKeys = function (options) {
             data: {
                 mimeType: 'json'
             },
-            success: function (data) {
-                cachedData = _.map(keys, function (key) {
+            headers: HEADERS,
+            success: function(data) {
+                cachedData = _.map(keys, function(key) {
                     return {
                         key: key,
                         data: _.chain(data.codes)
-                            .filter(function (lookup) {
+                            .filter(function(lookup) {
                                 return options.parseKey(lookup.value) === key;
                             })
-                            .map(function (lookup) {
+                            .map(function(lookup) {
                                 return {
                                     id: lookup.value,
                                     desc: _.has(lookup, 'desc') && lookup.desc ? lookup.desc : lookup.value, // defaults to value
@@ -123,7 +127,7 @@ PORTAL.MODELS.codesWithKeys = function (options) {
                 });
                 fetchDeferred.resolve(self.getAll());
             },
-            error: function (jqXHR, textStatus, error) {
+            error: function(jqXHR, textStatus, error) {
                 log.error('Can\'t get ' + options.codes + ', Server error: ' + error);
                 fetchDeferred.reject(error);
             }
@@ -135,14 +139,14 @@ PORTAL.MODELS.codesWithKeys = function (options) {
     /*
      * @return {Array of Object} - Object has id, desc, and providers string properties
      */
-    self.getAll = function () {
+    self.getAll = function() {
         return _.chain(cachedData).pluck('data').flatten().value();
     };
 
     /*
      * @return {Array of String}
      */
-    self.getAllKeys = function () {
+    self.getAllKeys = function() {
         return _.pluck(cachedData, 'key');
     };
 
@@ -150,8 +154,8 @@ PORTAL.MODELS.codesWithKeys = function (options) {
      * @return {Array of Objects} - Each object is a lookup with id, desc, and providers properties. Return undefined if that key
      * is not in the model
      */
-    self.getDataForKey = function (key) {
-        var isMatch = function (object) {
+    self.getDataForKey = function(key) {
+        var isMatch = function(object) {
             return object.key === key;
         };
         var lookup = _.find(cachedData, isMatch);

@@ -52,6 +52,11 @@ module.exports = function (config) {
             'temp-test-manifest.js': ['rollup']
         },
 
+        // test results reporter to use
+        // possible values: 'dots', 'progress'
+        // available reporters: https://npmjs.org/browse/keyword/karma-reporter
+        reporters: ['progress'],
+
         rollupPreprocessor: {
             /**
              * This is just a normal Rollup config object,
@@ -59,11 +64,6 @@ module.exports = function (config) {
              */
             ...require('./rollup.config')[0]
         },
-
-        // test results reporter to use
-        // possible values: 'dots', 'progress'
-        // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-        reporters: ['progress'],
 
         // web server port
         port: 9876,
@@ -99,8 +99,7 @@ module.exports = function (config) {
     /**
      * Produce a code coverage report
      */
-    //if (!process.argv.some(isDebug)) {
-    if (false) {
+    if (!process.argv.some(isDebug)) {
         karmaConfig = {
             ...karmaConfig,
             rollupPreprocessor: {

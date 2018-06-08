@@ -1,7 +1,6 @@
 var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 
-
 (function() {
     // Only show this many features in the dialog. Also use alternative download based on the bounding box of the
     // features that are shown.
@@ -12,14 +11,14 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
         'Retrieved {{features.length}} sites, only showing ' + FEATURE_LIMIT + '<br />' +
         '{{/if}}' +
         '{{#each features}}' +
-            '<br /><table>' +
-            '<tr><th>Station ID: </th><td class="details-site-id">{{properties.name}}</td></tr>' +
-            '<tr><th>Name: </th><td>{{properties.locName}}</td></tr>' +
-            '<tr><th>Type: </th><td>{{properties.type}}</td></tr>' +
-            '<tr><th>HUC 8: </th><td>{{properties.huc8}}</td></tr>' +
-            '<tr><th>Org ID: </th><td>{{properties.orgId}}</td></tr>' +
-            '<tr><th>Org Name: </th><td>{{properties.orgName}}</td></tr>' +
-            '</table>' +
+        '<br /><table>' +
+        '<tr><th>Station ID: </th><td class="details-site-id">{{properties.name}}</td></tr>' +
+        '<tr><th>Name: </th><td>{{properties.locName}}</td></tr>' +
+        '<tr><th>Type: </th><td>{{properties.type}}</td></tr>' +
+        '<tr><th>HUC 8: </th><td>{{properties.huc8}}</td></tr>' +
+        '<tr><th>Org ID: </th><td>{{properties.orgId}}</td></tr>' +
+        '<tr><th>Org Name: </th><td>{{properties.orgName}}</td></tr>' +
+        '</table>' +
         '{{/each}}'
     );
 
@@ -53,7 +52,7 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
             options.$dialog.find('#download-map-info-button').click(function() {
                 var resultType = options.$dialog.find('input[name="resultType"]:checked').val();
                 var $form = options.$dialog.find('form');
-                var url = Config.QUERY_URLS[resultType];
+                var url = PORTAL.queryServices.getFormUrl(resultType);
 
                 $form.attr('action', url);
                 window._gaq.push(['_trackEvent', 'Portal Page', 'IdentifyDownload' + resultType, url + '?' + $form.serialize()]);
@@ -93,7 +92,7 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
                 features: showOptions.features,
                 exceedsFeatureLimit: exceedsFeatureLimit,
                 boundingBox: showOptions.boundingBox,
-                queryParamArray: _.reject(showOptions.queryParamArray, function (param) {
+                queryParamArray: _.reject(showOptions.queryParamArray, function(param) {
                     return param.name === 'bBox' || param.name === 'mimeType';
                 })
             };
