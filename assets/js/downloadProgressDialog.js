@@ -1,6 +1,8 @@
 import map from 'lodash/collection/map';
 
 import countsHbTemplate from './hbTemplates/counts.hbs';
+import providers from './providers';
+
 
 // constants for the two different download statuses
 const DIALOG = {
@@ -69,7 +71,7 @@ export default class DownloadProgressDialog {
                 isActivityMetrics : resultType === 'ActivityMetric',
                 isResultDetection: resultType === 'ResultDetectionQuantitationLimit'
             };
-            context.providers = map(PORTAL.MODELS.providers.getIds(), function (provider) {
+            context.providers = map(providers.getIds(), function (provider) {
                 return {
                     id: provider,
                     counts: counts[provider]

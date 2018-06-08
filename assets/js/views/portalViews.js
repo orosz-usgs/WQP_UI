@@ -4,6 +4,9 @@ import isEqual from 'lodash/lang/isEqual';
 import map from 'lodash/collection/map';
 import filter from 'lodash/collection/filter';
 
+import providers from '../providers';
+
+
 /*
  * @param {jquery element for select} el
  * @param {Array of Strings} ids -  to be used for select options
@@ -43,7 +46,7 @@ export class PagedCodeSelect {
             this.spec.formatData = function (data) {
                 var desc = data.hasOwnProperty('desc') && data.desc ? data.desc
                     : data.value;
-                return desc + ' (' + PORTAL.MODELS.providers.formatAvailableProviders(data.providers) + ')';
+                return desc + ' (' + providers.formatAvailableProviders(data.providers) + ')';
             };
         }
         var defaultOptions = {
@@ -162,7 +165,7 @@ export class CodeSelect {
             formatData = function (data) {
                 return {
                     id: data.id,
-                    text: data.desc + ' (' + PORTAL.MODELS.providers.formatAvailableProviders(data.providers) + ')'
+                    text: data.desc + ' (' + providers.formatAvailableProviders(data.providers) + ')'
                 };
             };
         }
@@ -233,7 +236,7 @@ export class CascadedCodeSelect {
             options.formatData = function (data) {
                 return {
                     id: data.id,
-                    text: data.desc + ' (' + PORTAL.MODELS.providers.formatAvailableProviders(data.providers) + ')'
+                    text: data.desc + ' (' + providers.formatAvailableProviders(data.providers) + ')'
                 };
             };
         }

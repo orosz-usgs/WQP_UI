@@ -10,6 +10,7 @@ import SamplingParameterInputView from './samplingParameterInputView';
 import SiteParameterInputView from './siteParameterInputView';
 import portalHelp from '../portalHelp';
 import { CachedCodes, CodesWithKeys } from '../portalModels';
+import providers from '../providers';
 
 
 /*
@@ -102,10 +103,10 @@ export default class DownloadFormView {
         });
 
         // fetch the providers and initialize the providers select
-        var initializeProviders = PORTAL.MODELS.providers.fetch()
+        var initializeProviders = providers.fetch()
             .done(() => {
                 new StaticSelect2(this.$form.find('#providers-select'),
-                    PORTAL.MODELS.providers.getIds());
+                    providers.getIds());
             });
 
         // Initialize form sub view
@@ -187,7 +188,7 @@ export default class DownloadFormView {
             ]);
 
             this.downloadProgressDialog.show('download');
-            PORTAL.queryServices.fetchQueryCounts(resultType, queryParamArray, PORTAL.MODELS.providers.getIds())
+            PORTAL.queryServices.fetchQueryCounts(resultType, queryParamArray, providers.getIds())
                 .done((counts) => {
                     this.downloadProgressDialog.updateProgress(counts, resultType, fileFormat, startDownload);
                 })

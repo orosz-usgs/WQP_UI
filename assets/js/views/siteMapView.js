@@ -1,5 +1,7 @@
 import filter from 'lodash/collection/filter';
+
 import IdentifyDialog from '../identifyDialog';
+import providers from '../providers';
 
 
 var MAP_ID = 'query-results-map';
@@ -109,7 +111,7 @@ export default class SiteMapView {
 
 
                 this.downloadProgressDialog.show('map');
-                PORTAL.queryServices.fetchQueryCounts(STATION_RESULTS, queryParamArray, PORTAL.MODELS.providers.getIds())
+                PORTAL.queryServices.fetchQueryCounts(STATION_RESULTS, queryParamArray, providers.getIds())
                     .done((counts) => {
                         var fileFormat = 'xml';
                         this.downloadProgressDialog.updateProgress(counts, STATION_RESULTS, fileFormat, showMap);

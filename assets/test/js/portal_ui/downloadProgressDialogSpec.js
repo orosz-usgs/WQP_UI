@@ -1,4 +1,5 @@
 import DownloadProgressDialog from '../../../js/downloadProgressDialog';
+import providers from '../../../js/providers';
 
 
 describe('Tests for DownloadProgressDialog', function () {
@@ -44,7 +45,7 @@ describe('Tests for DownloadProgressDialog', function () {
     describe('Tests for updateProgress when dialog is for map', function () {
         var counts;
         beforeEach(function () {
-            spyOn(PORTAL.MODELS.providers, 'getIds').and.returnValue(['DS1', 'DS2']);
+            spyOn(providers, 'getIds').and.returnValue(['DS1', 'DS2']);
             thisDialog.show('map');
 
             counts = {
@@ -108,7 +109,7 @@ describe('Tests for DownloadProgressDialog', function () {
     describe('Tests for updateProgress when dialog is for download', function () {
         var counts;
         beforeEach(function () {
-            spyOn(PORTAL.MODELS.providers, 'getIds').and.returnValue(['DS1', 'DS2']);
+            spyOn(providers, 'getIds').and.returnValue(['DS1', 'DS2']);
             thisDialog.show('download');
 
             counts = {

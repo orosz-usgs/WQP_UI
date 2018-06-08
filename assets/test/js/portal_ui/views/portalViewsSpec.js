@@ -1,5 +1,6 @@
 import { CascadedCodeSelect, CodeSelect, PagedCodeSelect, StaticSelect2 } from '../../../../js/views/portalViews';
 import { CachedCodes, CodesWithKeys } from '../../../../js/portalModels';
+import providers from '../../../../js/providers';
 
 
 describe('Tests for PORTAL.VIEWS functions and objects', function () {
@@ -138,7 +139,7 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
             testSpec = {model: testModel};
 
             spyOn($.fn, 'select2');
-            spyOn(PORTAL.MODELS.providers, 'formatAvailableProviders').and.returnValue('P1');
+            spyOn(providers, 'formatAvailableProviders').and.returnValue('P1');
         });
 
         afterEach(function () {

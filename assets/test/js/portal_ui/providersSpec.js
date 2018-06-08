@@ -1,7 +1,9 @@
 import log from 'loglevel';
 
+import providers from '../../../js/providers';
 
-describe('Tests for PORTAL.MODELS.providers', function () {
+
+describe('Tests for providers', function () {
     var server;
     var successSpy, failureSpy;
 
@@ -20,54 +22,54 @@ describe('Tests for PORTAL.MODELS.providers', function () {
     });
 
     it('Should return an empty array of ids if initialize has not been called', function () {
-        expect(PORTAL.MODELS.providers.getIds()).toEqual([]);
+        expect(providers.getIds()).toEqual([]);
     });
 
     it('Should call ajax to get data when fetch function is invoked', function () {
-        PORTAL.MODELS.providers.fetch();
+        providers.fetch();
         expect(server.requests.length).toBe(1);
         expect(server.requests[0].url).toContain(Config.CODES_ENDPOINT + '/providers');
     });
 
     it('When fetch is called,initialize the ids and call successFnc when a successful ajax call is made', function () {
-        PORTAL.MODELS.providers.fetch().done(successSpy).fail(failureSpy);
+        providers.fetch().done(successSpy).fail(failureSpy);
 
         server.requests[0].respond(200, {'Content-Type': 'text/json'}, RESPONSE);
 
         expect(successSpy).toHaveBeenCalled();
         expect(failureSpy).not.toHaveBeenCalled();
-        expect(PORTAL.MODELS.providers.getIds()).toEqual(['Src1', 'Src2', 'Src3']);
+        expect(providers.getIds()).toEqual(['Src1', 'Src2', 'Src3']);
     });
 
     it('Should call failureFnc when an unsuccessful fetch is made.', function () {
-        PORTAL.MODELS.providers.fetch().done(successSpy).fail(failureSpy);
+        providers.fetch().done(successSpy).fail(failureSpy);
         server.requests[0].respond(500, {}, 'Bad data');
 
         expect(failureSpy).toHaveBeenCalledWith('Internal Server Error');
         expect(successSpy).not.toHaveBeenCalled();
-        expect(PORTAL.MODELS.providers.getIds()).toEqual([]);
+        expect(providers.getIds()).toEqual([]);
     });
 
     describe('Tests formatAvailableProviders', function () {
 
         beforeEach(function () {
-            PORTAL.MODELS.providers.fetch();
+            providers.fetch();
             server.requests[0].respond(200, {'Content-Type': 'text/json'}, RESPONSE);
         });
 
         it('Expects "all" to be returned if all available providers are specified', function () {
-            expect(PORTAL.MODELS.providers.formatAvailableProviders('Src1 Src2 Src3')).toEqual('all');
+            expect(providers.formatAvailableProviders('Src1 Src2 Src3')).toEqual('all');
         });
 
         it('Expects a comma separated list of providers returned if only some are specified', function () {
-            expect(PORTAL.MODELS.providers.formatAvailableProviders('Src2 Src3')).toEqual('Src2, Src3');
-            expect(PORTAL.MODELS.providers.formatAvailableProviders('Src2')).toEqual('Src2');
+            expect(providers.formatAvailableProviders('Src2 Src3')).toEqual('Src2, Src3');
+            expect(providers.formatAvailableProviders('Src2')).toEqual('Src2');
         });
 
         it('Expects providers that are not in the initialized to be eliminated', function () {
-            expect(PORTAL.MODELS.providers.formatAvailableProviders('Src1 Src2 Src3 Src4')).toEqual('all');
-            expect(PORTAL.MODELS.providers.formatAvailableProviders('Src1 Src3 Src4')).toEqual('Src1, Src3');
-            expect(PORTAL.MODELS.providers.formatAvailableProviders('Src4')).toEqual('');
+            expect(providers.formatAvailableProviders('Src1 Src2 Src3 Src4')).toEqual('all');
+            expect(providers.formatAvailableProviders('Src1 Src3 Src4')).toEqual('Src1, Src3');
+            expect(providers.formatAvailableProviders('Src4')).toEqual('');
         });
 
     });

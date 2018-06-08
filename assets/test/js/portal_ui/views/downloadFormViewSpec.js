@@ -8,6 +8,7 @@ import PlaceInputView from '../../../../js/views/placeInputView';
 import PointLocationInputView from '../../../../js/views/pointLocationInputView';
 import SamplingParameterInputView from '../../../../js/views/samplingParameterInputView';
 import SiteParameterInputView from '../../../../js/views/siteParameterInputView';
+import providers from '../../../../js/providers';
 
 
 describe('Tests for DownloadFormView', function() {
@@ -53,7 +54,7 @@ describe('Tests for DownloadFormView', function() {
         spyOn(NldiView.prototype, 'initialize');
 
         fetchProvidersDeferred = $.Deferred();
-        spyOn(PORTAL.MODELS.providers, 'fetch').and.returnValue(fetchProvidersDeferred);
+        spyOn(providers, 'fetch').and.returnValue(fetchProvidersDeferred);
 
         fetchCountsDeferred = $.Deferred();
         spyOn(PORTAL.queryServices, 'fetchQueryCounts').and.returnValue(fetchCountsDeferred);
@@ -92,7 +93,7 @@ describe('Tests for DownloadFormView', function() {
 
     it('Expects that the providers are fetched', function() {
         testView.initialize();
-        expect(PORTAL.MODELS.providers.fetch).toHaveBeenCalled();
+        expect(providers.fetch).toHaveBeenCalled();
     });
 
     it('Expects that a successful fetch of the providers initialized the provider select', function() {
