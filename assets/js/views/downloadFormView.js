@@ -92,7 +92,7 @@ export default class DownloadFormView {
             sampleMediaModel : new CachedCodes({codes: 'samplemedia'}),
             characteristicTypeModel : new CachedCodes({codes: 'characteristictype'})
         });
-        var biologicalSamplingInputViewInstance = new BiologicalSamplingInputView({
+        var biologicalSamplingInputView = new BiologicalSamplingInputView({
             $container : this.$form.find('#biological'),
             assemblageModel : new CachedCodes({codes: 'assemblage'})
         });
@@ -114,7 +114,7 @@ export default class DownloadFormView {
         var initPlaceInputView = placeInputView.initialize();
         var initSiteParameterInputView = siteParameterInputView.initialize();
         var initSamplingParametersInputView = samplingParametersInputView.initialize();
-        var initBiologicalSamplingInputInputView = biologicalSamplingInputViewInstance.initialize();
+        var initBiologicalSamplingInputInputView = biologicalSamplingInputView.initialize();
         var initComplete = $.when(
             initBiologicalSamplingInputInputView,
             initializeProviders,
