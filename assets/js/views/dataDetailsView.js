@@ -1,5 +1,5 @@
-var PORTAL = window.PORTAL = window.PORTAL || {};
-PORTAL.VIEWS = PORTAL.VIEWS || {};
+import { setEnabled } from '../utils';
+
 
 /*
  * Manages the data detail inputs view
@@ -37,7 +37,7 @@ export default class DataDetailsView {
             var kmlChecked = $kml.prop('checked');
 
             // Can only download sites if kml is checked
-            PORTAL.UTILS.setEnabled(this.$container.find('.result-type:not(#sites)'), !kmlChecked);
+            setEnabled(this.$container.find('.result-type:not(#sites)'), !kmlChecked);
         });
 
         $resultTypeRadioboxes.change((event) => {
@@ -48,7 +48,7 @@ export default class DataDetailsView {
             // Uncheck previously checked button
             this.$container.find('input.result-type:checked').not(node).prop('checked', false);
 
-            PORTAL.UTILS.setEnabled($kml, $site.prop('checked'));
+            setEnabled($kml, $site.prop('checked'));
 
             // If biological results or narrow results desired add a hidden input, otherwise remove it.
             $dataProfile.remove();

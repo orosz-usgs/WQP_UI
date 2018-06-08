@@ -1,4 +1,5 @@
 import queryService from '../queryService';
+import { getQueryString } from '../utils';
 
 
 /*
@@ -28,8 +29,8 @@ export default class ShowAPIView {
             var queryWithoutDataProfileArray = queryParamArray.filter((param) => {
                 return param.name !== 'dataProfile';
             });
-            var queryString = PORTAL.UTILS.getQueryString(queryParamArray);
-            var queryStringWithoutDataProfile = PORTAL.UTILS.getQueryString(queryWithoutDataProfileArray);
+            var queryString = getQueryString(queryParamArray);
+            var queryStringWithoutDataProfile = getQueryString(queryWithoutDataProfileArray);
 
             $apiQueryDiv.show();
             $sitesText.html(queryService.getFormUrl('Station', queryStringWithoutDataProfile));

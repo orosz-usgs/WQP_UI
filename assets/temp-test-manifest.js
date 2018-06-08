@@ -14,7 +14,6 @@ require('./js/leafletUtils');
 //require('./js/providerSiteMapOnReady');
 require('./js/queryService');
 require('./js/siteMap');
-require('./js/utils');
 require('./test/js/portal_ui/controllers/controllersSpec');
 require('./test/js/portal_ui/dateValidatorSpec');
 require('./test/js/portal_ui/downloadFormControllerSpec');

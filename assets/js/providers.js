@@ -2,6 +2,8 @@ import filter from 'lodash/collection/filter';
 import includes from 'lodash/collection/includes';
 import log from 'loglevel';
 
+import { getHeaders } from './utils';
+
 
 class Providers {
     constructor() {
@@ -17,7 +19,7 @@ class Providers {
         $.ajax({
             url: Config.CODES_ENDPOINT + '/providers',
             data: {mimeType: 'json'},
-            headers: PORTAL.UTILS.getHeaders(),
+            headers: getHeaders(),
             type: 'GET',
             success: (data) => {
                 this.ids = [];

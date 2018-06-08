@@ -4,6 +4,8 @@ import omit from 'lodash/object/omit';
 import log from 'loglevel';
 import numeral from 'numeral';
 
+import { getHeaders, getQueryParamJson } from './utils';
+
 
 // Export an object so we can mock the functions in the test suite.
 export default {
@@ -20,7 +22,7 @@ export default {
     fetchQueryCounts: function(resultType, queryParamArray, providers) {
         var deferred = $.Deferred();
 
-        var queryParamJson = PORTAL.UTILS.getQueryParamJson(queryParamArray);
+        var queryParamJson = getQueryParamJson(queryParamArray);
         var countQueryJson = omit(queryParamJson, ['mimeType', 'zip', 'sorted']);
 
         var formatCount = function(countData, key) {
@@ -32,7 +34,7 @@ export default {
         $.ajax({
             url: Config.QUERY_URLS[resultType] + '/count?mimeType=json',
             method: 'POST',
-            headers: PORTAL.UTILS.getHeaders(),
+            headers: getHeaders(),
             contentType: 'application/json',
             data: JSON.stringify(countQueryJson),
             success: function(data) {

@@ -1,6 +1,7 @@
 import log from 'loglevel';
 
 import queryService from '../../../js/queryService';
+import { Cookie } from '../../../js/utils';
 
 
 describe('Tests for queryService', function() {
@@ -98,7 +99,7 @@ describe('Tests for queryService', function() {
         });
 
         it('Expects that a authorization header is added if an access_token cookie is present', function() {
-            spyOn(PORTAL.UTILS, 'getCookie').and.returnValue('dummy_token');
+            spyOn(Cookie, 'getByName').and.returnValue('dummy_token');
             queryService.fetchQueryCounts('Station', testQuery, ['NWIS', 'STORET']);
 
             expect(fakeServer.requests[0].requestHeaders.Authorization).toEqual('Bearer dummy_token');

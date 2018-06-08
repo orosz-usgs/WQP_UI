@@ -3,6 +3,7 @@ import filter from 'lodash/collection/filter';
 import IdentifyDialog from '../identifyDialog';
 import providers from '../providers';
 import queryService from '../queryService';
+import { getQueryString, toggleShowHideSections } from '../utils';
 
 
 var MAP_ID = 'query-results-map';
@@ -61,7 +62,7 @@ export default class SiteMapView {
 
         // Add click handler for map show/hide button
         $showHideBtn.click((event) => {
-            var isVisible = PORTAL.UTILS.toggleShowHideSections($(event.currentTarget), $mapContainer);
+            var isVisible = toggleShowHideSections($(event.currentTarget), $mapContainer);
             if (isVisible) {
                 this.portalDataMap.render();
                 $legendContainer.show();
@@ -73,7 +74,7 @@ export default class SiteMapView {
         // Add click handler for Show Sites button
         this.$container.find('#show-on-map-button').click(() => {
             var queryParamArray = this.downloadFormView.getQueryParamArray();
-            var queryString = PORTAL.UTILS.getQueryString(queryParamArray);
+            var queryString = getQueryString(queryParamArray);
             var siteIds = filter(queryParamArray, (param) => {
                 return param.name === 'siteid';
             });

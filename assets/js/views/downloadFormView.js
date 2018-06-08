@@ -12,7 +12,7 @@ import portalHelp from '../portalHelp';
 import { CachedCodes, CodesWithKeys } from '../portalModels';
 import providers from '../providers';
 import queryService from '../queryService';
-
+import { toggleShowHideSections, getQueryString } from '../utils';
 
 /*
  * Initializes the download form and provides methods to get information from the form
@@ -150,11 +150,11 @@ export default class DownloadFormView {
 
         // Add Click handler for form show/hide/button
         this.$form.find('.panel-heading .show-hide-toggle').click(function () {
-            PORTAL.UTILS.toggleShowHideSections($(this), $(this).parents('.panel').find('.panel-body'));
+            toggleShowHideSections($(this), $(this).parents('.panel').find('.panel-body'));
         });
 
         this.$form.find('.subpanel-heading .show-hide-toggle').click(function () {
-            PORTAL.UTILS.toggleShowHideSections($(this), $(this).parents('.subpanel').find('.subpanel-body'));
+            toggleShowHideSections($(this), $(this).parents('.subpanel').find('.subpanel-body'));
         });
 
         // Set up the Download button
@@ -162,7 +162,7 @@ export default class DownloadFormView {
             var fileFormat = dataDetailsView.getMimeType();
             var resultType = dataDetailsView.getResultType();
             var queryParamArray = this.getQueryParamArray();
-            var queryString = decodeURIComponent(PORTAL.UTILS.getQueryString(queryParamArray));
+            var queryString = decodeURIComponent(getQueryString(queryParamArray));
 
             var startDownload = (totalCount) => {
                 window._gaq.push([

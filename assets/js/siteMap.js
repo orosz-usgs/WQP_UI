@@ -1,3 +1,6 @@
+import { isExtraSmallBrowser } from './utils';
+
+
 var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.MAP = PORTAL.MAP || {};
 /*
@@ -61,7 +64,7 @@ PORTAL.MAP.siteMap = function(options) {
                             features: resp.features,
                             queryParamArray: wqpSitesLayer.getQueryParamArray(),
                             boundingBox: bounds.toBBoxString(),
-                            usePopover: PORTAL.UTILS.isExtraSmallBrowser()
+                            usePopover: isExtraSmallBrowser()
                         });
                     })
                     .fail(function() {

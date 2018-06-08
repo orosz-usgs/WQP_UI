@@ -2,6 +2,7 @@ import map from 'lodash/collection/map';
 import omit from 'lodash/object/omit';
 import mapValues from 'lodash/object/mapValues';
 import { toBBoxString } from '../leafletUtils';
+import { getHeaders, getQueryParamJson } from '../utils';
 
 
 (function() {
@@ -39,7 +40,7 @@ import { toBBoxString } from '../leafletUtils';
         },
 
         _getImageSrc: function(url, done) {
-            var headers = PORTAL.UTILS.getHeaders();
+            var headers = getHeaders();
             var xhr = new XMLHttpRequest();
             xhr.open('GET', url, true);
             xhr.responseType = 'blob';
@@ -114,7 +115,7 @@ import { toBBoxString } from '../leafletUtils';
             return $.ajax({
                 url: L.WQPSitesLayer.getWfsGetFeatureUrl(this.queryParamArray) + '&bbox=' + toBBoxString(bounds),
                 method: 'GET',
-                headers: PORTAL.UTILS.getHeaders()
+                headers: getHeaders()
             });
         }
     });
@@ -126,7 +127,7 @@ import { toBBoxString } from '../leafletUtils';
          * @returns {String} - Returns the value of the SEARCHPARAMS query parameter that is sent in OGC request
          */
         getSearchParams: function(queryParamArray) {
-            var queryJson = PORTAL.UTILS.getQueryParamJson(queryParamArray);
+            var queryJson = getQueryParamJson(queryParamArray);
             var resultJson = omit(queryJson, ['mimeType', 'zip']);
             resultJson = mapValues(resultJson, function(value) {
                 if (typeof value === 'string') {

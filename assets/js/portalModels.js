@@ -6,6 +6,8 @@ import map from 'lodash/collection/map';
 import pluck from 'lodash/collection/pluck';
 import log from 'loglevel';
 
+import { getHeaders } from './utils';
+
 
 /*
  * @param {Object} options
@@ -19,7 +21,7 @@ export class CachedCodes {
     constructor({codes}) {
         this.codes = codes;
         this.cachedData = [];
-        this.HEADERS = PORTAL.UTILS.getHeaders();
+        this.HEADERS = getHeaders();
     }
 
     /*
@@ -95,7 +97,7 @@ export class CodesWithKeys {
         this.keyParameter = keyParameter;
         this.parseKey = parseKey;
         this.cachedData = [];
-        this.HEADERS = PORTAL.UTILS.getHeaders();
+        this.HEADERS = getHeaders();
     }
 
     /* Each object where each value is an array of objects with properties id, desc, and providers */
