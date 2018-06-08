@@ -2,6 +2,7 @@ import log from 'loglevel';
 
 import ArcGisOnlineHelpView from './views/arcGisOnlineHelpView';
 import DownloadFormView from './views/downloadFormView';
+import ShowAPIView from './views/showAPIView';
 
 
 var PORTAL = window.PORTAL = window.PORTAL || {};
@@ -27,7 +28,7 @@ $(document).ready(function () {
         downloadProgressDialog : downloadProgressDialog,
         downloadFormView : downloadFormView
     });
-    var showAPIView = PORTAL.VIEWS.showAPIView({
+    var showAPIView = new ShowAPIView({
         $container : $('#show-queries-div'),
         getQueryParamArray : downloadFormView.getQueryParamArray
     });

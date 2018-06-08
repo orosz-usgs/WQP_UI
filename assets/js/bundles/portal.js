@@ -14,7 +14,6 @@ require('../portalModels.js');
 require('../nldiModel.js');
 require('../views/siteMapView.js');
 require('../views/siteParameterInputView.js');
-require('../views/showAPIView.js');
 require('../portalHelp.js');
 require('../stateFIPS.js');
 require('../downloadProgressDialog.js');
