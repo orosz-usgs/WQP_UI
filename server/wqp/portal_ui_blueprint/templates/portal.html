@@ -5,7 +5,15 @@
 {% block page_content %}
     <div id="page-content">
         <form role="form" id="params" name="params" autocomplete="off"
-              method="post" action="{{ config.SEARCH_QUERY_ENDPOINT }}Station/search">
+              method="post"
+              action="
+                      {%  if config.WATERAUTH_AUTHORIZE_URL %}
+                        {{ url_for('portal_ui.wqp_download_proxy', op='Station')}}
+                      {%  else %}
+                        {{ config.SEARCH_QUERY_ENDPOINT }}Station/search
+                        {% endif %}
+                        "
+        />
             <div class="panel panel-default" id="location-parameters">
                 <div class="panel-heading">
                     LOCATION

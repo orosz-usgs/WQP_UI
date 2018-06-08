@@ -7,7 +7,6 @@ import hiddenFormTemplate from './hbTemplates/hiddenForm.hbs';
 var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 
-
 (function() {
     // Only show this many features in the dialog. Also use alternative download based on the bounding box of the
     // features that are shown.
@@ -29,7 +28,7 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
             options.$dialog.find('#download-map-info-button').click(function() {
                 var resultType = options.$dialog.find('input[name="resultType"]:checked').val();
                 var $form = options.$dialog.find('form');
-                var url = Config.QUERY_URLS[resultType];
+                var url = PORTAL.queryServices.getFormUrl(resultType);
 
                 $form.attr('action', url);
                 window._gaq.push(['_trackEvent', 'Portal Page', 'IdentifyDownload' + resultType, url + '?' + $form.serialize()]);
