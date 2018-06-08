@@ -1,6 +1,6 @@
 var PORTAL = window.PORTAL = window.PORTAL || {};
 
-PORTAL.queryServices = (function () {
+PORTAL.queryServices = (function() {
     var self = {};
 
     /*
@@ -26,30 +26,30 @@ PORTAL.queryServices = (function () {
         };
 
         $.ajax({
-            url : Config.QUERY_URLS[resultType] + '/count?mimeType=json',
-            method : 'POST',
-			headers: PORTAL.UTILS.getHeaders(),
-            contentType : 'application/json',
-            data : JSON.stringify(countQueryJson),
-            success : function(data) {
+            url: Config.QUERY_URLS[resultType] + '/count?mimeType=json',
+            method: 'POST',
+            headers: PORTAL.UTILS.getHeaders(),
+            contentType: 'application/json',
+            data: JSON.stringify(countQueryJson),
+            success: function(data) {
                 var result = {
-                    total : {
-                        sites : formatCount(data, 'Total-Site-Count'),
-                        projects : formatCount(data, 'Total-Project-Count'),
+                    total: {
+                        sites: formatCount(data, 'Total-Site-Count'),
+                        projects: formatCount(data, 'Total-Project-Count'),
                         projectmonitoringlocationweightings: formatCount(data, 'Total-ProjectMonitoringLocationWeighting-Count'),
-                        results : formatCount(data, 'Total-Result-Count'),
-                        activities : formatCount(data, 'Total-Activity-Count'),
-                        activitymetrics : formatCount(data, 'Total-ActivityMetric-Count'),
-                        resultdetections : formatCount(data, 'Total-ResultDetectionQuantitationLimit-Count')
+                        results: formatCount(data, 'Total-Result-Count'),
+                        activities: formatCount(data, 'Total-Activity-Count'),
+                        activitymetrics: formatCount(data, 'Total-ActivityMetric-Count'),
+                        resultdetections: formatCount(data, 'Total-ResultDetectionQuantitationLimit-Count')
                     }
                 };
                 _.each(providers, function(provider) {
                     result[provider] = {
-                        sites : formatCount(data, provider + '-Site-Count'),
-                        projects : formatCount(data, provider +'-Project-Count'),
-                        projectmonitoringlocationweightings: formatCount(data, provider +'-ProjectMonitoringLocationWeighting-Count'),
-                        results : formatCount(data, provider + '-Result-Count'),
-                        activities : formatCount(data, provider + '-Activity-Count'),
+                        sites: formatCount(data, provider + '-Site-Count'),
+                        projects: formatCount(data, provider + '-Project-Count'),
+                        projectmonitoringlocationweightings: formatCount(data, provider + '-ProjectMonitoringLocationWeighting-Count'),
+                        results: formatCount(data, provider + '-Result-Count'),
+                        activities: formatCount(data, provider + '-Activity-Count'),
                         activitymetrics: formatCount(data, provider + '-ActivityMetric-Count'),
                         resultdetections: formatCount(data, provider + '-ResultDetectionQuantitationLimit-Count')
                     };
@@ -71,7 +71,7 @@ PORTAL.queryServices = (function () {
      * @param {String} queryParams - a query string
      * @returns {String} - the url and query params to download data
      */
-    self.getFormUrl = function (resultType, queryParams) {
+    self.getFormUrl = function(resultType, queryParams) {
         var result = Config.DOWNLOAD_URLS[resultType];
         if (queryParams) {
             result = result + '?' + queryParams;

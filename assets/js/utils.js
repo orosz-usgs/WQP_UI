@@ -103,37 +103,37 @@ PORTAL.UTILS = function() {
         }
     };
 
-	/*
-	 * @param String name
-	 * @return String containing the cookie value for name or the empty string if none exists.
-	 */
-	self.getCookie = function(cname) {
-		var name = cname + '=';
-		var decodedCookie = decodeURIComponent(document.cookie);
-		var ca = decodedCookie.split(';');
-		for(var i = 0; i <ca.length; i++) {
-			var c = ca[i];
-			while (c.charAt(0) === ' ') {
-				c = c.substring(1);
-			}
-			if (c.indexOf(name) === 0) {
-				return c.substring(name.length, c.length);
-			}
-		}
-		return '';
-	};
+    /*
+     * @param String name
+     * @return String containing the cookie value for name or the empty string if none exists.
+     */
+    self.getCookie = function(cname) {
+        var name = cname + '=';
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) === ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) === 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return '';
+    };
 
-	/*
-	 * @return {Object} containing the headers that should be used for service calls to WQP services.
-	 */
-	self.getHeaders = function() {
-		var accessToken = PORTAL.UTILS.getCookie('access_token');
-		var headers = {};
-		if (accessToken) {
-			headers.Authorization = 'Bearer ' + accessToken;
-		}
-		return headers;
-	};
+    /*
+     * @return {Object} containing the headers that should be used for service calls to WQP services.
+     */
+    self.getHeaders = function() {
+        var accessToken = PORTAL.UTILS.getCookie('access_token');
+        var headers = {};
+        if (accessToken) {
+            headers.Authorization = 'Bearer ' + accessToken;
+        }
+        return headers;
+    };
 
     return self;
 }();

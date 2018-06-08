@@ -35,14 +35,14 @@ PORTAL.MAP.siteMap = function(options) {
             includes: L.singleClickEventMixin()
         });
         var baseLayers = {
-            'World Topo': L.tileLayer.provider('Esri.WorldTopoMap', {zIndex : BASE_LAYER_Z_INDEX}),
-            'World Street': L.tileLayer.provider('Esri.WorldStreetMap', {zIndex : BASE_LAYER_Z_INDEX}),
-            'World Relief': L.tileLayer.provider('Esri.WorldShadedRelief', {zIndex : BASE_LAYER_Z_INDEX}),
-            'World Imagery': L.tileLayer.provider('Esri.WorldImagery', {zIndex : BASE_LAYER_Z_INDEX})
+            'World Topo': L.tileLayer.provider('Esri.WorldTopoMap', {zIndex: BASE_LAYER_Z_INDEX}),
+            'World Street': L.tileLayer.provider('Esri.WorldStreetMap', {zIndex: BASE_LAYER_Z_INDEX}),
+            'World Relief': L.tileLayer.provider('Esri.WorldShadedRelief', {zIndex: BASE_LAYER_Z_INDEX}),
+            'World Imagery': L.tileLayer.provider('Esri.WorldImagery', {zIndex: BASE_LAYER_Z_INDEX})
         };
         var esriHydroLayer = L.esri.tiledMapLayer({
             url: Config.HYDRO_LAYER_ENDPOINT,
-            zIndex : HYDRO_LAYER_Z_INDEX
+            zIndex: HYDRO_LAYER_Z_INDEX
         });
         var nwisSitesLayer = L.tileLayer.wms(Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wms', {
             layers: 'qw_portal_map:nwis_sites',
@@ -59,9 +59,9 @@ PORTAL.MAP.siteMap = function(options) {
                     .done(function(resp) {
                         options.identifyDialog.showDialog({
                             features: resp.features,
-                            queryParamArray : wqpSitesLayer.getQueryParamArray(),
-                            boundingBox : bounds.toBBoxString(),
-                            usePopover : PORTAL.UTILS.isExtraSmallBrowser()
+                            queryParamArray: wqpSitesLayer.getQueryParamArray(),
+                            boundingBox: bounds.toBBoxString(),
+                            usePopover: PORTAL.UTILS.isExtraSmallBrowser()
                         });
                     })
                     .fail(function() {
@@ -93,18 +93,18 @@ PORTAL.MAP.siteMap = function(options) {
         L.drawLocal.draw.toolbar.buttons.rectangle = 'Click to identify sites in a box';
         L.drawLocal.edit.toolbar.buttons.edit = 'Click to modify identify box';
         drawIdentifyBoxControl = new L.Control.Draw({
-            draw : {
-                polyline : false,
-                polygon : false,
-                rectangle : {
-                    repeatMode : false
+            draw: {
+                polyline: false,
+                polygon: false,
+                rectangle: {
+                    repeatMode: false
                 },
-                circle : false,
-                marker : false
+                circle: false,
+                marker: false
             },
-            edit : {
-                featureGroup : drawnIdentifyBoxFeature,
-                remove : false
+            edit: {
+                featureGroup: drawnIdentifyBoxFeature,
+                remove: false
             }
         });
 
@@ -115,10 +115,10 @@ PORTAL.MAP.siteMap = function(options) {
         });
 
         map.addControl(L.control.layers(baseLayers, {
-            'ESRI Hyro Layer' : esriHydroLayer,
-            'NWIS Stream Gages' : nwisSitesLayer
+            'ESRI Hyro Layer': esriHydroLayer,
+            'NWIS Stream Gages': nwisSitesLayer
         }, {
-            autoZIndex : false
+            autoZIndex: false
         }));
         map.addControl(L.control.scale());
         map.addLayer(drawnIdentifyBoxFeature);
@@ -168,8 +168,8 @@ PORTAL.MAP.siteMap = function(options) {
                 wqpSitesLayer.updateQueryParams(queryParamArray);
             } else {
                 wqpSitesLayer = L.wqpSitesLayer(queryParamArray, {
-                    styles : options.$sldSelect.val(),
-                    zIndex : WQP_SITES_LAYER_Z_INDEX
+                    styles: options.$sldSelect.val(),
+                    zIndex: WQP_SITES_LAYER_Z_INDEX
                 });
                 wqpSitesLayer.on('loading', function() {
                     options.$loadingIndicator.show();
@@ -177,8 +177,8 @@ PORTAL.MAP.siteMap = function(options) {
                 wqpSitesLayer.on('load', function() {
                     options.$loadingIndicator.hide();
                     wqpSitesLayer.getLegendGraphic(function(src) {
-						options.$legendDiv.html('<img  src="' + src + '" />');
-					});
+                        options.$legendDiv.html('<img  src="' + src + '" />');
+                    });
                 });
                 map.addLayer(wqpSitesLayer);
             }
