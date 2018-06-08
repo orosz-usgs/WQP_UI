@@ -1,4 +1,7 @@
-describe ('Tests for SITE.siteMap', function() {
+import siteMap from '../../../js/providerSiteMap';
+
+
+describe ('Tests for providerSiteMap', function() {
     var mapDiv;
     var $testDiv;
     var setViewSpy, basemapAddSpy, hydroLayerAddToSpy, wmsAddToSpy;
@@ -28,7 +31,7 @@ describe ('Tests for SITE.siteMap', function() {
         });
         var latitude = Config.site.LatitudeMeasure;
         var longitude = Config.site.LongitudeMeasure;
-        window.SITE.siteMap(latitude, longitude, {mapDivId : mapDiv, mapZoom : 10});
+        siteMap(latitude, longitude, {mapDivId : mapDiv, mapZoom : 10});
     });
 
     afterEach(function() {

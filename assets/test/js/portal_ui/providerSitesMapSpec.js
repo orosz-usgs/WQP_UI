@@ -1,4 +1,7 @@
-describe('Tests for SITES.sitesMap', function() {
+import sitesMap from '../../../js/providerSitesMap';
+
+
+describe('Tests for providerSitesMap', function() {
     var mapDiv;
     var $testDiv;
     var addLayerSpy, setViewSpy, fitBoundsSpy, basemapAddToSpy, markersAddLayerSpy;
@@ -25,7 +28,7 @@ describe('Tests for SITES.sitesMap', function() {
         spyOn(L, 'markerClusterGroup').and.returnValue({
             addLayer : markersAddLayerSpy
         });
-        SITES.sitesMap({mapDivId : mapDiv});
+        sitesMap({mapDivId : mapDiv});
     });
 
     afterEach(function() {

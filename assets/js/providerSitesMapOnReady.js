@@ -1,3 +1,6 @@
+import sitesMap from './providerSitesMap';
+
+
 $(document).ready(function() {
-    SITES.sitesMap({mapDivId: 'sites_map', mapZoom: 3});
+    sitesMap({mapDivId: 'sites_map', mapZoom: 3});
 });

@@ -1,10 +1,6 @@
 import createWQPMap from './generalMapping';
 
 
-/** @namespace */
-var SITE = window.SITE = window.SITE || {};
-
-
 /**
  * Create a map showing the location of a specific WQP site.
  *
@@ -13,7 +9,7 @@ var SITE = window.SITE = window.SITE || {};
  * @param {object} options An object containing mapDivId (div containing the map) and mapZoom (zoom level) attributes
  * @returns {L.map|*}
  */
-SITE.siteMap = function(latitude, longitude, options) {
+export default function siteMap(latitude, longitude, options) {
     var mapDivId = options.mapDivId;
     var zoom = options.mapZoom;
     var map;
@@ -37,4 +33,4 @@ SITE.siteMap = function(latitude, longitude, options) {
 
     map.setView([latitude, longitude], zoom);
     return map;
-};
+}

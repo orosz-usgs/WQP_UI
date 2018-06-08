@@ -1,9 +1,6 @@
 import createWQPMap from './generalMapping';
 
 
-/** @namespace */
-var SITES = window.SITES = window.SITES || {};
-
 /**
  * Create a leaflet map for all the sites in an organization that
  * exists within a WQP provider. Pop-ups with site metadata and
@@ -11,7 +8,7 @@ var SITES = window.SITES = window.SITES || {};
  *
  * @param {object} options An object containing mapDivId (div containing the map) and mapZoom (zoom level) attributes
  */
-SITES.sitesMap = function(options) {
+export default function sitesMap(options) {
     var siteData = Config.sitesData;
     var localBaseUrl = Config.localBaseUrl;
     var mapDivId = options.mapDivId;
@@ -80,4 +77,4 @@ SITES.sitesMap = function(options) {
     };
 
     addDataToMap(siteData);
-};
+}
