@@ -1,8 +1,7 @@
 import InputValidation from './inputValidationView';
 
+import { realNumberValidator } from '../portalValidators';
 
-var PORTAL = window.PORTAL = window.PORTAL || {};
-PORTAL.VIEWS = PORTAL.VIEWS || {};
 
 /*
  * Creates a bounding box input view object
@@ -28,7 +27,7 @@ export default class BoundingBoxInputView {
         var $east = this.$container.find('#east');
         new InputValidation({
             inputEl: $textInputs,
-            validationFnc: PORTAL.validators.realNumberValidator
+            validationFnc: realNumberValidator
         });
 
         //Update bBox hidden input if any of the bounding box text fields are updated

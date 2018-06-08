@@ -1,6 +1,8 @@
 import InputValidation from './inputValidationView';
 import { CodeSelect, PagedCodeSelect } from './portalViews';
 import * as hucValidator from '../hucValidator';
+import { positiveIntValidator } from '../portalValidators';
+
 
 /*
  * Creates a site parameter input view object
@@ -95,7 +97,7 @@ export default class SiteParameterInputView {
         });
         new InputValidation({
             inputEl : $minActivitiesInput,
-            validationFnc : PORTAL.validators.positiveIntValidator
+            validationFnc : positiveIntValidator
         });
 
         return fetchComplete;

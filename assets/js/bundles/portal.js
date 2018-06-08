@@ -8,8 +8,5 @@ require('../leafletUtils.js');
 require('../siteMap.js');
 require('../portalOnReady.js');
 require('../providers.js');
-require('../portalModels.js');
-require('../portalHelp.js');
 require('../stateFIPS.js');
-require('../portalValidators.js');
 require('../downloadFormController.js');

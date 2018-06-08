@@ -1,6 +1,7 @@
 import log from 'loglevel';
 
 import InputValidation from './inputValidationView';
+import { realNumberValidator } from '../portalValidators';
 
 
 var PORTAL = window.PORTAL = window.PORTAL || {};
@@ -44,7 +45,7 @@ export default class PointLocationInputView {
     initialize() {
         new InputValidation({
             inputEl: this.$container.find('input[type="text"]'),
-            validationFnc: PORTAL.validators.realNumberValidator
+            validationFnc: realNumberValidator
         });
 
         // only give user the option if their browser supports geolocation

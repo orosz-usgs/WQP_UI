@@ -1,6 +1,7 @@
 import * as dateValidator from '../dateValidator';
 import InputValidation from './inputValidationView';
 import { CodeSelect, PagedCodeSelect } from './portalViews';
+import { positiveIntValidator } from '../portalValidators';
 
 
 var PORTAL = window.PORTAL = window.PORTAL || {};
@@ -57,7 +58,7 @@ export default class SamplingParameterInputView {
         // Add input validations and reformatting handlers
         new InputValidation({
             inputEl : $minresults,
-            validationFnc : PORTAL.validators.positiveIntValidator
+            validationFnc : positiveIntValidator
         });
         new InputValidation({
             inputEl: $startDate,
