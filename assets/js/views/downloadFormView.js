@@ -6,6 +6,7 @@ import NldiView from './nldiView';
 import PlaceInputView from './placeInputView';
 import PointLocationInputView from './pointLocationInputView';
 import { StaticSelect2 } from './portalViews';
+import SamplingParameterInputView from './samplingParameterInputView';
 
 
 var PORTAL = window.PORTAL = window.PORTAL || {};
@@ -84,7 +85,7 @@ export default class DownloadFormView {
             mapDivId : 'nldi-map',
             $inputContainer : this.$form.find('#nldi-param-container')
         });
-        var samplingParametersInputView = PORTAL.VIEWS.samplingParameterInputView({
+        var samplingParametersInputView = new SamplingParameterInputView({
             $container : this.$form.find('#sampling'),
             sampleMediaModel : PORTAL.MODELS.cachedCodes({codes: 'samplemedia'}),
             characteristicTypeModel : PORTAL.MODELS.cachedCodes({codes: 'characteristictype'})

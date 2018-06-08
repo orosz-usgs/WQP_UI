@@ -1,4 +1,5 @@
 import { CodeSelect } from '../../../../js/views/portalViews';
+import SamplingParameterInputView from '../../../../js/views/samplingParameterInputView';
 
 
 describe('Tests for PORTAL.VIEWS.samplingParameterInputView', function() {
@@ -42,7 +43,7 @@ describe('Tests for PORTAL.VIEWS.samplingParameterInputView', function() {
             fetch : jasmine.createSpy('characteristicTypeModelFetch').and.returnValue(fetchCharacteristicTypeDeferred)
         };
 
-        testView = PORTAL.VIEWS.samplingParameterInputView({
+        testView = new SamplingParameterInputView({
             $container : $testDiv,
             sampleMediaModel : sampleMediaModel,
             characteristicTypeModel : characteristicTypeModel

@@ -15,8 +15,13 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
  * @return {Object}
     *   @func initialize
  */
-PORTAL.VIEWS.samplingParameterInputView = function(options) {
-    var self = {};
+export default class SamplingParameterInputView {
+
+    constructor({$container, sampleMediaModel, characteristicTypeModel}) {
+        this.$container = $container;
+        this.sampleMediaModel = sampleMediaModel;
+        this.characteristicTypeModel = characteristicTypeModel;
+    }
 
     /*
      * Initializes and sets up the DOM event handlers for the inputs
@@ -24,24 +29,24 @@ PORTAL.VIEWS.samplingParameterInputView = function(options) {
      *      @resolve - all models have been successfully fetched
      *      @reject - one or models have not been successfully fetched
      */
-    self.initialize = function() {
-        var $sampleMedia = options.$container.find('#sampleMedia');
-        var $characteristicType = options.$container.find('#characteristicType');
-        var $characteristicName = options.$container.find('#characteristicName');
-        var $projectCode = options.$container.find('#project-code');
-        var $minresults = options.$container.find('#minresults');
-        var $startDate = options.$container.find('#startDateLo');
-        var $endDate = options.$container.find('#startDateHi');
+    initialize() {
+        var $sampleMedia = this.$container.find('#sampleMedia');
+        var $characteristicType = this.$container.find('#characteristicType');
+        var $characteristicName = this.$container.find('#characteristicName');
+        var $projectCode = this.$container.find('#project-code');
+        var $minresults = this.$container.find('#minresults');
+        var $startDate = this.$container.find('#startDateLo');
+        var $endDate = this.$container.find('#startDateHi');
 
-        var fetchSampleMedia = options.sampleMediaModel.fetch();
-        var fetchCharacteristicType = options.characteristicTypeModel.fetch();
+        var fetchSampleMedia = this.sampleMediaModel.fetch();
+        var fetchCharacteristicType = this.characteristicTypeModel.fetch();
         var fetchComplete = $.when(fetchSampleMedia, fetchCharacteristicType);
 
-        fetchSampleMedia.done(function() {
-            new CodeSelect($sampleMedia, {model : options.sampleMediaModel});
+        fetchSampleMedia.done(() => {
+            new CodeSelect($sampleMedia, {model : this.sampleMediaModel});
         });
-        fetchCharacteristicType.done(function() {
-            new CodeSelect($characteristicType, {model : options.characteristicTypeModel});
+        fetchCharacteristicType.done(() => {
+            new CodeSelect($characteristicType, {model : this.characteristicTypeModel});
         });
 
         new PagedCodeSelect($characteristicName, {codes: 'characteristicname'}, {closeOnSelect : false});
@@ -70,7 +75,5 @@ PORTAL.VIEWS.samplingParameterInputView = function(options) {
         });
 
         return fetchComplete;
-    };
-
-    return self;
-};
+    }
+}
