@@ -4,7 +4,6 @@
 require('./js/coverage/coverageMap');
 //require('./js/coverage/coverageOnReady');
 require('./js/downloadFormController');
-require('./js/identifyDialog');
 require('./js/leafletControls/FeatureSourceSelectControl');
 require('./js/leafletControls/SearchControl');
 require('./js/leafletLayers/CoverageLayer');

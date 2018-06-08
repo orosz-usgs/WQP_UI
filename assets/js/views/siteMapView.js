@@ -1,4 +1,5 @@
 import filter from 'lodash/collection/filter';
+import IdentifyDialog from '../identifyDialog';
 
 
 var MAP_ID = 'query-results-map';
@@ -24,7 +25,7 @@ export default class SiteMapView {
      * Initialize the site map and all of it's controls
      */
     initialize() {
-        this.identifyDialog = PORTAL.VIEWS.identifyDialog({
+        this.identifyDialog = new IdentifyDialog({
             $dialog : $('#map-info-dialog'),
             $popover : this.$container.find('#map-popover')
         });

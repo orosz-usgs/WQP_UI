@@ -1,4 +1,5 @@
 import SiteMapView from '../../../../js/views/siteMapView';
+import IdentifyDialog from '../../../../js/identifyDialog';
 
 
 describe ('Tests for SiteMapView', function() {
@@ -6,7 +7,6 @@ describe ('Tests for SiteMapView', function() {
     var $testDiv;
 
     var siteMapInitializeSpy, siteMapRenderSpy, siteMapUpdateSitesLayerSpy, siteMapClearBoxIdSpy;
-    var identifyInitializeSpy;
     var mockDownloadDialog, mockDownloadView;
     var fetchCountsDeferred;
     var validateSuccess;
@@ -30,10 +30,7 @@ describe ('Tests for SiteMapView', function() {
         siteMapUpdateSitesLayerSpy = jasmine.createSpy('siteMapUpdateSitesLayer');
         siteMapClearBoxIdSpy = jasmine.createSpy('siteMapClearBoxId');
 
-        identifyInitializeSpy = jasmine.createSpy('dialogInitialize');
-        spyOn(PORTAL.VIEWS, 'identifyDialog').and.returnValue({
-            initialize : identifyInitializeSpy
-        });
+        spyOn(IdentifyDialog.prototype, 'initialize');
 
         spyOn(PORTAL.MAP, 'siteMap').and.returnValue({
             initialize : siteMapInitializeSpy,
@@ -76,7 +73,7 @@ describe ('Tests for SiteMapView', function() {
 
     it('Expects that the identify dialog and the site map are initialized', function() {
         expect(siteMapInitializeSpy).toHaveBeenCalled();
-        expect(identifyInitializeSpy).toHaveBeenCalledWith(siteMapClearBoxIdSpy);
+        expect(IdentifyDialog.prototype.initialize).toHaveBeenCalledWith(siteMapClearBoxIdSpy);
     });
 
     it('Expects that when the show-hide-toggle button is clicked the portal map rendered', function() {

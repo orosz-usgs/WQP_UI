@@ -7,7 +7,7 @@ PORTAL.MAP = PORTAL.MAP || {};
  *      @prop {Jquery element} $loadingIndicator
  *      @prop {Jquery element} $legendDiv
  *      @prop {Jquery element} $sldSelect
- *      @prop {Object instance of PORTAL.VIEWS.identifyDialog} identifyDialog
+ *      @prop {Object instance of IdentifyDialog} identifyDialog
  * @return {Object}
  *      @func initialize
  *      @func render
