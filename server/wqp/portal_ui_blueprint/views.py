@@ -178,7 +178,7 @@ def public_srsnames():
     return render_template('public_srsnames.html', status_code=resp.status_code, content=resp.json())
 
 
-@portal_ui.route('/wqp_download/<op>', methods=['GET', 'POST'])
+@portal_ui.route('/wqp_download/<op>', methods=['POST'])
 def wqp_download_proxy(op):
     '''
     Proxies the download request and adds the authorization header if an access_token is present.

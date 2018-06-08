@@ -68,7 +68,7 @@ celery.conf.update(app.config)
 # Enable authentication if configured.
 oauth = None  # pylint: disable=C0103
 if app.config.get('WATERAUTH_AUTHORIZE_URL'):
-    oauth = OAuth(app)
+    oauth = OAuth(app)  # pylint: disable=C0103
     oauth.register('waterauth',
                    client_kwargs={'verify': app.config.get('VERIFY_CERT', True)}
                    )
@@ -108,7 +108,7 @@ session = Session()
 session.verify = app.config.get('VERIFY_CERT', True)
 
 from .auth.views import auth_blueprint  # pylint: disable=C0413
-from .portal_ui.views import portal_ui  # pylint: disable=C0413
+from .portal_ui_blueprint.views import portal_ui  # pylint: disable=C0413
 from .sites.views import sites_blueprint  # pylint: disable=C0413
 from .wqx.views import wqx  # pylint: disable=C0413
 from . import filters  # pylint: disable=C0413
