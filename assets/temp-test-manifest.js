@@ -1,7 +1,6 @@
 /**
  * This bootstraps Rollup with Karma, loading every module in the application.
  */
-require('./js/coverage/coverageMap');
 require('./js/leafletControls/FeatureSourceSelectControl');
 require('./js/leafletControls/SearchControl');
 require('./js/leafletLayers/CoverageLayer');
