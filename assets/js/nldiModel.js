@@ -1,93 +1,83 @@
 import find from 'lodash/collection/find';
 
 
-var PORTAL = window.PORTAL = window.PORTAL || {};
-PORTAL.MODELS = PORTAL.MODELS || {};
+const huc12FeatureSource = {
+    id : 'huc12pp',
+    text : 'HUC 12 pour points',
+    mapLayer : L.tileLayer.wms(Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wms', {
+        layers:'fpp',
+        styles : 'pour_points',
+        format : 'image/png',
+        transparent : true,
+        zIndex : 20
+    }),
+    getFeatureInfoSource : {
+        endpoint : Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wms',
+        layerName : 'qw_portal_map:fpp',
+        featureIdProperty : 'HUC_12'
+    }
+};
 
-PORTAL.MODELS.nldiModel = (function() {
-    var self = {};
+const nwisSitesFeatureSource = {
+    id : 'nwissite',
+    text : 'Active NWIS stream gages',
+    mapLayer : L.tileLayer.wms(Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wms', {
+        layers: 'qw_portal_map:nwis_sites',
+        format : 'image/png',
+        transparent : true,
+        zIndex : 20
+    }),
+    getFeatureInfoSource : {
+        endpoint : Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wms',
+        layerName : 'qw_portal_map:nwis_sites',
+        featureIdProperty : 'siteId'
+    }
+};
 
-    var huc12FeatureSource = {
-        id : 'huc12pp',
-        text : 'HUC 12 pour points',
-        mapLayer : L.tileLayer.wms(Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wms', {
-            layers:'fpp',
-            styles : 'pour_points',
-            format : 'image/png',
-            transparent : true,
-            zIndex : 20
-        }),
-        getFeatureInfoSource : {
-            endpoint : Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wms',
-            layerName : 'qw_portal_map:fpp',
-            featureIdProperty : 'HUC_12'
-        }
+export const FEATURE_SOURCES = [huc12FeatureSource, nwisSitesFeatureSource];
+export const NAVIGATION_MODES = [
+    {id : 'UM', text : 'Upstream main'},
+    {id : 'DM', text : 'Downstream main'},
+    {id : 'UT', text : 'Upstream with tributaries'},
+    {id : 'DD', text : 'Downstream with diversions'}
+];
+
+let modelData;
+
+export const reset = function() {
+    modelData = {
+        featureSource : nwisSitesFeatureSource, // should be one of FEATURE_SOURCES
+        featureId : '',
+        navigation : undefined, // Should be one of NAVIGATION_MODES
+        distance : ''
     };
+};
 
-    var nwisSitesFeatureSource = {
-        id : 'nwissite',
-        text : 'Active NWIS stream gages',
-        mapLayer : L.tileLayer.wms(Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wms', {
-            layers: 'qw_portal_map:nwis_sites',
-            format : 'image/png',
-            transparent : true,
-            zIndex : 20
-        }),
-        getFeatureInfoSource : {
-            endpoint : Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wms',
-            layerName : 'qw_portal_map:nwis_sites',
-            featureIdProperty : 'siteId'
-        }
-    };
+export const getData = function() {
+    return modelData;
+};
 
-    self.FEATURE_SOURCES = [huc12FeatureSource, nwisSitesFeatureSource];
-    self.NAVIGATION_MODES = [
-        {id : 'UM', text : 'Upstream main'},
-        {id : 'DM', text : 'Downstream main'},
-        {id : 'UT', text : 'Upstream with tributaries'},
-        {id : 'DD', text : 'Downstream with diversions'}
-    ];
+export const setData = function(property, value) {
+    modelData[property] = value;
+};
 
-    var modelData;
+export const setFeatureSource = function(featureSourceId) {
+    modelData.featureSource = find(FEATURE_SOURCES, function(source) {
+        return source.id === featureSourceId;
+    });
+};
 
-    self.reset = function() {
-        modelData = {
-            featureSource : nwisSitesFeatureSource, // should be one of FEATURE_SOURCES
-            featureId : '',
-            navigation : undefined, // Should be one of NAVIGATION_MODES
-            distance : ''
-        };
-    };
+export const getUrl = function(dataSource) {
+    var result = '';
+    var dataSourceString = dataSource ? '/' + dataSource : '';
+    if (modelData.featureSource && modelData.featureId && modelData.navigation) {
+        result = Config.NLDI_SERVICES_ENDPOINT + modelData.featureSource.id + '/' + modelData.featureId +
+            '/navigate/' + modelData.navigation.id +
+            dataSourceString +
+            '?distance=' + modelData.distance;
+    }
+    return result;
+};
 
-    self.getData = function() {
-        return modelData;
-    };
-
-    self.setData = function(property, value) {
-        modelData[property] = value;
-    };
-
-    self.setFeatureSource = function(featureSourceId) {
-        modelData.featureSource = find(self.FEATURE_SOURCES, function(source) {
-            return source.id === featureSourceId;
-        });
-    };
-
-    self.getUrl = function(dataSource) {
-        var result = '';
-        var dataSourceString = dataSource ? '/' + dataSource : '';
-        if (modelData.featureSource && modelData.featureId && modelData.navigation) {
-            result = Config.NLDI_SERVICES_ENDPOINT + modelData.featureSource.id + '/' + modelData.featureId +
-                '/navigate/' + modelData.navigation.id +
-                dataSourceString +
-                '?distance=' + modelData.distance;
-        }
-        return result;
-    };
-
-    // Initialize modelData
-    self.reset();
-
-    return self;
-
-})();
+// Initialize modelData
+reset();

@@ -2,10 +2,8 @@ import log from 'loglevel';
 import partial from 'lodash/function/partial';
 
 import NldiNavPopupView from './nldiNavPopupView';
+import * as nldiModel from '../nldiModel';
 
-
-var PORTAL = window.PORTAL = window.PORTAL || {};
-PORTAL.VIEWS = PORTAL.VIEWS || {};
 
 /*
  * Creates the NHLD maps, an inset map and a larger map. Only one of the maps is shown.
@@ -42,7 +40,7 @@ export default class NldiView {
     }
 
     getRetrieveMessage() {
-        var nldiData = PORTAL.MODELS.nldiModel.getData();
+        var nldiData = nldiModel.getData();
         return '<p>Retrieving sites ' + nldiData.navigation.text.toLowerCase() + (nldiData.distance ? ' ' + nldiData.distance + ' km' : '') + '.</p>';
     }
 
@@ -82,7 +80,7 @@ export default class NldiView {
      */
     fetchFeatureId(point) {
         var mapBounds = this.map.getBounds();
-        var nldiFeatureSource = PORTAL.MODELS.nldiModel.getData().featureSource.getFeatureInfoSource;
+        var nldiFeatureSource = nldiModel.getData().featureSource.getFeatureInfoSource;
         return $.ajax({
             url : nldiFeatureSource.endpoint,
             method : 'GET',
@@ -105,12 +103,12 @@ export default class NldiView {
 
 
     /*
-     * Retrieve the NLDI sites and flow lines for the current state of PORTAL.MODELS.nldiModel and
+     * Retrieve the NLDI sites and flow lines for the current state of nldiModel and
      * display them on both the this.insetMap and map.
      */
     updateNldiSites() {
-        var nldiSiteUrl = PORTAL.MODELS.nldiModel.getUrl('wqp');
-        var nldiFlowlinesUrl = PORTAL.MODELS.nldiModel.getUrl();
+        var nldiSiteUrl = nldiModel.getUrl('wqp');
+        var nldiFlowlinesUrl = nldiModel.getUrl();
 
         var fetchNldiSites = function() {
             return $.ajax({
@@ -157,7 +155,7 @@ export default class NldiView {
                     this.map.addLayer(this.nldiSiteCluster);
                     this.insetMap.addLayer(this.insetNldiSiteCluster);
 
-                    this.updateNldiInput(PORTAL.MODELS.nldiModel.getUrl('wqp'));
+                    this.updateNldiInput(nldiModel.getUrl('wqp'));
                 })
                 .fail(() => {
                     this.map.openPopup('Unable to retrieve NLDI information', this.map.getCenter());
@@ -177,14 +175,14 @@ export default class NldiView {
      * @param {L.MouseEvent} ev
      */
     findSitesHandler(ev) {
-        var featureIdProperty = PORTAL.MODELS.nldiModel.getData().featureSource.getFeatureInfoSource.featureIdProperty;
+        var featureIdProperty = nldiModel.getData().featureSource.getFeatureInfoSource.featureIdProperty;
 
         log.debug('Clicked at location: ' + ev.latlng.toString());
         this.$mapDiv.css('cursor', 'progress');
 
-        PORTAL.MODELS.nldiModel.setData('featureId', '');
-        PORTAL.MODELS.nldiModel.setData('navigation', undefined);
-        PORTAL.MODELS.nldiModel.setData('distance', '');
+        nldiModel.setData('featureId', '');
+        nldiModel.setData('navigation', undefined);
+        nldiModel.setData('distance', '');
         this.cleanUpMaps();
         this.map.closePopup();
 
@@ -201,7 +199,7 @@ export default class NldiView {
                 } else if (result.features.length > 1) {
                     this.map.openPopup('<p>More than one query point has been selected. Please zoom in and try again.</p>', ev.latlng);
                 } else {
-                    PORTAL.MODELS.nldiModel.setData('featureId',
+                    nldiModel.setData('featureId',
                         result.features[0].properties[featureIdProperty]);
 
                     new NldiNavPopupView(this.map, result.features[0], ev.latlng, navHandler);
@@ -243,11 +241,11 @@ export default class NldiView {
     featureSourceChangeHandler(ev) {
         this.cleanUpMaps();
         this.map.closePopup();
-        PORTAL.MODELS.nldiModel.setFeatureSource($(ev.currentTarget).val());
+        nldiModel.setFeatureSource($(ev.currentTarget).val());
     }
 
     clearHandler() {
-        PORTAL.MODELS.nldiModel.reset();
+        nldiModel.reset();
         this.cleanUpMaps();
         this.map.closePopup();
     }
@@ -284,8 +282,8 @@ export default class NldiView {
 
         var featureSourceSelectControl = L.control.featureSourceSelectControl({
             changeHandler : this.featureSourceChangeHandler,
-            featureSourceOptions : PORTAL.MODELS.nldiModel.FEATURE_SOURCES,
-            initialFeatureSourceValue : PORTAL.MODELS.nldiModel.getData().featureSource.id
+            featureSourceOptions : nldiModel.FEATURE_SOURCES,
+            initialFeatureSourceValue : nldiModel.getData().featureSource.id
         });
 
         var searchControl = L.control.searchControl(Config.GEO_SEARCH_API_ENDPOINT);

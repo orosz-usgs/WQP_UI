@@ -11,7 +11,6 @@ require('./js/leafletLayers/WQPSitesLayer');
 require('./js/LeafletMixins/SingleClickEventHandlerMixin');
 require('./js/leafletUtils');
 require('./js/nldiMapping');
-require('./js/nldiModel');
 require('./js/portalHelp');
 require('./js/portalModels');
 //require('./js/portalOnReady');

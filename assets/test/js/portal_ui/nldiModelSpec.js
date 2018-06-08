@@ -1,9 +1,9 @@
 import has from 'lodash/object/has';
 
+import * as nldiModel from '../../../js/nldiModel';
+
 
 describe('nldiModel', function() {
-    var nldiModel = PORTAL.MODELS.nldiModel;
-
     it('Expects that the modelData.getData initially returns an object containing the default properties', function() {
         var data = nldiModel.getData();
 

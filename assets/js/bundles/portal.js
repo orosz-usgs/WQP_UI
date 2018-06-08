@@ -9,7 +9,6 @@ require('../siteMap.js');
 require('../portalOnReady.js');
 require('../providers.js');
 require('../portalModels.js');
-require('../nldiModel.js');
 require('../portalHelp.js');
 require('../stateFIPS.js');
 require('../portalValidators.js');
