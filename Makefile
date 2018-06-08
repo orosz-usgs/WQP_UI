@@ -33,4 +33,4 @@ coverage:
 	mkdir -p ./server/coverage
 	find ./assets/coverage/ -mindepth 2 -iname '*.info' -exec cp {} ./server/coverage \;
 	coveralls-lcov -v -n ./server/coverage/lcov.info > ./server/coverage/coverage.json
-	server/env/bin/coveralls --merge=./server/coverage/coverage.json
+	cd server && env/bin/coveralls --merge=./coverage/coverage.json
