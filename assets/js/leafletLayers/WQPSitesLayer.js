@@ -1,6 +1,7 @@
 import map from 'lodash/collection/map';
 import omit from 'lodash/object/omit';
 import mapValues from 'lodash/object/mapValues';
+import { toBBoxString } from '../leafletUtils';
 
 
 (function() {
@@ -80,7 +81,7 @@ import mapValues from 'lodash/object/mapValues';
          */
         fetchSitesInBBox : function(bounds) {
             return $.ajax({
-                url : L.WQPSitesLayer.getWfsGetFeatureUrl(this.queryParamArray) + '&bbox=' + WQP.L.Util.toBBoxString(bounds),
+                url : L.WQPSitesLayer.getWfsGetFeatureUrl(this.queryParamArray) + '&bbox=' + toBBoxString(bounds),
                 method : 'GET'
             });
         }
