@@ -1,6 +1,5 @@
 require('../queryService.js');
 require('../utils.js');
-require('../MapConfig.js');
 require('../leafletControls/FeatureSourceSelectControl.js');
 require('../leafletControls/SearchControl.js');
 require('../LeafletMixins/SingleClickEventHandlerMixin.js');

@@ -10,7 +10,6 @@ require('./js/leafletLayers/CoverageLayer');
 require('./js/leafletLayers/WQPSitesLayer');
 require('./js/LeafletMixins/SingleClickEventHandlerMixin');
 require('./js/leafletUtils');
-require('./js/MapConfig');
 require('./js/nldiMapping');
 require('./js/nldiModel');
 require('./js/portalHelp');
