@@ -1,4 +1,5 @@
 import logging
+import json
 import os
 import sys
 
@@ -106,6 +107,15 @@ def log_after(response):
 
 session = Session()
 session.verify = app.config.get('VERIFY_CERT', True)
+
+
+# Load static assets manifest file, which maps source file names to the
+# corresponding versioned/hashed file name.
+manifest_path = app.config.get('ASSET_MANIFEST_PATH')
+if manifest_path:
+    with open(manifest_path, 'r') as f:
+        app.config['ASSET_MANIFEST'] = json.loads(f.read())
+
 
 from .auth.views import auth_blueprint  # pylint: disable=C0413
 from .portal_ui_blueprint.views import portal_ui  # pylint: disable=C0413

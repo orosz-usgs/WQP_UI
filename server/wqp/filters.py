@@ -17,5 +17,5 @@ def asset_url_filter(asset_src):
     :rtype: str
     """
     manifest = app.config.get('ASSET_MANIFEST')
-    asset_path = manifest[asset_src] if manifest else asset_src
+    asset_path = manifest.get(asset_src, asset_src) if manifest else asset_src
     return urljoin(app.config.get('STATIC_ROOT'), asset_path)
