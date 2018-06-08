@@ -1,28 +1,11 @@
+import popupTemplate from '../hbTemplates/nldiFeatureSourcePopup.hbs';
+
+
 var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 
 PORTAL.VIEWS.nldiNavPopupView = (function() {
     var self = {};
-
-    var NULL_TEMPLATE = function() {
-        return 'Template has not been loaded';
-    };
-
-    var popupTemplate =  NULL_TEMPLATE;
-
-    /*
-     * Read handlebar templates
-     */
-    var template_loaded_promise = $.ajax({
-        url : Config.STATIC_ENDPOINT + 'js/hbTemplates/nldiFeatureSourcePopup.hbs',
-        cache: false,
-        success : function(response) {
-            popupTemplate = Handlebars.compile(response);
-        },
-        error : function( ) {
-            log.error('Unable to read template hbTemplates/nldiFeatureSourcePopup.hbs');
-        }
-    });
 
     /*
      * Creates a nldi navigation popup onMap. The popup will contain information about the feature
@@ -44,28 +27,24 @@ PORTAL.VIEWS.nldiNavPopupView = (function() {
         };
         var $navButton;
 
-        template_loaded_promise.always(function() {
-            onMap.openPopup(popupTemplate(context), atLatLng);
-            $navButton = $('.navigation-selection-div button');
-            $('.navigation-selection-div select').change(function (ev) {
-                var $select = $(ev.target);
-                var selectedValue = $select.val();
-                var navValue = {
-                    id: selectedValue,
-                    text: $(ev.target.selectedOptions[0]).html()
-                };
+        onMap.openPopup(popupTemplate(context), atLatLng);
+        $navButton = $('.navigation-selection-div button');
+        $('.navigation-selection-div select').change(function (ev) {
+            var $select = $(ev.target);
+            var selectedValue = $select.val();
+            var navValue = {
+                id: selectedValue,
+                text: $(ev.target.selectedOptions[0]).html()
+            };
 
-                PORTAL.MODELS.nldiModel.setData('navigation', navValue);
-                $navButton.prop('disabled', !navValue.id);
-            });
-            $('.navigation-selection-div input[type="text"]').change(function (ev) {
-                PORTAL.MODELS.nldiModel.setData('distance', $(ev.target).val());
-            });
-            $navButton.click(navHandler);
+            PORTAL.MODELS.nldiModel.setData('navigation', navValue);
+            $navButton.prop('disabled', !navValue.id);
         });
+        $('.navigation-selection-div input[type="text"]').change(function (ev) {
+            PORTAL.MODELS.nldiModel.setData('distance', $(ev.target).val());
+        });
+        $navButton.click(navHandler);
     };
-
-    self.template_loaded = template_loaded_promise;
 
     return self;
 })();

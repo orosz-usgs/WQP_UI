@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "mkdir -p dist/scripts && run-p build:vendorjs && karma start",
-    "test:watch": "karma start --debug --no-single-run --browsers Chrome",
+    "test:watch": "mkdir -p dist/scripts && run-p build:vendorjs karma start --debug --no-single-run --browsers Chrome",
     "postinstall": "node post_install.js",
     "build": "run-p build:*",
     "build:css": "run-p buildcss:*",
@@ -20,7 +20,7 @@
     "build:templates": "mkdir -p dist/js/hbTemplates && cp js/hbTemplates/* dist/js/hbTemplates",
     "build:images": "mkdir -p dist/images dist/img && cp img/* dist/img && cp node_modules/leaflet/dist/images/* dist/images && cp node_modules/leaflet-draw/dist/images/* dist/images && cp node_modules/jquery-ui-dist/images/* dist/images",
     "build:js": "mkdir -p dist/scripts && rollup -c --environment NODE_ENV:production",
-    "build:vendorjs": "concat -o dist/scripts/vendor.js node_modules/jquery/dist/jquery.js node_modules/jquery-ui-dist/jquery-ui.min.js node_modules/leaflet/dist/leaflet.js node_modules/leaflet-easybutton/src/easy-button.js node_modules/esri-leaflet/dist/esri-leaflet.js node_modules/handlebars/dist/handlebars.min.js node_modules/leaflet-providers/leaflet-providers.js node_modules/leaflet-draw/dist/leaflet.draw.js node_modules/leaflet.markercluster/dist/leaflet.markercluster.js node_modules/loglevel/dist/loglevel.js node_modules/numeral/src/numeral.js node_modules/select2/dist/js/select2.full.js node_modules/underscore/underscore.js node_modules/bootstrap/dist/js/bootstrap.js",
+    "build:vendorjs": "concat -o dist/scripts/vendor.js node_modules/jquery/dist/jquery.min.js node_modules/jquery-ui-dist/jquery-ui.min.js node_modules/leaflet/dist/leaflet.js node_modules/leaflet-easybutton/src/easy-button.js node_modules/esri-leaflet/dist/esri-leaflet.js node_modules/leaflet-providers/leaflet-providers.js node_modules/leaflet-draw/dist/leaflet.draw.js node_modules/leaflet.markercluster/dist/leaflet.markercluster.js node_modules/select2/dist/js/select2.full.min.js node_modules/bootstrap/dist/js/bootstrap.min.js",
     "serve:static": "live-server --port=9000 --cors --no-browser dist",
     "watch": "run-p watch:* serve:static",
     "watch:css": "nodemon -w ./less -e less -x \"npm run build:css\"",
@@ -64,6 +64,7 @@
     "rollup": "^0.59.4",
     "rollup-plugin-buble": "^0.19.2",
     "rollup-plugin-commonjs": "^9.1.3",
+    "rollup-plugin-handlebars-plus": "^0.2.3",
     "rollup-plugin-istanbul": "^2.0.1",
     "rollup-plugin-json": "^3.0.0",
     "rollup-plugin-node-resolve": "^3.3.0",
@@ -76,7 +77,6 @@
     "bootstrap": "3.3.7",
     "esri-leaflet": "2.1.4",
     "font-awesome": "4.7.0",
-    "handlebars": "4.0.11",
     "jquery": "3.3.1",
     "jquery-ui-dist": "1.12.1",
     "leaflet": "1.3.1",
@@ -84,11 +84,11 @@
     "leaflet-easybutton": "2.3.0",
     "leaflet-providers": "1.1.17",
     "leaflet.markercluster": "1.3.0",
+    "lodash": "^3.10.1",
     "loglevel": "1.6.1",
     "nanobar": "0.4.2",
     "numeral": "2.0.6",
     "select2": "4.0.5",
-    "select2-bootstrap-theme": "0.1.0-beta.10",
-    "underscore": "1.9.0"
+    "select2-bootstrap-theme": "0.1.0-beta.10"
   }
 }

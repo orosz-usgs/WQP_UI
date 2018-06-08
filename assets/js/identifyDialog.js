@@ -1,3 +1,9 @@
+import reject from 'lodash/collection/reject';
+
+import featureInfoTemplate from './hbTemplates/featureInfo.hbs';
+import hiddenFormTemplate from './hbTemplates/hiddenForm.hbs';
+
+
 var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 
@@ -5,36 +11,6 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
     // Only show this many features in the dialog. Also use alternative download based on the bounding box of the
     // features that are shown.
     var FEATURE_LIMIT = 50;
-
-    var FEATURE_INFO_TEMPLATE = Handlebars.compile(
-        '{{#if exceedsFeatureLimit}}' +
-        'Retrieved {{features.length}} sites, only showing ' + FEATURE_LIMIT + '<br />' +
-        '{{/if}}' +
-        '{{#each features}}' +
-        '<br /><table>' +
-        '<tr><th>Station ID: </th><td class="details-site-id">{{properties.name}}</td></tr>' +
-        '<tr><th>Name: </th><td>{{properties.locName}}</td></tr>' +
-        '<tr><th>Type: </th><td>{{properties.type}}</td></tr>' +
-        '<tr><th>HUC 8: </th><td>{{properties.huc8}}</td></tr>' +
-        '<tr><th>Org ID: </th><td>{{properties.orgId}}</td></tr>' +
-        '<tr><th>Org Name: </th><td>{{properties.orgName}}</td></tr>' +
-        '</table>' +
-        '{{/each}}'
-    );
-
-    var HIDDEN_FORM_TEMPLATE = Handlebars.compile(
-        '{{#if exceedsFeatureLimit}}' +
-        '<input type="hidden" name="bBox" value="{{boundingBox}}" />' +
-        '{{#each queryParamArray}}' +
-        '<input type="hidden" name="{{name}}" value="{{value}}" />' +
-        '{{/each}}' +
-        '{{else}}' +
-        '{{#each features}}' +
-        '<input type="hidden" name="siteid" value="{{properties.name}}" />' +
-        '{{/each}}' +
-        '<input type="hidden" name="zip" checked="checked" id="zip" value="yes"/>' +
-        '{{/if}}'
-    );
 
     /*
      * @param {Object} options
@@ -92,7 +68,7 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
                 features: showOptions.features,
                 exceedsFeatureLimit: exceedsFeatureLimit,
                 boundingBox: showOptions.boundingBox,
-                queryParamArray: _.reject(showOptions.queryParamArray, function(param) {
+                queryParamArray: reject(showOptions.queryParamArray, function (param) {
                     return param.name === 'bBox' || param.name === 'mimeType';
                 })
             };
@@ -103,15 +79,15 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
                     options.$popover.popover({
                         placement: 'top',
                         animation: false,
-                        content: FEATURE_INFO_TEMPLATE(context),
+                        content: featureInfoTemplate(context),
                         html: true
                     });
                     options.$popover.popover('show');
                 }
             } else {
                 if (showOptions.features.length > 0) {
-                    $detailDiv.html(FEATURE_INFO_TEMPLATE(context));
-                    $hiddenFormInputDiv.html(HIDDEN_FORM_TEMPLATE(context));
+                    $detailDiv.html(featureInfoTemplate(context));
+                    $hiddenFormInputDiv.html(hiddenFormTemplate(context));
 
                     options.$dialog.dialog('open');
                 } else {

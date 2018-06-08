@@ -1,3 +1,10 @@
+import has from 'lodash/object/has';
+import includes from 'lodash/collection/includes';
+import isEqual from 'lodash/lang/isEqual';
+import map from 'lodash/collection/map';
+import filter from 'lodash/collection/filter';
+
+
 var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 
@@ -10,7 +17,7 @@ PORTAL.VIEWS.createStaticSelect2 = function (el, ids, select2Options) {
     var defaultOptions = {
         allowClear: true,
         theme: 'bootstrap',
-        data: _.map(ids, function (id) {
+        data: map(ids, function (id) {
             return {id: id, text: id};
         })
     };
@@ -63,7 +70,7 @@ PORTAL.VIEWS.createPagedCodeSelect = function (el, spec, select2Options, $filter
         allowClear: true,
         theme: 'bootstrap',
         templateSelection: function (object) {
-            return _.has(object, 'id') ? object.id : null;
+            return has(object, 'id') ? object.id : null;
         },
         ajax: {
             url: Config.CODES_ENDPOINT + '/' + spec.codes,
@@ -78,7 +85,7 @@ PORTAL.VIEWS.createPagedCodeSelect = function (el, spec, select2Options, $filter
             },
             delay: 250,
             processResults: function (data, params) {
-                var results = _.map(data.codes, function (code) {
+                var results = map(data.codes, function (code) {
                     return {
                         id: code.value,
                         text: spec.formatData(code)
@@ -101,9 +108,9 @@ PORTAL.VIEWS.createPagedCodeSelect = function (el, spec, select2Options, $filter
             var parents = $filter.val();
             var children = el.val();
             var isInOrganization = function(child) {
-                return _.contains(parents, child);
+                return includes(parents, child);
             };
-            el.val(_.filter(children, isInOrganization)).trigger('change');
+            el.val(filter(children, isInOrganization)).trigger('change');
             defaultOptions.ajax.url = Config.CODES_ENDPOINT + '/' + spec.codes + getParentParams(parents);
             el.select2($.extend(defaultOptions, select2Options));
         });
@@ -127,7 +134,7 @@ PORTAL.VIEWS.createCodeSelect = function (el, options, select2Options) {
     var defaultOptions;
 
     // Assign defaults for optional parameters
-    if (_.has(options, 'isMatch')) {
+    if (has(options, 'isMatch')) {
         isMatch = options.isMatch;
     } else {
         isMatch = function (term, lookup) {
@@ -140,7 +147,7 @@ PORTAL.VIEWS.createCodeSelect = function (el, options, select2Options) {
             }
         };
     }
-    if (_.has(options, 'formatData')) {
+    if (has(options, 'formatData')) {
         formatData = options.formatData;
     } else {
         formatData = function (data) {
@@ -156,7 +163,7 @@ PORTAL.VIEWS.createCodeSelect = function (el, options, select2Options) {
         allowClear: true,
         theme: 'bootstrap',
         matcher: function (term, data) {
-            var searchTerm = _.has(term, 'term') ? term.term : '';
+            var searchTerm = has(term, 'term') ? term.term : '';
             if (isMatch(searchTerm, options.model.getLookup(data.id))) {
                 return data;
             } else {
@@ -165,14 +172,14 @@ PORTAL.VIEWS.createCodeSelect = function (el, options, select2Options) {
         },
         templateSelection: function (data) {
             var result;
-            if (_.has(data, 'id')) {
+            if (has(data, 'id')) {
                 result = data.id;
             } else {
                 result = null;
             }
             return result;
         },
-        data: _.map(options.model.getAll(), formatData)
+        data: map(options.model.getAll(), formatData)
     };
 
     el.select2($.extend(defaultOptions, select2Options));
@@ -194,7 +201,7 @@ PORTAL.VIEWS.createCascadedCodeSelect = function (el, options, select2Options) {
         allowClear: true,
         theme: 'bootstrap'
     };
-    if (!_.has(options, 'isMatch')) {
+    if (!has(options, 'isMatch')) {
         options.isMatch = function (term, data) {
             var termMatcher;
             if (term) {
@@ -206,7 +213,7 @@ PORTAL.VIEWS.createCascadedCodeSelect = function (el, options, select2Options) {
         };
     }
 
-    if (!_.has(options, 'formatData')) {
+    if (!has(options, 'formatData')) {
         options.formatData = function (data) {
             return {
                 id: data.id,
@@ -224,15 +231,15 @@ PORTAL.VIEWS.createCascadedCodeSelect = function (el, options, select2Options) {
             var selectedKeys = options.getKeys().sort();
             var filteredLookups;
 
-            if (_.isEqual(modelKeys, selectedKeys)) {
-                filteredLookups = _.filter(options.model.getAll(), function (lookup) {
+            if (isEqual(modelKeys, selectedKeys)) {
+                filteredLookups = filter(options.model.getAll(), function (lookup) {
                     return options.isMatch(params.data.term, lookup);
                 });
                 deferred.resolve(filteredLookups);
             } else {
                 options.model.fetch(selectedKeys)
                     .done(function (data) {
-                        filteredLookups = _.filter(data, function(lookup) {
+                        filteredLookups = filter(data, function(lookup) {
                             return options.isMatch(params.data.term, lookup);
                         });
                         deferred.resolve(filteredLookups);
@@ -246,7 +253,7 @@ PORTAL.VIEWS.createCascadedCodeSelect = function (el, options, select2Options) {
             return deferred.promise();
         },
         processResults: function (resp) {
-            var result = _.map(resp, function (lookup) {
+            var result = map(resp, function (lookup) {
                 return options.formatData(lookup);
             });
             return {results: result};

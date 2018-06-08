@@ -1,3 +1,10 @@
+import each from 'lodash/collection/each';
+import has from 'lodash/object/has';
+import omit from 'lodash/object/omit';
+import log from 'loglevel';
+import numeral from 'numeral';
+
+
 var PORTAL = window.PORTAL = window.PORTAL || {};
 
 PORTAL.queryServices = (function() {
@@ -17,10 +24,10 @@ PORTAL.queryServices = (function() {
         var deferred = $.Deferred();
 
         var queryParamJson = PORTAL.UTILS.getQueryParamJson(queryParamArray);
-        var countQueryJson = _.omit(queryParamJson, ['mimeType', 'zip', 'sorted']);
+        var countQueryJson = omit(queryParamJson, ['mimeType', 'zip', 'sorted']);
 
         var formatCount = function(countData, key) {
-            var countString = _.has(countData, key) ? countData[key] : '0';
+            var countString = has(countData, key) ? countData[key] : '0';
             var result = numeral(countString).format('0,0');
             return result === '0' ? '0' : result;
         };
@@ -43,7 +50,7 @@ PORTAL.queryServices = (function() {
                         resultdetections: formatCount(data, 'Total-ResultDetectionQuantitationLimit-Count')
                     }
                 };
-                _.each(providers, function(provider) {
+                each(providers, function(provider) {
                     result[provider] = {
                         sites: formatCount(data, provider + '-Site-Count'),
                         projects: formatCount(data, provider + '-Project-Count'),

@@ -1,3 +1,8 @@
+import filter from 'lodash/collection/filter';
+import includes from 'lodash/collection/includes';
+import log from 'loglevel';
+
+
 var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.MODELS = PORTAL.MODELS || {};
 
@@ -47,10 +52,10 @@ PORTAL.MODELS.providers = function() {
          */
         formatAvailableProviders: function(availableProviders /* String containing space separated list of providers */) {
             var isValidId = function(id) {
-                return _.contains(ids, id);
+                return includes(ids, id);
             };
             var availableList = availableProviders.split(' ');
-            var resultList = _.filter(availableList, isValidId);
+            var resultList = filter(availableList, isValidId);
 
             if (resultList.length === ids.length) {
                 return 'all';

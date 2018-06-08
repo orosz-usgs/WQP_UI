@@ -1,3 +1,8 @@
+import map from 'lodash/collection/map';
+
+import countsHbTemplate from './hbTemplates/counts.hbs';
+
+
 var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 
@@ -30,33 +35,6 @@ PORTAL.VIEWS.downloadProgressDialog = function (el) {
             cancelMessage: 'Your query is returning more than 1,048,575 results which exceeds Excel\'s limit.'
         }
     };
-
-    var countsHbTemplate = Handlebars.compile('Your query will return ' +
-        '{{#if isResults}} <b>{{total.results}}</b> sample results from {{/if}}' +
-        '{{#if isProjects }}data on <b>{{total.projects}}</b> projects {{/if}}' +
-        '{{#if isProjectMonitoringLocationWeightings }}data on <b>{{total.projectmonitoringlocationweightings}}</b> project monitoring location weightings {{/if}}' +
-        '{{#if isActivities }}data on <b>{{total.activities}}</b> sampling activities at {{/if}}' +
-        '{{#if isActivityMetrics }}data on <b>{{total.activitymetrics }}</b> activity metrics in {{total.activities}} activities {{/if}}' +
-        '{{#if isResultDetection}}data on <b>{{total.resultdetections}}</b> result detection quantitation limit data {{/if}}' +
-        '{{#if showSites}}' +
-        ' <b>{{total.sites}}</b> sites:<br />' +
-        '{{else}}' +
-        '<br/>' +
-        '{{/if}}' +
-        '{{#each providers}} From {{id}}: ' +
-        '{{#if ../isProjects}}{{counts.projects}} projects {{/if}}' +
-        '{{#if ../isProjectMonitoringLocationWeightings}}{{counts.projectmonitoringlocationweightings}} project monitoring location weightings  {{/if}}' +
-        '{{#if ../isResults}}{{counts.results}} sample results from {{/if}}' +
-        '{{#if ../isActivities}}{{counts.activities}} sampling activities from {{/if}}' +
-        '{{#if ../isActivityMetrics}}{{counts.activitymetrics}} activity metrics in {{counts.activities}} activities{{/if}}' +
-        '{{#if ../isResultDetection}}data on <b>{{counts.resultdetections}}</b> result detection quantitation limit data{{/if}}' +
-        '{{#if ../showSites}}' +
-        '{{counts.sites}} sites <br/>' +
-        '{{else}}' +
-        '<br/>' +
-        '{{/if}}' +
-        '{{/each}}'
-    );
 
     var buttonHtml = function (id, label) {
         return '<button id="' + id + '" type="button" class="btn btn-default">' + label + '</button>';
@@ -93,7 +71,7 @@ PORTAL.VIEWS.downloadProgressDialog = function (el) {
                 isActivityMetrics : resultType === 'ActivityMetric',
                 isResultDetection: resultType === 'ResultDetectionQuantitationLimit'
             };
-            context.providers = _.map(PORTAL.MODELS.providers.getIds(), function (provider) {
+            context.providers = map(PORTAL.MODELS.providers.getIds(), function (provider) {
                 return {
                     id: provider,
                     counts: counts[provider]

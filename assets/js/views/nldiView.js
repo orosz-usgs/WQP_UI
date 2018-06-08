@@ -1,3 +1,7 @@
+import log from 'loglevel';
+import partial from 'lodash/function/partial';
+
+
 var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 
@@ -21,8 +25,8 @@ PORTAL.VIEWS.nldiView  = function(options) {
     var insetNldiSiteCluster, insetNldiFlowlineLayers;
 
     /* Functions return a geoJson layer with predefined options for flowLine and site layers respectively */
-    var flowlineLayer = _.partial(L.geoJson);
-    var siteLayer = _.partial(L.geoJson, _, {
+    var flowlineLayer = partial(L.geoJson);
+    var siteLayer = partial(L.geoJson, partial.placeholder, {
         pointToLayer: function (featureData, latlng) {
             return L.circleMarker(latlng, {
                 radius: 5,

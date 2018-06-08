@@ -1,3 +1,9 @@
+import contains from 'lodash/collection/contains';
+import filter from 'lodash/collection/filter';
+import has from 'lodash/object/has';
+import last from 'lodash/array/last';
+
+
 var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.VIEWS = PORTAL.VIEWS || {};
 
@@ -27,7 +33,7 @@ PORTAL.VIEWS.placeInputView = function (options) {
             }
         };
         var templateSelection = function(selectData) {
-            if (_.has(selectData, 'id')) {
+            if (has(selectData, 'id')) {
                 return selectData.id;
             } else {
                 return null;
@@ -67,7 +73,7 @@ PORTAL.VIEWS.placeInputView = function (options) {
         var templateSelection = function(selectData) {
             var codes;
             var result;
-            if (_.has(selectData, 'id')) {
+            if (has(selectData, 'id')) {
                 codes = selectData.id.split(':');
 
                 if (codes[0] === USA) {
@@ -92,7 +98,7 @@ PORTAL.VIEWS.placeInputView = function (options) {
             var county;
             if (searchTerm) {
                 termMatcher = new RegExp(searchTerm, 'i');
-                county = _.last(lookup.desc.split(','));
+                county = last(lookup.desc.split(','));
                 return termMatcher.test(county);
             } else {
                 return true;
@@ -108,7 +114,7 @@ PORTAL.VIEWS.placeInputView = function (options) {
             var codes;
             var result;
 
-            if (_.has(selectData, 'id')) {
+            if (has(selectData, 'id')) {
                 codes = selectData.id.split(':');
 
                 if (codes[0] === 'US') {
@@ -173,13 +179,13 @@ PORTAL.VIEWS.placeInputView = function (options) {
             var states = $stateSelect.val();
             var isInCountries = function(state) {
                 var countryCode = state.split(':')[0];
-                return _.contains(countries, countryCode);
+                return contains(countries, countryCode);
             };
 
             if (!countries) {
                 countries = [USA];
             }
-            $stateSelect.val(_.filter(states, isInCountries)).trigger('change');
+            $stateSelect.val(filter(states, isInCountries)).trigger('change');
         });
 
         $stateSelect.on('change', function (ev) {
@@ -188,10 +194,10 @@ PORTAL.VIEWS.placeInputView = function (options) {
             var isInStates = function(county) {
                 var codes = county.split(':');
                 var stateCode = codes[0] + ':' + codes[1];
-                return _.contains(states, stateCode);
+                return contains(states, stateCode);
             };
 
-            $countySelect.val(_.filter(counties, isInStates)).trigger('change');
+            $countySelect.val(filter(counties, isInStates)).trigger('change');
         });
         PORTAL.VIEWS.inputValidation({
             inputEl : $countySelect,

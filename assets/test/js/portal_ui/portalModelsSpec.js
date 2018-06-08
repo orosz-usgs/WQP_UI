@@ -1,3 +1,6 @@
+import log from 'loglevel';
+
+
 describe('Tests for PORTAL.MODELS.cachedCodes', function () {
     var testCodesModel;
     var server;

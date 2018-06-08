@@ -1,3 +1,8 @@
+import map from 'lodash/collection/map';
+import omit from 'lodash/object/omit';
+import mapValues from 'lodash/object/mapValues';
+
+
 (function() {
     var LAYER_NAME = 'wqp_sites';
     var WMS_VERSION = '1.1.0';
@@ -121,15 +126,15 @@
          */
         getSearchParams: function(queryParamArray) {
             var queryJson = PORTAL.UTILS.getQueryParamJson(queryParamArray);
-            var resultJson = _.omit(queryJson, ['mimeType', 'zip']);
-            resultJson = _.mapObject(resultJson, function(value) {
+            var resultJson = omit(queryJson, ['mimeType', 'zip']);
+            resultJson = mapValues(resultJson, function(value) {
                 if (typeof value === 'string') {
                     return value;
                 } else {
                     return value.join('|');
                 }
             });
-            var resultArray = _.map(resultJson, function(value, name) {
+            var resultArray = map(resultJson, function (value, name) {
                 return name + ':' + value;
             });
             return resultArray.join(';');

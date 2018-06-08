@@ -27,25 +27,19 @@
     "semi": ["error", "always"]
   },
   "globals": {
-    "__dirname": true,
     "console": true,
     "document": true,
-    "Math": true,
     "process": true,
-    "XMLHttpRequest": true,
     "window": true,
+    "XMLHttpRequest": true,
     "PORTAL": true,
     "SITES": true,
     "COVERAGE": true,
     "NLDI": true,
     "WQP": true,
     "L": true,
-    "Handlebars": true,
-    "_": true,
     "$": true,
     "Config": true,
-    "log": true,
-    "numeral": true,
     "sinon": true
   }
 }

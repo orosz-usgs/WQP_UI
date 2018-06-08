@@ -1,3 +1,6 @@
+import log from 'loglevel';
+
+
 describe('Tests for queryService', function() {
     describe('Tests for fetchQueryCounts', function() {
         var fakeServer;

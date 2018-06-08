@@ -1,3 +1,8 @@
+import each from 'lodash/collection/each';
+import includes from 'lodash/collection/includes';
+import reject from 'lodash/collection/reject';
+
+
 var PORTAL = window.PORTAL = window.PORTAL || {};
 PORTAL.UTILS = function() {
     var self = {};
@@ -16,13 +21,13 @@ PORTAL.UTILS = function() {
      */
     self.getQueryString = function(queryParamArray, ignoreList, multiSelectDelimited) {
         var thisIgnoreList = ignoreList ? ignoreList : [];
-        var resultArray = _.reject(queryParamArray, function (param) {
-            return _.contains(thisIgnoreList, param.name);
+        var resultArray = reject(queryParamArray, function (param) {
+            return includes(thisIgnoreList, param.name);
         });
 
         var paramArray = [];
 
-        _.each(resultArray, function(param) {
+        each(resultArray, function(param) {
             // If not string than it is assumed to be an array
             if (typeof param.value === 'string') {
                 paramArray.push(param);
@@ -32,7 +37,7 @@ PORTAL.UTILS = function() {
                     value: param.value.join(';')
                 });
             } else {
-                _.each(param.value, function(val) {
+                each(param.value, function(val) {
                     paramArray.push({
                         name: param.name,
                         value: val
@@ -52,7 +57,7 @@ PORTAL.UTILS = function() {
      */
     self.getQueryParamJson = function(queryParamArray) {
         var result = {};
-        _.each(queryParamArray, function(param) {
+        each(queryParamArray, function(param) {
             if (typeof param.value === 'string' && param.multiple) {
                 result[param.name] = param.value.split(';');
             } else {

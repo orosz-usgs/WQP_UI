@@ -28,7 +28,7 @@ module.exports = function (config) {
             'test/resources/testConfig.js',
             'temp-test-manifest.js',
             //'js/**/*.js',
-            {pattern: 'js/hbTemplates/*.hbs', included: false},
+            {pattern: 'js/hbTemplates/*.hbs', included: false}
             //'test/js/portal_ui/**/*.js'
         ],
 
@@ -106,7 +106,12 @@ module.exports = function (config) {
                 ...karmaConfig.rollupPreprocessor,
                 plugins: [
                     ...karmaConfig.rollupPreprocessor.plugins,
-                    istanbul()
+                    istanbul({
+                        exclude: [
+                            'test/**/*.js',
+                            'node_modules/**/*.js'
+                        ]
+                    })
                 ]
             },
             reporters: [

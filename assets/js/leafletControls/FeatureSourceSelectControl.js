@@ -1,3 +1,6 @@
+import find from 'lodash/collection/find';
+
+
 /*
  * @constructs
  * @param {Object} options
@@ -28,7 +31,7 @@ L.control.FeatureSourceSelectControl = L.Control.extend({
         L.setOptions(this, options);
         L.Control.prototype.initialize.apply(this, options);
 
-        this._initialFeatureSourceOption = _.find(options.featureSourceOptions, isInitialValueInFeatureSourceOption);
+        this._initialFeatureSourceOption = find(options.featureSourceOptions, isInitialValueInFeatureSourceOption);
         this._featureSourceLayer = undefined;
         this._selectEl = undefined;
     },

@@ -3,7 +3,7 @@ describe('PORTAL.VIEWS.nldiNavViewPopupView', function() {
     var testMap;
     var navHandlerSpy;
 
-    beforeEach(function(done) {
+    beforeEach(function() {
         $('body').append('<div id=test-div style="height: 30px; width: 30px;"></div>');
         $testDiv = $('#test-div');
         testMap = L.map('test-div', {
@@ -13,7 +13,6 @@ describe('PORTAL.VIEWS.nldiNavViewPopupView', function() {
 
         navHandlerSpy = jasmine.createSpy('navHandlerSpy');
         PORTAL.VIEWS.nldiNavPopupView.createPopup(testMap, {}, L.latLng(43.0, -100.0), navHandlerSpy);
-        PORTAL.VIEWS.nldiNavPopupView.template_loaded.always(done);
     });
 
     afterEach(function() {

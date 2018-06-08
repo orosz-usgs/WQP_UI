@@ -3,7 +3,7 @@ describe ('Tests for PORTAL.VIEWS.arcGisOnlineHelp', function() {
     var $testDiv;
     var getQueryParamsSpy;
 
-    beforeEach(function(done) {
+    beforeEach(function() {
         $('body').append('<div id="test-div"></div>');
         $testDiv = $('#test-div');
         $testDiv.append('<div id="test-map-container"><select id="sld-select-input">' +
@@ -39,8 +39,6 @@ describe ('Tests for PORTAL.VIEWS.arcGisOnlineHelp', function() {
         });
 
         testView.initialize();
-
-        testView.template_loaded.always(done);
     });
 
     afterEach(function() {
