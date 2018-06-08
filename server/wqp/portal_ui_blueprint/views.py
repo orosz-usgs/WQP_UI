@@ -1,10 +1,16 @@
+'''
+Views and a view decorator that implement an Oauth2 client.
+'''
+
 import pickle
 
 import arrow
 from flask import render_template, request, make_response, redirect, url_for, abort, Response, jsonify, Blueprint
 import redis
 
-from .. import app, session
+from ..auth.views import authentication_required_when_configured
+
+from .. import app, session, oauth
 from ..utils import pull_feed, geoserver_proxy_request, retrieve_providers, retrieve_organizations, \
     get_site_key, retrieve_organization, retrieve_sites_geojson, retrieve_site, retrieve_county, \
     generate_redis_db_number, create_request_resp_log_msg, create_redis_log_msg, invalid_usgs_view
@@ -46,6 +52,7 @@ def contact_us():
 
 @portal_ui.route('/portal.jsp')
 @portal_ui.route('/portal/', endpoint='portal-canonical')
+@authentication_required_when_configured
 def portal():
     if request.path == '/portal.jsp':
         return redirect(url_for('portal_ui.portal-canonical')), 301
@@ -54,6 +61,7 @@ def portal():
 
 @portal_ui.route('/portal_userguide.jsp')
 @portal_ui.route('/portal_userguide/', endpoint='portal_userguide-canonical')
+@authentication_required_when_configured
 def portal_userguide():
     if request.path == '/portal_userguide.jsp':
         return redirect(url_for('portal_ui.portal_userguide-canonical')), 301
@@ -158,6 +166,7 @@ def other_portal_links():
 
 @portal_ui.route('/public_srsnames.jsp')
 @portal_ui.route('/public_srsnames/', endpoint='public_srsnames-canonical')
+@authentication_required_when_configured
 def public_srsnames():
     if request.path == '/public_srsnames.jsp':
         return redirect(url_for('portal_ui.public_srsnames-canonical')), 301
@@ -168,6 +177,21 @@ def public_srsnames():
 
     return render_template('public_srsnames.html', status_code=resp.status_code, content=resp.json())
 
+
+@portal_ui.route('/wqp_download/<op>', methods=['POST'])
+def wqp_download_proxy(op):
+    '''
+    Proxies the download request and adds the authorization header if an access_token is present.
+    :param String op: The kind of download to request
+    :return Response:
+    '''
+    target_url = app.config['SEARCH_QUERY_ENDPOINT'] + op + '/search'
+    headers = {}
+    access_token = request.cookies.get('access_token')
+    if access_token:
+        headers['Authorization'] =  'Bearer {0}'.format(access_token)
+    resp = session.post(target_url, data=request.form, headers=headers, verify=proxy_cert_verification)
+    return make_response(resp.content, resp.status_code, resp.headers.items())
 
 @portal_ui.route('/wqp_geoserver/<op>', methods=['GET', 'POST'])
 def wqp_geoserverproxy(op):
@@ -182,6 +206,7 @@ def sites_geoserverproxy(op):
 
 
 @portal_ui.route('/crossdomain.xml')
+@authentication_required_when_configured
 def crossdomain():
     xml = render_template('crossdomain.xml')
     response = make_response(xml)
@@ -190,6 +215,7 @@ def crossdomain():
 
 
 @portal_ui.route('/kml/wqp_styles.kml')
+@authentication_required_when_configured
 def kml():
     xml = render_template('wqp_styles.kml')
     response = make_response(xml)
@@ -203,6 +229,7 @@ def images(image_file):
 
 
 @portal_ui.route('/provider/', endpoint='uri_base')
+@authentication_required_when_configured
 def uri_base():
     providers = retrieve_providers()
     if not providers:
@@ -211,6 +238,7 @@ def uri_base():
 
 
 @portal_ui.route('/provider/<provider_id>/', endpoint='uri_provider')
+@authentication_required_when_configured
 def uri_provider(provider_id):
     organizations = retrieve_organizations(provider_id)
     if organizations is None:
@@ -221,6 +249,7 @@ def uri_provider(provider_id):
 
 
 @portal_ui.route('/provider/<provider_id>/<organization_id>/', endpoint='uri_organization')
+@authentication_required_when_configured
 def uri_organization(provider_id, organization_id):
     #Check for the information in redis first
     rendered_template = None
@@ -260,6 +289,7 @@ def uri_organization(provider_id, organization_id):
 
 
 @portal_ui.route('/provider/<provider_id>/<organization_id>/<path:site_id>/', endpoint='uri_site')
+@authentication_required_when_configured
 def uris(provider_id, organization_id, site_id):
     site_data = None
     if redis_config:
@@ -313,6 +343,7 @@ def uris(provider_id, organization_id, site_id):
 
 
 @portal_ui.route('/clear_cache/<provider_id>/')
+@authentication_required_when_configured
 def clear_cache(provider_id=None):
     if redis_config:
         redis_db_number = generate_redis_db_number(provider_id)
@@ -329,6 +360,7 @@ def clear_cache(provider_id=None):
 
 
 @portal_ui.route('/sites_cache_task/<provider_id>', methods=['POST'])
+@authentication_required_when_configured
 def sitescachetask(provider_id):
     providers = retrieve_providers()
     if provider_id not in providers:
@@ -340,6 +372,7 @@ def sitescachetask(provider_id):
 
 
 @portal_ui.route('/status/<task_id>')
+@authentication_required_when_configured
 def taskstatus(task_id):
     task = load_sites_into_cache_async.AsyncResult(task_id)
     if task.state == 'PENDING':
@@ -370,6 +403,7 @@ def taskstatus(task_id):
 
 
 @portal_ui.route('/manage_cache')
+@authentication_required_when_configured
 def manage_cache():
     provider_list = ['NWIS', 'STORET', 'STEWARDS', 'BIODATA']
     status_list = []

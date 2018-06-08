@@ -6,14 +6,14 @@ import hiddenFormTemplate from './hbTemplates/hiddenForm.hbs';
 
 // Only show this many features in the dialog. Also use alternative download based on the bounding box of the
 // features that are shown.
-var FEATURE_LIMIT = 50;
+const FEATURE_LIMIT = 50;
 
 /*
  * @param {Object} options
  *      @prop {Jquery element} $dialog - Contains the identify dialog
  *      @prop {Jquery element} $popover - Contains the div where the popover identifier will be rendered.
  */
-export default class IdentifyDialog {
+export default class IdentifyDownload {
     constructor({$dialog, $popover}) {
         this.$dialog = $dialog;
         this.$popover = $popover;
@@ -23,10 +23,10 @@ export default class IdentifyDialog {
         var closeFunc = closeActionFnc ? closeActionFnc : undefined;
 
         // Initialize UI dialog
-        this.$dialog.find('#download-map-info-button').click(() => {
+        this.$dialog.find('#download-map-info-button').click(function() {
             var resultType = this.$dialog.find('input[name="resultType"]:checked').val();
             var $form = this.$dialog.find('form');
-            var url = Config.QUERY_URLS[resultType];
+            var url = PORTAL.queryServices.getFormUrl(resultType);
 
             $form.attr('action', url);
             window._gaq.push(['_trackEvent', 'Portal Page', 'IdentifyDownload' + resultType, url + '?' + $form.serialize()]);

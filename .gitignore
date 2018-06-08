@@ -67,6 +67,5 @@ target/
 *.sublime-workspace
 
 
-/static/
-/wqp/static/
-/instance/
+/server/wqp/static/
+/server/instance/

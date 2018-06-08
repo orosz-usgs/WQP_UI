@@ -10,7 +10,7 @@ import log from 'loglevel';
 /*
  * @param {Object} options
  *      @prop {String} codes - String used in the url to retrieve the model's data.
- * @returns {CachedCodes}
+ * @returns {PORTAL.MODELS.cachedCodes}
  *      @prop {Function} fetch
  *      @prop {Function} getAll
  *     @prop {Function} getLookups
@@ -19,6 +19,7 @@ export class CachedCodes {
     constructor({codes}) {
         this.codes = codes;
         this.cachedData = [];
+        this.HEADERS = PORTAL.UTILS.getHeaders();
     }
 
     /*
@@ -32,6 +33,7 @@ export class CachedCodes {
         $.ajax({
             url: URL,
             type: 'GET',
+            headers: this.HEADERS,
             data: {
                 mimeType: 'json'
             },
@@ -47,7 +49,7 @@ export class CachedCodes {
                 fetchDeferred.resolve(this.cachedData);
             },
 
-            error: (jqXHR, textStatus, error) => {
+            error: function(jqXHR, textStatus, error) {
                 log.error('Can\'t  get ' + this.codes + ', Server error: ' + error);
                 fetchDeferred.reject(error);
             }
@@ -80,7 +82,7 @@ export class CachedCodes {
  *          @prop {String} codes - Used in the ajax url to retrieve the data
  *          @prop {String} keyParameter - the parameter name to use to retrieve the appropriate data subset
  *          @prop {Function} parseKey - function takes a lookup item and returns a string for the key it represents.
- * @returns {CodesWithKeys}
+ * @returns {PORTAL.MODELS.codesWithKeys}
  *          @prop {Function} fetch
  *          @prop {Function} getAll
  *          @prop {Function} getAllKeys
@@ -93,6 +95,7 @@ export class CodesWithKeys {
         this.keyParameter = keyParameter;
         this.parseKey = parseKey;
         this.cachedData = [];
+        this.HEADERS = PORTAL.UTILS.getHeaders();
     }
 
     /* Each object where each value is an array of objects with properties id, desc, and providers */
@@ -113,6 +116,7 @@ export class CodesWithKeys {
             data: {
                 mimeType: 'json'
             },
+            headers: this.HEADERS,
             success: (data) => {
                 this.cachedData = map(keys, (key) => {
                     var filtered = filter(data.codes, (lookup) => {
@@ -160,7 +164,7 @@ export class CodesWithKeys {
      * is not in the model
      */
     getDataForKey(key) {
-        var isMatch = function (object) {
+        var isMatch = (object) => {
             return object.key === key;
         };
         var lookup = find(this.cachedData, isMatch);

@@ -31,6 +31,7 @@
     "document": true,
     "process": true,
     "window": true,
+    "XMLHttpRequest": true,
     "PORTAL": true,
     "SITES": true,
     "COVERAGE": true,
