@@ -1,6 +1,6 @@
 import InputValidation from './inputValidationView';
 import { CodeSelect, PagedCodeSelect } from './portalViews';
-
+import * as hucValidator from '../hucValidator';
 
 /*
  * Creates a site parameter input view object
@@ -90,8 +90,8 @@ export default class SiteParameterInputView {
         // Add event handlers
         new InputValidation({
             inputEl: $hucInput,
-            validationFnc: PORTAL.hucValidator.validate,
-            updateFnc: PORTAL.hucValidator.format
+            validationFnc: hucValidator.validate,
+            updateFnc: hucValidator.format
         });
         new InputValidation({
             inputEl : $minActivitiesInput,

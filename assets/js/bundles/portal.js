@@ -16,4 +16,3 @@ require('../portalHelp.js');
 require('../stateFIPS.js');
 require('../portalValidators.js');
 require('../downloadFormController.js');
-require('../hucValidator.js');
