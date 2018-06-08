@@ -58,7 +58,7 @@ export default class SiteMapView {
             }
         });
 
-        this.identifyDialog.initialize(this.portalDataMap.clearBoxIdFeature);
+        this.identifyDialog.initialize(() => this.portalDataMap.clearBoxIdFeature());
         this.portalDataMap.initialize();
 
         // Add click handler for map show/hide button

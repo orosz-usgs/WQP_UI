@@ -98,7 +98,7 @@ export default class DownloadFormView {
         });
         var dataDetailsView = new DataDetailsView({
             $container : this.$form.find('#download-box-input-div'),
-            updateResultTypeAction : function(resultType) {
+            updateResultTypeAction : (resultType) => {
                 this.$form.attr('action', queryService.getFormUrl(resultType));
             }
         });

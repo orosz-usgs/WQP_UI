@@ -172,7 +172,7 @@ export default class SiteMap {
             if (this.wqpSitesLayer) {
                 this.wqpSitesLayer.updateQueryParams(queryParamArray);
             } else {
-                this.wqpSitesLayer = L.this.wqpSitesLayer(queryParamArray, {
+                this.wqpSitesLayer = L.wqpSitesLayer(queryParamArray, {
                     styles: this.$sldSelect.val(),
                     zIndex: WQP_SITES_LAYER_Z_INDEX
                 });

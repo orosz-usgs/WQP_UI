@@ -24,7 +24,7 @@ export default class IdentifyDownload {
         var closeFunc = closeActionFnc ? closeActionFnc : undefined;
 
         // Initialize UI dialog
-        this.$dialog.find('#download-map-info-button').click(function() {
+        this.$dialog.find('#download-map-info-button').click(() => {
             var resultType = this.$dialog.find('input[name="resultType"]:checked').val();
             var $form = this.$dialog.find('form');
             var url = queryService.getFormUrl(resultType);
