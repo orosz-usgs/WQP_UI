@@ -8,7 +8,7 @@ var STATION_RESULTS = 'Station';
  * Managed the Site map and its controls.
  * @param {Object} options
  *      @param {Jquery element} $container - contains the map and its controls
- *      @param {PORTAL.VIEWS.downloadProgressDialog} downloadProgressDialog
+ *      @param {DownloadProgressDialog} downloadProgressDialog
  *      @param {PORTAL.VIEWS.downloadFormView} downloadFormView
  * @return {Object}
     *   @func initialize

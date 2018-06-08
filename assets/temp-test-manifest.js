@@ -4,7 +4,6 @@
 require('./js/coverage/coverageMap');
 //require('./js/coverage/coverageOnReady');
 require('./js/downloadFormController');
-require('./js/downloadProgressDialog');
 require('./js/generalMapping');
 require('./js/hucValidator');
 require('./js/identifyDialog');

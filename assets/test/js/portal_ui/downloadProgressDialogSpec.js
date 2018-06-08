@@ -1,4 +1,7 @@
-describe('Tests for PORTAl.VIEWS.downloadProgressDialog', function () {
+import DownloadProgressDialog from '../../../js/downloadProgressDialog';
+
+
+describe('Tests for DownloadProgressDialog', function () {
     var thisDialog;
     var continueSpy;
 
@@ -11,7 +14,7 @@ describe('Tests for PORTAl.VIEWS.downloadProgressDialog', function () {
             '<div class="modal-footer"></div>' +
             '</div></div></div>');
 
-        thisDialog = PORTAL.VIEWS.downloadProgressDialog($('#progress-dialog'));
+        thisDialog = new DownloadProgressDialog($('#progress-dialog'));
         continueSpy = jasmine.createSpy('continueSpy');
     });
     afterEach(function () {

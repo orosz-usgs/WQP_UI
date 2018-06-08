@@ -10,14 +10,11 @@ import SamplingParameterInputView from './samplingParameterInputView';
 import SiteParameterInputView from './siteParameterInputView';
 
 
-var PORTAL = window.PORTAL = window.PORTAL || {};
-PORTAL.VIEWS = PORTAL.VIEWS || {};
-
 /*
  * Initializes the download form and provides methods to get information from the form
  * @param {Object} options
  *      @prop {Jquery element} $form - The form which contains all of the query parameters
- *      @prop {PORTAL.VIEWS.downloadProgressDialog} downloadProgressDialog
+ *      @prop {DownloadProgressDialog} downloadProgressDialog
  * @return {Object}
  *      @func initialize
  *      @func getQueryParams

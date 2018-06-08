@@ -4,9 +4,8 @@ import ArcGisOnlineHelpView from './views/arcGisOnlineHelpView';
 import DownloadFormView from './views/downloadFormView';
 import ShowAPIView from './views/showAPIView';
 import SiteMapView from './views/siteMapView';
+import DownloadProgressDialog from './downloadProgressDialog';
 
-
-var PORTAL = window.PORTAL = window.PORTAL || {};
 
 $(document).ready(function () {
     // Set the loglevel
@@ -19,7 +18,7 @@ $(document).ready(function () {
     var $form = $('#params');
 
     // Create sub views
-    var downloadProgressDialog = PORTAL.VIEWS.downloadProgressDialog($('#download-status-dialog'));
+    var downloadProgressDialog = new DownloadProgressDialog($('#download-status-dialog'));
     var downloadFormView = new DownloadFormView({
         $form : $form,
         downloadProgressDialog : downloadProgressDialog
@@ -50,5 +49,4 @@ $(document).ready(function () {
     initDownloadForm.fail(function() {
         $('#service-error-dialog').modal('show');
     });
-
 });

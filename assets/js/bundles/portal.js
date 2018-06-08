@@ -14,7 +14,6 @@ require('../portalModels.js');
 require('../nldiModel.js');
 require('../portalHelp.js');
 require('../stateFIPS.js');
-require('../downloadProgressDialog.js');
 require('../portalValidators.js');
 require('../downloadFormController.js');
 require('../hucValidator.js');
