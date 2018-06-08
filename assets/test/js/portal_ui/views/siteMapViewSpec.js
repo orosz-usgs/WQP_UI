@@ -1,13 +1,14 @@
 import SiteMapView from '../../../../js/views/siteMapView';
 import IdentifyDialog from '../../../../js/identifyDialog';
 import queryService from '../../../../js/queryService';
+import SiteMap from '../../../../js/siteMap';
 
 
 describe ('Tests for SiteMapView', function() {
     var testView;
     var $testDiv;
 
-    var siteMapInitializeSpy, siteMapRenderSpy, siteMapUpdateSitesLayerSpy, siteMapClearBoxIdSpy;
+    var siteMapClearBoxIdSpy;
     var mockDownloadDialog, mockDownloadView;
     var fetchCountsDeferred;
     var validateSuccess;
@@ -26,19 +27,11 @@ describe ('Tests for SiteMapView', function() {
         $showHideBtn = $('.show-hide-toggle');
         $showMapBtn = $('#show-on-map-button');
 
-        siteMapInitializeSpy = jasmine.createSpy('siteMapInitialize');
-        siteMapRenderSpy = jasmine.createSpy('siteMapRender');
-        siteMapUpdateSitesLayerSpy = jasmine.createSpy('siteMapUpdateSitesLayer');
-        siteMapClearBoxIdSpy = jasmine.createSpy('siteMapClearBoxId');
-
         spyOn(IdentifyDialog.prototype, 'initialize');
 
-        spyOn(PORTAL.MAP, 'siteMap').and.returnValue({
-            initialize : siteMapInitializeSpy,
-            render : siteMapRenderSpy,
-            updateSitesLayer : siteMapUpdateSitesLayerSpy,
-            clearBoxIdFeature : siteMapClearBoxIdSpy
-        });
+        spyOn(SiteMap.prototype, 'initialize');
+        spyOn(SiteMap.prototype, 'render');
+        siteMapClearBoxIdSpy = spyOn(SiteMap.prototype, 'clearBoxIdFeature');
         spyOn(window._gaq, 'push');
         mockDownloadDialog = {
             show : jasmine.createSpy('mockShow'),
@@ -73,13 +66,13 @@ describe ('Tests for SiteMapView', function() {
     });
 
     it('Expects that the identify dialog and the site map are initialized', function() {
-        expect(siteMapInitializeSpy).toHaveBeenCalled();
+        expect(SiteMap.prototype.initialize).toHaveBeenCalled();
         expect(IdentifyDialog.prototype.initialize).toHaveBeenCalledWith(siteMapClearBoxIdSpy);
     });
 
     it('Expects that when the show-hide-toggle button is clicked the portal map rendered', function() {
         $showHideBtn.trigger('click');
-        expect(siteMapRenderSpy).toHaveBeenCalled();
+        expect(SiteMap.prototype.render).toHaveBeenCalled();
     });
 
     it('Expects that the legend container visibility is toggled when the show-hide-toggle is clicked', function() {

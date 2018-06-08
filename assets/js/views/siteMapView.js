@@ -4,6 +4,7 @@ import IdentifyDialog from '../identifyDialog';
 import providers from '../providers';
 import queryService from '../queryService';
 import { getQueryString, toggleShowHideSections } from '../utils';
+import SiteMap from '../siteMap';
 
 
 var MAP_ID = 'query-results-map';
@@ -33,7 +34,7 @@ export default class SiteMapView {
             $dialog : $('#map-info-dialog'),
             $popover : this.$container.find('#map-popover')
         });
-        this.portalDataMap = PORTAL.MAP.siteMap({
+        this.portalDataMap = new SiteMap({
             mapDivId : MAP_ID,
             $loadingIndicator : this.$container.find('#map-loading-indicator'),
             $legendDiv : this.$container.find('#query-map-legend-div .legend-container'),
