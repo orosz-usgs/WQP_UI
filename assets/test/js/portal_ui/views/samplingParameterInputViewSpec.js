@@ -2,7 +2,7 @@ import { CodeSelect } from '../../../../js/views/portalViews';
 import SamplingParameterInputView from '../../../../js/views/samplingParameterInputView';
 
 
-describe('Tests for PORTAL.VIEWS.samplingParameterInputView', function() {
+describe('Tests for SamplingParameterInputView', function() {
     var testView;
     var $testDiv;
     var $sampleMedia, $characteristicType, $characteristicName, $projectCode, $minresults, $startDate, $endDate;

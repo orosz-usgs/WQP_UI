@@ -15,7 +15,7 @@ var STATION_RESULTS = 'Station';
  * @param {Object} options
  *      @param {Jquery element} $container - contains the map and its controls
  *      @param {DownloadProgressDialog} downloadProgressDialog
- *      @param {PORTAL.VIEWS.downloadFormView} downloadFormView
+ *      @param {DownloadFormView} downloadFormView
  * @return {Object}
     *   @func initialize
  */

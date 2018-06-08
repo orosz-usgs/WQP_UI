@@ -2,7 +2,7 @@ import NldiNavPopupView from '../../../../js/views/nldiNavPopupView';
 import * as nldiModel from '../../../../js/nldiModel';
 
 
-describe('PORTAL.VIEWS.nldiNavViewPopupView', function() {
+describe('nldiNavViewPopupView', function() {
     var $testDiv;
     var testMap;
     var navHandlerSpy;

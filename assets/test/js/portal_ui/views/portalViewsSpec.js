@@ -3,7 +3,7 @@ import { CachedCodes, CodesWithKeys } from '../../../../js/portalModels';
 import providers from '../../../../js/providers';
 
 
-describe('Tests for PORTAL.VIEWS functions and objects', function () {
+describe('Tests for portalViews functions and objects', function () {
     describe('Tests for StaticSelect2', function () {
 
         beforeEach(function () {

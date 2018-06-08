@@ -3,7 +3,7 @@ import { CascadedCodeSelect, CodeSelect } from '../../../../js/views/portalViews
 import { CachedCodes, CodesWithKeys } from '../../../../js/portalModels';
 
 
-describe('Test PORTAL.VIEWS.placeInputView', function () {
+describe('Test PlaceInputView', function () {
     var testView;
 
     var countryModel, stateModel, countyModel;

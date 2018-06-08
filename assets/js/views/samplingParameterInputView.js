@@ -4,9 +4,6 @@ import { CodeSelect, PagedCodeSelect } from './portalViews';
 import { positiveIntValidator } from '../portalValidators';
 
 
-var PORTAL = window.PORTAL = window.PORTAL || {};
-PORTAL.VIEWS = PORTAL.VIEWS || {};
-
 /*
  * Creates a sampling parameter input view
  * @param {Object} options

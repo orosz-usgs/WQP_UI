@@ -4,9 +4,6 @@ import InputValidation from './inputValidationView';
 import { realNumberValidator } from '../portalValidators';
 
 
-var PORTAL = window.PORTAL = window.PORTAL || {};
-PORTAL.VIEWS = PORTAL.VIEWS || {};
-
 /*
  * Creates a pointLocationInputView object
  * @param {Object} options

@@ -8,9 +8,6 @@ import { CodeSelect, CascadedCodeSelect } from './portalViews';
 import { getPostalCode } from '../stateFIPS';
 
 
-var PORTAL = window.PORTAL = window.PORTAL || {};
-PORTAL.VIEWS = PORTAL.VIEWS || {};
-
 const USA = 'US';
 
 /*

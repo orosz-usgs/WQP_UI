@@ -12,7 +12,7 @@ import { getHeaders } from './utils';
 /*
  * @param {Object} options
  *      @prop {String} codes - String used in the url to retrieve the model's data.
- * @returns {PORTAL.MODELS.cachedCodes}
+ * @returns {CachedCodes}
  *      @prop {Function} fetch
  *      @prop {Function} getAll
  *     @prop {Function} getLookups
@@ -84,7 +84,7 @@ export class CachedCodes {
  *          @prop {String} codes - Used in the ajax url to retrieve the data
  *          @prop {String} keyParameter - the parameter name to use to retrieve the appropriate data subset
  *          @prop {Function} parseKey - function takes a lookup item and returns a string for the key it represents.
- * @returns {PORTAL.MODELS.codesWithKeys}
+ * @returns {CodesWithKeys}
  *          @prop {Function} fetch
  *          @prop {Function} getAll
  *          @prop {Function} getAllKeys

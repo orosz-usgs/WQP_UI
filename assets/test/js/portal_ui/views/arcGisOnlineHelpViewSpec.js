@@ -1,7 +1,7 @@
 import ArcGisOnlineHelpView from '../../../../js/views/arcGisOnlineHelpView';
 
 
-describe ('Tests for PORTAL.VIEWS.arcGisOnlineHelp', function() {
+describe ('Tests for ArcGisOnlineHelp', function() {
     var testView;
     var $testDiv;
     var getQueryParamsSpy;
