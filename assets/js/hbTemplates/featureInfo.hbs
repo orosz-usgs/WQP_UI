@@ -1,13 +1,14 @@
 {{#if exceedsFeatureLimit}}
-Retrieved {{features.length}} sites, only showing ' + FEATURE_LIMIT + '<br />
+    Retrieved {{features.length}} sites, only showing ' + FEATURE_LIMIT + '<br />
 {{/if}}
 {{#each features}}
-<br /><table>
-<tr><th>Station ID: </th><td class="details-site-id">{{properties.name}}</td></tr>
-<tr><th>Name: </th><td>{{properties.locName}}</td></tr>
-<tr><th>Type: </th><td>{{properties.type}}</td></tr>
-<tr><th>HUC 8: </th><td>{{properties.huc8}}</td></tr>
-<tr><th>Org ID: </th><td>{{properties.orgId}}</td></tr>
-<tr><th>Org Name: </th><td>{{properties.orgName}}</td></tr>
-</table>
+    <br />
+    <table>
+        <tr><th>Station ID: </th><td class="details-site-id">{{properties.name}}</td></tr>
+        <tr><th>Name: </th><td>{{properties.locName}}</td></tr>
+        <tr><th>Type: </th><td>{{properties.type}}</td></tr>
+        <tr><th>HUC 8: </th><td>{{properties.huc8}}</td></tr>
+        <tr><th>Org ID: </th><td>{{properties.orgId}}</td></tr>
+        <tr><th>Org Name: </th><td>{{properties.orgName}}</td></tr>
+    </table>
 {{/each}}

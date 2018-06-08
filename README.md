@@ -1,6 +1,7 @@
 # WQP_UI
 ===================
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b4640bae0bcc4a279222f9c422da9ac5)](https://app.codacy.com/app/usgs_wma_dev/WQP_UI?utm_source=github.com&utm_medium=referral&utm_content=NWQMC/WQP_UI&utm_campaign=badger)
 [![Build Status](https://travis-ci.org/NWQMC/WQP_UI.svg?branch=master)](https://travis-ci.org/NWQMC/WQP_UI)
 [![Coverage Status](https://coveralls.io/repos/github/NWQMC/WQP_UI/badge.svg?branch=master)](https://coveralls.io/github/NWQMC/WQP_UI?branch=master)
 
