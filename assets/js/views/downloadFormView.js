@@ -7,6 +7,7 @@ import PlaceInputView from './placeInputView';
 import PointLocationInputView from './pointLocationInputView';
 import { StaticSelect2 } from './portalViews';
 import SamplingParameterInputView from './samplingParameterInputView';
+import SiteParameterInputView from './siteParameterInputView';
 
 
 var PORTAL = window.PORTAL = window.PORTAL || {};
@@ -75,7 +76,7 @@ export default class DownloadFormView {
         var boundingBoxInputView = new BoundingBoxInputView({
             $container : this.$form.find('#bounding-box')
         });
-        var siteParameterInputView = PORTAL.VIEWS.siteParameterInputView({
+        var siteParameterInputView = new SiteParameterInputView({
             $container : this.$form.find('#site-params'),
             siteTypeModel : PORTAL.MODELS.cachedCodes({codes : 'sitetype'}),
             organizationModel : PORTAL.MODELS.cachedCodes({codes : 'organization'})

@@ -7,12 +7,12 @@ import NldiView from '../../../../js/views/nldiView';
 import PlaceInputView from '../../../../js/views/placeInputView';
 import PointLocationInputView from '../../../../js/views/pointLocationInputView';
 import SamplingParameterInputView from '../../../../js/views/samplingParameterInputView';
+import SiteParameterInputView from '../../../../js/views/siteParameterInputView';
 
 
 describe('Tests for DownloadFormView', function() {
     var testView;
 
-    var siteParameterMock;
     var fetchProvidersDeferred, fetchCountsDeferred;
     var placeInitDeferred, siteParameterInitDeferred, samplingInitDeferred, bioSamplingInitDeferred;
     var mockDownloadDialog;
@@ -41,13 +41,10 @@ describe('Tests for DownloadFormView', function() {
         samplingInitDeferred = $.Deferred();
         bioSamplingInitDeferred = $.Deferred();
 
-        siteParameterMock  = {
-            initialize : jasmine.createSpy('siteParameterInitialize').and.returnValue(siteParameterInitDeferred)
-        };
         spyOn(PlaceInputView.prototype, 'initialize').and.returnValue(placeInitDeferred);
         spyOn(PointLocationInputView.prototype, 'initialize');
         spyOn(BoundingBoxInputView.prototype, 'initialize');
-        spyOn(PORTAL.VIEWS, 'siteParameterInputView').and.returnValue(siteParameterMock);
+        spyOn(SiteParameterInputView.prototype, 'initialize').and.returnValue(siteParameterInitDeferred);
         spyOn(SamplingParameterInputView.prototype, 'initialize').and.returnValue(samplingInitDeferred);
         spyOn(BiologicalSamplingInputView.prototype, 'initialize').and.returnValue(bioSamplingInitDeferred);
         spyOn(DataDetailsView.prototype, 'initialize');
@@ -86,7 +83,7 @@ describe('Tests for DownloadFormView', function() {
         expect(PlaceInputView.prototype.initialize).toHaveBeenCalled();
         expect(PointLocationInputView.prototype.initialize).toHaveBeenCalled();
         expect(BoundingBoxInputView.prototype.initialize).toHaveBeenCalled();
-        expect(siteParameterMock.initialize).toHaveBeenCalled();
+        expect(SiteParameterInputView.prototype.initialize).toHaveBeenCalled();
         expect(SamplingParameterInputView.prototype.initialize).toHaveBeenCalled();
         expect(BiologicalSamplingInputView.prototype.initialize).toHaveBeenCalled();
         expect(DataDetailsView.prototype.initialize).toHaveBeenCalled();

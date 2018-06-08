@@ -1,7 +1,8 @@
 import { CodeSelect } from '../../../../js/views/portalViews';
+import SiteParameterInputView from '../../../../js/views/siteParameterInputView';
 
 
-describe('Tests for PORTAL.VIEWS.siteParameterInputView', function() {
+describe('Tests for SiteParameterInputView', function() {
     var testView;
     var $testDiv;
     var $siteType, $organization, $siteId, $huc, $minActivities;
@@ -39,7 +40,7 @@ describe('Tests for PORTAL.VIEWS.siteParameterInputView', function() {
         spyOn($.fn, 'select2').and.callThrough();
         spyOn(CodeSelect.prototype, 'initialize');
 
-        testView = PORTAL.VIEWS.siteParameterInputView({
+        testView = new SiteParameterInputView({
             $container : $testDiv,
             siteTypeModel : siteTypeModel,
             organizationModel : organizationModel
