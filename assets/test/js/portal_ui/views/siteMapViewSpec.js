@@ -1,4 +1,7 @@
-describe ('Tests for PORTAL.VIEWS.siteMapView', function() {
+import SiteMapView from '../../../../js/views/siteMapView';
+
+
+describe ('Tests for SiteMapView', function() {
     var testView;
     var $testDiv;
 
@@ -58,7 +61,7 @@ describe ('Tests for PORTAL.VIEWS.siteMapView', function() {
         fetchCountsDeferred = $.Deferred();
         spyOn(PORTAL.queryServices, 'fetchQueryCounts').and.returnValue(fetchCountsDeferred);
 
-        testView = PORTAL.VIEWS.siteMapView({
+        testView = new SiteMapView({
             $container : $testDiv,
             downloadProgressDialog : mockDownloadDialog,
             downloadFormView : mockDownloadView

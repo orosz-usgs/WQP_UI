@@ -3,6 +3,7 @@ import log from 'loglevel';
 import ArcGisOnlineHelpView from './views/arcGisOnlineHelpView';
 import DownloadFormView from './views/downloadFormView';
 import ShowAPIView from './views/showAPIView';
+import SiteMapView from './views/siteMapView';
 
 
 var PORTAL = window.PORTAL = window.PORTAL || {};
@@ -23,7 +24,7 @@ $(document).ready(function () {
         $form : $form,
         downloadProgressDialog : downloadProgressDialog
     });
-    var siteMapView = PORTAL.VIEWS.siteMapView({
+    var siteMapView = new SiteMapView({
         $container : $('#mapping-div'),
         downloadProgressDialog : downloadProgressDialog,
         downloadFormView : downloadFormView

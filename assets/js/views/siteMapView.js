@@ -1,8 +1,9 @@
 import filter from 'lodash/collection/filter';
 
 
-var PORTAL = window.PORTAL = window.PORTAL || {};
-PORTAL.VIEWS = PORTAL.VIEWS || {};
+var MAP_ID = 'query-results-map';
+var STATION_RESULTS = 'Station';
+
 /*
  * Managed the Site map and its controls.
  * @param {Object} options
@@ -12,41 +13,38 @@ PORTAL.VIEWS = PORTAL.VIEWS || {};
  * @return {Object}
     *   @func initialize
  */
-PORTAL.VIEWS.siteMapView = function(options) {
-    var self = {};
-
-    var STATION_RESULTS = 'Station';
-
-    var mapId = 'query-results-map';
-
-    var identifyDialog;
-    var portalDataMap;
+export default class SiteMapView {
+    constructor({$container, downloadProgressDialog, downloadFormView}) {
+        this.$container = $container;
+        this.downloadProgressDialog = downloadProgressDialog;
+        this.downloadFormView = downloadFormView;
+    }
 
     /*
      * Initialize the site map and all of it's controls
      */
-    self.initialize = function() {
-        identifyDialog = PORTAL.VIEWS.identifyDialog({
+    initialize() {
+        this.identifyDialog = PORTAL.VIEWS.identifyDialog({
             $dialog : $('#map-info-dialog'),
-            $popover : options.$container.find('#map-popover')
+            $popover : this.$container.find('#map-popover')
         });
-        portalDataMap = PORTAL.MAP.siteMap({
-            mapDivId : mapId,
-            $loadingIndicator : options.$container.find('#map-loading-indicator'),
-            $legendDiv : options.$container.find('#query-map-legend-div .legend-container'),
-            $sldSelect : options.$container.find('#sld-select-input'),
-            identifyDialog : identifyDialog
+        this.portalDataMap = PORTAL.MAP.siteMap({
+            mapDivId : MAP_ID,
+            $loadingIndicator : this.$container.find('#map-loading-indicator'),
+            $legendDiv : this.$container.find('#query-map-legend-div .legend-container'),
+            $sldSelect : this.$container.find('#sld-select-input'),
+            identifyDialog : this.identifyDialog
         });
 
-        var $mapContainer = options.$container.find('#query-map-container');
-        var $legendContainer = options.$container.find('#query-map-legend-div');
-        var $map = options.$container.find('#' + mapId);
-        var $showHideBtn = options.$container.find('.show-hide-toggle');
+        var $mapContainer = this.$container.find('#query-map-container');
+        var $legendContainer = this.$container.find('#query-map-legend-div');
+        var $map = this.$container.find('#' + MAP_ID);
+        var $showHideBtn = this.$container.find('.show-hide-toggle');
 
         // The map div's height should always be set to the height its parent div.
         // OpenLayers will not draw the layer if the height of the map div is not set explictly.
         $map.height($mapContainer.height());
-        $(window).resize(function() {
+        $(window).resize(() => {
             var mapContainerHeight = $mapContainer.height();
 
             if (mapContainerHeight !== $map.height()) {
@@ -54,14 +52,14 @@ PORTAL.VIEWS.siteMapView = function(options) {
             }
         });
 
-        identifyDialog.initialize(portalDataMap.clearBoxIdFeature);
-        portalDataMap.initialize();
+        this.identifyDialog.initialize(this.portalDataMap.clearBoxIdFeature);
+        this.portalDataMap.initialize();
 
         // Add click handler for map show/hide button
-        $showHideBtn.click(function() {
-            var isVisible = PORTAL.UTILS.toggleShowHideSections($(this), $mapContainer);
+        $showHideBtn.click((event) => {
+            var isVisible = PORTAL.UTILS.toggleShowHideSections($(event.currentTarget), $mapContainer);
             if (isVisible) {
-                portalDataMap.render();
+                this.portalDataMap.render();
                 $legendContainer.show();
             } else {
                 $legendContainer.hide();
@@ -69,14 +67,14 @@ PORTAL.VIEWS.siteMapView = function(options) {
         });
 
         // Add click handler for Show Sites button
-        options.$container.find('#show-on-map-button').click(function () {
-            var queryParamArray = options.downloadFormView.getQueryParamArray();
+        this.$container.find('#show-on-map-button').click(() => {
+            var queryParamArray = this.downloadFormView.getQueryParamArray();
             var queryString = PORTAL.UTILS.getQueryString(queryParamArray);
-            var siteIds = filter(queryParamArray, function(param) {
+            var siteIds = filter(queryParamArray, (param) => {
                 return param.name === 'siteid';
             });
 
-            var showMap = function (totalCount) {
+            var showMap = (totalCount) => {
                 // Show the map if it is currently hidden
                 if ($mapContainer.is(':hidden')) {
                     $showHideBtn.click();
@@ -90,15 +88,15 @@ PORTAL.VIEWS.siteMapView = function(options) {
                     parseInt(totalCount)
                 ]);
 
-                portalDataMap.updateSitesLayer(queryParamArray);
+                this.portalDataMap.updateSitesLayer(queryParamArray);
             };
 
-            if (!options.downloadFormView.validateDownloadForm()) {
+            if (!this.downloadFormView.validateDownloadForm()) {
                 return;
             }
 
             if (siteIds.length > 50) {
-                options.downloadProgressDialog.show('map',
+                this.downloadProgressDialog.show('map',
                     'Unable to map sites. The query contains too many sites to be mapped. Downloads are still available');
             } else {
                 window._gaq.push([
@@ -109,18 +107,16 @@ PORTAL.VIEWS.siteMapView = function(options) {
                 ]);
 
 
-                options.downloadProgressDialog.show('map');
+                this.downloadProgressDialog.show('map');
                 PORTAL.queryServices.fetchQueryCounts(STATION_RESULTS, queryParamArray, PORTAL.MODELS.providers.getIds())
-                    .done(function (counts) {
+                    .done((counts) => {
                         var fileFormat = 'xml';
-                        options.downloadProgressDialog.updateProgress(counts, STATION_RESULTS, fileFormat, showMap);
+                        this.downloadProgressDialog.updateProgress(counts, STATION_RESULTS, fileFormat, showMap);
                     })
-                    .fail(function (message) {
-                        options.downloadProgressDialog.cancelProgress(message);
+                    .fail((message) => {
+                        this.downloadProgressDialog.cancelProgress(message);
                     });
             }
         });
-    };
-
-    return self;
-};
+    }
+}

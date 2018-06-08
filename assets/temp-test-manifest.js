@@ -30,7 +30,6 @@ require('./js/queryService');
 require('./js/siteMap');
 require('./js/stateFIPS');
 require('./js/utils');
-require('./js/views/siteMapView');
 require('./js/views/siteParameterInputView');
 require('./test/js/portal_ui/controllers/controllersSpec');
 require('./test/js/portal_ui/dateValidatorSpec');
