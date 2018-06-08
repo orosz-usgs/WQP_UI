@@ -1,3 +1,6 @@
+import createWQPMap from './generalMapping';
+
+
 /** @namespace */
 var SITES = window.SITES = window.SITES || {};
 
@@ -15,7 +18,7 @@ SITES.sitesMap = function(options) {
     var zoom = options.mapZoom;
     var map;
 
-    map = WQP.MAPS.create(mapDivId, 'Esri.WorldTopoMap');
+    map = createWQPMap(mapDivId, 'Esri.WorldTopoMap');
     map.setView([35.9908385, -78.9005222], zoom);
 
     var getValue = function (x) {
