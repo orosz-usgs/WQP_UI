@@ -1,4 +1,4 @@
-import addOverlays from './nldiMapping';
+import { addOverlays } from './nldiMapping';
 
 
 $(document).ready(function() {

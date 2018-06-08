@@ -1,7 +1,9 @@
 import log from 'loglevel';
 
+import { CachedCodes, CodesWithKeys } from '../../../js/portalModels';
 
-describe('Tests for PORTAL.MODELS.cachedCodes', function () {
+
+describe('Tests for CachedCodes', function () {
     var testCodesModel;
     var server;
     var successSpy, failedSpy;
@@ -14,7 +16,7 @@ describe('Tests for PORTAL.MODELS.cachedCodes', function () {
     beforeEach(function () {
         server = sinon.fakeServer.create();
 
-        testCodesModel = PORTAL.MODELS.cachedCodes({codes: 'test'});
+        testCodesModel = new CachedCodes({codes: 'test'});
         successSpy = jasmine.createSpy('successSpy');
         failedSpy = jasmine.createSpy('failedSpy');
     });
@@ -71,7 +73,7 @@ describe('Tests for PORTAL.MODELS.cachedCodes', function () {
         expect(testCodesModel.getLookup('v1')).toEqual({id: 'v1', desc: 'Text1', providers: 'P1'});
     });
 });
-describe('Tests for PORTAL.MODELS.cachedCodesWithKeys', function () {
+describe('Tests for CodesWithKeys', function () {
     var testCodesWithKeysModel;
     var server;
     var successSpy;
@@ -87,7 +89,7 @@ describe('Tests for PORTAL.MODELS.cachedCodesWithKeys', function () {
     beforeEach(function () {
         server = sinon.fakeServer.create();
 
-        testCodesWithKeysModel = PORTAL.MODELS.codesWithKeys({
+        testCodesWithKeysModel = new CodesWithKeys({
             codes: 'test',
             keyParameter: 'parentParm',
             parseKey: function (id) {

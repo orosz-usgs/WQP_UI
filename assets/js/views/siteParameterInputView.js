@@ -6,8 +6,8 @@ import * as hucValidator from '../hucValidator';
  * Creates a site parameter input view object
  * @param {Object} options
  *      @prop {Jquery element} $container - element where the site parameter inputs are contained
- *      @prop {PORTAL.MODELS.cachedCodes} siteTypeModel
- *      @prop {PORTAL.MODELS.cachedCodes} organizationModel
+ *      @prop {CachedCodes} siteTypeModel
+ *      @prop {CachedCodes} organizationModel
  * @returns {Object}
  *      @func initialize;
  */

@@ -124,7 +124,7 @@ export class PagedCodeSelect {
 /*
  @param {jquery element selecting a select input} el
  @param {Object} options
- @prop {Object} model - object which is created by a call to PORTAL.MODELS.cachedCodes and the data has already been fetched.
+ @prop {Object} model - object which is created by a call to CachedCodes and the data has already been fetched.
  @prop {Function} isMatch - Optional function with two parameters - term {String} which contains the search term and
  lookup {Object} representing an object in model. Should return Boolean
  @prop {Function} formatData - Optional function takes data (object with id, desc, and providers) and produces a select2 result object
@@ -198,7 +198,7 @@ export class CodeSelect {
 /*
  * @param {jquery element selecting a select input} el
  * @param {Object} options
- *      @prop {Object} model - object which is created by a call to PORTAL.MODELS.codesWithKeys
+ *      @prop {Object} model - object which is created by a call to CodesWithKeys
  *      @prop {Function} isMatch - Optional function with two parameters - term {Object} which contains a term property for the search term and
  *          data {Object} representing an option. Should return Boolean.
  *      @prop {Function} formatData - Optional function takes data (object with id, desc, and providers) and produces a select2 result object

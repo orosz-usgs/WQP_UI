@@ -9,6 +9,7 @@ import { StaticSelect2 } from './portalViews';
 import SamplingParameterInputView from './samplingParameterInputView';
 import SiteParameterInputView from './siteParameterInputView';
 import portalHelp from '../portalHelp';
+import { CachedCodes, CodesWithKeys } from '../portalModels';
 
 
 /*
@@ -39,15 +40,15 @@ export default class DownloadFormView {
             return ids.length > 1 ? ids[0] + ':' + ids[1] : '';
         };
 
-        var countryModel = PORTAL.MODELS.cachedCodes({
+        var countryModel = new CachedCodes({
             codes : 'countrycode'
         });
-        var stateModel = PORTAL.MODELS.codesWithKeys({
+        var stateModel = new CodesWithKeys({
             codes : 'statecode',
             keyParameter : 'countrycode',
             parseKey : getCountryFromState
         });
-        var countyModel = PORTAL.MODELS.codesWithKeys({
+        var countyModel = new CodesWithKeys({
             codes : 'countycode',
             keyParameter : 'statecode',
             parseKey : getStateFromCounty
@@ -76,8 +77,8 @@ export default class DownloadFormView {
         });
         var siteParameterInputView = new SiteParameterInputView({
             $container : this.$form.find('#site-params'),
-            siteTypeModel : PORTAL.MODELS.cachedCodes({codes : 'sitetype'}),
-            organizationModel : PORTAL.MODELS.cachedCodes({codes : 'organization'})
+            siteTypeModel : new CachedCodes({codes : 'sitetype'}),
+            organizationModel : new CachedCodes({codes : 'organization'})
         });
         var nldiView = new NldiView({
             insetMapDivId : 'nldi-inset-map',
@@ -86,12 +87,12 @@ export default class DownloadFormView {
         });
         var samplingParametersInputView = new SamplingParameterInputView({
             $container : this.$form.find('#sampling'),
-            sampleMediaModel : PORTAL.MODELS.cachedCodes({codes: 'samplemedia'}),
-            characteristicTypeModel : PORTAL.MODELS.cachedCodes({codes: 'characteristictype'})
+            sampleMediaModel : new CachedCodes({codes: 'samplemedia'}),
+            characteristicTypeModel : new CachedCodes({codes: 'characteristictype'})
         });
         var biologicalSamplingInputViewInstance = new BiologicalSamplingInputView({
             $container : this.$form.find('#biological'),
-            assemblageModel : PORTAL.MODELS.cachedCodes({codes: 'assemblage'})
+            assemblageModel : new CachedCodes({codes: 'assemblage'})
         });
         var dataDetailsView = new DataDetailsView({
             $container : this.$form.find('#download-box-input-div'),

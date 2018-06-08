@@ -5,7 +5,7 @@ import { CodeSelect, PagedCodeSelect } from './portalViews';
  * Creates a sampling parameter input view
  * @param {Object} options
  *      @prop {Jquery element} $container - element where the biological sampling parameter inputs are contained
- *      @prop {PORTAL.MODELS.cachedCodes} assemblageModel
+ *      @prop {CachedCodes} assemblageModel
  * @return {Object}
  *      @func initialize
  */

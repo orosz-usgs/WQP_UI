@@ -16,9 +16,9 @@ const USA = 'US';
  * Initializes and manages the Place inputs
  * @param {Object} options
  *      @prop {Jquery element} $container - div containing the place inputs.
- *      @prop {PORTAL.MODELS.cachedCodes} countyModel
- *      @prop {PORTAL.MODELS.codesWithKeys} stateModel
- *      @prop {PORTAL.MODELS.codesWithKeys} countryModel
+ *      @prop {CachedCodes} countyModel
+ *      @prop {CodesWithKeys} stateModel
+ *      @prop {CodesWithKeys} countryModel
  * @returns {Object}
  *      @func initialize
  */

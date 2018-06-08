@@ -1,5 +1,6 @@
 import PlaceInputView from '../../../../js/views/placeInputView';
 import { CascadedCodeSelect, CodeSelect } from '../../../../js/views/portalViews';
+import { CachedCodes, CodesWithKeys } from '../../../../js/portalModels';
 
 
 describe('Test PORTAL.VIEWS.placeInputView', function () {
@@ -37,15 +38,15 @@ describe('Test PORTAL.VIEWS.placeInputView', function () {
             return ids.length > 1 ? ids[0] + ':' + ids[1] : '';
         };
 
-        countryModel = PORTAL.MODELS.cachedCodes({
+        countryModel = new CachedCodes({
             codes : 'countrycode'
         });
-        stateModel = PORTAL.MODELS.codesWithKeys({
+        stateModel = new CodesWithKeys({
             codes : 'statecode',
             keyParameter : 'countrycode',
             parseKey : getCountryFromState
         });
-        countyModel = PORTAL.MODELS.codesWithKeys({
+        countyModel = new CodesWithKeys({
             codes : 'countycode',
             keyParameter : 'statecode',
             parseKey : getStateFromCounty

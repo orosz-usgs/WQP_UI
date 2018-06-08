@@ -1,4 +1,5 @@
 import { CascadedCodeSelect, CodeSelect, PagedCodeSelect, StaticSelect2 } from '../../../../js/views/portalViews';
+import { CachedCodes, CodesWithKeys } from '../../../../js/portalModels';
 
 
 describe('Tests for PORTAL.VIEWS functions and objects', function () {
@@ -131,7 +132,7 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
             $('body').append('<div id="test-div">' +
                 '<select multiple id="test-select2" />' +
                 '</div>');
-            testModel = PORTAL.MODELS.cachedCodes({codes: 'testCode'});
+            testModel = new CachedCodes({codes: 'testCode'});
             testModel.fetch();
             server.requests[0].respond(200, {'Content-Type': 'text/json'}, RESPONSE_DATA);
             testSpec = {model: testModel};
@@ -209,19 +210,17 @@ describe('Tests for CascadedCodeSelect', function () {
         $select = $('#test-select');
 
         fetchDeferred = $.Deferred();
-        testModel = spyOn(PORTAL.MODELS, 'codesWithKeys').and.returnValue({
-            fetch: jasmine.createSpy('testFetch').and.returnValue(fetchDeferred),
-            getAll: jasmine.createSpy('testgetAll').and.returnValue($.parseJSON(RESPONSE_DATA).codes),
-            getAllKeys: jasmine.createSpy('testgetAllKeys').and.returnValue(['v1', 'v2']),
-            getDataForKey: jasmine.createSpy('testgetDataForKey').and.returnValue([{
-                value: 'v2:T4',
-                desc: 'Text4',
-                provider: 'P2'
-            }, {
-                value: 'v2:T5', desc: 'Text5', providers: 'P1 P2'
-            }])
-        });
-        testModel = PORTAL.MODELS.codesWithKeys();
+        spyOn(CodesWithKeys.prototype, 'fetch').and.returnValue(fetchDeferred);
+        spyOn(CodesWithKeys.prototype, 'getAll').and.returnValue($.parseJSON(RESPONSE_DATA).codes);
+        spyOn(CodesWithKeys.prototype, 'getAllKeys').and.returnValue(['v1', 'v2']);
+        spyOn(CodesWithKeys.prototype, 'getDataForKey').and.returnValue([{
+            value: 'v2:T4',
+            desc: 'Text4',
+            provider: 'P2'
+        }, {
+            value: 'v2:T5', desc: 'Text5', providers: 'P1 P2'
+        }]);
+        testModel = new CodesWithKeys({});
         testGetKeys = function () {
             return ['v2'];
         };
