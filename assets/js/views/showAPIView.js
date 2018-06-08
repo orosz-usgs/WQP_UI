@@ -1,3 +1,6 @@
+import queryService from '../queryService';
+
+
 /*
  * Initializes the windows which show the various API calls
  * @param {Object} options
@@ -29,11 +32,11 @@ export default class ShowAPIView {
             var queryStringWithoutDataProfile = PORTAL.UTILS.getQueryString(queryWithoutDataProfileArray);
 
             $apiQueryDiv.show();
-            $sitesText.html(PORTAL.queryServices.getFormUrl('Station', queryStringWithoutDataProfile));
-            $resultsText.html(PORTAL.queryServices.getFormUrl('Result', queryString));
-            $activitiesText.html(PORTAL.queryServices.getFormUrl('Activity', queryStringWithoutDataProfile));
-            $activitymetricsText.html(PORTAL.queryServices.getFormUrl('ActivityMetric', queryStringWithoutDataProfile));
-            $resultdetectionText.html(PORTAL.queryServices.getFormUrl('ResultDetectionQuantitationLimit', queryStringWithoutDataProfile));
+            $sitesText.html(queryService.getFormUrl('Station', queryStringWithoutDataProfile));
+            $resultsText.html(queryService.getFormUrl('Result', queryString));
+            $activitiesText.html(queryService.getFormUrl('Activity', queryStringWithoutDataProfile));
+            $activitymetricsText.html(queryService.getFormUrl('ActivityMetric', queryStringWithoutDataProfile));
+            $resultdetectionText.html(queryService.getFormUrl('ResultDetectionQuantitationLimit', queryStringWithoutDataProfile));
             $wfsText.html(L.WQPSitesLayer.getWfsGetFeatureUrl(queryWithoutDataProfileArray));
         });
     }

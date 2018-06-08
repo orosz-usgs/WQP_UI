@@ -5,11 +5,8 @@ import log from 'loglevel';
 import numeral from 'numeral';
 
 
-var PORTAL = window.PORTAL = window.PORTAL || {};
-
-PORTAL.queryServices = (function() {
-    var self = {};
-
+// Export an object so we can mock the functions in the test suite.
+export default {
     /*
      * @param {String} resultType - 'Station' or 'Result'
      * @param {Array of Objects with name, value and multiple properties representing query parameters} queryParamArray
@@ -20,7 +17,7 @@ PORTAL.queryServices = (function() {
      *          will contain the counts for that provider (or total)
      *      @reject {String} - If the fetch fails, returns an error message.
      */
-    self.fetchQueryCounts = function(resultType, queryParamArray, providers) {
+    fetchQueryCounts: function(resultType, queryParamArray, providers) {
         var deferred = $.Deferred();
 
         var queryParamJson = PORTAL.UTILS.getQueryParamJson(queryParamArray);
@@ -71,24 +68,18 @@ PORTAL.queryServices = (function() {
         });
 
         return deferred.promise();
-    };
+    },
 
     /*
      * @param {String} resultType
      * @param {String} queryParams - a query string
      * @returns {String} - the url and query params to download data
      */
-    self.getFormUrl = function(resultType, queryParams) {
+    getFormUrl: function(resultType, queryParams) {
         var result = Config.DOWNLOAD_URLS[resultType];
         if (queryParams) {
             result = result + '?' + queryParams;
         }
         return result;
-    };
-
-    return self;
-
-}());
-
-
-
+    }
+};

@@ -2,6 +2,7 @@ import reject from 'lodash/collection/reject';
 
 import featureInfoTemplate from './hbTemplates/featureInfo.hbs';
 import hiddenFormTemplate from './hbTemplates/hiddenForm.hbs';
+import queryService from './queryService';
 
 
 // Only show this many features in the dialog. Also use alternative download based on the bounding box of the
@@ -26,7 +27,7 @@ export default class IdentifyDownload {
         this.$dialog.find('#download-map-info-button').click(function() {
             var resultType = this.$dialog.find('input[name="resultType"]:checked').val();
             var $form = this.$dialog.find('form');
-            var url = PORTAL.queryServices.getFormUrl(resultType);
+            var url = queryService.getFormUrl(resultType);
 
             $form.attr('action', url);
             window._gaq.push(['_trackEvent', 'Portal Page', 'IdentifyDownload' + resultType, url + '?' + $form.serialize()]);

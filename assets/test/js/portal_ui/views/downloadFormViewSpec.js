@@ -9,6 +9,7 @@ import PointLocationInputView from '../../../../js/views/pointLocationInputView'
 import SamplingParameterInputView from '../../../../js/views/samplingParameterInputView';
 import SiteParameterInputView from '../../../../js/views/siteParameterInputView';
 import providers from '../../../../js/providers';
+import queryService from '../../../../js/queryService';
 
 
 describe('Tests for DownloadFormView', function() {
@@ -57,7 +58,7 @@ describe('Tests for DownloadFormView', function() {
         spyOn(providers, 'fetch').and.returnValue(fetchProvidersDeferred);
 
         fetchCountsDeferred = $.Deferred();
-        spyOn(PORTAL.queryServices, 'fetchQueryCounts').and.returnValue(fetchCountsDeferred);
+        spyOn(queryService, 'fetchQueryCounts').and.returnValue(fetchCountsDeferred);
 
         mockDownloadDialog = {
             show : jasmine.createSpy('mockDownloadShow'),
@@ -205,8 +206,8 @@ describe('Tests for DownloadFormView', function() {
             $('#main-button').trigger('click');
 
             expect(mockDownloadDialog.show).toHaveBeenCalled();
-            expect(PORTAL.queryServices.fetchQueryCounts).toHaveBeenCalled();
-            var args = PORTAL.queryServices.fetchQueryCounts.calls.argsFor(0);
+            expect(queryService.fetchQueryCounts).toHaveBeenCalled();
+            var args = queryService.fetchQueryCounts.calls.argsFor(0);
             expect(args[0]).toEqual('Result');
             expect(args[1].length).toBe(3);
             expect(args[1]).toContain({

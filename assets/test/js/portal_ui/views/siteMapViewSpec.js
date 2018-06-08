@@ -1,5 +1,6 @@
 import SiteMapView from '../../../../js/views/siteMapView';
 import IdentifyDialog from '../../../../js/identifyDialog';
+import queryService from '../../../../js/queryService';
 
 
 describe ('Tests for SiteMapView', function() {
@@ -56,7 +57,7 @@ describe ('Tests for SiteMapView', function() {
         };
 
         fetchCountsDeferred = $.Deferred();
-        spyOn(PORTAL.queryServices, 'fetchQueryCounts').and.returnValue(fetchCountsDeferred);
+        spyOn(queryService, 'fetchQueryCounts').and.returnValue(fetchCountsDeferred);
 
         testView = new SiteMapView({
             $container : $testDiv,
@@ -97,14 +98,14 @@ describe ('Tests for SiteMapView', function() {
         $showMapBtn.trigger('click');
         expect(mockDownloadView.validateDownloadForm).toHaveBeenCalled();
         expect(mockDownloadDialog.show).not.toHaveBeenCalled();
-        expect(PORTAL.queryServices.fetchQueryCounts).not.toHaveBeenCalled();
+        expect(queryService.fetchQueryCounts).not.toHaveBeenCalled();
     });
 
     it('Expects that clicking on the show map button if the form is valid, should show the progress dialog', function() {
         validateSuccess = true;
         $showMapBtn.trigger('click');
         expect(mockDownloadDialog.show).toHaveBeenCalled();
-        expect(PORTAL.queryServices.fetchQueryCounts).toHaveBeenCalled();
+        expect(queryService.fetchQueryCounts).toHaveBeenCalled();
     });
 
     it('Expects that after a successful head request fetch, the download dialog is updated', function() {

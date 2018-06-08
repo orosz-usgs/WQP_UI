@@ -11,6 +11,7 @@ import SiteParameterInputView from './siteParameterInputView';
 import portalHelp from '../portalHelp';
 import { CachedCodes, CodesWithKeys } from '../portalModels';
 import providers from '../providers';
+import queryService from '../queryService';
 
 
 /*
@@ -98,7 +99,7 @@ export default class DownloadFormView {
         var dataDetailsView = new DataDetailsView({
             $container : this.$form.find('#download-box-input-div'),
             updateResultTypeAction : function(resultType) {
-                this.$form.attr('action', PORTAL.queryServices.getFormUrl(resultType));
+                this.$form.attr('action', queryService.getFormUrl(resultType));
             }
         });
 
@@ -188,7 +189,7 @@ export default class DownloadFormView {
             ]);
 
             this.downloadProgressDialog.show('download');
-            PORTAL.queryServices.fetchQueryCounts(resultType, queryParamArray, providers.getIds())
+            queryService.fetchQueryCounts(resultType, queryParamArray, providers.getIds())
                 .done((counts) => {
                     this.downloadProgressDialog.updateProgress(counts, resultType, fileFormat, startDownload);
                 })
