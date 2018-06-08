@@ -24,8 +24,6 @@ portal_ui = Blueprint('portal_ui', __name__,
                       static_url_path='/portal_ui/static')
 
 # set some useful local variables from the global config variables
-code_endpoint = app.config['CODES_ENDPOINT']
-base_url = app.config['SEARCH_QUERY_ENDPOINT']
 redis_config = app.config['REDIS_CONFIG']
 cache_timeout = app.config['CACHE_TIMEOUT']
 proxy_cert_verification = app.config.get('PROXY_CERT_VERIFY', False)
@@ -229,7 +227,7 @@ def images(image_file):
 
 
 @portal_ui.route('/provider/', endpoint='uri_base')
-@authentication_required_when_configured
+@invalid_usgs_view
 def uri_base():
     providers = retrieve_providers()
     if not providers:
@@ -238,7 +236,7 @@ def uri_base():
 
 
 @portal_ui.route('/provider/<provider_id>/', endpoint='uri_provider')
-@authentication_required_when_configured
+@invalid_usgs_view
 def uri_provider(provider_id):
     organizations = retrieve_organizations(provider_id)
     if organizations is None:
@@ -249,7 +247,7 @@ def uri_provider(provider_id):
 
 
 @portal_ui.route('/provider/<provider_id>/<organization_id>/', endpoint='uri_organization')
-@authentication_required_when_configured
+@invalid_usgs_view
 def uri_organization(provider_id, organization_id):
     #Check for the information in redis first
     rendered_template = None
@@ -289,7 +287,7 @@ def uri_organization(provider_id, organization_id):
 
 
 @portal_ui.route('/provider/<provider_id>/<organization_id>/<path:site_id>/', endpoint='uri_site')
-@authentication_required_when_configured
+@invalid_usgs_view
 def uris(provider_id, organization_id, site_id):
     site_data = None
     if redis_config:
