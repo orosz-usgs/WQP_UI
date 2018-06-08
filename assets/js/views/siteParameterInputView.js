@@ -1,4 +1,5 @@
 import InputValidation from './inputValidationView';
+import { CodeSelect, PagedCodeSelect } from './portalViews';
 
 
 var PORTAL = window.PORTAL = window.PORTAL || {};
@@ -32,7 +33,7 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
                 return true;
             }
         };
-        PORTAL.VIEWS.createCodeSelect($select, {
+        new CodeSelect($select, {
             model : model,
             formatData : formatData,
             isMatch : isMatch
@@ -49,7 +50,7 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
 
         var parametername = 'organizationid';
 
-        PORTAL.VIEWS.createPagedCodeSelect($select, {
+        new PagedCodeSelect($select, {
             codes: 'monitoringlocation',
             formatData: formatData
             }, {
@@ -78,7 +79,7 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
         initializeSiteIdSelect($siteIdInput, $organizationSelect);
 
         fetchSiteType.done(function() {
-            PORTAL.VIEWS.createCodeSelect($siteTypeSelect, {model : options.siteTypeModel});
+            new CodeSelect($siteTypeSelect, {model : options.siteTypeModel});
         });
 
         fetchOrganization.done(function() {

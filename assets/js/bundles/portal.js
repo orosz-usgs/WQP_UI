@@ -8,7 +8,6 @@ require('../LeafletMixins/SingleClickEventHandlerMixin.js');
 require('../leafletLayers/WQPSitesLayer.js');
 require('../leafletUtils.js');
 require('../siteMap.js');
-require('../views/portalViews.js');
 require('../portalOnReady.js');
 require('../providers.js');
 require('../portalModels.js');

@@ -1,5 +1,6 @@
 import * as dateValidator from '../dateValidator';
 import InputValidation from './inputValidationView';
+import { CodeSelect, PagedCodeSelect } from './portalViews';
 
 
 var PORTAL = window.PORTAL = window.PORTAL || {};
@@ -37,14 +38,14 @@ PORTAL.VIEWS.samplingParameterInputView = function(options) {
         var fetchComplete = $.when(fetchSampleMedia, fetchCharacteristicType);
 
         fetchSampleMedia.done(function() {
-            PORTAL.VIEWS.createCodeSelect($sampleMedia, {model : options.sampleMediaModel});
+            new CodeSelect($sampleMedia, {model : options.sampleMediaModel});
         });
         fetchCharacteristicType.done(function() {
-            PORTAL.VIEWS.createCodeSelect($characteristicType, {model : options.characteristicTypeModel});
+            new CodeSelect($characteristicType, {model : options.characteristicTypeModel});
         });
 
-        PORTAL.VIEWS.createPagedCodeSelect($characteristicName, {codes: 'characteristicname'}, {closeOnSelect : false});
-        PORTAL.VIEWS.createPagedCodeSelect($projectCode, {codes: 'project'},
+        new PagedCodeSelect($characteristicName, {codes: 'characteristicname'}, {closeOnSelect : false});
+        new PagedCodeSelect($projectCode, {codes: 'project'},
             {closeOnSelect : false}
         );
 

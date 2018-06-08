@@ -1,5 +1,5 @@
-var PORTAL = window.PORTAL = window.PORTAL || {};
-PORTAL.VIEWS = PORTAL.VIEWS || {};
+import { CodeSelect, PagedCodeSelect } from './portalViews';
+
 
 /*
  * Creates a sampling parameter input view
@@ -23,9 +23,9 @@ export default class BiologicalSamplingInputView {
         var fetchComplete = $.when(fetchAssemblageModel);
 
         fetchAssemblageModel.done(() => {
-            PORTAL.VIEWS.createCodeSelect($assemblage, {model : this.assemblageModel});
+            new CodeSelect($assemblage, {model : this.assemblageModel});
         });
-        PORTAL.VIEWS.createPagedCodeSelect($taxonomicName, {codes: 'subjecttaxonomicname'},
+        new PagedCodeSelect($taxonomicName, {codes: 'subjecttaxonomicname'},
             {closeOnSelect : false}
         );
 

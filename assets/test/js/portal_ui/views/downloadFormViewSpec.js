@@ -69,7 +69,7 @@ describe('Tests for DownloadFormView', function() {
             cancelProgress : jasmine.createSpy('mockCancelProgress')
         };
 
-        spyOn(PORTAL.VIEWS, 'createStaticSelect2');
+        spyOn($.fn, 'select2').and.callThrough();
         spyOn(window, 'alert');
         spyOn(window._gaq, 'push');
 
@@ -102,17 +102,17 @@ describe('Tests for DownloadFormView', function() {
 
     it('Expects that a successful fetch of the providers initialized the provider select', function() {
         testView.initialize();
-        expect(PORTAL.VIEWS.createStaticSelect2).not.toHaveBeenCalled();
+        expect($.fn.select2).not.toHaveBeenCalled();
 
         fetchProvidersDeferred.resolve();
-        expect(PORTAL.VIEWS.createStaticSelect2).toHaveBeenCalled();
+        expect($.fn.select2).toHaveBeenCalled();
     });
 
     it('Expects that a failed fetch of the providers does not initialize the select', function() {
         testView.initialize();
 
         fetchProvidersDeferred.reject();
-        expect(PORTAL.VIEWS.createStaticSelect2).not.toHaveBeenCalled();
+        expect($.fn.select2).not.toHaveBeenCalled();
     });
 
     it('Expects getQueryParamArray to return the form parameters with name, value, and multiple attributes, omitting those within the mapping-div', function() {

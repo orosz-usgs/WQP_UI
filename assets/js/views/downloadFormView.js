@@ -5,6 +5,7 @@ import DataDetailsView from './dataDetailsView';
 import NldiView from './nldiView';
 import PlaceInputView from './placeInputView';
 import PointLocationInputView from './pointLocationInputView';
+import { StaticSelect2 } from './portalViews';
 
 
 var PORTAL = window.PORTAL = window.PORTAL || {};
@@ -102,7 +103,7 @@ export default class DownloadFormView {
         // fetch the providers and initialize the providers select
         var initializeProviders = PORTAL.MODELS.providers.fetch()
             .done(() => {
-                PORTAL.VIEWS.createStaticSelect2(this.$form.find('#providers-select'),
+                new StaticSelect2(this.$form.find('#providers-select'),
                     PORTAL.MODELS.providers.getIds());
             });
 

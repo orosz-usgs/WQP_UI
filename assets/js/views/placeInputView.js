@@ -4,6 +4,7 @@ import has from 'lodash/object/has';
 import last from 'lodash/array/last';
 
 import InputValidation from './inputValidationView';
+import { CodeSelect, CascadedCodeSelect } from './portalViews';
 
 
 var PORTAL = window.PORTAL = window.PORTAL || {};
@@ -53,7 +54,7 @@ export default class PlaceInputView {
             isMatch: isMatch
         };
 
-        PORTAL.VIEWS.createCodeSelect($select, spec, {
+        new CodeSelect($select, spec, {
             templateSelection: templateSelection
         });
     }
@@ -95,7 +96,7 @@ export default class PlaceInputView {
             return result;
         };
 
-        PORTAL.VIEWS.createCascadedCodeSelect($select, spec, {
+        new CascadedCodeSelect($select, spec, {
             templateSelection: templateSelection
         });
     }
@@ -136,7 +137,7 @@ export default class PlaceInputView {
             return result;
         };
 
-        PORTAL.VIEWS.createCascadedCodeSelect($select, countySpec, {
+        new CascadedCodeSelect($select, countySpec, {
             templateSelection: templateSelection
         });
     }
