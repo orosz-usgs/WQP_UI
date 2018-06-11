@@ -1,4 +1,5 @@
 import each from 'lodash/collection/each';
+import find from 'lodash/collection/find';
 import includes from 'lodash/collection/includes';
 import reject from 'lodash/collection/reject';
 
@@ -138,6 +139,18 @@ PORTAL.UTILS = function() {
             headers.Authorization = 'Bearer ' + accessToken;
         }
         return headers;
+    };
+
+    /*
+     * @param {String} param
+     * @return {String} containing the value of the query parameter that is currently in the anchor part of the url
+     */
+    self.getQueryValue = function(param) {
+        const queryParams = window.location.hash.split('&').split('='); // Array of Arrays[name, value]
+        const value = find(queryParams, (nameValuePair) => {
+            return nameValuePair[0] === param;
+        });
+        return value ? value : '';
     };
 
     return self;

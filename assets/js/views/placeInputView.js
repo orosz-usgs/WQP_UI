@@ -150,8 +150,6 @@ PORTAL.VIEWS.placeInputView = function (options) {
         var fetchUSStates = options.stateModel.fetch([USA]);
         var fetchComplete = $.when(fetchCountries, fetchUSStates);
 
-        options.stateModel.fetch([USA]);
-
         var getCountryKeys = function () {
             var results = $countrySelect.val();
             return results.length > 0 ? results : [USA];
