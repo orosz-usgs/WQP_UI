@@ -27,7 +27,7 @@ describe ('Tests for SiteMapView', function() {
         $showHideBtn = $('.show-hide-toggle');
         $showMapBtn = $('#show-on-map-button');
 
-        spyOn(IdentifyDialog.prototype, 'initialize');
+        spyOn(IdentifyDialog.prototype, 'initialize').and.callThrough();
 
         spyOn(SiteMap.prototype, 'initialize');
         spyOn(SiteMap.prototype, 'render');
@@ -67,7 +67,8 @@ describe ('Tests for SiteMapView', function() {
 
     it('Expects that the identify dialog and the site map are initialized', function() {
         expect(SiteMap.prototype.initialize).toHaveBeenCalled();
-        expect(IdentifyDialog.prototype.initialize).toHaveBeenCalledWith(siteMapClearBoxIdSpy);
+        testView.identifyDialog.closeFunc();
+        expect(siteMapClearBoxIdSpy).toHaveBeenCalled();
     });
 
     it('Expects that when the show-hide-toggle button is clicked the portal map rendered', function() {

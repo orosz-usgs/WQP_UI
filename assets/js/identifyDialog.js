@@ -21,7 +21,7 @@ export default class IdentifyDownload {
     }
 
     initialize(closeActionFnc) {
-        var closeFunc = closeActionFnc ? closeActionFnc : undefined;
+        this.closeFunc = closeActionFnc ? closeActionFnc : undefined;
 
         // Initialize UI dialog
         this.$dialog.find('#download-map-info-button').click(() => {
@@ -40,11 +40,11 @@ export default class IdentifyDownload {
             title: 'Detailed site information',
             width: 450,
             height: 400,
-            close: closeFunc
+            close: this.closeFunc
         });
 
         //Initialize popover
-        this.$popover.on('hide.bs.popover', closeFunc);
+        this.$popover.on('hide.bs.popover', this.closeFunc);
     }
 
     /*
