@@ -1,10 +1,7 @@
-var PORTAL = window.PORTAL = window.PORTAL || {};
-PORTAL.MODELS = PORTAL.MODELS || {};
-
 // A placement of left does not work well on xs devices as it goes off the
 // left edge with no way to scroll.
 
-PORTAL.MODELS.help = {
+export default {
     country: {
         placement: 'auto',
         title: 'Country Help',
@@ -258,5 +255,3 @@ PORTAL.MODELS.help = {
                 </div>'
     }
 };
-
-

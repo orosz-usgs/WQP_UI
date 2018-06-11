@@ -1,39 +1,34 @@
-var PORTAL = window.PORTAL = window.PORTAL || {};
-PORTAL.VIEWS = PORTAL.VIEWS || {};
+import { CodeSelect, PagedCodeSelect } from './portalViews';
+
 
 /*
  * Creates a sampling parameter input view
  * @param {Object} options
  *      @prop {Jquery element} $container - element where the biological sampling parameter inputs are contained
- *      @prop {PORTAL.MODELS.cachedCodes} assemblageModel
+ *      @prop {CachedCodes} assemblageModel
  * @return {Object}
  *      @func initialize
  */
-PORTAL.VIEWS.biologicalSamplingInputView = function(options) {
-    var self = {};
+export default class BiologicalSamplingInputView {
+    constructor({$container, assemblageModel}) {
+        this.$container = $container;
+        this.assemblageModel = assemblageModel;
+    }
 
-    /*
-     * Initialize select2's and set up any DOM event handlers
-     * @return Jquery.promise
-     *      @resolve - all models have been successfully fetched
-     *      @reject - one or models have not been successfully fetched
-     */
-    self.initialize = function() {
-        var $assemblage = options.$container.find('#assemblage');
-        var $taxonomicName = options.$container.find('#subject-taxonomic-name');
+    initialize() {
+        var $assemblage = this.$container.find('#assemblage');
+        var $taxonomicName = this.$container.find('#subject-taxonomic-name');
 
-        var fetchAssemblageModel = options.assemblageModel.fetch();
+        var fetchAssemblageModel = this.assemblageModel.fetch();
         var fetchComplete = $.when(fetchAssemblageModel);
 
-        fetchAssemblageModel.done(function() {
-            PORTAL.VIEWS.createCodeSelect($assemblage, {model : options.assemblageModel});
+        fetchAssemblageModel.done(() => {
+            new CodeSelect($assemblage, {model : this.assemblageModel});
         });
-        PORTAL.VIEWS.createPagedCodeSelect($taxonomicName, {codes: 'subjecttaxonomicname'},
+        new PagedCodeSelect($taxonomicName, {codes: 'subjecttaxonomicname'},
             {closeOnSelect : false}
         );
 
         return fetchComplete;
-    };
-
-    return self;
-};
+    }
+}

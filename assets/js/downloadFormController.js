@@ -1,8 +1,4 @@
-var PORTAL = window.PORTAL = window.PORTAL || {};
-
-PORTAL.CONTROLLERS = PORTAL.CONTROLLERS || {};
-
-PORTAL.CONTROLLERS.validatePointLocation = function (spec) {
+export const validatePointLocation = function (spec) {
     // spec has the following properties
     //      withinEl, latEl, lonEl : input jquery elements
     // Returns object. The object has a required property isValid. If isValid is false, the
@@ -24,7 +20,7 @@ PORTAL.CONTROLLERS.validatePointLocation = function (spec) {
     }
 };
 
-PORTAL.CONTROLLERS.validateBoundingBox = function (spec) {
+export const validateBoundingBox = function (spec) {
     // spec has the following properites
     //      northEl, southEl, eastEl, westEl : input jquery elements
     // Returns object. The object has a required property isValid. If isValid is false, the
@@ -60,7 +56,7 @@ PORTAL.CONTROLLERS.validateBoundingBox = function (spec) {
     }
 };
 
-PORTAL.CONTROLLERS.validateDateRange = function (spec) {
+export const validateDateRange = function (spec) {
     // spec has the following properties:
     //      fromDateEl, toDateEl - Input jquery elements
     // Returns object. The object has a required property isValid. If isValid is false, the
@@ -89,54 +85,54 @@ PORTAL.CONTROLLERS.validateDateRange = function (spec) {
     }
 };
 
-PORTAL.CONTROLLERS.validateDownloadForm = function ($form) {
-    // Validate download form. If invalid show validate dialog with error message and return false.
-    // Otherwise return true
+export default {
+    validateDownloadForm: function ($form) {
+        // Validate download form. If invalid show validate dialog with error message and return false.
+        // Otherwise return true
 
-    var validateModalEl = $('#validate-download-dialog');
-    var showModal = function (message) {
-        validateModalEl.find('.modal-body').html(message);
-        validateModalEl.modal('show');
-    };
+        var validateModalEl = $('#validate-download-dialog');
+        var showModal = function (message) {
+            validateModalEl.find('.modal-body').html(message);
+            validateModalEl.modal('show');
+        };
 
-    // Check to see if any input validation error messages exist
-    if ($form.find('.error-message').length > 0) {
-        showModal('Need to correct input validation errors on form');
-        return false;
+        // Check to see if any input validation error messages exist
+        if ($form.find('.error-message').length > 0) {
+            showModal('Need to correct input validation errors on form');
+            return false;
+        }
+
+        var result;
+        result = validatePointLocation({
+            withinEl: $form.find('#within'),
+            latEl: $form.find('#lat'),
+            lonEl: $form.find('#long')
+        });
+        if (!result.isValid) {
+            showModal(result.errorMessage);
+            return false;
+        }
+
+        result = validateBoundingBox({
+            northEl: $form.find('#north'),
+            southEl: $form.find('#south'),
+            eastEl: $form.find('#east'),
+            westEl: $form.find('#west')
+        });
+        if (!result.isValid) {
+            showModal(result.errorMessage);
+            return false;
+        }
+
+        result = validateDateRange({
+            fromDateEl: $form.find('#startDateLo'),
+            toDateEl: $form.find('#startDateHi')
+        });
+        if (!result.isValid) {
+            showModal(result.errorMessage);
+            return false;
+        }
+
+        return true;
     }
-
-    var result;
-    result = PORTAL.CONTROLLERS.validatePointLocation({
-        withinEl: $form.find('#within'),
-        latEl: $form.find('#lat'),
-        lonEl: $form.find('#long')
-    });
-    if (!result.isValid) {
-        showModal(result.errorMessage);
-        return false;
-    }
-
-    result = PORTAL.CONTROLLERS.validateBoundingBox({
-        northEl: $form.find('#north'),
-        southEl: $form.find('#south'),
-        eastEl: $form.find('#east'),
-        westEl: $form.find('#west')
-    });
-    if (!result.isValid) {
-        showModal(result.errorMessage);
-        return false;
-    }
-
-    result = PORTAL.CONTROLLERS.validateDateRange({
-        fromDateEl: $form.find('#startDateLo'),
-        toDateEl: $form.find('#startDateHi')
-    });
-    if (!result.isValid) {
-        showModal(result.errorMessage);
-        return false;
-    }
-
-    return true;
 };
-
-

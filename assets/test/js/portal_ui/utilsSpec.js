@@ -1,3 +1,6 @@
+import { getQueryString, toggleShowHideSections, getQueryParamJson } from '../../../js/utils';
+
+
 describe('Test PORTAl.UTILS package', function () {
     describe('Test getQueryString', function() {
 
@@ -9,7 +12,7 @@ describe('Test PORTAl.UTILS package', function () {
         ];
 
         it('Expects that if ignoreList and mulitSelectDelimited are not specified that the array is serialized', function() {
-            var result = PORTAL.UTILS.getQueryString(testParamArray);
+            var result = getQueryString(testParamArray);
             expect(result).toContain('P1=Value1');
             expect(result).toContain('P2=Value2_1');
             expect(result).toContain('P2=Value2_2');
@@ -20,7 +23,7 @@ describe('Test PORTAl.UTILS package', function () {
         });
 
         it('Expects that if ignoreList contains names that are in the parameters array that the result string does not contain those parameters', function() {
-            var result = PORTAL.UTILS.getQueryString(testParamArray, ['P2', 'P3']);
+            var result = getQueryString(testParamArray, ['P2', 'P3']);
             expect(result).toContain('P1=Value1');
             expect(result).not.toContain('P2=Value2_1');
             expect(result).not.toContain('P2=Value2_2');
@@ -31,7 +34,7 @@ describe('Test PORTAl.UTILS package', function () {
         });
 
         it('Expects that if multiSelectDelimited is set to true, duplicate param names are serialized into a single param', function() {
-            var result = PORTAL.UTILS.getQueryString(testParamArray, [], true);
+            var result = getQueryString(testParamArray, [], true);
             expect(result).toContain('P1=Value1');
             expect(result).toContain('P2=Value2_1%3BValue2_2%3BValue2_3');
             expect(result).toContain('P3=Value3');
@@ -39,7 +42,7 @@ describe('Test PORTAl.UTILS package', function () {
         });
 
         it('Expects that ignoreList is respected when multiSelectDelimited is set to true', function() {
-            var result = PORTAL.UTILS.getQueryString(testParamArray, ['P2', 'P3'], true);
+            var result = getQueryString(testParamArray, ['P2', 'P3'], true);
             expect(result).toContain('P1=Value1');
             expect(result).not.toContain('P2=Value2_1%3BValue2_2%3BValue2_3');
             expect(result).not.toContain('P3=Value3');
@@ -57,7 +60,7 @@ describe('Test PORTAl.UTILS package', function () {
         ];
 
         it('Expects that the calling the function produces the currently encoded json object', function() {
-            var result = PORTAL.UTILS.getQueryParamJson(testArray);
+            var result = getQueryParamJson(testArray);
 
             expect(result.statecode).toEqual(['US:55', 'US:54']);
             expect(result.siteType).toEqual(['Well']);
@@ -79,15 +82,15 @@ describe('Test PORTAl.UTILS package', function () {
         });
 
         it('Expects when toggleShowHideSections is called content is hidden', function () {
-            var isVisible = PORTAL.UTILS.toggleShowHideSections($('#show-hide-toggle'), $('#content-div'));
+            var isVisible = toggleShowHideSections($('#show-hide-toggle'), $('#content-div'));
             expect(isVisible).toBe(true);
             expect($('#show-hide-toggle').attr('title')).toContain('Hide');
             expect($('#show-hide-toggle img').attr('alt')).toEqual('hide');
         });
 
         it('Expects when toggleShowHideSections is called twice, the content is shown', function () {
-            var isVisible = PORTAL.UTILS.toggleShowHideSections($('#show-hide-toggle'), $('#content-div'));
-            isVisible = PORTAL.UTILS.toggleShowHideSections($('#show-hide-toggle'), $('#content-div'));
+            var isVisible = toggleShowHideSections($('#show-hide-toggle'), $('#content-div'));
+            isVisible = toggleShowHideSections($('#show-hide-toggle'), $('#content-div'));
 
             expect(isVisible).toBe(false);
             expect($('#show-hide-toggle').attr('title')).toContain('Show');

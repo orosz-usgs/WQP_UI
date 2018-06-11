@@ -1,5 +1,4 @@
-/** @namespace */
-var SITE = window.SITE = window.SITE || {};
+import createWQPMap from './generalMapping';
 
 
 /**
@@ -10,14 +9,14 @@ var SITE = window.SITE = window.SITE || {};
  * @param {object} options An object containing mapDivId (div containing the map) and mapZoom (zoom level) attributes
  * @returns {L.map|*}
  */
-SITE.siteMap = function(latitude, longitude, options) {
+export default function siteMap(latitude, longitude, options) {
     var mapDivId = options.mapDivId;
     var zoom = options.mapZoom;
     var map;
     var hydroLayerEndpoint = Config.HYDRO_LAYER_ENDPOINT;
     var flowlineEndpoint = Config.NHDPLUS_FLOWLINE_ENDPOINT;
     var layername = Config.NHDPLUS_FLOWLINE_LAYER_NAME;
-    map = WQP.MAPS.create(mapDivId, 'Esri.WorldGrayCanvas');
+    map = createWQPMap(mapDivId, 'Esri.WorldGrayCanvas');
 
     var esriHydroLayer = L.esri.tiledMapLayer({
         url: hydroLayerEndpoint
@@ -34,4 +33,4 @@ SITE.siteMap = function(latitude, longitude, options) {
 
     map.setView([latitude, longitude], zoom);
     return map;
-};
+}

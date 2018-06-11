@@ -1,4 +1,7 @@
-describe('Tests for NLDI.addOverlays.', function() {
+import { addOverlays } from '../../../js/nldiMapping';
+
+
+describe('Tests for addOverlays.', function() {
     var fakeServer;
     var map;
     var $testDiv;
@@ -17,7 +20,7 @@ describe('Tests for NLDI.addOverlays.', function() {
         mockSite = {MonitoringLocationIdentifier : 'USGS-400359097101400'};
         Config.site = mockSite;
         Config.localBaseUrl = 'http://fake-base-url.gov/';
-        NLDI.addOverlays(map);
+        addOverlays(map);
     });
 
     afterEach(function() {

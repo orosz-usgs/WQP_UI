@@ -1,4 +1,8 @@
-describe('Tests for PORTAL.VIEWS.siteParameterInputView', function() {
+import { CodeSelect } from '../../../../js/views/portalViews';
+import SiteParameterInputView from '../../../../js/views/siteParameterInputView';
+
+
+describe('Tests for SiteParameterInputView', function() {
     var testView;
     var $testDiv;
     var $siteType, $organization, $siteId, $huc, $minActivities;
@@ -33,10 +37,10 @@ describe('Tests for PORTAL.VIEWS.siteParameterInputView', function() {
             fetch : jasmine.createSpy('organizationFetch').and.returnValue(fetchOrgDeferred)
         };
 
-        spyOn(PORTAL.VIEWS, 'createPagedCodeSelect');
-        spyOn(PORTAL.VIEWS, 'createCodeSelect');
+        spyOn($.fn, 'select2').and.callThrough();
+        spyOn(CodeSelect.prototype, 'initialize');
 
-        testView = PORTAL.VIEWS.siteParameterInputView({
+        testView = new SiteParameterInputView({
             $container : $testDiv,
             siteTypeModel : siteTypeModel,
             organizationModel : organizationModel
@@ -58,21 +62,21 @@ describe('Tests for PORTAL.VIEWS.siteParameterInputView', function() {
 
     it('Expects that the siteid select is initialized', function() {
         testView.initialize();
-        expect(PORTAL.VIEWS.createPagedCodeSelect).toHaveBeenCalled();
-        expect(PORTAL.VIEWS.createPagedCodeSelect.calls.argsFor(0)[0].attr('id')).toEqual($siteId.attr('id'));
+        expect($.fn.select2).toHaveBeenCalled();
+        expect($.fn.select2.calls.mostRecent().object.attr('id')).toEqual($siteId.attr('id'));
     });
 
     it('Expects that the site select and organization selects are not initialized until their model fetches succeed', function() {
         testView.initialize();
-        expect(PORTAL.VIEWS.createCodeSelect).not.toHaveBeenCalled();
+        expect(CodeSelect.prototype.initialize).not.toHaveBeenCalled();
 
         fetchSiteTypeDeferred.resolve();
-        expect(PORTAL.VIEWS.createCodeSelect.calls.count()).toBe(1);
-        expect(PORTAL.VIEWS.createCodeSelect.calls.argsFor(0)[0].attr('id')).toEqual($siteType.attr('id'));
+        expect(CodeSelect.prototype.initialize.calls.count()).toBe(1);
+        expect(CodeSelect.prototype.initialize.calls.argsFor(0)[0].attr('id')).toEqual($siteType.attr('id'));
 
         fetchOrgDeferred.resolve();
-        expect(PORTAL.VIEWS.createCodeSelect.calls.count()).toBe(2);
-        expect(PORTAL.VIEWS.createCodeSelect.calls.argsFor(1)[0].attr('id')).toEqual($organization.attr('id'));
+        expect(CodeSelect.prototype.initialize.calls.count()).toBe(2);
+        expect(CodeSelect.prototype.initialize.calls.argsFor(1)[0].attr('id')).toEqual($organization.attr('id'));
     });
 
     describe('Tests for promise returned from initialize', function() {

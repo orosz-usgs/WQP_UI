@@ -1,4 +1,7 @@
-describe ('Tests for PORTAL.VIEWS.arcGisOnlineHelp', function() {
+import ArcGisOnlineHelpView from '../../../../js/views/arcGisOnlineHelpView';
+
+
+describe ('Tests for ArcGisOnlineHelp', function() {
     var testView;
     var $testDiv;
     var getQueryParamsSpy;
@@ -31,7 +34,7 @@ describe ('Tests for PORTAL.VIEWS.arcGisOnlineHelp', function() {
 
         spyOn($.fn, 'modal');
 
-        testView = PORTAL.VIEWS.arcGisOnlineHelpView({
+        testView = new ArcGisOnlineHelpView({
             $button: $('#test-button'),
             $dialog: $('#test-dialog'),
             $siteMapViewContainer: $('#test-map-container'),

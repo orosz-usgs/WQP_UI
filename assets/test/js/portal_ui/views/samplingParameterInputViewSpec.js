@@ -1,4 +1,8 @@
-describe('Tests for PORTAL.VIEWS.samplingParameterInputView', function() {
+import { CodeSelect } from '../../../../js/views/portalViews';
+import SamplingParameterInputView from '../../../../js/views/samplingParameterInputView';
+
+
+describe('Tests for SamplingParameterInputView', function() {
     var testView;
     var $testDiv;
     var $sampleMedia, $characteristicType, $characteristicName, $projectCode, $minresults, $startDate, $endDate;
@@ -26,8 +30,8 @@ describe('Tests for PORTAL.VIEWS.samplingParameterInputView', function() {
         $startDate = $('#startDateLo');
         $endDate = $('#startDateHi');
 
-        spyOn(PORTAL.VIEWS, 'createCodeSelect');
-        spyOn(PORTAL.VIEWS, 'createPagedCodeSelect');
+        spyOn(CodeSelect.prototype, 'initialize');
+        spyOn($.fn, 'select2').and.callThrough();
 
         fetchSampleMediaDeferred = $.Deferred();
         fetchCharacteristicTypeDeferred = $.Deferred();
@@ -39,7 +43,7 @@ describe('Tests for PORTAL.VIEWS.samplingParameterInputView', function() {
             fetch : jasmine.createSpy('characteristicTypeModelFetch').and.returnValue(fetchCharacteristicTypeDeferred)
         };
 
-        testView = PORTAL.VIEWS.samplingParameterInputView({
+        testView = new SamplingParameterInputView({
             $container : $testDiv,
             sampleMediaModel : sampleMediaModel,
             characteristicTypeModel : characteristicTypeModel
@@ -58,21 +62,21 @@ describe('Tests for PORTAL.VIEWS.samplingParameterInputView', function() {
 
     it('Expects that characteristic name and project code menus are initialized', function() {
         testView.initialize();
-        expect(PORTAL.VIEWS.createPagedCodeSelect).toHaveBeenCalled();
-        expect(PORTAL.VIEWS.createPagedCodeSelect.calls.argsFor(0)[0].attr('id')).toEqual($characteristicName.attr('id'));
-        expect(PORTAL.VIEWS.createPagedCodeSelect.calls.argsFor(1)[0].attr('id')).toEqual($projectCode.attr('id'));
+        expect($.fn.select2).toHaveBeenCalled();
+        expect($.fn.select2.calls.first().object.attr('id')).toEqual($characteristicName.attr('id'));
+        expect($.fn.select2.calls.mostRecent().object.attr('id')).toEqual($projectCode.attr('id'));
     });
 
     it('Expects that the sampleMedia and characteristicType menus are not initialized until the fetch is complete', function() {
         testView.initialize();
-        expect(PORTAL.VIEWS.createCodeSelect).not.toHaveBeenCalled();
+        expect(CodeSelect.prototype.initialize).not.toHaveBeenCalled();
         fetchSampleMediaDeferred.resolve();
-        expect(PORTAL.VIEWS.createCodeSelect).toHaveBeenCalled();
-        expect(PORTAL.VIEWS.createCodeSelect.calls.argsFor(0)[0].attr('id')).toEqual($sampleMedia.attr('id'));
+        expect(CodeSelect.prototype.initialize).toHaveBeenCalled();
+        expect(CodeSelect.prototype.initialize.calls.argsFor(0)[0].attr('id')).toEqual($sampleMedia.attr('id'));
 
         fetchCharacteristicTypeDeferred.resolve();
-        expect(PORTAL.VIEWS.createCodeSelect.calls.count()).toBe(2);
-        expect(PORTAL.VIEWS.createCodeSelect.calls.argsFor(1)[0].attr('id')).toEqual($characteristicType.attr('id'));
+        expect(CodeSelect.prototype.initialize.calls.count()).toBe(2);
+        expect(CodeSelect.prototype.initialize.calls.argsFor(1)[0].attr('id')).toEqual($characteristicType.attr('id'));
     });
 
     describe('Tests for promise returned from initialize', function() {

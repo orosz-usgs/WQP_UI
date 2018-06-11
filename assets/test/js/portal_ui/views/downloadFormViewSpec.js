@@ -1,8 +1,20 @@
-describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
+import downloadFormController from '../../../../js/downloadFormController';
+import BiologicalSamplingInputView from '../../../../js/views/biologicalSamplingInputView';
+import BoundingBoxInputView from '../../../../js/views/boundingBoxInputView';
+import DataDetailsView from '../../../../js/views/dataDetailsView';
+import DownloadFormView from '../../../../js/views/downloadFormView';
+import NldiView from '../../../../js/views/nldiView';
+import PlaceInputView from '../../../../js/views/placeInputView';
+import PointLocationInputView from '../../../../js/views/pointLocationInputView';
+import SamplingParameterInputView from '../../../../js/views/samplingParameterInputView';
+import SiteParameterInputView from '../../../../js/views/siteParameterInputView';
+import providers from '../../../../js/providers';
+import queryService from '../../../../js/queryService';
+
+
+describe('Tests for DownloadFormView', function() {
     var testView;
 
-    var placeMock, boundingBoxMock, pointLocationMock, siteParameterMock, samplingParametersMock, biologicalSamplingMock,
-        dataDetailsMock, nldiMock;
     var fetchProvidersDeferred, fetchCountsDeferred;
     var placeInitDeferred, siteParameterInitDeferred, samplingInitDeferred, bioSamplingInitDeferred;
     var mockDownloadDialog;
@@ -31,50 +43,22 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
         samplingInitDeferred = $.Deferred();
         bioSamplingInitDeferred = $.Deferred();
 
-        placeMock  = {
-            initialize : jasmine.createSpy('placeInitialize').and.returnValue(placeInitDeferred)
-        };
-        boundingBoxMock  = {
-            initialize : jasmine.createSpy('boundingBoxInitialize')
-        };
-        pointLocationMock  = {
-            initialize : jasmine.createSpy('pointLocationInitialize')
-        };
-        siteParameterMock  = {
-            initialize : jasmine.createSpy('siteParameterInitialize').and.returnValue(siteParameterInitDeferred)
-        };
-        samplingParametersMock  = {
-            initialize : jasmine.createSpy('samplingParametersInitialize').and.returnValue(samplingInitDeferred)
-        };
-        biologicalSamplingMock  = {
-            initialize : jasmine.createSpy('biologicalSamplingInitialize').and.returnValue(bioSamplingInitDeferred)
-        };
-        dataDetailsMock  = {
-            initialize : jasmine.createSpy('dataDetailsInitialize'),
-            getMimeType : function() {
-                return 'csv';
-            },
-            getResultType : function() {
-                return 'Result';
-            }
-        };
-        nldiMock = {
-            initialize : jasmine.createSpy('nldiInitialize')
-        };
-        spyOn(PORTAL.VIEWS, 'placeInputView').and.returnValue(placeMock);
-        spyOn(PORTAL.VIEWS, 'pointLocationInputView').and.returnValue(pointLocationMock);
-        spyOn(PORTAL.VIEWS, 'boundingBoxInputView').and.returnValue(boundingBoxMock);
-        spyOn(PORTAL.VIEWS, 'siteParameterInputView').and.returnValue(siteParameterMock);
-        spyOn(PORTAL.VIEWS, 'samplingParameterInputView').and.returnValue(samplingParametersMock);
-        spyOn(PORTAL.VIEWS, 'biologicalSamplingInputView').and.returnValue(biologicalSamplingMock);
-        spyOn(PORTAL.VIEWS, 'dataDetailsView').and.returnValue(dataDetailsMock);
-        spyOn(PORTAL.VIEWS, 'nldiView').and.returnValue(nldiMock);
+        spyOn(PlaceInputView.prototype, 'initialize').and.returnValue(placeInitDeferred);
+        spyOn(PointLocationInputView.prototype, 'initialize');
+        spyOn(BoundingBoxInputView.prototype, 'initialize');
+        spyOn(SiteParameterInputView.prototype, 'initialize').and.returnValue(siteParameterInitDeferred);
+        spyOn(SamplingParameterInputView.prototype, 'initialize').and.returnValue(samplingInitDeferred);
+        spyOn(BiologicalSamplingInputView.prototype, 'initialize').and.returnValue(bioSamplingInitDeferred);
+        spyOn(DataDetailsView.prototype, 'initialize');
+        spyOn(DataDetailsView.prototype, 'getMimeType').and.returnValue('csv');
+        spyOn(DataDetailsView.prototype, 'getResultType').and.returnValue('Result');
+        spyOn(NldiView.prototype, 'initialize');
 
         fetchProvidersDeferred = $.Deferred();
-        spyOn(PORTAL.MODELS.providers, 'fetch').and.returnValue(fetchProvidersDeferred);
+        spyOn(providers, 'fetch').and.returnValue(fetchProvidersDeferred);
 
         fetchCountsDeferred = $.Deferred();
-        spyOn(PORTAL.queryServices, 'fetchQueryCounts').and.returnValue(fetchCountsDeferred);
+        spyOn(queryService, 'fetchQueryCounts').and.returnValue(fetchCountsDeferred);
 
         mockDownloadDialog = {
             show : jasmine.createSpy('mockDownloadShow'),
@@ -82,11 +66,11 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
             cancelProgress : jasmine.createSpy('mockCancelProgress')
         };
 
-        spyOn(PORTAL.VIEWS, 'createStaticSelect2');
+        spyOn($.fn, 'select2').and.callThrough();
         spyOn(window, 'alert');
         spyOn(window._gaq, 'push');
 
-        testView = PORTAL.VIEWS.downloadFormView({
+        testView = new DownloadFormView({
             $form : $('form'),
             downloadProgressDialog : mockDownloadDialog
         });
@@ -98,34 +82,34 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
 
     it('Expects that the sub views are initialized when the view is initialized', function() {
         testView.initialize();
-        expect(placeMock.initialize).toHaveBeenCalled();
-        expect(pointLocationMock.initialize).toHaveBeenCalled();
-        expect(boundingBoxMock.initialize).toHaveBeenCalled();
-        expect(siteParameterMock.initialize).toHaveBeenCalled();
-        expect(samplingParametersMock.initialize).toHaveBeenCalled();
-        expect(biologicalSamplingMock.initialize).toHaveBeenCalled();
-        expect(dataDetailsMock.initialize).toHaveBeenCalled();
-        expect(nldiMock.initialize).toHaveBeenCalled();
+        expect(PlaceInputView.prototype.initialize).toHaveBeenCalled();
+        expect(PointLocationInputView.prototype.initialize).toHaveBeenCalled();
+        expect(BoundingBoxInputView.prototype.initialize).toHaveBeenCalled();
+        expect(SiteParameterInputView.prototype.initialize).toHaveBeenCalled();
+        expect(SamplingParameterInputView.prototype.initialize).toHaveBeenCalled();
+        expect(BiologicalSamplingInputView.prototype.initialize).toHaveBeenCalled();
+        expect(DataDetailsView.prototype.initialize).toHaveBeenCalled();
+        expect(NldiView.prototype.initialize).toHaveBeenCalled();
     });
 
     it('Expects that the providers are fetched', function() {
         testView.initialize();
-        expect(PORTAL.MODELS.providers.fetch).toHaveBeenCalled();
+        expect(providers.fetch).toHaveBeenCalled();
     });
 
     it('Expects that a successful fetch of the providers initialized the provider select', function() {
         testView.initialize();
-        expect(PORTAL.VIEWS.createStaticSelect2).not.toHaveBeenCalled();
+        expect($.fn.select2).not.toHaveBeenCalled();
 
         fetchProvidersDeferred.resolve();
-        expect(PORTAL.VIEWS.createStaticSelect2).toHaveBeenCalled();
+        expect($.fn.select2).toHaveBeenCalled();
     });
 
     it('Expects that a failed fetch of the providers does not initialize the select', function() {
         testView.initialize();
 
         fetchProvidersDeferred.reject();
-        expect(PORTAL.VIEWS.createStaticSelect2).not.toHaveBeenCalled();
+        expect($.fn.select2).not.toHaveBeenCalled();
     });
 
     it('Expects getQueryParamArray to return the form parameters with name, value, and multiple attributes, omitting those within the mapping-div', function() {
@@ -205,7 +189,7 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
     describe('Tests for clicking the download button', function() {
         var success;
         beforeEach(function() {
-            spyOn(PORTAL.CONTROLLERS, 'validateDownloadForm').and.callFake(function() {
+            spyOn(downloadFormController, 'validateDownloadForm').and.callFake(function() {
                 return success;
             });
             testView.initialize();
@@ -222,8 +206,8 @@ describe('Tests for PORTAL.VIEWS.downloadFormView', function() {
             $('#main-button').trigger('click');
 
             expect(mockDownloadDialog.show).toHaveBeenCalled();
-            expect(PORTAL.queryServices.fetchQueryCounts).toHaveBeenCalled();
-            var args = PORTAL.queryServices.fetchQueryCounts.calls.argsFor(0);
+            expect(queryService.fetchQueryCounts).toHaveBeenCalled();
+            var args = queryService.fetchQueryCounts.calls.argsFor(0);
             expect(args[0]).toEqual('Result');
             expect(args[1].length).toBe(3);
             expect(args[1]).toContain({

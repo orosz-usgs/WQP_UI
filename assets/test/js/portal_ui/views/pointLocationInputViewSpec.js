@@ -1,3 +1,6 @@
+import PointLocationInputView from '../../../../js/views/pointLocationInputView';
+
+
 describe('Tests for pointLocationInputView', function() {
     var testView;
     var $testDiv, $within, $lat, $lon;
@@ -14,7 +17,7 @@ describe('Tests for pointLocationInputView', function() {
         $lat = $('#lat');
         $lon = $('#long');
 
-        testView = PORTAL.VIEWS.pointLocationInputView({
+        testView = new PointLocationInputView({
             $container : $testDiv
         });
     });

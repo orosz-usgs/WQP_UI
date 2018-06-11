@@ -1,7 +1,11 @@
+import { addOverlays } from './nldiMapping';
+import siteMap from './providerSiteMap';
+
+
 $(document).ready(function() {
     var site = Config.site;
     var latitude = site.LatitudeMeasure;
     var longitude = site.LongitudeMeasure;
-    var map = window.SITE.siteMap(latitude, longitude, {mapDivId : 'sites_map', mapZoom: 10});
-    NLDI.addOverlays(map);
+    var map = siteMap(latitude, longitude, {mapDivId : 'sites_map', mapZoom: 10});
+    addOverlays(map);
 });
