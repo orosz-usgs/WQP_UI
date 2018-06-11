@@ -33,7 +33,7 @@ $(document).ready(function () {
         $button : $('#show-arcgis-online-help'),
         $dialog : $('#arcgis-online-dialog'),
         $siteMapViewContainer : $('#mapping-div'),
-        getQueryParamArray : $proxy(downloadFormView.getQueryParamArray, downloadFormView);
+        getQueryParamArray : $.proxy(downloadFormView.getQueryParamArray, downloadFormView)
     });
 
     //Initialize subviews
