@@ -26,14 +26,14 @@ $(document).ready(function () {
     });
     var showAPIView = PORTAL.VIEWS.showAPIView({
         $container : $('#show-queries-div'),
-        getQueryParamArray : downloadFormView.getQueryParamArray
+        getQueryParamArray : $.proxy(downloadFormView.getQueryParamArray, downloadFormView)
     });
 
     var arcGisOnlineHelpView = PORTAL.VIEWS.arcGisOnlineHelpView({
         $button : $('#show-arcgis-online-help'),
         $dialog : $('#arcgis-online-dialog'),
         $siteMapViewContainer : $('#mapping-div'),
-        getQueryParamArray : downloadFormView.getQueryParamArray
+        getQueryParamArray : $proxy(downloadFormView.getQueryParamArray, downloadFormView);
     });
 
     //Initialize subviews
