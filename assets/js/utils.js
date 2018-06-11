@@ -145,13 +145,16 @@ export const getHeaders = function() {
 
 /*
  * @param {String} param
- * @return {String} containing the value of the query parameter that is currently in the anchor part of the url
+ * @return {Array} containing the values of the query parameter that is currently in the anchor part of the url
  */
-export const getQueryValue = function(param) {
+export const getQueryValues = function(param) {
     const queryParams = window.location.hash.split('&').split('='); // Array of Arrays[name, value]
-    const value = find(queryParams, (nameValuePair) => {
-        return nameValuePair[0] === param;
-    });
-    return value ? value : '';
+    return queryParams
+        .filter((nameValuePair) => {
+            return nameValuePair[0] === param
+        })
+        .map((nameValuePair) => {
+            return nameValuePair[1];
+        });
 };
 

@@ -13,12 +13,12 @@ import providers from '../providers';
  * @param {Object} select2Options
  */
 export class StaticSelect2 {
-    constructor(el, ids, select2Options) {
+    constructor(el, ids, select2Options, initValues) {
         var defaultOptions = {
             allowClear: true,
             theme: 'bootstrap',
             data: map(ids, function (id) {
-                return {id: id, text: id};
+                return {id: id, text: id, selected: initValues.includes(id)};
             })
         };
         el.select2($.extend({}, defaultOptions, select2Options));
