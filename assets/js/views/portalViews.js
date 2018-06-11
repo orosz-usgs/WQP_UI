@@ -1,5 +1,4 @@
 import has from 'lodash/object/has';
-import includes from 'lodash/collection/includes';
 import isEqual from 'lodash/lang/isEqual';
 import map from 'lodash/collection/map';
 import filter from 'lodash/collection/filter';
@@ -13,7 +12,7 @@ import providers from '../providers';
  * @param {Object} select2Options
  */
 export class StaticSelect2 {
-    constructor(el, ids, select2Options, initValues) {
+    constructor(el, ids, select2Options, initValues=[]) {
         var defaultOptions = {
             allowClear: true,
             theme: 'bootstrap',
@@ -91,7 +90,7 @@ export class PagedCodeSelect {
                 var parents = $filter.val();
                 var children = el.val();
                 var isInOrganization = (child) => {
-                    return includes(parents, child);
+                    return parents.includes(child);
                 };
                 el.val(filter(children, isInOrganization)).trigger('change');
                 defaultOptions.ajax.url = Config.CODES_ENDPOINT + '/' + this.spec.codes + this.getParentParams(parents);

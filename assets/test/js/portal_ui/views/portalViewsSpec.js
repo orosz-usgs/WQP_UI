@@ -4,7 +4,7 @@ import providers from '../../../../js/providers';
 
 
 describe('Tests for portalViews functions and objects', function () {
-    describe('Tests for StaticSelect2', function () {
+    fdescribe('Tests for StaticSelect2', function () {
 
         beforeEach(function () {
             $('body').append('<div id="test-div"><select id="test-select" name="test-select-name" multiple></select></div>');
@@ -19,9 +19,10 @@ describe('Tests for portalViews functions and objects', function () {
             new StaticSelect2($('#test-select'), ['T1', 'T2', 'T3']);
             expect($.fn.select2).toHaveBeenCalled();
             expect($.fn.select2.calls.argsFor(0)[0].data).toEqual([
-                {id: 'T1', text: 'T1'}, {id: 'T2', text: 'T2'}, {id: 'T3', text: 'T3'}
+                {id: 'T1', text: 'T1', selected: false},
+                {id: 'T2', text: 'T2', selected: false},
+                {id: 'T3', text: 'T3', selected: false}
             ]);
-
         });
 
         it('Expects select2 to be called with the additional options', function () {
@@ -30,6 +31,16 @@ describe('Tests for portalViews functions and objects', function () {
             });
 
             expect($.fn.select2.calls.argsFor(0)[0].placeholder).toEqual('Any');
+        });
+
+        it('Expects the selected boolean to match the initValues', () => {
+            new StaticSelect2($('#test-select'), ['T1', 'T2', 'T3'], {}, ['T2', 'T3']);
+
+            expect($.fn.select2.calls.argsFor(0)[0].data).toEqual([
+                {id: 'T1', text: 'T1', selected: false},
+                {id: 'T2', text: 'T2', selected: true},
+                {id: 'T3', text: 'T3', selected: true}
+            ]);
         });
     });
 

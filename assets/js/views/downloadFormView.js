@@ -12,7 +12,7 @@ import portalHelp from '../portalHelp';
 import { CachedCodes, CodesWithKeys } from '../portalModels';
 import providers from '../providers';
 import queryService from '../queryService';
-import { toggleShowHideSections, getQueryString } from '../utils';
+import { toggleShowHideSections, getQueryString, getAnchorQueryValues } from '../utils';
 
 /*
  * Initializes the download form and provides methods to get information from the form
@@ -106,8 +106,9 @@ export default class DownloadFormView {
         // fetch the providers and initialize the providers select
         var initializeProviders = providers.fetch()
             .done(() => {
-                new StaticSelect2(this.$form.find('#providers-select'),
-                    providers.getIds(), {}, 'NWIS');
+                const $providerSelect = this.$form.find('#providers-select')
+                new StaticSelect2($providerSelect,
+                    providers.getIds(), {}, getAnchorQueryValues($providerSelect.attr('name')));
             });
 
         // Initialize form sub view
