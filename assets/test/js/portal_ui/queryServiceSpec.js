@@ -1,8 +1,11 @@
 import log from 'loglevel';
 
+import queryService from '../../../js/queryService';
+import { Cookie } from '../../../js/utils';
+
 
 describe('Tests for queryService', function() {
-    describe('Tests for fetchQueryCounts', function() {
+    describe('Tests for queryService.fetchQueryCounts', function() {
         var fakeServer;
 
         var testQuery = [
@@ -37,7 +40,7 @@ describe('Tests for queryService', function() {
 
         it('Expects that the mimeType, zip, and sorted are removed from the json payload and that a POST request is made', function() {
             var requestBody;
-            PORTAL.queryServices.fetchQueryCounts('Station', testQuery, ['NWIS', 'STORET']);
+            queryService.fetchQueryCounts('Station', testQuery, ['NWIS', 'STORET']);
 
             expect(fakeServer.requests.length).toBe(1);
             expect(fakeServer.requests[0].method).toEqual('POST');
@@ -57,7 +60,7 @@ describe('Tests for queryService', function() {
         });
 
         it('Expects a successful response passes a correctly formatted counts record', function() {
-            PORTAL.queryServices.fetchQueryCounts('Result', testQuery, ['NWIS', 'STORET']).done(successSpy).fail(errorSpy);
+            queryService.fetchQueryCounts('Result', testQuery, ['NWIS', 'STORET']).done(successSpy).fail(errorSpy);
             fakeServer.respondWith([200, {'Content-Type': 'application/json'},
                 '{"NWIS-Site-Count":"492","Total-Site-Count":"492","NWIS-Result-Count":"6641","Total-Result-Count":"6641",' +
                 '"NWIS-Activity-Count":"664","Total-Activity-Count":"664",' +
@@ -86,7 +89,7 @@ describe('Tests for queryService', function() {
 
         it('Expects a failed response to reject the promise', function() {
 
-            PORTAL.queryServices.fetchQueryCounts('Result', testQuery, ['NWIS', 'STORET']).done(successSpy).fail(errorSpy);
+            queryService.fetchQueryCounts('Result', testQuery, ['NWIS', 'STORET']).done(successSpy).fail(errorSpy);
             fakeServer.respondWith([404, {'Content-Type': 'text/html'}, 'Not found']);
             fakeServer.respond();
 
@@ -96,8 +99,8 @@ describe('Tests for queryService', function() {
         });
 
         it('Expects that a authorization header is added if an access_token cookie is present', function() {
-            spyOn(PORTAL.UTILS, 'getCookie').and.returnValue('dummy_token');
-            PORTAL.queryServices.fetchQueryCounts('Station', testQuery, ['NWIS', 'STORET']);
+            spyOn(Cookie, 'getByName').and.returnValue('dummy_token');
+            queryService.fetchQueryCounts('Station', testQuery, ['NWIS', 'STORET']);
 
             expect(fakeServer.requests[0].requestHeaders.Authorization).toEqual('Bearer dummy_token');
         });

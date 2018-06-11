@@ -1,3 +1,6 @@
+import IdentifyDialog from '../../../js/identifyDialog';
+
+
 describe('Test identifyDialog', function () {
     var $dialog;
     var $popover;
@@ -36,7 +39,7 @@ describe('Test identifyDialog', function () {
 
         closeSpy = jasmine.createSpy('closeSpy');
 
-        identifyDialog = PORTAL.VIEWS.identifyDialog({
+        identifyDialog = new IdentifyDialog({
             $dialog : $dialog,
             $popover : $popover
         });

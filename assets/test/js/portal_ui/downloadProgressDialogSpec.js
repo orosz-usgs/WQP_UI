@@ -1,4 +1,8 @@
-describe('Tests for PORTAl.VIEWS.downloadProgressDialog', function () {
+import DownloadProgressDialog from '../../../js/downloadProgressDialog';
+import providers from '../../../js/providers';
+
+
+describe('Tests for DownloadProgressDialog', function () {
     var thisDialog;
     var continueSpy;
 
@@ -11,7 +15,7 @@ describe('Tests for PORTAl.VIEWS.downloadProgressDialog', function () {
             '<div class="modal-footer"></div>' +
             '</div></div></div>');
 
-        thisDialog = PORTAL.VIEWS.downloadProgressDialog($('#progress-dialog'));
+        thisDialog = new DownloadProgressDialog($('#progress-dialog'));
         continueSpy = jasmine.createSpy('continueSpy');
     });
     afterEach(function () {
@@ -41,7 +45,7 @@ describe('Tests for PORTAl.VIEWS.downloadProgressDialog', function () {
     describe('Tests for updateProgress when dialog is for map', function () {
         var counts;
         beforeEach(function () {
-            spyOn(PORTAL.MODELS.providers, 'getIds').and.returnValue(['DS1', 'DS2']);
+            spyOn(providers, 'getIds').and.returnValue(['DS1', 'DS2']);
             thisDialog.show('map');
 
             counts = {
@@ -105,7 +109,7 @@ describe('Tests for PORTAl.VIEWS.downloadProgressDialog', function () {
     describe('Tests for updateProgress when dialog is for download', function () {
         var counts;
         beforeEach(function () {
-            spyOn(PORTAL.MODELS.providers, 'getIds').and.returnValue(['DS1', 'DS2']);
+            spyOn(providers, 'getIds').and.returnValue(['DS1', 'DS2']);
             thisDialog.show('download');
 
             counts = {

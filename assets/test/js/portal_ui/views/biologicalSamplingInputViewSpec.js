@@ -1,4 +1,8 @@
-describe('Tests for PORTAL.VIEWS.biologicalSamplingInputView', function() {
+import BiologicalSamplingInputView from '../../../../js/views/biologicalSamplingInputView';
+import { CodeSelect } from '../../../../js/views/portalViews';
+
+
+describe('Tests for biologicalSamplingInputView', function() {
     var testView;
     var $testDiv;
     var $assemblage, $taxonomicName;
@@ -21,10 +25,10 @@ describe('Tests for PORTAL.VIEWS.biologicalSamplingInputView', function() {
             fetch : jasmine.createSpy('assemblageModelFetch').and.returnValue(fetchAssemblageDeferred)
         };
 
-        spyOn(PORTAL.VIEWS, 'createPagedCodeSelect');
-        spyOn(PORTAL.VIEWS, 'createCodeSelect');
+        spyOn($.fn, 'select2').and.callThrough();
+        spyOn(CodeSelect.prototype, 'initialize');
 
-        testView = PORTAL.VIEWS.biologicalSamplingInputView({
+        testView = new BiologicalSamplingInputView({
             $container: $testDiv,
             assemblageModel : assemblageModel
         });
@@ -41,17 +45,17 @@ describe('Tests for PORTAL.VIEWS.biologicalSamplingInputView', function() {
 
     it('Expects that the taxonomic select is initialized', function() {
         testView.initialize();
-        expect(PORTAL.VIEWS.createPagedCodeSelect).toHaveBeenCalled();
-        expect(PORTAL.VIEWS.createPagedCodeSelect.calls.argsFor(0)[0].attr('id')).toEqual($taxonomicName.attr('id'));
+        expect($.fn.select2).toHaveBeenCalled();
+        expect($.fn.select2.calls.mostRecent().object.attr('id')).toEqual($taxonomicName.attr('id'));
     });
 
     it('Expects that the assemblage select is initialized after the assemblage model is fetched', function() {
         testView.initialize();
-        expect(PORTAL.VIEWS.createCodeSelect).not.toHaveBeenCalled();
+        expect(CodeSelect.prototype.initialize).not.toHaveBeenCalled();
 
         fetchAssemblageDeferred.resolve();
-        expect(PORTAL.VIEWS.createCodeSelect).toHaveBeenCalled();
-        expect(PORTAL.VIEWS.createCodeSelect.calls.argsFor(0)[0].attr('id')).toEqual($assemblage.attr('id'));
+        expect(CodeSelect.prototype.initialize).toHaveBeenCalled();
+        expect(CodeSelect.prototype.initialize.calls.argsFor(0)[0].attr('id')).toEqual($assemblage.attr('id'));
     });
 
     describe('Tests for promise returned from initialize', function() {

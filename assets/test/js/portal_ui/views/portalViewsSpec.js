@@ -1,5 +1,10 @@
-describe('Tests for PORTAL.VIEWS functions and objects', function () {
-    describe('Tests for createStaticSelect2', function () {
+import { CascadedCodeSelect, CodeSelect, PagedCodeSelect, StaticSelect2 } from '../../../../js/views/portalViews';
+import { CachedCodes, CodesWithKeys } from '../../../../js/portalModels';
+import providers from '../../../../js/providers';
+
+
+describe('Tests for portalViews functions and objects', function () {
+    describe('Tests for StaticSelect2', function () {
 
         beforeEach(function () {
             $('body').append('<div id="test-div"><select id="test-select" name="test-select-name" multiple></select></div>');
@@ -11,7 +16,7 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
         });
 
         it('Expects select2 to be called data representing the ids', function () {
-            PORTAL.VIEWS.createStaticSelect2($('#test-select'), ['T1', 'T2', 'T3']);
+            new StaticSelect2($('#test-select'), ['T1', 'T2', 'T3']);
             expect($.fn.select2).toHaveBeenCalled();
             expect($.fn.select2.calls.argsFor(0)[0].data).toEqual([
                 {id: 'T1', text: 'T1'}, {id: 'T2', text: 'T2'}, {id: 'T3', text: 'T3'}
@@ -20,7 +25,7 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
         });
 
         it('Expects select2 to be called with the additional options', function () {
-            PORTAL.VIEWS.createStaticSelect2($('#test-select'), ['T1', 'T2', 'T3'], {
+            new StaticSelect2($('#test-select'), ['T1', 'T2', 'T3'], {
                 placeholder: 'Any'
             });
 
@@ -28,7 +33,7 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
         });
     });
 
-    describe('Tests for PORTAL.VIEWS.createPagedCodeSelect', function () {
+    describe('Tests for new PagedCodeSelect', function () {
         var server;
         var testSpec;
         var testParam, testFilter;
@@ -53,7 +58,7 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
         });
 
         it('Expects select2 to be initialized with defaults properties', function () {
-            PORTAL.VIEWS.createPagedCodeSelect($('#test-select2'), testSpec, {});
+            new PagedCodeSelect($('#test-select2'), testSpec, {});
             expect($.fn.select2).toHaveBeenCalled();
 
             var options = $.fn.select2.calls.argsFor(0)[0];
@@ -63,14 +68,14 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
         });
 
         it('Expects select2 defaults to be overriden and additional parameters used to create the select2', function () {
-            PORTAL.VIEWS.createPagedCodeSelect($('#test-select2'), testSpec, {placeholder: 'Pick one'});
+            new PagedCodeSelect($('#test-select2'), testSpec, {placeholder: 'Pick one'});
             var options = $.fn.select2.calls.argsFor(0)[0];
             expect(options.allowClear).toEqual(true);
             expect(options.placeholder).toEqual('Pick one');
         });
 
         it('Expects the filter parameters will be used when provided', function () {
-            PORTAL.VIEWS.createPagedCodeSelect($('#test-select2'), testSpec, {}, testFilter, testParam);
+            new PagedCodeSelect($('#test-select2'), testSpec, {}, testFilter, testParam);
             testFilter.val('param1').trigger('change');
             var ajaxOption = $.fn.select2.calls.argsFor(0)[0].ajax;
             expect(ajaxOption.url).toContain('?test=param1');
@@ -80,14 +85,14 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
         });
 
         it('Expects the select2\'s ajax parameter to be configured to use the specified codes service', function () {
-            PORTAL.VIEWS.createPagedCodeSelect($('#test-select2'), testSpec, {});
+            new PagedCodeSelect($('#test-select2'), testSpec, {});
             var ajaxOption = $.fn.select2.calls.argsFor(0)[0].ajax;
             expect(ajaxOption.url).toContain(testSpec.codes);
         });
 
         it('Expects the select2\'s ajax parameter\'s data function to set query params', function () {
             testSpec.pagesize = 15;
-            PORTAL.VIEWS.createPagedCodeSelect($('#test-select2'), testSpec, {});
+            new PagedCodeSelect($('#test-select2'), testSpec, {});
             var dataFnc = $.fn.select2.calls.argsFor(0)[0].ajax.data;
             var params = dataFnc({term: 'ab', page: 2});
             expect(params).toEqual({
@@ -100,7 +105,7 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
         it('Expects the select2\'s ajax parameter\'s results function to format the data into a form that select2 can use', function () {
             testSpec.formatData = jasmine.createSpy('formatDataSpy').and.returnValue('formatted data');
             testSpec.pagesize = 15;
-            PORTAL.VIEWS.createPagedCodeSelect($('#test-select2'), testSpec, {});
+            new PagedCodeSelect($('#test-select2'), testSpec, {});
             var resultsFnc = $.fn.select2.calls.argsFor(0)[0].ajax.processResults;
 
             var DATA = $.parseJSON('{"codes" : [{"value" : "v1", "desc" : "Text1", "providers" : "P1"},' +
@@ -115,7 +120,7 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
         });
     });
 
-    describe('Tests for PORTAL.VIEWS.createCodeSelect', function () {
+    describe('Tests for CodeSelect', function () {
         var testModel;
         var testSpec;
         var server;
@@ -128,13 +133,13 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
             $('body').append('<div id="test-div">' +
                 '<select multiple id="test-select2" />' +
                 '</div>');
-            testModel = PORTAL.MODELS.cachedCodes({codes: 'testCode'});
+            testModel = new CachedCodes({codes: 'testCode'});
             testModel.fetch();
             server.requests[0].respond(200, {'Content-Type': 'text/json'}, RESPONSE_DATA);
             testSpec = {model: testModel};
 
             spyOn($.fn, 'select2');
-            spyOn(PORTAL.MODELS.providers, 'formatAvailableProviders').and.returnValue('P1');
+            spyOn(providers, 'formatAvailableProviders').and.returnValue('P1');
         });
 
         afterEach(function () {
@@ -143,7 +148,7 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
         });
 
         it('Expects that the select2 is not initialized', function () {
-            PORTAL.VIEWS.createCodeSelect($('#test-select2'), testSpec);
+            new CodeSelect($('#test-select2'), testSpec);
             expect($.fn.select2).toHaveBeenCalled();
             var options = $.fn.select2.calls.argsFor(0)[0];
             expect(options.allowClear).toBe(true);
@@ -160,7 +165,7 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
         it('Expects select2 options to be merged with defaults', function () {
             var options;
 
-            PORTAL.VIEWS.createCodeSelect($('#test-select2'), testSpec, {
+            new CodeSelect($('#test-select2'), testSpec, {
                 placeholder: 'Any',
                 width: '400px'
             });
@@ -171,7 +176,7 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
         it('Expects default isMatch to search (case insensitive) the desc property', function () {
             var matcher;
             spyOn(testModel, 'getLookup').and.returnValue({id: 'M1', desc: 'Monday', providers: 'P1'});
-            PORTAL.VIEWS.createCodeSelect($('#test-select2'), testSpec);
+            new CodeSelect($('#test-select2'), testSpec);
             matcher = $.fn.select2.calls.argsFor(0)[0].matcher;
             expect(matcher({term: 'M1'}, {id: 'M1'})).toBeNull();
             expect(matcher({term: 'mo'}, {id: 'M1'}, 'mo')).toEqual({id: 'M1'});
@@ -181,14 +186,14 @@ describe('Tests for PORTAL.VIEWS functions and objects', function () {
         it('Expects the default templateSelection function to return the id', function () {
             var templateSelection;
 
-            PORTAL.VIEWS.createCodeSelect($('#test-select2'), testSpec);
+            new CodeSelect($('#test-select2'), testSpec);
             templateSelection = $.fn.select2.calls.argsFor(0)[0].templateSelection;
             expect(templateSelection({id: 'V1', text: 'Verbose 1'})).toEqual('V1');
         });
     });
 });
 
-describe('Tests for PORTAL.VIEWS.createCascadedCodeSelect', function () {
+describe('Tests for CascadedCodeSelect', function () {
     var RESPONSE_DATA = '{"codes" : [{"value" : "v1:T1", "desc" : "Text1", "providers" : "P1"},' +
         '{"value" : "v1:T3", "desc" : "Text3", "providers" : "P1 P2"},' +
         '{"value" : "v1:T2", "providers" : "P1"},' +
@@ -206,19 +211,17 @@ describe('Tests for PORTAL.VIEWS.createCascadedCodeSelect', function () {
         $select = $('#test-select');
 
         fetchDeferred = $.Deferred();
-        testModel = spyOn(PORTAL.MODELS, 'codesWithKeys').and.returnValue({
-            fetch: jasmine.createSpy('testFetch').and.returnValue(fetchDeferred),
-            getAll: jasmine.createSpy('testgetAll').and.returnValue($.parseJSON(RESPONSE_DATA).codes),
-            getAllKeys: jasmine.createSpy('testgetAllKeys').and.returnValue(['v1', 'v2']),
-            getDataForKey: jasmine.createSpy('testgetDataForKey').and.returnValue([{
-                value: 'v2:T4',
-                desc: 'Text4',
-                provider: 'P2'
-            }, {
-                value: 'v2:T5', desc: 'Text5', providers: 'P1 P2'
-            }])
-        });
-        testModel = PORTAL.MODELS.codesWithKeys();
+        spyOn(CodesWithKeys.prototype, 'fetch').and.returnValue(fetchDeferred);
+        spyOn(CodesWithKeys.prototype, 'getAll').and.returnValue($.parseJSON(RESPONSE_DATA).codes);
+        spyOn(CodesWithKeys.prototype, 'getAllKeys').and.returnValue(['v1', 'v2']);
+        spyOn(CodesWithKeys.prototype, 'getDataForKey').and.returnValue([{
+            value: 'v2:T4',
+            desc: 'Text4',
+            provider: 'P2'
+        }, {
+            value: 'v2:T5', desc: 'Text5', providers: 'P1 P2'
+        }]);
+        testModel = new CodesWithKeys({});
         testGetKeys = function () {
             return ['v2'];
         };
@@ -236,7 +239,7 @@ describe('Tests for PORTAL.VIEWS.createCascadedCodeSelect', function () {
 
     it('Expects the select2 to be initialize with default options', function () {
         var opts;
-        PORTAL.VIEWS.createCascadedCodeSelect($select, testOptions, {});
+        new CascadedCodeSelect($select, testOptions, {});
 
         expect($.fn.select2).toHaveBeenCalled();
         opts = $.fn.select2.calls.argsFor(0)[0];
@@ -246,7 +249,7 @@ describe('Tests for PORTAL.VIEWS.createCascadedCodeSelect', function () {
 
     it('Expects the select2 to be initialized with any additional options', function () {
         var opts;
-        PORTAL.VIEWS.createCascadedCodeSelect($select, testOptions, {placeholder: 'Any'});
+        new CascadedCodeSelect($select, testOptions, {placeholder: 'Any'});
 
         opts = $.fn.select2.calls.argsFor(0)[0];
         expect(opts.placeholder).toEqual('Any');

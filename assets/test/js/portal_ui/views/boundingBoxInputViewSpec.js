@@ -1,4 +1,7 @@
-describe('Tests for PORTAL.VIEWS.boundingBoxInputView', function() {
+import BoundingBoxInputView from '../../../../js/views/boundingBoxInputView';
+
+
+describe('Tests for BoundingBoxInputView', function() {
     var $testDiv;
     var testView;
     var $north, $south, $east, $west, $bbox;
@@ -19,7 +22,7 @@ describe('Tests for PORTAL.VIEWS.boundingBoxInputView', function() {
         $west = $('#west');
         $bbox = $('input[name="bBox"]');
 
-        testView = PORTAL.VIEWS.boundingBoxInputView({
+        testView = new BoundingBoxInputView({
             $container : $testDiv
         });
     });

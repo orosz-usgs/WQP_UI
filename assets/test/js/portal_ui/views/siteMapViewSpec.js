@@ -1,9 +1,14 @@
-describe ('Tests for PORTAL.VIEWS.siteMapView', function() {
+import SiteMapView from '../../../../js/views/siteMapView';
+import IdentifyDialog from '../../../../js/identifyDialog';
+import queryService from '../../../../js/queryService';
+import SiteMap from '../../../../js/siteMap';
+
+
+describe ('Tests for SiteMapView', function() {
     var testView;
     var $testDiv;
 
-    var siteMapInitializeSpy, siteMapRenderSpy, siteMapUpdateSitesLayerSpy, siteMapClearBoxIdSpy;
-    var identifyInitializeSpy;
+    var siteMapClearBoxIdSpy;
     var mockDownloadDialog, mockDownloadView;
     var fetchCountsDeferred;
     var validateSuccess;
@@ -22,22 +27,11 @@ describe ('Tests for PORTAL.VIEWS.siteMapView', function() {
         $showHideBtn = $('.show-hide-toggle');
         $showMapBtn = $('#show-on-map-button');
 
-        siteMapInitializeSpy = jasmine.createSpy('siteMapInitialize');
-        siteMapRenderSpy = jasmine.createSpy('siteMapRender');
-        siteMapUpdateSitesLayerSpy = jasmine.createSpy('siteMapUpdateSitesLayer');
-        siteMapClearBoxIdSpy = jasmine.createSpy('siteMapClearBoxId');
+        spyOn(IdentifyDialog.prototype, 'initialize').and.callThrough();
 
-        identifyInitializeSpy = jasmine.createSpy('dialogInitialize');
-        spyOn(PORTAL.VIEWS, 'identifyDialog').and.returnValue({
-            initialize : identifyInitializeSpy
-        });
-
-        spyOn(PORTAL.MAP, 'siteMap').and.returnValue({
-            initialize : siteMapInitializeSpy,
-            render : siteMapRenderSpy,
-            updateSitesLayer : siteMapUpdateSitesLayerSpy,
-            clearBoxIdFeature : siteMapClearBoxIdSpy
-        });
+        spyOn(SiteMap.prototype, 'initialize');
+        spyOn(SiteMap.prototype, 'render');
+        siteMapClearBoxIdSpy = spyOn(SiteMap.prototype, 'clearBoxIdFeature');
         spyOn(window._gaq, 'push');
         mockDownloadDialog = {
             show : jasmine.createSpy('mockShow'),
@@ -56,9 +50,9 @@ describe ('Tests for PORTAL.VIEWS.siteMapView', function() {
         };
 
         fetchCountsDeferred = $.Deferred();
-        spyOn(PORTAL.queryServices, 'fetchQueryCounts').and.returnValue(fetchCountsDeferred);
+        spyOn(queryService, 'fetchQueryCounts').and.returnValue(fetchCountsDeferred);
 
-        testView = PORTAL.VIEWS.siteMapView({
+        testView = new SiteMapView({
             $container : $testDiv,
             downloadProgressDialog : mockDownloadDialog,
             downloadFormView : mockDownloadView
@@ -72,13 +66,14 @@ describe ('Tests for PORTAL.VIEWS.siteMapView', function() {
     });
 
     it('Expects that the identify dialog and the site map are initialized', function() {
-        expect(siteMapInitializeSpy).toHaveBeenCalled();
-        expect(identifyInitializeSpy).toHaveBeenCalledWith(siteMapClearBoxIdSpy);
+        expect(SiteMap.prototype.initialize).toHaveBeenCalled();
+        testView.identifyDialog.closeFunc();
+        expect(siteMapClearBoxIdSpy).toHaveBeenCalled();
     });
 
     it('Expects that when the show-hide-toggle button is clicked the portal map rendered', function() {
         $showHideBtn.trigger('click');
-        expect(siteMapRenderSpy).toHaveBeenCalled();
+        expect(SiteMap.prototype.render).toHaveBeenCalled();
     });
 
     it('Expects that the legend container visibility is toggled when the show-hide-toggle is clicked', function() {
@@ -97,14 +92,14 @@ describe ('Tests for PORTAL.VIEWS.siteMapView', function() {
         $showMapBtn.trigger('click');
         expect(mockDownloadView.validateDownloadForm).toHaveBeenCalled();
         expect(mockDownloadDialog.show).not.toHaveBeenCalled();
-        expect(PORTAL.queryServices.fetchQueryCounts).not.toHaveBeenCalled();
+        expect(queryService.fetchQueryCounts).not.toHaveBeenCalled();
     });
 
     it('Expects that clicking on the show map button if the form is valid, should show the progress dialog', function() {
         validateSuccess = true;
         $showMapBtn.trigger('click');
         expect(mockDownloadDialog.show).toHaveBeenCalled();
-        expect(PORTAL.queryServices.fetchQueryCounts).toHaveBeenCalled();
+        expect(queryService.fetchQueryCounts).toHaveBeenCalled();
     });
 
     it('Expects that after a successful head request fetch, the download dialog is updated', function() {

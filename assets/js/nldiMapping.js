@@ -1,6 +1,3 @@
-/** @namespace */
-var NLDI = window.NLDI = window.NLDI || {};
-
 /**
  * Add NLDI layer overlays to a leaflet map. An overlay is added for the flowlines
  * upstream and downstream of a site; another overlay is added to upstream and
@@ -9,7 +6,7 @@ var NLDI = window.NLDI = window.NLDI || {};
  *
  * @param {L.map} map The leaflet map that the overlay should be added to
  */
-NLDI.addOverlays = function(nldiMap) {
+export const addOverlays = function(nldiMap) {
     var map = nldiMap;
     var nldiUrl = Config.NLDI_SERVICES_ENDPOINT;
     var site = Config.site;

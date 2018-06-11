@@ -1,17 +1,25 @@
-var PORTAL = window.PORTAL = window.PORTAL || {};
-PORTAL.VIEWS = PORTAL.VIEWS || {};
+import * as dateValidator from '../dateValidator';
+import InputValidation from './inputValidationView';
+import { CodeSelect, PagedCodeSelect } from './portalViews';
+import { positiveIntValidator } from '../portalValidators';
+
 
 /*
  * Creates a sampling parameter input view
  * @param {Object} options
  *      @prop {Jquery element} $container - element where the sampling parameter inputs are contained
- *      @prop {PORTAL.MODELS.cachedCodes} sampleMediaModel
- *      @prop {PORTAL.MODELS.cachedCodes} characteristicTypeModel
+ *      @prop {CachedCodes} sampleMediaModel
+ *      @prop {CachedCodes} characteristicTypeModel
  * @return {Object}
     *   @func initialize
  */
-PORTAL.VIEWS.samplingParameterInputView = function(options) {
-    var self = {};
+export default class SamplingParameterInputView {
+
+    constructor({$container, sampleMediaModel, characteristicTypeModel}) {
+        this.$container = $container;
+        this.sampleMediaModel = sampleMediaModel;
+        this.characteristicTypeModel = characteristicTypeModel;
+    }
 
     /*
      * Initializes and sets up the DOM event handlers for the inputs
@@ -19,53 +27,51 @@ PORTAL.VIEWS.samplingParameterInputView = function(options) {
      *      @resolve - all models have been successfully fetched
      *      @reject - one or models have not been successfully fetched
      */
-    self.initialize = function() {
-        var $sampleMedia = options.$container.find('#sampleMedia');
-        var $characteristicType = options.$container.find('#characteristicType');
-        var $characteristicName = options.$container.find('#characteristicName');
-        var $projectCode = options.$container.find('#project-code');
-        var $minresults = options.$container.find('#minresults');
-        var $startDate = options.$container.find('#startDateLo');
-        var $endDate = options.$container.find('#startDateHi');
+    initialize() {
+        var $sampleMedia = this.$container.find('#sampleMedia');
+        var $characteristicType = this.$container.find('#characteristicType');
+        var $characteristicName = this.$container.find('#characteristicName');
+        var $projectCode = this.$container.find('#project-code');
+        var $minresults = this.$container.find('#minresults');
+        var $startDate = this.$container.find('#startDateLo');
+        var $endDate = this.$container.find('#startDateHi');
 
-        var fetchSampleMedia = options.sampleMediaModel.fetch();
-        var fetchCharacteristicType = options.characteristicTypeModel.fetch();
+        var fetchSampleMedia = this.sampleMediaModel.fetch();
+        var fetchCharacteristicType = this.characteristicTypeModel.fetch();
         var fetchComplete = $.when(fetchSampleMedia, fetchCharacteristicType);
 
-        fetchSampleMedia.done(function() {
-            PORTAL.VIEWS.createCodeSelect($sampleMedia, {model : options.sampleMediaModel});
+        fetchSampleMedia.done(() => {
+            new CodeSelect($sampleMedia, {model : this.sampleMediaModel});
         });
-        fetchCharacteristicType.done(function() {
-            PORTAL.VIEWS.createCodeSelect($characteristicType, {model : options.characteristicTypeModel});
+        fetchCharacteristicType.done(() => {
+            new CodeSelect($characteristicType, {model : this.characteristicTypeModel});
         });
 
-        PORTAL.VIEWS.createPagedCodeSelect($characteristicName, {codes: 'characteristicname'}, {closeOnSelect : false});
-        PORTAL.VIEWS.createPagedCodeSelect($projectCode, {codes: 'project'},
+        new PagedCodeSelect($characteristicName, {codes: 'characteristicname'}, {closeOnSelect : false});
+        new PagedCodeSelect($projectCode, {codes: 'project'},
             {closeOnSelect : false}
         );
 
         // Add input validations and reformatting handlers
-        PORTAL.VIEWS.inputValidation({
+        new InputValidation({
             inputEl : $minresults,
-            validationFnc : PORTAL.validators.positiveIntValidator
+            validationFnc : positiveIntValidator
         });
-        PORTAL.VIEWS.inputValidation({
+        new InputValidation({
             inputEl: $startDate,
-            validationFnc: PORTAL.dateValidator.validate,
+            validationFnc: dateValidator.validate,
             updateFnc: function (value) {
-                return PORTAL.dateValidator.format(value, true);
+                return dateValidator.format(value, true);
             }
         });
-        PORTAL.VIEWS.inputValidation({
+        new InputValidation({
             inputEl: $endDate,
-            validationFnc: PORTAL.dateValidator.validate,
+            validationFnc: dateValidator.validate,
             updateFnc: function (value) {
-                return PORTAL.dateValidator.format(value, false);
+                return dateValidator.format(value, false);
             }
         });
 
         return fetchComplete;
-    };
-
-    return self;
-};
+    }
+}

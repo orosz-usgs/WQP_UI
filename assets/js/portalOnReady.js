@@ -1,7 +1,11 @@
 import log from 'loglevel';
 
+import ArcGisOnlineHelpView from './views/arcGisOnlineHelpView';
+import DownloadFormView from './views/downloadFormView';
+import ShowAPIView from './views/showAPIView';
+import SiteMapView from './views/siteMapView';
+import DownloadProgressDialog from './downloadProgressDialog';
 
-var PORTAL = window.PORTAL = window.PORTAL || {};
 
 $(document).ready(function () {
     // Set the loglevel
@@ -14,22 +18,22 @@ $(document).ready(function () {
     var $form = $('#params');
 
     // Create sub views
-    var downloadProgressDialog = PORTAL.VIEWS.downloadProgressDialog($('#download-status-dialog'));
-    var downloadFormView = PORTAL.VIEWS.downloadFormView({
+    var downloadProgressDialog = new DownloadProgressDialog($('#download-status-dialog'));
+    var downloadFormView = new DownloadFormView({
         $form : $form,
         downloadProgressDialog : downloadProgressDialog
     });
-    var siteMapView = PORTAL.VIEWS.siteMapView({
+    var siteMapView = new SiteMapView({
         $container : $('#mapping-div'),
         downloadProgressDialog : downloadProgressDialog,
         downloadFormView : downloadFormView
     });
-    var showAPIView = PORTAL.VIEWS.showAPIView({
+    var showAPIView = new ShowAPIView({
         $container : $('#show-queries-div'),
         getQueryParamArray : $.proxy(downloadFormView.getQueryParamArray, downloadFormView)
     });
 
-    var arcGisOnlineHelpView = PORTAL.VIEWS.arcGisOnlineHelpView({
+    var arcGisOnlineHelpView = new ArcGisOnlineHelpView({
         $button : $('#show-arcgis-online-help'),
         $dialog : $('#arcgis-online-dialog'),
         $siteMapViewContainer : $('#mapping-div'),
@@ -45,6 +49,4 @@ $(document).ready(function () {
     initDownloadForm.fail(function() {
         $('#service-error-dialog').modal('show');
     });
-
 });
-

@@ -1,5 +1,12 @@
-var PORTAL = window.PORTAL = window.PORTAL || {};
-PORTAL.MAP = PORTAL.MAP || {};
+import { isExtraSmallBrowser } from './utils';
+
+
+const BASE_LAYER_Z_INDEX = 1;
+const HYDRO_LAYER_Z_INDEX = 2;
+const NWIS_SITES_LAYER_Z_INDEX = 3;
+const WQP_SITES_LAYER_Z_INDEX = 4;
+
+
 /*
  * Manages the site map and its controls
  * @param {Object} options
@@ -7,30 +14,28 @@ PORTAL.MAP = PORTAL.MAP || {};
  *      @prop {Jquery element} $loadingIndicator
  *      @prop {Jquery element} $legendDiv
  *      @prop {Jquery element} $sldSelect
- *      @prop {Object instance of PORTAL.VIEWS.identifyDialog} identifyDialog
+ *      @prop {Object instance of IdentifyDialog} identifyDialog
  * @return {Object}
  *      @func initialize
  *      @func render
  *      @func addSitesLayer
  *      @func clearBoxIdFeature
  */
-PORTAL.MAP.siteMap = function(options) {
-    var self = {};
+export default class SiteMap {
 
-    var BASE_LAYER_Z_INDEX = 1;
-    var HYDRO_LAYER_Z_INDEX = 2;
-    var NWIS_SITES_LAYER_Z_INDEX = 3;
-    var WQP_SITES_LAYER_Z_INDEX = 4;
-
-    var map;
-    var wqpSitesLayer;
-    var drawnIdentifyBoxFeature;
+    constructor({mapDivId, $loadingIndicator, $legendDiv, $sldSelect, identifyDialog}) {
+        this.mapDivId = mapDivId;
+        this.$loadingIndicator = $loadingIndicator;
+        this.$legendDiv = $legendDiv;
+        this.$sldSelect = $sldSelect;
+        this.identifyDialog = identifyDialog;
+    }
 
     /*
      * Create the site map, with the base layers, overlay layers, and identify controls and event handlers.
      * Should be called before any of the other methods in this object.
      */
-    self.initialize = function() {
+    initialize() {
         var MapWithSingleClickHandler = L.Map.extend({
             includes: L.singleClickEventMixin()
         });
@@ -52,44 +57,44 @@ PORTAL.MAP.siteMap = function(options) {
         });
         var drawIdentifyBoxControl;
 
-        var updateIdentifyDialog = function(bounds) {
-            if (wqpSitesLayer) {
-                options.$loadingIndicator.show();
-                wqpSitesLayer.fetchSitesInBBox(bounds)
-                    .done(function(resp) {
-                        options.identifyDialog.showDialog({
+        var updateIdentifyDialog = (bounds) => {
+            if (this.wqpSitesLayer) {
+                this.$loadingIndicator.show();
+                this.wqpSitesLayer.fetchSitesInBBox(bounds)
+                    .done((resp) => {
+                        this.identifyDialog.showDialog({
                             features: resp.features,
-                            queryParamArray: wqpSitesLayer.getQueryParamArray(),
+                            queryParamArray: this.wqpSitesLayer.getQueryParamArray(),
                             boundingBox: bounds.toBBoxString(),
-                            usePopover: PORTAL.UTILS.isExtraSmallBrowser()
+                            usePopover: isExtraSmallBrowser()
                         });
                     })
-                    .fail(function() {
-                        map.openPopup('Failed to fetch sites', map.getCenter());
+                    .fail(() => {
+                        this.map.openPopup('Failed to fetch sites', this.map.getCenter());
                     })
-                    .always(function() {
-                        options.$loadingIndicator.hide();
+                    .always(() => {
+                        this.$loadingIndicator.hide();
                     });
             }
         };
 
-        var identifySitesAtPointHandler = function(ev) {
+        var identifySitesAtPointHandler = (ev) => {
             var southwestPoint = L.point(ev.layerPoint.x - 5, ev.layerPoint.y - 5);
             var northeastPoint = L.point(ev.layerPoint.x + 5, ev.layerPoint.y + 5);
             var bounds = L.latLngBounds(
-                map.layerPointToLatLng(southwestPoint),
-                map.layerPointToLatLng(northeastPoint)
+                this.map.layerPointToLatLng(southwestPoint),
+                this.map.layerPointToLatLng(northeastPoint)
             );
             updateIdentifyDialog(bounds);
         };
 
-        var drawIdentifyBox = function(layer) {
-            drawnIdentifyBoxFeature.clearLayers();
-            drawnIdentifyBoxFeature.addLayer(layer);
+        var drawIdentifyBox = (layer) => {
+            this.drawnIdentifyBoxFeature.clearLayers();
+            this.drawnIdentifyBoxFeature.addLayer(layer);
             updateIdentifyDialog(layer.getBounds());
         };
 
-        drawnIdentifyBoxFeature = L.featureGroup();
+        this.drawnIdentifyBoxFeature = L.featureGroup();
         L.drawLocal.draw.toolbar.buttons.rectangle = 'Click to identify sites in a box';
         L.drawLocal.edit.toolbar.buttons.edit = 'Click to modify identify box';
         drawIdentifyBoxControl = new L.Control.Draw({
@@ -103,91 +108,89 @@ PORTAL.MAP.siteMap = function(options) {
                 marker: false
             },
             edit: {
-                featureGroup: drawnIdentifyBoxFeature,
+                featureGroup: this.drawnIdentifyBoxFeature,
                 remove: false
             }
         });
 
-        map = new MapWithSingleClickHandler(options.mapDivId, {
+        this.map = new MapWithSingleClickHandler(this.mapDivId, {
             center: [37.0, -100.0],
             zoom: 3,
             layers: [baseLayers['World Topo'], esriHydroLayer]
         });
 
-        map.addControl(L.control.layers(baseLayers, {
+        this.map.addControl(L.control.layers(baseLayers, {
             'ESRI Hyro Layer': esriHydroLayer,
             'NWIS Stream Gages': nwisSitesLayer
         }, {
             autoZIndex: false
         }));
-        map.addControl(L.control.scale());
-        map.addLayer(drawnIdentifyBoxFeature);
-        map.addControl(drawIdentifyBoxControl);
+        this.map.addControl(L.control.scale());
+        this.map.addLayer(this.drawnIdentifyBoxFeature);
+        this.map.addControl(drawIdentifyBoxControl);
 
         // Set up the map event handlers for the draw control to retrieve the sites.
-        map.on(L.Draw.Event.CREATED, function(ev) {
+        this.map.on(L.Draw.Event.CREATED, (ev) => {
             drawIdentifyBox(ev.layer);
         });
-        map.on(L.Draw.Event.EDITED, function(ev) {
+        this.map.on(L.Draw.Event.EDITED, (ev) => {
             drawIdentifyBox(ev.layers.getLayers()[0]);
         });
 
         // Set up click handler for the identify click event
-        map.addSingleClickHandler(identifySitesAtPointHandler);
+        this.map.addSingleClickHandler(identifySitesAtPointHandler);
 
         //Set up sld switcher
-        options.$sldSelect.change(function() {
-            if (wqpSitesLayer) {
-                wqpSitesLayer.setParams({
-                    styles: options.$sldSelect.val()
+        this.$sldSelect.change(() => {
+            if (this.wqpSitesLayer) {
+                this.wqpSitesLayer.setParams({
+                    styles: this.$sldSelect.val()
                 });
             }
         });
-    };
+    }
 
     /*
-     * Renders the map options.mapDivId if initialize has been called
+     * Renders the map this.mapDivId if initialize has been called
      */
-    self.render = function() {
-        if (map) {
-            map.invalidateSize();
-            map.setView(map.getCenter(), map.getZoom());
+    render() {
+        if (this.map) {
+            this.map.invalidateSize();
+            this.map.setView(this.map.getCenter(), this.map.getZoom());
         }
-    };
+    }
 
     /*
      * Show the loading indicator, create the sites layer for the query parameters, and show
-     * on the map. The loading indicator should be removed once the layer has been completely loaded.
+     * on the this.map. The loading indicator should be removed once the layer has been completely loaded.
      * @param {Array of Object with name and value properties} queryParamArray - query parameters to be used to retrieve the sites
      */
 
-    self.updateSitesLayer = function(queryParamArray) {
-        if (map) {
-            //options.$loadingIndicator.show();
-            if (wqpSitesLayer) {
-                wqpSitesLayer.updateQueryParams(queryParamArray);
+    updateSitesLayer(queryParamArray) {
+        if (this.map) {
+            //this.$loadingIndicator.show();
+            if (this.wqpSitesLayer) {
+                this.wqpSitesLayer.updateQueryParams(queryParamArray);
             } else {
-                wqpSitesLayer = L.wqpSitesLayer(queryParamArray, {
-                    styles: options.$sldSelect.val(),
+                this.wqpSitesLayer = L.wqpSitesLayer(queryParamArray, {
+                    styles: this.$sldSelect.val(),
                     zIndex: WQP_SITES_LAYER_Z_INDEX
                 });
-                wqpSitesLayer.on('loading', function() {
-                    options.$loadingIndicator.show();
+                this.wqpSitesLayer.on('loading', () => {
+                    this.$loadingIndicator.show();
                 });
-                wqpSitesLayer.on('load', function() {
-                    options.$loadingIndicator.hide();
-                    wqpSitesLayer.getLegendGraphic(function(src) {
-                        options.$legendDiv.html('<img  src="' + src + '" />');
+                this.wqpSitesLayer.on('load', () => {
+                    this.$loadingIndicator.hide();
+                    this.wqpSitesLayer.getLegendGraphic((src) => {
+                        this.$legendDiv.html('<img  src="' + src + '" />');
                     });
                 });
-                map.addLayer(wqpSitesLayer);
+                this.map.addLayer(this.wqpSitesLayer);
             }
         }
-    };
+    }
 
-    self.clearBoxIdFeature = function() {
-        drawnIdentifyBoxFeature.clearLayers();
-    };
-
-    return self;
-};
+    clearBoxIdFeature() {
+        this.drawnIdentifyBoxFeature.clearLayers();
+    }
+}
