@@ -1,4 +1,7 @@
-describe('Tests for PORTAL.CONTROLLERS.validatePointLocation', function () {
+import { validatePointLocation, validateBoundingBox, validateDateRange } from '../../../js/downloadFormController';
+
+
+describe('Tests for validatePointLocation', function () {
     var fields;
     beforeEach(function () {
         var pointLocationHtml = '<div id="test-div">' +
@@ -20,14 +23,14 @@ describe('Tests for PORTAL.CONTROLLERS.validatePointLocation', function () {
     });
 
     it('Expects all blank inputs to be valid', function () {
-        expect(PORTAL.CONTROLLERS.validatePointLocation(fields)).toEqual({isValid: true});
+        expect(validatePointLocation(fields)).toEqual({isValid: true});
     });
 
     it('Expects all filled in inputs to be valid', function () {
         fields.withinEl.val('2');
         fields.latEl.val('12.0');
         fields.lonEl.val('16.0');
-        expect(PORTAL.CONTROLLERS.validatePointLocation(fields)).toEqual({isValid: true});
+        expect(validatePointLocation(fields)).toEqual({isValid: true});
     });
 
     it('Expects if one or two fields are blank that it is invalid', function () {
@@ -35,35 +38,35 @@ describe('Tests for PORTAL.CONTROLLERS.validatePointLocation', function () {
 
         fields.withinEl.val('2');
         fields.latEl.val('12.0');
-        result = PORTAL.CONTROLLERS.validatePointLocation(fields);
+        result = validatePointLocation(fields);
         expect(result.isValid).toBe(false);
         expect(result.errorMessage).toBeDefined();
 
         fields.latEl.val('');
-        result = PORTAL.CONTROLLERS.validatePointLocation(fields);
+        result = validatePointLocation(fields);
         expect(result.isValid).toBe(false);
         expect(result.errorMessage).toBeDefined();
 
         fields.withinEl.val('');
         fields.latEl.val('12.0');
-        result = PORTAL.CONTROLLERS.validatePointLocation(fields);
+        result = validatePointLocation(fields);
         expect(result.isValid).toBe(false);
         expect(result.errorMessage).toBeDefined();
 
         fields.lonEl.val('16.0');
-        result = PORTAL.CONTROLLERS.validatePointLocation(fields);
+        result = validatePointLocation(fields);
         expect(result.isValid).toBe(false);
         expect(result.errorMessage).toBeDefined();
 
         fields.withinEl.val('2.0');
         fields.latEl.val('');
-        result = PORTAL.CONTROLLERS.validatePointLocation(fields);
+        result = validatePointLocation(fields);
         expect(result.isValid).toBe(false);
         expect(result.errorMessage).toBeDefined();
     });
 });
 
-describe('Tests for PORTAL.CONTROLLERS.validateBoundingBox', function () {
+describe('Tests for validateBoundingBox', function () {
     var fields;
 
     beforeEach(function () {
@@ -88,7 +91,7 @@ describe('Tests for PORTAL.CONTROLLERS.validateBoundingBox', function () {
     });
 
     it('Expects all blank fields to be valid', function () {
-        expect(PORTAL.CONTROLLERS.validateBoundingBox(fields).isValid).toBe(true);
+        expect(validateBoundingBox(fields).isValid).toBe(true);
     });
 
     it('Expects all filled in fields to be valid if north is greater than south and east is greater than west', function () {
@@ -96,7 +99,7 @@ describe('Tests for PORTAL.CONTROLLERS.validateBoundingBox', function () {
         fields.southEl.val('14.0');
         fields.eastEl.val('-13.0');
         fields.westEl.val('-14.0');
-        expect(PORTAL.CONTROLLERS.validateBoundingBox(fields).isValid).toBe(true);
+        expect(validateBoundingBox(fields).isValid).toBe(true);
     });
 
     it('Expects the result to be invalid if north is less than south', function () {
@@ -105,7 +108,7 @@ describe('Tests for PORTAL.CONTROLLERS.validateBoundingBox', function () {
         fields.southEl.val('14.0');
         fields.eastEl.val('-13.0');
         fields.westEl.val('-14.0');
-        result = PORTAL.CONTROLLERS.validateBoundingBox(fields);
+        result = validateBoundingBox(fields);
         expect(result.isValid).toBe(false);
         expect(result.errorMessage).toBeDefined();
     });
@@ -116,7 +119,7 @@ describe('Tests for PORTAL.CONTROLLERS.validateBoundingBox', function () {
         fields.southEl.val('14.0');
         fields.eastEl.val('-13.0');
         fields.westEl.val('-12.0');
-        result = PORTAL.CONTROLLERS.validateBoundingBox(fields);
+        result = validateBoundingBox(fields);
         expect(result.isValid).toBe(false);
         expect(result.errorMessage).toBeDefined();
     });
@@ -126,32 +129,32 @@ describe('Tests for PORTAL.CONTROLLERS.validateBoundingBox', function () {
         fields.northEl.val('15.0');
         fields.southEl.val('14.0');
         fields.eastEl.val('-13.0');
-        result = PORTAL.CONTROLLERS.validateBoundingBox(fields);
+        result = validateBoundingBox(fields);
         expect(result.isValid).toBe(false);
         expect(result.errorMessage).toBeDefined();
 
         fields.eastEl.val('');
         fields.westEl.val('-14.0');
-        result = PORTAL.CONTROLLERS.validateBoundingBox(fields);
+        result = validateBoundingBox(fields);
         expect(result.isValid).toBe(false);
         expect(result.errorMessage).toBeDefined();
 
         fields.southEl.val('');
         fields.eastEl.val('-13.0');
-        result = PORTAL.CONTROLLERS.validateBoundingBox(fields);
+        result = validateBoundingBox(fields);
         expect(result.isValid).toBe(false);
         expect(result.errorMessage).toBeDefined();
 
         fields.northEl.val('');
         fields.southEl.val('14.0');
-        result = PORTAL.CONTROLLERS.validateBoundingBox(fields);
+        result = validateBoundingBox(fields);
         expect(result.isValid).toBe(false);
         expect(result.errorMessage).toBeDefined();
     });
 
 });
 
-describe('Tests for PORTAL.CONTROLLERS.validateDateRange', function () {
+describe('Tests for validateDateRange', function () {
     var fields;
 
     beforeEach(function () {
@@ -172,28 +175,28 @@ describe('Tests for PORTAL.CONTROLLERS.validateDateRange', function () {
     });
 
     it('Expects a valid result if both fields are blank', function () {
-        expect(PORTAL.CONTROLLERS.validateDateRange(fields).isValid).toBe(true);
+        expect(validateDateRange(fields).isValid).toBe(true);
     });
 
     it('Expects a valid result if only one field is blank', function () {
         fields.toDateEl.val('01-01-2000');
-        expect(PORTAL.CONTROLLERS.validateDateRange(fields).isValid).toBe(true);
+        expect(validateDateRange(fields).isValid).toBe(true);
 
         fields.toDateEl.val('');
         fields.fromDateEl.val('01-01-2000');
-        expect(PORTAL.CONTROLLERS.validateDateRange(fields).isValid).toBe(true);
+        expect(validateDateRange(fields).isValid).toBe(true);
     });
 
     it('Expects a from date less than a to date to be valid', function () {
         fields.fromDateEl.val('01-01-2000');
         fields.toDateEl.val('01-01-2001');
-        expect(PORTAL.CONTROLLERS.validateDateRange(fields).isValid).toBe(true);
+        expect(validateDateRange(fields).isValid).toBe(true);
     });
 
     it('Expects a from date greater than a to date to be invalid', function () {
         fields.fromDateEl.val('01-01-2000');
         fields.toDateEl.val('12-31-1999');
-        var result = PORTAL.CONTROLLERS.validateDateRange(fields);
+        var result = validateDateRange(fields);
         expect(result.isValid).toBe(false);
         expect(result.errorMessage).toBeDefined();
     });

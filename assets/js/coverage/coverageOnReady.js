@@ -1,5 +1,7 @@
 import log from 'loglevel';
 
+import CoverageMap from './coverageMap';
+
 
 $(document).ready(function() {
     // Set the loglevel
@@ -17,7 +19,7 @@ $(document).ready(function() {
         };
     };
 
-    var map = COVERAGE.coverageMap({
+    var map = new CoverageMap({
         mapDivId: 'coverage-map-area',
         $loadingIndicator : $('.map-loading-indicator'),
         $legendImg: $('#legend-img'),

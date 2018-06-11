@@ -1,4 +1,7 @@
-describe('Tests for PORTAL.VIEWS.showAPIViewSpec', function() {
+import ShowAPIView from '../../../../js/views/showAPIView';
+
+
+describe('Tests for ShowAPIViewSpec', function() {
     var $testDiv;
 
     beforeEach(function() {
@@ -28,7 +31,7 @@ describe('Tests for PORTAL.VIEWS.showAPIViewSpec', function() {
             {name : 'Testparam2', value : 'value2'}
         ]);
 
-        testView = PORTAL.VIEWS.showAPIView({
+        testView = new ShowAPIView({
             $container : $testDiv,
             getQueryParamArray : mockGetQueryParamArray
         });
@@ -53,7 +56,7 @@ describe('Tests for PORTAL.VIEWS.showAPIViewSpec', function() {
             {name : 'Testparam2', value : 'value2'}
         ]);
 
-        testView = PORTAL.VIEWS.showAPIView({
+        testView = new ShowAPIView({
             $container : $testDiv,
             getQueryParamArray : mockGetQueryParamArray
         });

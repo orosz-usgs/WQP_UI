@@ -1,5 +1,5 @@
-/** @namespace */
-var SITES = window.SITES = window.SITES || {};
+import createWQPMap from './generalMapping';
+
 
 /**
  * Create a leaflet map for all the sites in an organization that
@@ -8,14 +8,14 @@ var SITES = window.SITES = window.SITES || {};
  *
  * @param {object} options An object containing mapDivId (div containing the map) and mapZoom (zoom level) attributes
  */
-SITES.sitesMap = function(options) {
+export default function sitesMap(options) {
     var siteData = Config.sitesData;
     var localBaseUrl = Config.localBaseUrl;
     var mapDivId = options.mapDivId;
     var zoom = options.mapZoom;
     var map;
 
-    map = WQP.MAPS.create(mapDivId, 'Esri.WorldTopoMap');
+    map = createWQPMap(mapDivId, 'Esri.WorldTopoMap');
     map.setView([35.9908385, -78.9005222], zoom);
 
     var getValue = function (x) {
@@ -77,4 +77,4 @@ SITES.sitesMap = function(options) {
     };
 
     addDataToMap(siteData);
-};
+}

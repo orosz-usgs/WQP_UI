@@ -1,4 +1,8 @@
-describe('PORTAL.VIEWS.nldiNavViewPopupView', function() {
+import NldiNavPopupView from '../../../../js/views/nldiNavPopupView';
+import * as nldiModel from '../../../../js/nldiModel';
+
+
+describe('nldiNavViewPopupView', function() {
     var $testDiv;
     var testMap;
     var navHandlerSpy;
@@ -12,7 +16,7 @@ describe('PORTAL.VIEWS.nldiNavViewPopupView', function() {
         });
 
         navHandlerSpy = jasmine.createSpy('navHandlerSpy');
-        PORTAL.VIEWS.nldiNavPopupView.createPopup(testMap, {}, L.latLng(43.0, -100.0), navHandlerSpy);
+        new NldiNavPopupView(testMap, {}, L.latLng(43.0, -100.0), navHandlerSpy);
     });
 
     afterEach(function() {
@@ -28,7 +32,7 @@ describe('PORTAL.VIEWS.nldiNavViewPopupView', function() {
 
         $select.val('UM').trigger('change');
 
-        expect(PORTAL.MODELS.nldiModel.getData().navigation.id).toEqual('UM');
+        expect(nldiModel.getData().navigation.id).toEqual('UM');
         expect($button.prop('disabled')).toBe(false);
     });
 
@@ -36,7 +40,7 @@ describe('PORTAL.VIEWS.nldiNavViewPopupView', function() {
         var $distance = $('.navigation-selection-div input[type="text"]');
         $distance.val('100').trigger('change');
 
-        expect(PORTAL.MODELS.nldiModel.getData().distance).toEqual('100');
+        expect(nldiModel.getData().distance).toEqual('100');
     });
 
     it('Expects that clicking the button causes the navHandler to be executed', function() {

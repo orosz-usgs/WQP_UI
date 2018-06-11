@@ -6,41 +6,41 @@ import map from 'lodash/collection/map';
 import pluck from 'lodash/collection/pluck';
 import log from 'loglevel';
 
+import { getHeaders } from './utils';
 
-var PORTAL = window.PORTAL = window.PORTAL || {};
-PORTAL.MODELS = PORTAL.MODELS || {};
 
 /*
  * @param {Object} options
  *      @prop {String} codes - String used in the url to retrieve the model's data.
- * @returns {PORTAL.MODELS.cachedCodes}
+ * @returns {CachedCodes}
  *      @prop {Function} fetch
  *      @prop {Function} getAll
  *     @prop {Function} getLookups
  */
-PORTAL.MODELS.cachedCodes = function(options) {
-    var self = {};
-
-    var cachedData = [];
-    var HEADERS = PORTAL.UTILS.getHeaders();
+export class CachedCodes {
+    constructor({codes}) {
+        this.codes = codes;
+        this.cachedData = [];
+        this.HEADERS = getHeaders();
+    }
 
     /*
      * @return {$.Promise}.
      *      @resolve {Array of Objects} - Each object has String properties: id, desc, and providers.
      *      @reject {String} - the error message.
      */
-    self.fetch = function() {
+    fetch() {
         var fetchDeferred = $.Deferred();
-        var URL = Config.CODES_ENDPOINT + '/' + options.codes;
+        var URL = Config.CODES_ENDPOINT + '/' + this.codes;
         $.ajax({
             url: URL,
             type: 'GET',
-            headers: HEADERS,
+            headers: this.HEADERS,
             data: {
                 mimeType: 'json'
             },
-            success: function (data) {
-                cachedData = map(data.codes, function (code) {
+            success: (data) => {
+                this.cachedData = map(data.codes, (code) => {
                     return {
                         id: code.value,
                         desc: has(code, 'desc') && code.desc ? code.desc : code.value, // defaults to value
@@ -48,55 +48,58 @@ PORTAL.MODELS.cachedCodes = function(options) {
                     };
                 });
 
-                fetchDeferred.resolve(cachedData);
+                fetchDeferred.resolve(this.cachedData);
             },
 
             error: function(jqXHR, textStatus, error) {
-                log.error('Can\'t  get ' + options.codes + ', Server error: ' + error);
+                log.error('Can\'t  get ' + this.codes + ', Server error: ' + error);
                 fetchDeferred.reject(error);
             }
         });
         return fetchDeferred.promise();
-    };
+    }
 
     /*
      * @returns {Array of Objects} - Each object has String properties: id, desc, and providers. This is the
      * same object that is returned with the last successfully fetch.
      */
-    self.getAll = function() {
-        return cachedData;
-    };
+    getAll() {
+        return this.cachedData;
+    }
 
     /*
      * @returns {Object} - The object in the model with the matching id property. Object contains id, desc, and providers
      *      properties. Return undefined if no object exists
      */
-    self.getLookup = function (id) {
-        return find(cachedData, function (lookup) {
+    getLookup(id) {
+        return find(this.cachedData, function (lookup) {
             return lookup.id === id;
         });
-    };
+    }
+}
 
-    return self;
-};
 /*
  *
  * @param {Object} options -
  *          @prop {String} codes - Used in the ajax url to retrieve the data
  *          @prop {String} keyParameter - the parameter name to use to retrieve the appropriate data subset
  *          @prop {Function} parseKey - function takes a lookup item and returns a string for the key it represents.
- * @returns {PORTAL.MODELS.codesWithKeys}
+ * @returns {CodesWithKeys}
  *          @prop {Function} fetch
  *          @prop {Function} getAll
  *          @prop {Function} getAllKeys
  *          @prop {Function} getDataForKey
  *
  */
-PORTAL.MODELS.codesWithKeys = function(options) {
-    var self = {};
+export class CodesWithKeys {
+    constructor({codes, keyParameter, parseKey}) {
+        this.codes = codes;
+        this.keyParameter = keyParameter;
+        this.parseKey = parseKey;
+        this.cachedData = [];
+        this.HEADERS = getHeaders();
+    }
 
-    var cachedData = [];
-    var HEADERS = PORTAL.UTILS.getHeaders();
     /* Each object where each value is an array of objects with properties id, desc, and providers */
 
     /*
@@ -105,25 +108,25 @@ PORTAL.MODELS.codesWithKeys = function(options) {
      *      @resolve {Array of Objects} - each object is a lookup with id, desc, and providers properties.
      *      @reject {String} descriptive error string
      */
-    self.fetch = function(keys) {
+    fetch(keys) {
         var fetchDeferred = $.Deferred();
-        var URL = Config.CODES_ENDPOINT + '/' + options.codes;
+        var URL = Config.CODES_ENDPOINT + '/' + this.codes;
 
         $.ajax({
-            url: URL + '?' + options.keyParameter + '=' + keys.join(';'),
+            url: URL + '?' + this.keyParameter + '=' + keys.join(';'),
             type: 'GET',
             data: {
                 mimeType: 'json'
             },
-            headers: HEADERS,
-            success: function (data) {
-                cachedData = map(keys, function (key) {
-                    var filtered = filter(data.codes, function (lookup) {
-                        return options.parseKey(lookup.value) === key;
+            headers: this.HEADERS,
+            success: (data) => {
+                this.cachedData = map(keys, (key) => {
+                    var filtered = filter(data.codes, (lookup) => {
+                        return this.parseKey(lookup.value) === key;
                     });
                     return {
                         key: key,
-                        data: map(filtered, function (lookup) {
+                        data: map(filtered, (lookup) => {
                             return {
                                 id: lookup.value,
                                 desc: has(lookup, 'desc') && lookup.desc ? lookup.desc : lookup.value, // defaults to value
@@ -132,47 +135,45 @@ PORTAL.MODELS.codesWithKeys = function(options) {
                         })
                     };
                 });
-                fetchDeferred.resolve(self.getAll());
+                fetchDeferred.resolve(this.getAll());
             },
-            error: function(jqXHR, textStatus, error) {
-                log.error('Can\'t get ' + options.codes + ', Server error: ' + error);
+            error: (jqXHR, textStatus, error) => {
+                log.error('Can\'t get ' + this.codes + ', Server error: ' + error);
                 fetchDeferred.reject(error);
             }
         });
 
         return fetchDeferred.promise();
-    };
+    }
 
     /*
      * @return {Array of Object} - Object has id, desc, and providers string properties
      */
-    self.getAll = function () {
-        var all = pluck(cachedData, 'data');
+    getAll() {
+        var all = pluck(this.cachedData, 'data');
         return flatten(all);
-    };
+    }
 
     /*
      * @return {Array of String}
      */
-    self.getAllKeys = function () {
-        return pluck(cachedData, 'key');
-    };
+    getAllKeys() {
+        return pluck(this.cachedData, 'key');
+    }
 
     /*
      * @return {Array of Objects} - Each object is a lookup with id, desc, and providers properties. Return undefined if that key
      * is not in the model
      */
-    self.getDataForKey = function(key) {
-        var isMatch = function(object) {
+    getDataForKey(key) {
+        var isMatch = (object) => {
             return object.key === key;
         };
-        var lookup = find(cachedData, isMatch);
+        var lookup = find(this.cachedData, isMatch);
         if (lookup) {
             return lookup.data;
         } else {
             return undefined;
         }
-    };
-
-    return self;
-};
+    }
+}

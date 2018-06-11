@@ -1,19 +1,26 @@
-var PORTAL = window.PORTAL = window.PORTAL || {};
-PORTAL.VIEWS = PORTAL.VIEWS || {};
+import InputValidation from './inputValidationView';
+import { CodeSelect, PagedCodeSelect } from './portalViews';
+import * as hucValidator from '../hucValidator';
+import { positiveIntValidator } from '../portalValidators';
+
 
 /*
  * Creates a site parameter input view object
  * @param {Object} options
  *      @prop {Jquery element} $container - element where the site parameter inputs are contained
- *      @prop {PORTAL.MODELS.cachedCodes} siteTypeModel
- *      @prop {PORTAL.MODELS.cachedCodes} organizationModel
+ *      @prop {CachedCodes} siteTypeModel
+ *      @prop {CachedCodes} organizationModel
  * @returns {Object}
  *      @func initialize;
  */
-PORTAL.VIEWS.siteParameterInputView = function(options) {
-    var self = {};
+export default class SiteParameterInputView {
+    constructor({$container, siteTypeModel, organizationModel}) {
+        this.$container = $container;
+        this.siteTypeModel = siteTypeModel;
+        this.organizationModel = organizationModel;
+    }
 
-    var initializeOrganizationSelect = function($select, model) {
+    initializeOrganizationSelect($select, model) {
         var formatData = function(data) {
             return {
                 id : data.id,
@@ -29,7 +36,7 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
                 return true;
             }
         };
-        PORTAL.VIEWS.createCodeSelect($select, {
+        new CodeSelect($select, {
             model : model,
             formatData : formatData,
             isMatch : isMatch
@@ -37,22 +44,22 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
             minimumInputLength: 2,
             closeOnSelect : false
         });
-    };
+    }
 
-    var initializeSiteIdSelect = function($select, $orgsel) {
+    initializeSiteIdSelect($select, $orgsel) {
         var formatData = function(data) {
             return data.value + ' - ' + data.desc;
         };
 
         var parametername = 'organizationid';
 
-        PORTAL.VIEWS.createPagedCodeSelect($select, {
+        new PagedCodeSelect($select, {
             codes: 'monitoringlocation',
             formatData: formatData
             }, {
             minimumInputLength: 2
         }, $orgsel, parametername);
-    };
+    }
 
 
     /*
@@ -61,40 +68,38 @@ PORTAL.VIEWS.siteParameterInputView = function(options) {
      *      @resolve - when all models have been fetched successfully
      *      @reject - if any model's fetch failed.
      */
-    self.initialize = function() {
-        var $siteTypeSelect = options.$container.find('#siteType');
-        var $organizationSelect = options.$container.find('#organization');
-        var $siteIdInput = options.$container.find('#siteid');
-        var $hucInput = options.$container.find('#huc');
-        var $minActivitiesInput = options.$container.find('#min-activities');
+    initialize() {
+        var $siteTypeSelect = this.$container.find('#siteType');
+        var $organizationSelect = this.$container.find('#organization');
+        var $siteIdInput = this.$container.find('#siteid');
+        var $hucInput = this.$container.find('#huc');
+        var $minActivitiesInput = this.$container.find('#min-activities');
 
-        var fetchSiteType = options.siteTypeModel.fetch();
-        var fetchOrganization = options.organizationModel.fetch();
+        var fetchSiteType = this.siteTypeModel.fetch();
+        var fetchOrganization = this.organizationModel.fetch();
         var fetchComplete = $.when(fetchSiteType, fetchOrganization);
 
-        initializeSiteIdSelect($siteIdInput, $organizationSelect);
+        this.initializeSiteIdSelect($siteIdInput, $organizationSelect);
 
-        fetchSiteType.done(function() {
-            PORTAL.VIEWS.createCodeSelect($siteTypeSelect, {model : options.siteTypeModel});
+        fetchSiteType.done(() => {
+            new CodeSelect($siteTypeSelect, {model : this.siteTypeModel});
         });
 
-        fetchOrganization.done(function() {
-            initializeOrganizationSelect($organizationSelect, options.organizationModel);
+        fetchOrganization.done(() => {
+            this.initializeOrganizationSelect($organizationSelect, this.organizationModel);
         });
 
         // Add event handlers
-        PORTAL.VIEWS.inputValidation({
+        new InputValidation({
             inputEl: $hucInput,
-            validationFnc: PORTAL.hucValidator.validate,
-            updateFnc: PORTAL.hucValidator.format
+            validationFnc: hucValidator.validate,
+            updateFnc: hucValidator.format
         });
-        PORTAL.VIEWS.inputValidation({
+        new InputValidation({
             inputEl : $minActivitiesInput,
-            validationFnc : PORTAL.validators.positiveIntValidator
+            validationFnc : positiveIntValidator
         });
 
         return fetchComplete;
-    };
-
-    return self;
-};
+    }
+}

@@ -1,4 +1,7 @@
-describe('Tests for PORTAL.VIEWS.inputValidation', function () {
+import InputValidation from '../../../../js/views/inputValidationView';
+
+
+describe('Tests for InputValidation', function () {
     var validationFnc;
     beforeEach(function () {
         validationFnc = function (value) {
@@ -25,9 +28,9 @@ describe('Tests for PORTAL.VIEWS.inputValidation', function () {
         $('#test-div').remove();
     });
 
-    describe('Tests for PORTAL.VIEWS.inputValidation without an updateFnc', function () {
+    describe('Tests for InputValidation without an updateFnc', function () {
         beforeEach(function () {
-            PORTAL.VIEWS.inputValidation({
+            new InputValidation({
                 inputEl: $('input[type="text"]'),
                 validationFnc: validationFnc
             });
@@ -60,9 +63,9 @@ describe('Tests for PORTAL.VIEWS.inputValidation', function () {
         });
     });
 
-    describe('Tests for PORTAL.VIEWS.inputValidation that specified an event other than change', function() {
+    describe('Tests for InputValidation that specified an event other than change', function() {
         beforeEach(function () {
-            PORTAL.VIEWS.inputValidation({
+            new InputValidation({
                 inputEl: $('input[type="text"]'),
                 validationFnc: validationFnc,
                 event: 'dummy-event'
@@ -80,7 +83,7 @@ describe('Tests for PORTAL.VIEWS.inputValidation', function () {
         });
     });
 
-    describe('Tests for PORTAL.VIEWS.inputValidation with an updateFnc', function () {
+    describe('Tests for InputValidation with an updateFnc', function () {
         var fnc;
 
         beforeEach(function () {
@@ -92,7 +95,7 @@ describe('Tests for PORTAL.VIEWS.inputValidation', function () {
 
             spyOn(fnc, 'updateFnc').and.callThrough();
 
-            PORTAL.VIEWS.inputValidation({
+            new InputValidation({
                 inputEl: $('input[type="text"]'),
                 validationFnc: validationFnc,
                 updateFnc: fnc.updateFnc
