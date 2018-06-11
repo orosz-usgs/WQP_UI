@@ -30,14 +30,14 @@ $(document).ready(function () {
     });
     var showAPIView = new ShowAPIView({
         $container : $('#show-queries-div'),
-        getQueryParamArray : downloadFormView.getQueryParamArray
+        getQueryParamArray : $.proxy(downloadFormView.getQueryParamArray, downloadFormView)
     });
 
     var arcGisOnlineHelpView = new ArcGisOnlineHelpView({
         $button : $('#show-arcgis-online-help'),
         $dialog : $('#arcgis-online-dialog'),
         $siteMapViewContainer : $('#mapping-div'),
-        getQueryParamArray : downloadFormView.getQueryParamArray
+        getQueryParamArray : $.proxy(downloadFormView.getQueryParamArray, downloadFormView.getQueryParamArray)
     });
 
     //Initialize subviews

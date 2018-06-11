@@ -107,7 +107,7 @@ export default class DownloadFormView {
         var initializeProviders = providers.fetch()
             .done(() => {
                 new StaticSelect2(this.$form.find('#providers-select'),
-                    providers.getIds());
+                    providers.getIds(), {}, 'NWIS');
             });
 
         // Initialize form sub view
