@@ -58,6 +58,18 @@ export default class CoverageMap {
         });
         this.updateLegend();
 
+        function getTitle(properties) {
+            var result;
+            if (has(properties, 'COUNTY_NAME')) {
+                result = properties.COUNTY_NAME + ', ' + properties.STATE;
+            } else if (has(properties, 'STATE')) {
+                result = properties.STATE;
+            } else {
+                result = properties.HUC8;
+            }
+            return result;
+        }
+
         map.addSingleClickHandler((ev) => {
             var popup = L.popup().setLatLng(ev.latlng);
             var currentCursor = $mapDiv.css('cursor');
@@ -72,7 +84,7 @@ export default class CoverageMap {
                     var content = '';
                     if (resp.features.length > 0) {
                         context = resp.features[0].properties;
-                        context.title = this.getTitle(resp.features[0].properties);
+                        context.title = getTitle(resp.features[0].properties);
                         content = coverageMapPopup(context);
                     } else {
                         content = 'Did not find a coverage map feature. \n Please click within a feature';
@@ -91,18 +103,6 @@ export default class CoverageMap {
                     $mapDiv.css('cursor', currentCursor);
                 });
         });
-    }
-
-    getTitle(properties) {
-        var result;
-        if (has(properties, 'COUNTY_NAME')) {
-            result = properties.COUNTY_NAME + ', ' + properties.STATE;
-        } else if (has(properties, 'STATE')) {
-            result = properties.STATE;
-        } else {
-            result = properties.HUC8;
-        }
-        return result;
     }
 
     updateLegend() {
