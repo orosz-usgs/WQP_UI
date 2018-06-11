@@ -1,4 +1,4 @@
-import { getQueryString, toggleShowHideSections, getQueryParamJson } from '../../../js/utils';
+import { getQueryString, toggleShowHideSections, getQueryParamJson, getAnchorQueryValues } from '../../../js/utils';
 
 
 describe('Test PORTAl.UTILS package', function () {
@@ -95,6 +95,27 @@ describe('Test PORTAl.UTILS package', function () {
             expect(isVisible).toBe(false);
             expect($('#show-hide-toggle').attr('title')).toContain('Show');
             expect($('#show-hide-toggle img').attr('alt')).toEqual('show');
+        });
+    });
+
+    describe('getAnchorQueryValue', () =>  {
+        it('Return the empty array if there is no anchor part of the url', () => {
+            window.location.hash = '';
+
+            expect(getAnchorQueryValues('name1')).toEqual([]);
+        });
+
+        it('Return the empty array if the anchor part does not contain the parameter name', () => {
+           window.location.hash = '#name2=val1&name3=val2';
+
+           expect(getAnchorQueryValues('name1')).toEqual([]);
+        });
+
+        it('Return the parameter when name is in the anchor part of the URL', () => {
+            window.location.hash = '#name3=val3&name2=val1&name3=val2';
+
+           expect(getAnchorQueryValues('name2')).toEqual(['val1']);
+           expect(getAnchorQueryValues('name3')).toEqual(['val3', 'val2']);
         });
     });
 });

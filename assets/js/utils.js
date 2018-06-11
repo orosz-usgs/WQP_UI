@@ -1,5 +1,4 @@
 import each from 'lodash/collection/each';
-import find from 'lodash/collection/find';
 import includes from 'lodash/collection/includes';
 import reject from 'lodash/collection/reject';
 
@@ -147,11 +146,14 @@ export const getHeaders = function() {
  * @param {String} param
  * @return {Array} containing the values of the query parameter that is currently in the anchor part of the url
  */
-export const getQueryValues = function(param) {
-    const queryParams = window.location.hash.split('&').split('='); // Array of Arrays[name, value]
+export const getAnchorQueryValues = function(param) {
+    const queryParams = window.location.hash.slice(1).split('&'); // Array of Arrays[name, value]
     return queryParams
+        .map((queryParamString) => {
+            return queryParamString.split('=');
+        })
         .filter((nameValuePair) => {
-            return nameValuePair[0] === param
+            return nameValuePair[0] === param;
         })
         .map((nameValuePair) => {
             return nameValuePair[1];
