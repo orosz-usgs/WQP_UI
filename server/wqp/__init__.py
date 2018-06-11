@@ -111,9 +111,9 @@ session.verify = app.config.get('VERIFY_CERT', True)
 
 # Load static assets manifest file, which maps source file names to the
 # corresponding versioned/hashed file name.
-manifest_path = app.config.get('ASSET_MANIFEST_PATH')
-if manifest_path:
-    with open(manifest_path, 'r') as f:
+_manifest_path = app.config.get('ASSET_MANIFEST_PATH')
+if _manifest_path:
+    with open(_manifest_path, 'r') as f:
         app.config['ASSET_MANIFEST'] = json.loads(f.read())
 
 
