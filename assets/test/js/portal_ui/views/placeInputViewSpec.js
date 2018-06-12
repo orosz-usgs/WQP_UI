@@ -82,11 +82,13 @@ describe('Test PlaceInputView', function () {
         expect(countyModel.fetch).not.toHaveBeenCalled();
     });
 
-    it('Expects the state and county select2\'s to be immediately initialized while the country select2 initializes after a successful fetch', function() {
-        expect(CascadedCodeSelect.prototype.initialize.calls.count()).toBe(2);
+    it('Expects the county select2\'s to be immediately initialized when no initiliazation while the country and state select2 initializes after a successful fetch', function() {
+        expect(CascadedCodeSelect.prototype.initialize.calls.count()).toBe(1);
         expect(CodeSelect.prototype.initialize).not.toHaveBeenCalled();
         fetchCountrySpy.resolve();
         expect(CodeSelect.prototype.initialize).toHaveBeenCalled();
+        fetchStateSpy.resolve();
+        expect(CascadedCodeSelect.prototype.initialize.calls.count()).toBe(2);
     });
 
     it('Expects that the returned promise is not resolved until both the countries and the US states have been successfully retrieved', function() {
@@ -132,7 +134,9 @@ describe('Test PlaceInputView', function () {
 
     it('Expects that the isMatch function for the state select matches the id, desc, or FIPS code', function() {
         var isMatch;
-        isMatch = CascadedCodeSelect.prototype.initialize.calls.argsFor(0)[1].isMatch;
+        fetchStateSpy.resolve();
+        isMatch = CascadedCodeSelect.prototype.initialize.calls.argsFor(1)[1].isMatch;
+
         expect(isMatch('02', {id : 'US:02', desc: 'Alaska', provider : 'P1'})).toBe(true);
         expect(isMatch('AK', {id : 'US:02', desc: 'Alaska', provider : 'P1'})).toBe(true);
         expect(isMatch('Ala', {id : 'US:02', desc: 'Alaska', provider : 'P1'})).toBe(true);
@@ -141,7 +145,7 @@ describe('Test PlaceInputView', function () {
 
     it('Expects that the isMatch function for the county select matches the description', function() {
         var isMatch;
-        isMatch = CascadedCodeSelect.prototype.initialize.calls.argsFor(1)[1].isMatch;
+        isMatch = CascadedCodeSelect.prototype.initialize.calls.argsFor(0)[1].isMatch;
         expect(isMatch('Dan', {id : 'US:02:02', desc: 'Dane', provider : 'P1'})).toBe(true);
         expect(isMatch('02', {id : 'US:02:02', desc: 'Dane', provider : 'P1'})).toBe(false);
         expect(isMatch('P1', {id : 'US:02:02', desc: 'Dane', provider : 'P1'})).toBe(false);
@@ -156,14 +160,15 @@ describe('Test PlaceInputView', function () {
 
     it('Expects the state template to show the id unless the country code is US, then it shows postal code', function() {
         var templateSelection;
-        templateSelection = CascadedCodeSelect.prototype.initialize.calls.argsFor(0)[2].templateSelection;
+        fetchStateSpy.resolve();
+        templateSelection = CascadedCodeSelect.prototype.initialize.calls.argsFor(1)[2].templateSelection;
         expect(templateSelection({id : 'CN:01', text : 'Alberta'})).toEqual('CN:01');
         expect(templateSelection({id : 'US:02', text : 'Alaska'})).toEqual('US:AK');
     });
 
     it('Expects the county template to show the id unless it\'s a US county, then it substitutes the state\'s postal code', function() {
         var templateSelection;
-        templateSelection = CascadedCodeSelect.prototype.initialize.calls.argsFor(1)[2].templateSelection;
+        templateSelection = CascadedCodeSelect.prototype.initialize.calls.argsFor(0)[2].templateSelection;
         expect(templateSelection({id : 'CN:01:01', text : 'A province'})).toEqual('CN:01:01');
         expect(templateSelection({id : 'US:02:01', text : 'A county'})).toEqual('US:AK:01');
     });

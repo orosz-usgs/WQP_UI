@@ -143,7 +143,6 @@ export class CodeSelect {
     // This exists solely so it may be mocked in the test suite
     initialize(el, options, select2Options, initValues) {
         var isMatch;
-        var formatData;
         var defaultOptions;
 
         // Assign defaults for optional parameters
@@ -160,11 +159,8 @@ export class CodeSelect {
                 }
             };
         }
-        if (has(options, 'formatData')) {
-            formatData = options.formatData;
-
-        } else {
-            formatData = function (data) {
+        if (!has(options, 'formatData')) {
+            options.formatData = function (data) {
                 return {
                     id: data.id,
                     text: data.desc + ' (' + providers.formatAvailableProviders(data.providers) + ')',
@@ -172,8 +168,8 @@ export class CodeSelect {
                 };
             };
         }
-        const formatDataWithInit = function(data) {
-            let result = formatData(data);
+        const formatData = function(data) {
+            let result = options.formatData(data);
             result.selected = initValues.includes(result.id);
             return result;
         };
@@ -199,7 +195,7 @@ export class CodeSelect {
                 }
                 return result;
             },
-            data: map(options.model.getAll(), formatDataWithInit)
+            data: map(options.model.getAll(), formatData)
         };
 
         el.select2($.extend(defaultOptions, select2Options));
@@ -216,18 +212,15 @@ export class CodeSelect {
  *          with id and text properties.
  *      @prop {Function} getKeys - returns an array of keys to use when retrieving valid options for this select.
  *  @param {Object} select2Options
+ *  @param {Array of String} initValues
  */
 export class CascadedCodeSelect {
-    constructor(el, options, select2Options) {
-        this.initialize(el, options, select2Options);
+    constructor(el, options, select2Options, initValues=[]) {
+        this.initialize(el, options, select2Options, initValues);
     }
 
-    initialize(el, options, select2Options) {
+    initialize(el, options, select2Options, initValues) {
         // Assign defaults for optional parameters
-        var defaultOptions = {
-            allowClear: true,
-            theme: 'bootstrap'
-        };
         if (!has(options, 'isMatch')) {
             options.isMatch = function (term, data) {
                 var termMatcher;
@@ -248,6 +241,17 @@ export class CascadedCodeSelect {
                 };
             };
         }
+        const initFormatData = function(data) {
+            let result = options.formatData(data);
+            result.selected = initValues.includes(result.id);
+            return result;
+        };
+        var defaultOptions = {
+            allowClear: true,
+            theme: 'bootstrap',
+            data: map(options.model.getAll(), initFormatData)
+        };
+
 
         // Set up the ajax transport property to fetch the options if they need to be refreshed,
         // otherwise use what is in the model.
