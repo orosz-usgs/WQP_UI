@@ -32,8 +32,17 @@ export default class BiologicalSamplingInputView {
                 getAnchorQueryValues($assemblage.attr('name'))
             );
         });
-        new PagedCodeSelect($taxonomicName, {codes: 'subjecttaxonomicname'},
-            {closeOnSelect : false}
+        new PagedCodeSelect(
+            $taxonomicName,
+            {
+                codes: 'subjecttaxonomicname'
+            },
+            {
+                closeOnSelect : false
+            },
+            null,
+            null,
+            getAnchorQueryValues($taxonomicName.attr('name'))
         );
 
         return fetchComplete;
