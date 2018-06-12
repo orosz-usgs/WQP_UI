@@ -3,7 +3,9 @@ import partial from 'lodash/function/partial';
 
 import NldiNavPopupView from './nldiNavPopupView';
 import * as nldiModel from '../nldiModel';
+import { getAnchorQueryValues } from '../utils';
 
+const NLDI_PARAM_NAME = 'nldiurl';
 
 /*
  * Creates the NHLD maps, an inset map and a larger map. Only one of the maps is shown.
@@ -66,7 +68,7 @@ export default class NldiView {
     updateNldiInput(url) {
         var html = '';
         if (url) {
-            html = '<input type="hidden" name="nldiurl" value="' + url + '" />';
+            html = `<input type="hidden" name="${NLDI_PARAM_NAME}" value="${url}" />`;
         }
 
         this.$inputContainer.html(html);
@@ -144,6 +146,7 @@ export default class NldiView {
 
                     flowlineBounds = this.nldiFlowlineLayers.getBounds();
                     this.map.fitBounds(flowlineBounds);
+                    this.insetMap.fitBounds(flowlineBounds);
 
                     this.nldiSiteCluster = L.markerClusterGroup({
                         maxClusterRadius : 40
@@ -254,6 +257,9 @@ export default class NldiView {
      * Initialize the inset and full size maps.
      */
     initialize() {
+
+        const initValues = getAnchorQueryValues(NLDI_PARAM_NAME);
+
         var insetBaseLayers = {
             'World Gray' : L.esri.basemapLayer('Gray')
         };
@@ -335,5 +341,10 @@ export default class NldiView {
         this.map.addControl(L.control.zoom());
 
         this.map.addSingleClickHandler(this.findSitesHandler.bind(this));
+
+        if (initValues.length === 1) {
+            nldiModel.setDataFromUrl(initValues[0]);
+            this.updateNldiSites();
+        }
     }
 }

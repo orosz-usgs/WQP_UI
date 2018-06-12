@@ -4,6 +4,11 @@ import * as nldiModel from '../../../js/nldiModel';
 
 
 describe('nldiModel', function() {
+
+    beforeEach(() => {
+        nldiModel.reset();
+    });
+
     it('Expects that the modelData.getData initially returns an object containing the default properties', function() {
         var data = nldiModel.getData();
 
@@ -79,5 +84,32 @@ describe('nldiModel', function() {
 
         expect(nldiModel.getUrl('dsSource')).toEqual(Config.NLDI_SERVICES_ENDPOINT + 'nwissite/USGS-01010101/navigate/UT/dsSource?distance=12');
 
+    });
+
+    it('Expects setUrl will set the appropriate model elements', () => {
+        nldiModel.setDataFromUrl(`${Config.NLDI_SERVICES_ENDPOINT}nwissite/USGS-01010101/navigate/UT/dsSource?distance=12`);
+
+        let data = nldiModel.getData();
+        expect(data.featureSource.id).toEqual('nwissite');
+        expect(data.featureId).toEqual('USGS-01010101');
+        expect(data.navigation.id).toEqual('UT');
+        expect(data.distance).toEqual('12');
+
+        nldiModel.setDataFromUrl(`${Config.NLDI_SERVICES_ENDPOINT}nwissite/USGS-01010101/navigate/UT/dsSource?distance=`);
+        data = nldiModel.getData();
+        expect(data.featureSource.id).toEqual('nwissite');
+        expect(data.featureId).toEqual('USGS-01010101');
+        expect(data.navigation.id).toEqual('UT');
+        expect(data.distance).toEqual('');
+    });
+
+    it('Expects the model to not be updated if the URL can not be parsed', () => {
+        nldiModel.setDataFromUrl(`${Config.NLDI_SERVICES_ENDPOINT}nwissite/navigate/UT/dsSource?distance=`);
+
+        let data = nldiModel.getData();
+        expect(data.featureSource.id).toEqual('nwissite');
+        expect(data.featureId).toBeFalsy();
+        expect(data.navigation).toBeFalsy();
+        expect(data.distance).toBeFalsy();
     });
 });
