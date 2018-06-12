@@ -23,12 +23,14 @@ export default class ShowAPIView {
 
 
         var $apiQueryDiv = this.$container.find('#api-queries-div');
+
+/* start -- original code
         var $sitesText = this.$container.find('#sites-query-div textarea');
         var $resultsText = this.$container.find('#results-query-div textarea');
         var $activitiesText = this.$container.find('#activities-query-div textarea');
         var $activitymetricsText = this.$container.find('#activitymetrics-query-div textarea');
         var $resultdetectionText = this.$container.find('#resultdetection-query-div textarea');
-
+end -- original code */
 
         this.$container.find('#show-queries-button').click(() => {
             var queryParamArray = this.getQueryParamArray();
@@ -40,14 +42,16 @@ export default class ShowAPIView {
 
             $apiQueryDiv.show();
             $apiQueryTitle.html('Station'); // added for WQP-1195
+
             $apiQueryText.html(queryService.getFormUrl('Station', queryStringWithoutDataProfile)); // added for WQP-1195
 
-
+/* start - original code
             $sitesText.html(queryService.getFormUrl('Station', queryStringWithoutDataProfile));
             $resultsText.html(queryService.getFormUrl('Result', queryString));
             $activitiesText.html(queryService.getFormUrl('Activity', queryStringWithoutDataProfile));
             $activitymetricsText.html(queryService.getFormUrl('ActivityMetric', queryStringWithoutDataProfile));
             $resultdetectionText.html(queryService.getFormUrl('ResultDetectionQuantitationLimit', queryStringWithoutDataProfile));
+end - original code */
 
             $wfsText.html(L.WQPSitesLayer.getWfsGetFeatureUrl(queryWithoutDataProfileArray));
         });
@@ -55,11 +59,32 @@ export default class ShowAPIView {
 // start -  added for WQP-1195
     updateWebCallDisplay(resultType) {
         var $apiQueryTitle = this.$container.find('#query-div b');
-        $apiQueryTitle.html(resultType);
+        var $apiQueryText = this.$container.find('#query-div textarea');
+
+        $apiQueryTitle.html(resultType.replace(/([A-Z])/g, ' $1'));
+
+        var queryParamArray = this.getQueryParamArray();
+
+        var queryParamArray = this.getQueryParamArray();
+        var queryWithoutDataProfileArray = queryParamArray.filter((param) => {
+            return param.name !== 'dataProfile';
+        });
+        var queryString = getQueryString(queryParamArray);
+        var queryStringWithoutDataProfile = getQueryString(queryWithoutDataProfileArray);
+
+        if (resultType != 'Result' ) {
+            $apiQueryText.html(queryService.getFormUrl(resultType, queryStringWithoutDataProfile));
+        } else if (resultType == 'Result') {
+            $apiQueryText.html(queryService.getFormUrl(resultType, queryString));
+        } else {
+            console.debug('failed to match and resultType, cannot create URL')
+        }
 
 
 
 
     }
+
+
 // end - added for WQP-1195
 }
