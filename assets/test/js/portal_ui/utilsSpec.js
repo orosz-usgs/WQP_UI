@@ -112,6 +112,12 @@ describe('Test PORTAl.UTILS package', function () {
            expect(getAnchorQueryValues('name1')).toEqual([]);
         });
 
+        it('Will decode url encoded parameters', () => {
+            window.location.hash = '#name1=this%20and%20that';
+
+            expect(getAnchorQueryValues('name1')).toEqual(['this and that']);
+        });
+
         it('Return the parameter when name is in the anchor part of the URL', () => {
             window.location.hash = '#name3=val3&name2=val1&name3=val2';
 
