@@ -55,6 +55,7 @@ describe('Tests for pointLocationInputView', function() {
         expect($within.val()).toEqual('20');
         expect($lat.val()).toEqual('43:04:05');
         expect($lon.val()).toEqual('-100:10:20');
+        window.location.hash = '';
     });
 
     // Can't seem to mock the navigator object so can't test the geolocation code.

@@ -1,7 +1,7 @@
 import InputValidation from './inputValidationView';
 
 import { realNumberValidator } from '../portalValidators';
-
+import { getAnchorQueryValues } from '../utils';
 
 /*
  * Creates a bounding box input view object
@@ -20,15 +20,29 @@ export default class BoundingBoxInputView {
      * Initializes all input widgets and DOM event handlers
      */
     initialize() {
-        var $textInputs = this.$container.find('input[type="text"]');
-        var $north = this.$container.find('#north');
-        var $south = this.$container.find('#south');
-        var $west = this.$container.find('#west');
-        var $east = this.$container.find('#east');
+        let $textInputs = this.$container.find('input[type="text"]');
+        let $north = this.$container.find('#north');
+        let $south = this.$container.find('#south');
+        let $west = this.$container.find('#west');
+        let $east = this.$container.find('#east');
+        let $bbox = this.$container.find('input[name="bBox"]');
+
         new InputValidation({
             inputEl: $textInputs,
             validationFnc: realNumberValidator
         });
+
+        const initBboxValues = getAnchorQueryValues('bBox');
+        if (initBboxValues.length) {
+            const bboxVals = initBboxValues[0].split(',');
+            if (bboxVals.length === 4) {
+                $west.val(bboxVals[0]);
+                $south.val(bboxVals[1]);
+                $east.val(bboxVals[2]);
+                $north.val(bboxVals[3]);
+                $bbox.val(initBboxValues[0]);
+            }
+        }
 
         //Update bBox hidden input if any of the bounding box text fields are updated
         $textInputs.change(() => {
@@ -40,7 +54,7 @@ export default class BoundingBoxInputView {
             if (north && south && east && west) {
                 bboxVal = west + ',' + south + ',' + east + ',' + north;
             }
-            this.$container.find('input[name="bBox"]').val(bboxVal);
+            $bbox.val(bboxVal);
         });
     }
 }
