@@ -84,7 +84,13 @@ export default class SiteParameterInputView {
         initializeSiteIdSelect($siteIdInput, $organizationSelect);
 
         fetchSiteType.done(() => {
-            new CodeSelect($siteTypeSelect, {model : this.siteTypeModel});
+            new CodeSelect(
+                $siteTypeSelect,
+                {
+                    model : this.siteTypeModel
+                },
+                {},
+                getAnchorQueryValues($siteTypeSelect.attr('name')));
         });
 
         fetchOrganization.done(() => {

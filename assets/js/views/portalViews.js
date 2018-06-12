@@ -161,11 +161,8 @@ export class CodeSelect {
             };
         }
         if (has(options, 'formatData')) {
-            formatData = function(data) {
-                let result = options.formatData(data);
-                result.selected = initValues.includes(result.id);
-                return result;
-            };
+            formatData = options.formatData;
+
         } else {
             formatData = function (data) {
                 return {
@@ -175,6 +172,11 @@ export class CodeSelect {
                 };
             };
         }
+        const formatDataWithInit = function(data) {
+            let result = formatData(data);
+            result.selected = initValues.includes(result.id);
+            return result;
+        };
 
         //Initialize the select2
         defaultOptions = {
@@ -197,7 +199,7 @@ export class CodeSelect {
                 }
                 return result;
             },
-            data: map(options.model.getAll(), formatData)
+            data: map(options.model.getAll(), formatDataWithInit)
         };
 
         el.select2($.extend(defaultOptions, select2Options));

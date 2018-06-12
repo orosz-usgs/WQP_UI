@@ -1,8 +1,9 @@
 import * as dateValidator from '../dateValidator';
 import InputValidation from './inputValidationView';
 import { CodeSelect, PagedCodeSelect } from './portalViews';
-import { positiveIntValidator } from '../portalValidators';
 
+import { positiveIntValidator } from '../portalValidators';
+import { getAnchorQueryValues} from '../utils';
 
 /*
  * Creates a sampling parameter input view
@@ -41,10 +42,24 @@ export default class SamplingParameterInputView {
         var fetchComplete = $.when(fetchSampleMedia, fetchCharacteristicType);
 
         fetchSampleMedia.done(() => {
-            new CodeSelect($sampleMedia, {model : this.sampleMediaModel});
+            new CodeSelect(
+                $sampleMedia,
+                {
+                    model : this.sampleMediaModel
+                },
+                {},
+                getAnchorQueryValues($sampleMedia.attr('name'))
+            );
         });
         fetchCharacteristicType.done(() => {
-            new CodeSelect($characteristicType, {model : this.characteristicTypeModel});
+            new CodeSelect(
+                $characteristicType,
+                {
+                    model : this.characteristicTypeModel
+                },
+                {},
+                getAnchorQueryValues($characteristicType.attr('name'))
+            );
         });
 
         new PagedCodeSelect($characteristicName, {codes: 'characteristicname'}, {closeOnSelect : false});

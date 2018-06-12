@@ -1,5 +1,5 @@
 import { CodeSelect, PagedCodeSelect } from './portalViews';
-
+import { getAnchorQueryValues} from '../utils';
 
 /*
  * Creates a sampling parameter input view
@@ -23,7 +23,14 @@ export default class BiologicalSamplingInputView {
         var fetchComplete = $.when(fetchAssemblageModel);
 
         fetchAssemblageModel.done(() => {
-            new CodeSelect($assemblage, {model : this.assemblageModel});
+            new CodeSelect(
+                $assemblage,
+                {
+                    model : this.assemblageModel
+                },
+                {},
+                getAnchorQueryValues($assemblage.attr('name'))
+            );
         });
         new PagedCodeSelect($taxonomicName, {codes: 'subjecttaxonomicname'},
             {closeOnSelect : false}
