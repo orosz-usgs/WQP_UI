@@ -172,12 +172,12 @@ export default class PlaceInputView {
         const initCounties = getAnchorQueryValues($countySelect.attr('name'));
 
         const getCountryKeys = function () {
-            var results = $countrySelect.val();
+            const results = $countrySelect.val();
             return results.length > 0 ? results : [USA];
         };
 
         const getStateKeys = function() {
-            var results = $stateSelect.val();
+            const results = $stateSelect.val();
             return results.length > 0 ? results : [];
         };
 
@@ -220,11 +220,11 @@ export default class PlaceInputView {
         });
 
         $stateSelect.on('change', function (ev) {
-            var states = $(ev.target).val();
-            var counties = $countySelect.val();
-            var isInStates = function(county) {
-                var codes = county.split(':');
-                var stateCode = codes[0] + ':' + codes[1];
+            const states = $(ev.target).val();
+            const counties = $countySelect.val();
+            const isInStates = function(county) {
+                const codes = county.split(':');
+                const stateCode = codes[0] + ':' + codes[1];
                 return contains(states, stateCode);
             };
 
@@ -233,7 +233,7 @@ export default class PlaceInputView {
         new InputValidation({
             inputEl : $countySelect,
             validationFnc : function(val, ev) {
-                var result;
+                let result;
                 if (getStateKeys().length === 0) {
                     ev.preventDefault();
                     result  = {
