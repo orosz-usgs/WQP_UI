@@ -69,13 +69,22 @@ describe('Tests for portalViews functions and objects', function () {
         });
 
         it('Expects select2 to be initialized with defaults properties', function () {
-            new PagedCodeSelect($('#test-select2'), testSpec, {});
+            new PagedCodeSelect($('#test-select2'), testSpec, {}, null, null, ['val1', 'val2']);
             expect($.fn.select2).toHaveBeenCalled();
 
             var options = $.fn.select2.calls.argsFor(0)[0];
             expect(options.allowClear).toEqual(true);
             expect(options.templateSelection).toBeDefined();
             expect(options.ajax).toBeDefined();
+            expect(options.data).toEqual([{
+                id: 'val1',
+                text: 'val1',
+                selected: true
+            },{
+                id: 'val2',
+                text: 'val2',
+                selected: true
+            }]);
         });
 
         it('Expects select2 defaults to be overriden and additional parameters used to create the select2', function () {

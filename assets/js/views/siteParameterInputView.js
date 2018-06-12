@@ -2,7 +2,7 @@ import InputValidation from './inputValidationView';
 import { CodeSelect, PagedCodeSelect } from './portalViews';
 import * as hucValidator from '../hucValidator';
 import { positiveIntValidator } from '../portalValidators';
-import { getAnchorQueryValues } from '../utils';
+import { getAnchorQueryValues, initializeInput } from '../utils';
 
 /*
  * Creates a site parameter input view object
@@ -63,17 +63,23 @@ export default class SiteParameterInputView {
 
             var parametername = 'organizationid';
 
-            new PagedCodeSelect($select, {
-                codes: 'monitoringlocation',
-                formatData: formatData
-                }, {
-                minimumInputLength: 2
-            }, $orgsel, parametername);
+            new PagedCodeSelect(
+                $select,
+                {
+                    codes: 'monitoringlocation',
+                    formatData: formatData
+                },
+                {
+                    minimumInputLength: 2
+                },
+                $orgsel,
+                parametername,
+                getAnchorQueryValues($select.attr('name')));
         };
 
         var $siteTypeSelect = this.$container.find('#siteType');
         var $organizationSelect = this.$container.find('#organization');
-        var $siteIdInput = this.$container.find('#siteid');
+        var $siteIdSelect = this.$container.find('#siteid');
         var $hucInput = this.$container.find('#huc');
         var $minActivitiesInput = this.$container.find('#min-activities');
 
@@ -81,7 +87,7 @@ export default class SiteParameterInputView {
         var fetchOrganization = this.organizationModel.fetch();
         var fetchComplete = $.when(fetchSiteType, fetchOrganization);
 
-        initializeSiteIdSelect($siteIdInput, $organizationSelect);
+        initializeSiteIdSelect($siteIdSelect, $organizationSelect);
 
         fetchSiteType.done(() => {
             new CodeSelect(
@@ -96,6 +102,9 @@ export default class SiteParameterInputView {
         fetchOrganization.done(() => {
             initializeOrganizationSelect($organizationSelect, this.organizationModel);
         });
+
+        initializeInput($hucInput);
+        initializeInput($minActivitiesInput);
 
         // Add event handlers
         new InputValidation({

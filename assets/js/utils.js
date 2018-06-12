@@ -168,4 +168,3 @@ export const initializeInput = function($el) {
     const initValues = getAnchorQueryValues($el.attr('name'));
     $el.val(initValues.length ? initValues[0] : '');
 };
-

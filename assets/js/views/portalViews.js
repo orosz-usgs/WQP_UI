@@ -37,7 +37,7 @@ export class StaticSelect2 {
  * @param {String} parametername - parameter name to be used in additional lookup
  */
 export class PagedCodeSelect {
-    constructor(el, spec, select2Options, $filter, parametername) {
+    constructor(el, spec, select2Options, $filter, parametername, initValues=[]) {
         this.spec = spec;
         this.parametername = parametername;
 
@@ -55,6 +55,13 @@ export class PagedCodeSelect {
             templateSelection: (object) => {
                 return has(object, 'id') ? object.id : null;
             },
+            data: initValues.map((id) => {
+                return {
+                    id: id,
+                    text: id,
+                    selected: true
+                };
+            }),
             ajax: {
                 url: Config.CODES_ENDPOINT + '/' + this.spec.codes,
                 dataType: 'json',

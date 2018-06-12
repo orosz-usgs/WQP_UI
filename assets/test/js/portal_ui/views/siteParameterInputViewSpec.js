@@ -14,8 +14,8 @@ describe('Tests for SiteParameterInputView', function() {
             '<select multiple id="siteType"></select>' +
             '<select multiple id="organization"></select>' +
             '<select multiple id="siteid"></select>' +
-            '<input type="text" id="huc" />' +
-            '<input type="text" id="min-activities" />' +
+            '<input type="text" id="huc" name="huc" />' +
+            '<input type="text" id="min-activities" name="minactivities" />' +
             '</div>'
         );
 
@@ -76,6 +76,15 @@ describe('Tests for SiteParameterInputView', function() {
         fetchOrgDeferred.resolve();
         expect(CodeSelect.prototype.initialize.calls.count()).toBe(2);
         expect(CodeSelect.prototype.initialize.calls.argsFor(1)[0].attr('id')).toEqual($organization.attr('id'));
+    });
+
+    it('Expects the huc and min activities inputs to be initialized if in the anchor url', () => {
+        window.location.hash = '#huc=0701*;0801&minactivities=4';
+        testView.initialize();
+
+        expect($huc.val()).toEqual('0701*;0801');
+        expect($minActivities.val()).toEqual('4');
+        window.location.hash = '';
     });
 
     describe('Tests for promise returned from initialize', function() {
