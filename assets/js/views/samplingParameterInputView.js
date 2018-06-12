@@ -3,7 +3,7 @@ import InputValidation from './inputValidationView';
 import { CodeSelect, PagedCodeSelect } from './portalViews';
 
 import { positiveIntValidator } from '../portalValidators';
-import { getAnchorQueryValues} from '../utils';
+import { getAnchorQueryValues, initializeInput } from '../utils';
 
 /*
  * Creates a sampling parameter input view
@@ -29,17 +29,18 @@ export default class SamplingParameterInputView {
      *      @reject - one or models have not been successfully fetched
      */
     initialize() {
-        var $sampleMedia = this.$container.find('#sampleMedia');
-        var $characteristicType = this.$container.find('#characteristicType');
-        var $characteristicName = this.$container.find('#characteristicName');
-        var $projectCode = this.$container.find('#project-code');
-        var $minresults = this.$container.find('#minresults');
-        var $startDate = this.$container.find('#startDateLo');
-        var $endDate = this.$container.find('#startDateHi');
+        let $sampleMedia = this.$container.find('#sampleMedia');
+        let $characteristicType = this.$container.find('#characteristicType');
+        let $characteristicName = this.$container.find('#characteristicName');
+        let $projectCode = this.$container.find('#project-code');
+        let $pcode = this.$container.find('#pCode');
+        let $minresults = this.$container.find('#minresults');
+        let $startDate = this.$container.find('#startDateLo');
+        let $endDate = this.$container.find('#startDateHi');
 
-        var fetchSampleMedia = this.sampleMediaModel.fetch();
-        var fetchCharacteristicType = this.characteristicTypeModel.fetch();
-        var fetchComplete = $.when(fetchSampleMedia, fetchCharacteristicType);
+        let fetchSampleMedia = this.sampleMediaModel.fetch();
+        let fetchCharacteristicType = this.characteristicTypeModel.fetch();
+        let fetchComplete = $.when(fetchSampleMedia, fetchCharacteristicType);
 
         fetchSampleMedia.done(() => {
             new CodeSelect(
@@ -62,10 +63,35 @@ export default class SamplingParameterInputView {
             );
         });
 
-        new PagedCodeSelect($characteristicName, {codes: 'characteristicname'}, {closeOnSelect : false});
-        new PagedCodeSelect($projectCode, {codes: 'project'},
-            {closeOnSelect : false}
+        new PagedCodeSelect(
+            $characteristicName,
+            {
+                codes: 'characteristicname'
+            },
+            {
+                closeOnSelect : false
+            },
+            null,
+            null,
+            getAnchorQueryValues($characteristicName.attr('name'))
         );
+        new PagedCodeSelect(
+            $projectCode,
+            {
+                codes: 'project'
+            },
+            {
+                closeOnSelect : false
+            },
+            null,
+            null,
+            getAnchorQueryValues($projectCode.attr('name'))
+        );
+
+        initializeInput($pcode);
+        initializeInput($minresults);
+        initializeInput($startDate);
+        initializeInput($endDate);
 
         // Add input validations and reformatting handlers
         new InputValidation({

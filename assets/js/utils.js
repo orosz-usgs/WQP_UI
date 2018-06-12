@@ -156,7 +156,7 @@ export const getAnchorQueryValues = function(param) {
             return nameValuePair[0] === param;
         })
         .map((nameValuePair) => {
-            return nameValuePair[1];
+            return decodeURIComponent(nameValuePair[1]);
         });
 };
 
