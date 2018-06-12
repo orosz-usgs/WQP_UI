@@ -10,6 +10,7 @@ import providers from '../providers';
  * @param {jquery element for select} el
  * @param {Array of Strings} ids -  to be used for select options
  * @param {Object} select2Options
+ * @param {Array of String} initValues
  */
 export class StaticSelect2 {
     constructor(el, ids, select2Options, initValues=[]) {
@@ -126,20 +127,21 @@ export class PagedCodeSelect {
 /*
  @param {jquery element selecting a select input} el
  @param {Object} options
- @prop {Object} model - object which is created by a call to CachedCodes and the data has already been fetched.
- @prop {Function} isMatch - Optional function with two parameters - term {String} which contains the search term and
- lookup {Object} representing an object in model. Should return Boolean
- @prop {Function} formatData - Optional function takes data (object with id, desc, and providers) and produces a select2 result object
- with id and text properties.
+     @prop {Object} model - object which is created by a call to CachedCodes and the data has already been fetched.
+     @prop {Function} isMatch - Optional function with two parameters - term {String} which contains the search term and
+     lookup {Object} representing an object in model. Should return Boolean
+     @prop {Function} formatData - Optional function takes data (object with id, desc, and providers) and produces a select2 result object
+     with id and text properties.
  @param {Object} select2Options
+ @param {Array of String} initValues
  */
 export class CodeSelect {
-    constructor(el, options, select2Options) {
-        this.initialize(el, options, select2Options);
+    constructor(el, options, select2Options, initValues=[]) {
+        this.initialize(el, options, select2Options, initValues);
     }
 
     // This exists solely so it may be mocked in the test suite
-    initialize(el, options, select2Options) {
+    initialize(el, options, select2Options, initValues) {
         var isMatch;
         var formatData;
         var defaultOptions;
@@ -159,12 +161,17 @@ export class CodeSelect {
             };
         }
         if (has(options, 'formatData')) {
-            formatData = options.formatData;
+            formatData = function(data) {
+                let result = options.formatData(data);
+                result.selected = initValues.includes(result.id);
+                return result;
+            };
         } else {
             formatData = function (data) {
                 return {
                     id: data.id,
-                    text: data.desc + ' (' + providers.formatAvailableProviders(data.providers) + ')'
+                    text: data.desc + ' (' + providers.formatAvailableProviders(data.providers) + ')',
+                    selected: initValues.includes(data.id)
                 };
             };
         }

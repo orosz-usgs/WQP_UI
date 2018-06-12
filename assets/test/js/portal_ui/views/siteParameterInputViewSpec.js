@@ -1,7 +1,6 @@
 import { CodeSelect } from '../../../../js/views/portalViews';
 import SiteParameterInputView from '../../../../js/views/siteParameterInputView';
 
-
 describe('Tests for SiteParameterInputView', function() {
     var testView;
     var $testDiv;

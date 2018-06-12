@@ -4,7 +4,7 @@ import providers from '../../../../js/providers';
 
 
 describe('Tests for portalViews functions and objects', function () {
-    fdescribe('Tests for StaticSelect2', function () {
+    describe('Tests for StaticSelect2', function () {
 
         beforeEach(function () {
             $('body').append('<div id="test-div"><select id="test-select" name="test-select-name" multiple></select></div>');
@@ -158,7 +158,7 @@ describe('Tests for portalViews functions and objects', function () {
             $('#test-div').remove();
         });
 
-        it('Expects that the select2 is not initialized', function () {
+        it('Expects that the select2 is initialized', function () {
             new CodeSelect($('#test-select2'), testSpec);
             expect($.fn.select2).toHaveBeenCalled();
             var options = $.fn.select2.calls.argsFor(0)[0];
@@ -168,10 +168,22 @@ describe('Tests for portalViews functions and objects', function () {
             expect(options.data.length).toBe(3);
             expect(options.data[0]).toEqual({
                 id: 'v1',
-                text: 'Text1 (P1)'
+                text: 'Text1 (P1)',
+                selected : false
             });
         });
 
+        it('Expects the select2 to be initialized with initValues', () =>  {
+            new CodeSelect($('#test-select2'), testSpec, {}, ['v1', 'v2']);
+            const options = $.fn.select2.calls.argsFor(0)[0];
+
+            expect(options.data[0].id).toBe('v1');
+            expect(options.data[0].selected).toBe(true);
+            expect(options.data[1].id).toBe('v3');
+            expect(options.data[1].selected).toBe(false);
+            expect(options.data[2].id).toBe('v2');
+            expect(options.data[2].selected).toBe(true);
+        });
 
         it('Expects select2 options to be merged with defaults', function () {
             var options;
