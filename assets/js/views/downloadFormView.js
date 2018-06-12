@@ -24,7 +24,7 @@ import { toggleShowHideSections, getQueryString } from '../utils';
  *      @func getQueryParams
  */
 export default class DownloadFormView {
-    constructor({$form, downloadProgressDialog}) {
+     constructor({$form, downloadProgressDialog}) {
         this.$form = $form;
         this.downloadProgressDialog = downloadProgressDialog;
     }
@@ -69,7 +69,7 @@ export default class DownloadFormView {
      *      @resolve - if all initialization including successful fetches are complete
      *      @reject - if any fetches failed.
      */
-    initialize() {
+    initialize(updateResultTypeAction) {
         var placeInputView = this.getPlaceInputView();
         var pointLocationInputView = new PointLocationInputView({
             $container : this.$form.find('#point-location')
@@ -100,6 +100,7 @@ export default class DownloadFormView {
             $container : this.$form.find('#download-box-input-div'),
             updateResultTypeAction : (resultType) => {
                 this.$form.attr('action', queryService.getFormUrl(resultType));
+                updateResultTypeAction(resultType);
             }
         });
 

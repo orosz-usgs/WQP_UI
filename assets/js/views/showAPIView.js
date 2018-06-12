@@ -16,13 +16,19 @@ export default class ShowAPIView {
     }
 
     initialize() {
+        var $apiQueryDiv = this.$container.find('#api-queries-div'); // added for WQP-1195
+        var $apiQueryTitle = this.$container.find('#query-div b');
+        var $apiQueryText = this.$container.find('#query-div textarea'); // added for WQP-1195
+        var $wfsText = this.$container.find('#getfeature-query-div textarea'); // added for WQP-1195
+
+
         var $apiQueryDiv = this.$container.find('#api-queries-div');
         var $sitesText = this.$container.find('#sites-query-div textarea');
         var $resultsText = this.$container.find('#results-query-div textarea');
         var $activitiesText = this.$container.find('#activities-query-div textarea');
         var $activitymetricsText = this.$container.find('#activitymetrics-query-div textarea');
         var $resultdetectionText = this.$container.find('#resultdetection-query-div textarea');
-        var $wfsText = this.$container.find('#getfeature-query-div textarea');
+
 
         this.$container.find('#show-queries-button').click(() => {
             var queryParamArray = this.getQueryParamArray();
@@ -33,12 +39,27 @@ export default class ShowAPIView {
             var queryStringWithoutDataProfile = getQueryString(queryWithoutDataProfileArray);
 
             $apiQueryDiv.show();
+            $apiQueryTitle.html('Station'); // added for WQP-1195
+            $apiQueryText.html(queryService.getFormUrl('Station', queryStringWithoutDataProfile)); // added for WQP-1195
+
+
             $sitesText.html(queryService.getFormUrl('Station', queryStringWithoutDataProfile));
             $resultsText.html(queryService.getFormUrl('Result', queryString));
             $activitiesText.html(queryService.getFormUrl('Activity', queryStringWithoutDataProfile));
             $activitymetricsText.html(queryService.getFormUrl('ActivityMetric', queryStringWithoutDataProfile));
             $resultdetectionText.html(queryService.getFormUrl('ResultDetectionQuantitationLimit', queryStringWithoutDataProfile));
+
             $wfsText.html(L.WQPSitesLayer.getWfsGetFeatureUrl(queryWithoutDataProfileArray));
         });
     }
+// start -  added for WQP-1195
+    updateWebCallDisplay(resultType) {
+        var $apiQueryTitle = this.$container.find('#query-div b');
+        $apiQueryTitle.html(resultType);
+
+
+
+
+    }
+// end - added for WQP-1195
 }
