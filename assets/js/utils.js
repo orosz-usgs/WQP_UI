@@ -160,3 +160,12 @@ export const getAnchorQueryValues = function(param) {
         });
 };
 
+/*
+ * Initialize the value of the $el input. Will only use the first value returned from getAnchorQueryValues if any.
+ * @param {Jquery element} $el - should be a text input with a name attribute
+ */
+export const initializeInput = function($el) {
+    const initValues = getAnchorQueryValues($el.attr('name'));
+    $el.val(initValues.length ? initValues[0] : '');
+};
+

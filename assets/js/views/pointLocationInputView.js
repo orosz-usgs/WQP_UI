@@ -1,8 +1,9 @@
 import log from 'loglevel';
 
 import InputValidation from './inputValidationView';
-import { realNumberValidator } from '../portalValidators';
 
+import { realNumberValidator } from '../portalValidators';
+import { initializeInput } from '../utils';
 
 /*
  * Creates a pointLocationInputView object
@@ -45,11 +46,17 @@ export default class PointLocationInputView {
             validationFnc: realNumberValidator
         });
 
+        let $within = this.$container.find('#within');
+        let $lat = this.$container.find('#lat');
+        let $lon = this.$container.find('#long');
+
+        initializeInput($within);
+        initializeInput($lat);
+        initializeInput($lon);
+
         // only give user the option if their browser supports geolocation
         if (window.navigator.geolocation && window.navigator.geolocation.getCurrentPosition) {
-            var $useMyLocationDiv = this.$container.find('#useMyLocation');
-            var $lat = this.$container.find('#lat');
-            var $lon = this.$container.find('#long');
+            let $useMyLocationDiv = this.$container.find('#useMyLocation');
 
             $useMyLocationDiv.html('<button class="btn btn-info" type="button">Use my location</button>');
             $useMyLocationDiv.find('button').click(() => {
