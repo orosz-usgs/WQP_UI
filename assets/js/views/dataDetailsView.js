@@ -78,7 +78,7 @@ export default class DataDetailsView {
 
         $sorted.change(function () {
             const val = $(this).is(':checked') ? 'yes' : 'no';
-            $hiddenSorted.val(val);
+            $hiddenSorted.val(val).trigger('change');
         });
     }
 

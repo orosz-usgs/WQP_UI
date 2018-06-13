@@ -54,7 +54,7 @@ export default class BoundingBoxInputView {
             if (north && south && east && west) {
                 bboxVal = west + ',' + south + ',' + east + ',' + north;
             }
-            $bbox.val(bboxVal);
+            $bbox.val(bboxVal).trigger('change');
         });
     }
 }

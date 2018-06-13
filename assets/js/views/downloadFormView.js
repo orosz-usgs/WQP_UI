@@ -34,23 +34,23 @@ export default class DownloadFormView {
      */
     getPlaceInputView() {
         // Initialize Place inputs
-        var getCountryFromState = function(id) {
+        const getCountryFromState = function(id) {
             return id ? id.split(':')[0] : '';
         };
-        var getStateFromCounty = function(id) {
-            var ids = id.split(':');
+        const getStateFromCounty = function(id) {
+            let ids = id.split(':');
             return ids.length > 1 ? ids[0] + ':' + ids[1] : '';
         };
 
-        var countryModel = new CachedCodes({
+        const countryModel = new CachedCodes({
             codes : 'countrycode'
         });
-        var stateModel = new CodesWithKeys({
+        const stateModel = new CodesWithKeys({
             codes : 'statecode',
             keyParameter : 'countrycode',
             parseKey : getCountryFromState
         });
-        var countyModel = new CodesWithKeys({
+        const countyModel = new CodesWithKeys({
             codes : 'countycode',
             keyParameter : 'statecode',
             parseKey : getStateFromCounty
@@ -70,33 +70,33 @@ export default class DownloadFormView {
      *      @reject - if any fetches failed.
      */
     initialize() {
-        var placeInputView = this.getPlaceInputView();
-        var pointLocationInputView = new PointLocationInputView({
+        const placeInputView = this.getPlaceInputView();
+        const pointLocationInputView = new PointLocationInputView({
             $container : this.$form.find('#point-location')
         });
-        var boundingBoxInputView = new BoundingBoxInputView({
+        const boundingBoxInputView = new BoundingBoxInputView({
             $container : this.$form.find('#bounding-box')
         });
-        var siteParameterInputView = new SiteParameterInputView({
+        const siteParameterInputView = new SiteParameterInputView({
             $container : this.$form.find('#site-params'),
             siteTypeModel : new CachedCodes({codes : 'sitetype'}),
             organizationModel : new CachedCodes({codes : 'organization'})
         });
-        var nldiView = new NldiView({
+        const nldiView = new NldiView({
             insetMapDivId : 'nldi-inset-map',
             mapDivId : 'nldi-map',
             $inputContainer : this.$form.find('#nldi-param-container')
         });
-        var samplingParametersInputView = new SamplingParameterInputView({
+        const samplingParametersInputView = new SamplingParameterInputView({
             $container : this.$form.find('#sampling'),
             sampleMediaModel : new CachedCodes({codes: 'samplemedia'}),
             characteristicTypeModel : new CachedCodes({codes: 'characteristictype'})
         });
-        var biologicalSamplingInputView = new BiologicalSamplingInputView({
+        const biologicalSamplingInputView = new BiologicalSamplingInputView({
             $container : this.$form.find('#biological'),
             assemblageModel : new CachedCodes({codes: 'assemblage'})
         });
-        var dataDetailsView = new DataDetailsView({
+        const dataDetailsView = new DataDetailsView({
             $container : this.$form.find('#download-box-input-div'),
             updateResultTypeAction : (resultType) => {
                 this.$form.attr('action', queryService.getFormUrl(resultType));
@@ -104,9 +104,9 @@ export default class DownloadFormView {
         });
 
         // fetch the providers and initialize the providers select
-        var initializeProviders = providers.fetch()
+        let initializeProviders = providers.fetch()
             .done(() => {
-                const $providerSelect = this.$form.find('#providers-select')
+                const $providerSelect = this.$form.find('#providers-select');
                 new StaticSelect2(
                     $providerSelect,
                     providers.getIds(),
@@ -115,11 +115,11 @@ export default class DownloadFormView {
             });
 
         // Initialize form sub view
-        var initPlaceInputView = placeInputView.initialize();
-        var initSiteParameterInputView = siteParameterInputView.initialize();
-        var initSamplingParametersInputView = samplingParametersInputView.initialize();
-        var initBiologicalSamplingInputInputView = biologicalSamplingInputView.initialize();
-        var initComplete = $.when(
+        const initPlaceInputView = placeInputView.initialize();
+        const initSiteParameterInputView = siteParameterInputView.initialize();
+        const initSamplingParametersInputView = samplingParametersInputView.initialize();
+        const initBiologicalSamplingInputInputView = biologicalSamplingInputView.initialize();
+        let initComplete = $.when(
             initBiologicalSamplingInputInputView,
             initializeProviders,
             initPlaceInputView,
@@ -142,7 +142,7 @@ export default class DownloadFormView {
             $('.popover-help').popover('hide');
         });
         this.$form.find('.popover-help').each(function () {
-            var options = $.extend({}, portalHelp[$(this).data('help')], {
+            const options = $.extend({}, portalHelp[$(this).data('help')], {
                 html: true,
                 trigger: 'manual'
             });
@@ -161,14 +161,22 @@ export default class DownloadFormView {
             toggleShowHideSections($(this), $(this).parents('.subpanel').find('.subpanel-body'));
         });
 
+        // Set up change event handler for form inputs to update the hash part of the url
+        let $inputs = this.$form.find(':input[name]');
+        $inputs.change(() => {
+            const queryParamArray = this.getQueryParamArray();
+            const queryString = decodeURIComponent(getQueryString(queryParamArray, ['zip']));
+            window.location.hash = `#${queryString}`;
+        });
+
         // Set up the Download button
         this.$form.find('#main-button').click((event) => {
-            var fileFormat = dataDetailsView.getMimeType();
-            var resultType = dataDetailsView.getResultType();
-            var queryParamArray = this.getQueryParamArray();
-            var queryString = decodeURIComponent(getQueryString(queryParamArray));
+            const fileFormat = dataDetailsView.getMimeType();
+            const resultType = dataDetailsView.getResultType();
+            const queryParamArray = this.getQueryParamArray();
+            const queryString = decodeURIComponent(getQueryString(queryParamArray));
 
-            var startDownload = (totalCount) => {
+            const startDownload = (totalCount) => {
                 window._gaq.push([
                     '_trackEvent',
                     'Portal Page',
@@ -222,14 +230,14 @@ export default class DownloadFormView {
      */
     getQueryParamArray() {
         // Need to eliminate form parameters within the mapping-div
-        var $formInputs = this.$form.find(':input').not('#mapping-div :input, #nldi-inset-map :input, #nldi-map :input');
+        const $formInputs = this.$form.find(':input').not('#mapping-div :input, #nldi-inset-map :input, #nldi-map :input');
 
-        var result = [];
+        let result = [];
         $formInputs.each(function() {
             if ($(this).attr('type') !== 'radio' || $(this).prop('checked')) {
-                var value = $(this).val();
-                var valueIsNotEmpty = typeof value === 'string' ? value : value.length > 0;
-                var name = $(this).attr('name');
+                const value = $(this).val();
+                const valueIsNotEmpty = typeof value === 'string' ? value : value.length > 0;
+                const name = $(this).attr('name');
                 if (valueIsNotEmpty && name) {
                     result.push({
                         name: name,
