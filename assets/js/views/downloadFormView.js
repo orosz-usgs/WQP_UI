@@ -107,8 +107,11 @@ export default class DownloadFormView {
         var initializeProviders = providers.fetch()
             .done(() => {
                 const $providerSelect = this.$form.find('#providers-select')
-                new StaticSelect2($providerSelect,
-                    providers.getIds(), {}, getAnchorQueryValues($providerSelect.attr('name')));
+                new StaticSelect2(
+                    $providerSelect,
+                    providers.getIds(),
+                    {},
+                    getAnchorQueryValues($providerSelect.attr('name')));
             });
 
         // Initialize form sub view

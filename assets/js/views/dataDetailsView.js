@@ -1,4 +1,4 @@
-import { setEnabled } from '../utils';
+import { setEnabled, initializeInput, getAnchorQueryValues } from '../utils';
 
 
 /*
@@ -22,28 +22,43 @@ export default class DataDetailsView {
      * Initializes the widgets and sets up the DOM event handlers.
      */
     initialize() {
-        var $kml = this.$container.find('#kml');
+        let $kml = this.$container.find('#kml');
 
-        var $site = this.$container.find('#sites');
-        var $biosamples = this.$container.find('#biosamples');
-        var $narrowResults = this.$container.find('#narrowsamples');
+        let $site = this.$container.find('#sites');
+        let $biosamples = this.$container.find('#biosamples');
+        let $narrowResults = this.$container.find('#narrowsamples');
 
-        var $sorted = this.$container.find('#sorted');
-        var $hiddenSorted = this.$container.find('input[type="hidden"][name="sorted"]');
-        var $mimeTypeRadioboxes = this.$container.find('input[name="mimeType"]');
-        var $resultTypeRadioboxes = this.$container.find('input.result-type');
+        let $sorted = this.$container.find('#sorted');
+        let $hiddenSorted = this.$container.find('input[type="hidden"][name="sorted"]');
+        let $mimeTypeRadioboxes = this.$container.find('input[name="mimeType"]');
+        let $resultTypeRadioboxes = this.$container.find('input.result-type');
+
+
+        initializeInput($hiddenSorted);
+        const sortedInitValues = getAnchorQueryValues($hiddenSorted.attr('name'));
+        if (sortedInitValues.length) {
+            $sorted.prop('checked', sortedInitValues[0] === 'yes');
+        }
+        const mimeTypeInitValues = getAnchorQueryValues($mimeTypeRadioboxes.attr('name'));
+        if (mimeTypeInitValues.length) {
+            this.$container.find(`input[value="${mimeTypeInitValues[0]}"]`).prop('checked', true);
+            // Need to disable checkboxes for download other that sites.
+            if (mimeTypeInitValues[0] === 'kml') {
+                setEnabled(this.$container.find('.result-type:not(#sites)'), false);
+            }
+        }
 
         $mimeTypeRadioboxes.change(() => {
-            var kmlChecked = $kml.prop('checked');
+            const kmlChecked = $kml.prop('checked');
 
             // Can only download sites if kml is checked
             setEnabled(this.$container.find('.result-type:not(#sites)'), !kmlChecked);
         });
 
         $resultTypeRadioboxes.change((event) => {
-            var node = event.currentTarget;
-            var resultType = $(node).val();
-            var $dataProfile = this.$container.find('input[name="dataProfile"]');
+            const node = event.currentTarget;
+            const resultType = $(node).val();
+            let $dataProfile = this.$container.find('input[name="dataProfile"]');
 
             // Uncheck previously checked button
             this.$container.find('input.result-type:checked').not(node).prop('checked', false);
@@ -62,7 +77,7 @@ export default class DataDetailsView {
         });
 
         $sorted.change(function () {
-            var val = $(this).is(':checked') ? 'yes' : 'no';
+            const val = $(this).is(':checked') ? 'yes' : 'no';
             $hiddenSorted.val(val);
         });
     }
