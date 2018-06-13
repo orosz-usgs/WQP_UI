@@ -33,13 +33,13 @@ export default class DataDetailsView {
         var $mimeTypeRadioboxes = this.$container.find('input[name="mimeType"]');
         var $resultTypeRadioboxes = this.$container.find('input.result-type');
 
-
-
         $mimeTypeRadioboxes.change(() => {
             var kmlChecked = $kml.prop('checked');
 
             // Can only download sites if kml is checked
             setEnabled(this.$container.find('.result-type:not(#sites)'), !kmlChecked);
+
+            this.updateResultTypeAction(this.getResultType()); // added for WQP-1195
         });
 
         $resultTypeRadioboxes.change((event) => {
@@ -60,6 +60,7 @@ export default class DataDetailsView {
             } else if ($narrowResults.prop('checked')){
                 this.$container.append('<input type="hidden" name="dataProfile" value="narrowResult" />');
             }
+
             this.updateResultTypeAction(resultType);
         });
 

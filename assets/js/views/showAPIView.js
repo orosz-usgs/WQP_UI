@@ -43,7 +43,15 @@ end -- original code */
             var queryStringWithoutDataProfile = getQueryString(queryWithoutDataProfileArray);
 
             $apiQueryDiv.show();
-            $apiQueryTitle.html(resultType); // added for WQP-1195
+            $apiQueryTitle.html(resultType.replace(/([A-Z])/g, ' $1')); // added for WQP-1195
+
+            if (resultType != 'Result' ) {
+                $apiQueryText.html(queryService.getFormUrl(resultType, queryStringWithoutDataProfile));
+            } else if (resultType == 'Result') {
+                $apiQueryText.html(queryService.getFormUrl(resultType, queryString));
+            } else {
+                console.debug('failed to match and resultType, cannot create URL')
+            }
 
 // following line needs to change to accommodate the correct query string
             $apiQueryText.html(queryService.getFormUrl(resultType, queryStringWithoutDataProfile));
@@ -61,11 +69,16 @@ end - original code */
     }
 // start -  added for WQP-1195
     updateWebCallDisplay(resultType) {
+        var $apiQueriesDiv = this.$container.find('#api-queries-div');
+
+/* turned off
         var $apiQueryTitle = this.$container.find('#query-div b');
         var $apiQueryText = this.$container.find('#query-div textarea');
+*/
+        $apiQueriesDiv.hide(750);
 
-        $apiQueryTitle.html(resultType.replace(/([A-Z])/g, ' $1'));
-
+  //  turned off to prevent auto updating    $apiQueryTitle.html(resultType.replace(/([A-Z])/g, ' $1'));
+/* turned off to prevent auto updating
         var queryParamArray = this.getQueryParamArray();
 
         var queryParamArray = this.getQueryParamArray();
@@ -82,9 +95,7 @@ end - original code */
         } else {
             console.debug('failed to match and resultType, cannot create URL')
         }
+*/
     }
-
-
-
 // end - added for WQP-1195
 }
