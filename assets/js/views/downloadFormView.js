@@ -85,7 +85,7 @@ export default class DownloadFormView {
         const nldiView = new NldiView({
             insetMapDivId : 'nldi-inset-map',
             mapDivId : 'nldi-map',
-            $inputContainer : this.$form.find('#nldi-param-container')
+            $input : this.$form.find('#nldi-url')
         });
         const samplingParametersInputView = new SamplingParameterInputView({
             $container : this.$form.find('#sampling'),
@@ -165,7 +165,7 @@ export default class DownloadFormView {
         let $inputs = this.$form.find(':input[name]');
         $inputs.change(() => {
             const queryParamArray = this.getQueryParamArray();
-            const queryString = decodeURIComponent(getQueryString(queryParamArray, ['zip']));
+            const queryString = getQueryString(queryParamArray, ['zip']);
             window.location.hash = `#${queryString}`;
         });
 

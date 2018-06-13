@@ -14,13 +14,13 @@ const NLDI_PARAM_NAME = 'nldiurl';
  * @param {Object} options
  *      @prop {String} this.insetMapDivId
  *      @prop {String} mapDivId
- *      @prop {Jquery element} $inputContainer
+ *      @prop {Jquery element} $input
  */
 export default class NldiView {
-    constructor({insetMapDivId, mapDivId, $inputContainer}) {
+    constructor({insetMapDivId, mapDivId, $input}) {
         this.insetMapDivId = insetMapDivId;
         this.mapDivId = mapDivId;
-        this.$inputContainer = $inputContainer;
+        this.$input = $input;
 
         this.$mapDiv = $('#' + mapDivId);
         this.$insetMapDiv = $('#' + insetMapDivId);
@@ -62,16 +62,11 @@ export default class NldiView {
             this.insetMap.removeLayer(this.insetNldiFlowlineLayers);
         }
 
-        this.$inputContainer.html('');
+        this.updateNldiInput('');
     }
 
     updateNldiInput(url) {
-        var html = '';
-        if (url) {
-            html = `<input type="hidden" name="${NLDI_PARAM_NAME}" value="${url}" />`;
-        }
-
-        this.$inputContainer.html(html);
+        this.$input.val(url).trigger('change');
     }
 
     /*
