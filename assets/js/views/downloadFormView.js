@@ -69,7 +69,7 @@ export default class DownloadFormView {
      *      @resolve - if all initialization including successful fetches are complete
      *      @reject - if any fetches failed.
      */
-    initialize(updateResultTypeAction) {
+    initialize(updateWebCallDisplay) {
         var placeInputView = this.getPlaceInputView();
         var pointLocationInputView = new PointLocationInputView({
             $container : this.$form.find('#point-location')
@@ -96,12 +96,12 @@ export default class DownloadFormView {
             $container : this.$form.find('#biological'),
             assemblageModel : new CachedCodes({codes: 'assemblage'})
         });
-        var dataDetailsView = new DataDetailsView({
+        this.dataDetailsView = new DataDetailsView({
             $container : this.$form.find('#download-box-input-div'),
             updateResultTypeAction : (resultType) => {
                 this.$form.attr('action', queryService.getFormUrl(resultType));
-                updateResultTypeAction(resultType);
-            }
+                updateWebCallDisplay(resultType); // added for WQP-1195
+            },
         });
 
         // fetch the providers and initialize the providers select
@@ -123,7 +123,7 @@ export default class DownloadFormView {
             initSamplingParametersInputView,
             initSiteParameterInputView);
 
-        dataDetailsView.initialize();
+        this.dataDetailsView.initialize();
         pointLocationInputView.initialize();
         boundingBoxInputView.initialize();
         if (Config.NLDI_ENABLED) {
@@ -160,8 +160,8 @@ export default class DownloadFormView {
 
         // Set up the Download button
         this.$form.find('#main-button').click((event) => {
-            var fileFormat = dataDetailsView.getMimeType();
-            var resultType = dataDetailsView.getResultType();
+            var fileFormat = this.dataDetailsView.getMimeType();
+            var resultType = this.dataDetailsView.getResultType();
             var queryParamArray = this.getQueryParamArray();
             var queryString = decodeURIComponent(getQueryString(queryParamArray));
 
@@ -169,7 +169,7 @@ export default class DownloadFormView {
                 window._gaq.push([
                     '_trackEvent',
                     'Portal Page',
-                    dataDetailsView.getResultType() + 'Download',
+                    this.dataDetailsView.getResultType() + 'Download',
                     queryString,
                     parseInt(totalCount)]);
 
@@ -237,5 +237,9 @@ export default class DownloadFormView {
             }
         });
         return result;
+    }
+
+    getResultType() {
+        return this.dataDetailsView.getResultType();
     }
 }

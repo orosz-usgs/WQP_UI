@@ -33,12 +33,13 @@ export default class DataDetailsView {
         var $mimeTypeRadioboxes = this.$container.find('input[name="mimeType"]');
         var $resultTypeRadioboxes = this.$container.find('input.result-type');
 
+
+
         $mimeTypeRadioboxes.change(() => {
             var kmlChecked = $kml.prop('checked');
 
             // Can only download sites if kml is checked
             setEnabled(this.$container.find('.result-type:not(#sites)'), !kmlChecked);
-
         });
 
         $resultTypeRadioboxes.change((event) => {
@@ -63,10 +64,8 @@ export default class DataDetailsView {
         });
 
         $sorted.change(function () {
-            var resultType = $('input[name=selectDataRadioBtn]:checked').val(); // added for WQP-1195
             var val = $(this).is(':checked') ? 'yes' : 'no';
             $hiddenSorted.val(val);
-            this.updateResultTypeAction(resultType); // added for WQP-1195
         });
     }
 

@@ -10,13 +10,13 @@ import { getQueryString } from '../utils';
     *       @returns {Array of Objects with name and value properties}
  */
 export default class ShowAPIView {
-    constructor({$container, getQueryParamArray}) {
+    constructor({$container, getQueryParamArray, getResultType}) { // added parameter for WQP-1195
         this.$container = $container;
         this.getQueryParamArray = getQueryParamArray;
+        this.getRequestType = getResultType; // added for WQP-1195
     }
 
     initialize() {
-        var $apiQueryDiv = this.$container.find('#api-queries-div'); // added for WQP-1195
         var $apiQueryTitle = this.$container.find('#query-div b');
         var $apiQueryText = this.$container.find('#query-div textarea'); // added for WQP-1195
         var $wfsText = this.$container.find('#getfeature-query-div textarea'); // added for WQP-1195
@@ -33,6 +33,8 @@ export default class ShowAPIView {
 end -- original code */
 
         this.$container.find('#show-queries-button').click(() => {
+            var resultType = this.getRequestType(); // added for WQP-1195
+
             var queryParamArray = this.getQueryParamArray();
             var queryWithoutDataProfileArray = queryParamArray.filter((param) => {
                 return param.name !== 'dataProfile';
@@ -41,9 +43,10 @@ end -- original code */
             var queryStringWithoutDataProfile = getQueryString(queryWithoutDataProfileArray);
 
             $apiQueryDiv.show();
-            $apiQueryTitle.html('Station'); // added for WQP-1195
+            $apiQueryTitle.html(resultType); // added for WQP-1195
 
-            $apiQueryText.html(queryService.getFormUrl('Station', queryStringWithoutDataProfile)); // added for WQP-1195
+// following line needs to change to accommodate the correct query string
+            $apiQueryText.html(queryService.getFormUrl(resultType, queryStringWithoutDataProfile));
 
 /* start - original code
             $sitesText.html(queryService.getFormUrl('Station', queryStringWithoutDataProfile));
@@ -79,11 +82,8 @@ end - original code */
         } else {
             console.debug('failed to match and resultType, cannot create URL')
         }
-
-
-
-
     }
+
 
 
 // end - added for WQP-1195

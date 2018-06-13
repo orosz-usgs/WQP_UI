@@ -6,7 +6,6 @@ import ShowAPIView from './views/showAPIView';
 import SiteMapView from './views/siteMapView';
 import DownloadProgressDialog from './downloadProgressDialog';
 
-
 $(document).ready(function () {
     // Set the loglevel
     if (Config.DEBUG) {
@@ -30,7 +29,8 @@ $(document).ready(function () {
     });
     var showAPIView = new ShowAPIView({
         $container : $('#show-queries-div'),
-        getQueryParamArray : $.proxy(downloadFormView.getQueryParamArray, downloadFormView)
+        getQueryParamArray : $.proxy(downloadFormView.getQueryParamArray, downloadFormView),
+        getResultType: $.proxy(downloadFormView.getResultType, downloadFormView)
     });
 
     var arcGisOnlineHelpView = new ArcGisOnlineHelpView({
