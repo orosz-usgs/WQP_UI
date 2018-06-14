@@ -82,7 +82,7 @@ describe('Tests for SamplingParameterInputView', function() {
     });
 
     it('Expects that the pCode, min results, and dates are initialized if in the anchor url', () => {
-        window.location.hash = '#pCode=00060&minresults=3&startDateLo=01-01-2001&startDateHi=02-01-2010'
+        window.location.hash = '#pCode=00060&minresults=3&startDateLo=01-01-2001&startDateHi=02-01-2010';
         testView.initialize();
 
         expect($pCode.val()).toEqual('00060');
@@ -92,7 +92,7 @@ describe('Tests for SamplingParameterInputView', function() {
     });
 
     describe('Tests for promise returned from initialize', function() {
-        var initializeSuccessSpy, initializeFailSpy;
+        let initializeSuccessSpy, initializeFailSpy;
 
         beforeEach(function () {
             initializeSuccessSpy = jasmine.createSpy('initializeSuccessSpy');
