@@ -55,6 +55,32 @@ describe('Tests for BoundingBoxInputView', function() {
         expect($testDiv.has('.error-message').length).toBe(0);
     });
 
+    it('Expect the inputs to be initialized if the hash contains bbox parameter with 4 comma separated values', () => {
+        window.location.hash = '#bBox=-101,42,-100,43';
+        testView.initialize();
+
+        expect($bbox.val()).toEqual('-101,42,-100,43');
+        expect($north.val()).toEqual('43');
+        expect($south.val()).toEqual('42');
+        expect($west.val()).toEqual('-101');
+        expect($east.val()).toEqual('-100');
+
+        window.location.hash = '';
+    });
+
+    it('Expect the inputs to not be initialized if the hash contains bbox without 4 comma separated values', () => {
+        window.location.hash = '#bBox=-101,42,-100';
+        testView.initialize();
+
+        expect($bbox.val()).toEqual('');
+        expect($north.val()).toEqual('');
+        expect($south.val()).toEqual('');
+        expect($west.val()).toEqual('');
+        expect($east.val()).toEqual('');
+
+        window.location.hash = '';
+    });
+
     it('Expects the hidden input to be set to the null string unless all text inputs are filled in', function() {
         testView.initialize();
 

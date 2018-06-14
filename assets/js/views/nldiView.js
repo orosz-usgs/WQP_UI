@@ -3,7 +3,7 @@ import partial from 'lodash/function/partial';
 
 import NldiNavPopupView from './nldiNavPopupView';
 import * as nldiModel from '../nldiModel';
-
+import { getAnchorQueryValues } from '../utils';
 
 /*
  * Creates the NHLD maps, an inset map and a larger map. Only one of the maps is shown.
@@ -12,13 +12,13 @@ import * as nldiModel from '../nldiModel';
  * @param {Object} options
  *      @prop {String} this.insetMapDivId
  *      @prop {String} mapDivId
- *      @prop {Jquery element} $inputContainer
+ *      @prop {Jquery element} $input
  */
 export default class NldiView {
-    constructor({insetMapDivId, mapDivId, $inputContainer}) {
+    constructor({insetMapDivId, mapDivId, $input}) {
         this.insetMapDivId = insetMapDivId;
         this.mapDivId = mapDivId;
-        this.$inputContainer = $inputContainer;
+        this.$input = $input;
 
         this.$mapDiv = $('#' + mapDivId);
         this.$insetMapDiv = $('#' + insetMapDivId);
@@ -40,7 +40,7 @@ export default class NldiView {
     }
 
     getRetrieveMessage() {
-        var nldiData = nldiModel.getData();
+        const nldiData = nldiModel.getData();
         return '<p>Retrieving sites ' + nldiData.navigation.text.toLowerCase() + (nldiData.distance ? ' ' + nldiData.distance + ' km' : '') + '.</p>';
     }
 
@@ -60,16 +60,11 @@ export default class NldiView {
             this.insetMap.removeLayer(this.insetNldiFlowlineLayers);
         }
 
-        this.$inputContainer.html('');
+        this.updateNldiInput('');
     }
 
     updateNldiInput(url) {
-        var html = '';
-        if (url) {
-            html = '<input type="hidden" name="nldiurl" value="' + url + '" />';
-        }
-
-        this.$inputContainer.html(html);
+        this.$input.val(url).trigger('change');
     }
 
     /*
@@ -79,8 +74,8 @@ export default class NldiView {
      *      @reject - If unable to fetch the pour point
      */
     fetchFeatureId(point) {
-        var mapBounds = this.map.getBounds();
-        var nldiFeatureSource = nldiModel.getData().featureSource.getFeatureInfoSource;
+        const mapBounds = this.map.getBounds();
+        const nldiFeatureSource = nldiModel.getData().featureSource.getFeatureInfoSource;
         return $.ajax({
             url : nldiFeatureSource.endpoint,
             method : 'GET',
@@ -107,16 +102,16 @@ export default class NldiView {
      * display them on both the this.insetMap and map.
      */
     updateNldiSites() {
-        var nldiSiteUrl = nldiModel.getUrl('wqp');
-        var nldiFlowlinesUrl = nldiModel.getUrl();
+        const nldiSiteUrl = nldiModel.getUrl('wqp');
+        const nldiFlowlinesUrl = nldiModel.getUrl();
 
-        var fetchNldiSites = function() {
+        const fetchNldiSites = function() {
             return $.ajax({
                 url : nldiSiteUrl,
                 method : 'GET'
             });
         };
-        var fetchNldiFlowlines = function() {
+        const fetchNldiFlowlines = function() {
             return $.ajax({
                 url : nldiFlowlinesUrl,
                 method : 'GET'
@@ -126,13 +121,13 @@ export default class NldiView {
             this.$mapDiv.css('cursor', 'progress');
             $.when(fetchNldiSites(), fetchNldiFlowlines())
                 .done((sitesResponse, flowlinesResponse) => {
-                    var flowlineBounds;
-                    var sitesGeojson = sitesResponse[0];
-                    var flowlinesGeojson = flowlinesResponse[0];
+                    let flowlineBounds;
+                    const sitesGeojson = sitesResponse[0];
+                    const flowlinesGeojson = flowlinesResponse[0];
 
                     // These layers go into the siteCluster layer
-                    var nldiSiteLayers = this.siteLayer(sitesGeojson);
-                    var insetNldiSiteLayers = this.siteLayer(sitesGeojson);
+                    const nldiSiteLayers = this.siteLayer(sitesGeojson);
+                    const insetNldiSiteLayers = this.siteLayer(sitesGeojson);
 
                     log.debug('NLDI service has retrieved ' + sitesGeojson.features.length + ' sites.');
                     this.map.closePopup();
@@ -144,6 +139,7 @@ export default class NldiView {
 
                     flowlineBounds = this.nldiFlowlineLayers.getBounds();
                     this.map.fitBounds(flowlineBounds);
+                    this.insetMap.fitBounds(flowlineBounds);
 
                     this.nldiSiteCluster = L.markerClusterGroup({
                         maxClusterRadius : 40
@@ -175,7 +171,7 @@ export default class NldiView {
      * @param {L.MouseEvent} ev
      */
     findSitesHandler(ev) {
-        var featureIdProperty = nldiModel.getData().featureSource.getFeatureInfoSource.featureIdProperty;
+        const featureIdProperty = nldiModel.getData().featureSource.getFeatureInfoSource.featureIdProperty;
 
         log.debug('Clicked at location: ' + ev.latlng.toString());
         this.$mapDiv.css('cursor', 'progress');
@@ -188,7 +184,7 @@ export default class NldiView {
 
         this.fetchFeatureId(ev.containerPoint.round())
             .done((result) => {
-                var navHandler = () => {
+                const navHandler = () => {
                     this.map.openPopup(this.getRetrieveMessage(), ev.latlng);
                     this.updateNldiSites();
                 };
@@ -254,24 +250,27 @@ export default class NldiView {
      * Initialize the inset and full size maps.
      */
     initialize() {
-        var insetBaseLayers = {
+
+        const initValues = getAnchorQueryValues(this.$input.attr('name'));
+
+        const insetBaseLayers = {
             'World Gray' : L.esri.basemapLayer('Gray')
         };
-        var insetHydroLayer = L.esri.tiledMapLayer({
+        const insetHydroLayer = L.esri.tiledMapLayer({
             url : Config.HYDRO_LAYER_ENDPOINT
         });
 
-        var baseLayers = {
+        const baseLayers = {
             'World Gray' : L.esri.basemapLayer('Gray'),
             'World Topo' : L.tileLayer.provider('Esri.WorldTopoMap'),
             'World Street' : L.tileLayer.provider('Esri.WorldStreetMap'),
             'World Relief' : L.tileLayer.provider('Esri.WorldShadedRelief'),
             'World Imagery' : L.tileLayer.provider('Esri.WorldImagery')
         };
-        var hydroLayer = L.esri.tiledMapLayer({
+        const hydroLayer = L.esri.tiledMapLayer({
             url : Config.HYDRO_LAYER_ENDPOINT
         });
-        var nhdlPlusFlowlineLayer = L.tileLayer.wms(Config.NHDPLUS_FLOWLINE_ENDPOINT,
+        const nhdlPlusFlowlineLayer = L.tileLayer.wms(Config.NHDPLUS_FLOWLINE_ENDPOINT,
             {
                 layers : Config.NHDPLUS_FLOWLINE_LAYER_NAME,
                 format : 'image/png',
@@ -280,28 +279,28 @@ export default class NldiView {
             }
         );
 
-        var featureSourceSelectControl = L.control.featureSourceSelectControl({
+        const featureSourceSelectControl = L.control.featureSourceSelectControl({
             changeHandler : this.featureSourceChangeHandler,
             featureSourceOptions : nldiModel.FEATURE_SOURCES,
             initialFeatureSourceValue : nldiModel.getData().featureSource.id
         });
 
-        var searchControl = L.control.searchControl(Config.GEO_SEARCH_API_ENDPOINT);
+        const searchControl = L.control.searchControl(Config.GEO_SEARCH_API_ENDPOINT);
 
-        var expandControl = L.easyButton('fa-lg fa-expand', this.showMap.bind(this), 'Expand NLDI Map', {
+        const expandControl = L.easyButton('fa-lg fa-expand', this.showMap.bind(this), 'Expand NLDI Map', {
             position : 'topright'
         });
-        var collapseControl = L.easyButton('fa-lg fa-compress', this.showInsetMap.bind(this), 'Collapse NLDI Map', {
+        const collapseControl = L.easyButton('fa-lg fa-compress', this.showInsetMap.bind(this), 'Collapse NLDI Map', {
             position: 'topright'
         });
-        var insetClearControl = L.easyButton('fa-lg fa-undo', this.clearHandler.bind(this), 'Clear the sites', {
+        const insetClearControl = L.easyButton('fa-lg fa-undo', this.clearHandler.bind(this), 'Clear the sites', {
             position: 'topleft'
         });
-        var clearControl = L.easyButton('fa-lg fa-undo', this.clearHandler.bind(this), 'Clear the sites', {
+        const clearControl = L.easyButton('fa-lg fa-undo', this.clearHandler.bind(this), 'Clear the sites', {
             position: 'topleft'
         });
 
-        var MapWithSingleClickHandler = L.Map.extend({
+        const MapWithSingleClickHandler = L.Map.extend({
             includes : L.singleClickEventMixin()
         });
 
@@ -335,5 +334,10 @@ export default class NldiView {
         this.map.addControl(L.control.zoom());
 
         this.map.addSingleClickHandler(this.findSitesHandler.bind(this));
+
+        if (initValues.length === 1) {
+            nldiModel.setDataFromUrl(initValues[0]);
+            this.updateNldiSites();
+        }
     }
 }

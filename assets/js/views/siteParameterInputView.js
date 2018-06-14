@@ -2,7 +2,7 @@ import InputValidation from './inputValidationView';
 import { CodeSelect, PagedCodeSelect } from './portalViews';
 import * as hucValidator from '../hucValidator';
 import { positiveIntValidator } from '../portalValidators';
-
+import { getAnchorQueryValues, initializeInput } from '../utils';
 
 /*
  * Creates a site parameter input view object
@@ -20,48 +20,6 @@ export default class SiteParameterInputView {
         this.organizationModel = organizationModel;
     }
 
-    initializeOrganizationSelect($select, model) {
-        var formatData = function(data) {
-            return {
-                id : data.id,
-                text : data.id + ' - ' + data.desc
-            };
-        };
-        var isMatch = function(searchTerm, data) {
-            var termMatcher;
-            if (searchTerm) {
-                termMatcher = new RegExp(searchTerm, 'i');
-                return termMatcher.test(data.id) || termMatcher.test(data.desc);
-            } else {
-                return true;
-            }
-        };
-        new CodeSelect($select, {
-            model : model,
-            formatData : formatData,
-            isMatch : isMatch
-        }, {
-            minimumInputLength: 2,
-            closeOnSelect : false
-        });
-    }
-
-    initializeSiteIdSelect($select, $orgsel) {
-        var formatData = function(data) {
-            return data.value + ' - ' + data.desc;
-        };
-
-        var parametername = 'organizationid';
-
-        new PagedCodeSelect($select, {
-            codes: 'monitoringlocation',
-            formatData: formatData
-            }, {
-            minimumInputLength: 2
-        }, $orgsel, parametername);
-    }
-
-
     /*
      * Initialize the widgets and DOM event handlers
      * @return Jquery promise
@@ -69,9 +27,59 @@ export default class SiteParameterInputView {
      *      @reject - if any model's fetch failed.
      */
     initialize() {
+        const initializeOrganizationSelect = function($select, model) {
+            var formatData = function(data) {
+                return {
+                    id : data.id,
+                    text : data.id + ' - ' + data.desc
+                };
+            };
+            var isMatch = function(searchTerm, data) {
+                var termMatcher;
+                if (searchTerm) {
+                    termMatcher = new RegExp(searchTerm, 'i');
+                    return termMatcher.test(data.id) || termMatcher.test(data.desc);
+                } else {
+                    return true;
+                }
+            };
+            new CodeSelect($select,
+                {
+                    model : model,
+                    formatData : formatData,
+                    isMatch : isMatch
+                }, {
+                    minimumInputLength: 2,
+                    closeOnSelect : false
+                },
+                 getAnchorQueryValues($select.attr('name'))
+            );
+        };
+
+        const initializeSiteIdSelect = function($select, $orgsel) {
+            var formatData = function(data) {
+                return data.value + ' - ' + data.desc;
+            };
+
+            var parametername = 'organizationid';
+
+            new PagedCodeSelect(
+                $select,
+                {
+                    codes: 'monitoringlocation',
+                    formatData: formatData
+                },
+                {
+                    minimumInputLength: 2
+                },
+                $orgsel,
+                parametername,
+                getAnchorQueryValues($select.attr('name')));
+        };
+
         var $siteTypeSelect = this.$container.find('#siteType');
         var $organizationSelect = this.$container.find('#organization');
-        var $siteIdInput = this.$container.find('#siteid');
+        var $siteIdSelect = this.$container.find('#siteid');
         var $hucInput = this.$container.find('#huc');
         var $minActivitiesInput = this.$container.find('#min-activities');
 
@@ -79,15 +87,24 @@ export default class SiteParameterInputView {
         var fetchOrganization = this.organizationModel.fetch();
         var fetchComplete = $.when(fetchSiteType, fetchOrganization);
 
-        this.initializeSiteIdSelect($siteIdInput, $organizationSelect);
+        initializeSiteIdSelect($siteIdSelect, $organizationSelect);
 
         fetchSiteType.done(() => {
-            new CodeSelect($siteTypeSelect, {model : this.siteTypeModel});
+            new CodeSelect(
+                $siteTypeSelect,
+                {
+                    model : this.siteTypeModel
+                },
+                {},
+                getAnchorQueryValues($siteTypeSelect.attr('name')));
         });
 
         fetchOrganization.done(() => {
-            this.initializeOrganizationSelect($organizationSelect, this.organizationModel);
+            initializeOrganizationSelect($organizationSelect, this.organizationModel);
         });
+
+        initializeInput($hucInput);
+        initializeInput($minActivitiesInput);
 
         // Add event handlers
         new InputValidation({

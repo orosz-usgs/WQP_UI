@@ -13,7 +13,7 @@ describe('Tests for biologicalSamplingInputView', function() {
     beforeEach(function() {
         $('body').append('<div id="test-div">' +
             '<select multiple id="assemblage"></select>' +
-            '<select multiple id="subject-taxonomic-name"></select>' +
+            '<select multiple id="subject-taxonomic-name" name="subjectTaxonomicName"></select>' +
             '</div>'
         );
         $testDiv = $('#test-div');
@@ -44,9 +44,12 @@ describe('Tests for biologicalSamplingInputView', function() {
     });
 
     it('Expects that the taxonomic select is initialized', function() {
+        window.location.hash = '#subjectTaxonomicName=Bear';
         testView.initialize();
+
         expect($.fn.select2).toHaveBeenCalled();
         expect($.fn.select2.calls.mostRecent().object.attr('id')).toEqual($taxonomicName.attr('id'));
+        expect($taxonomicName.val()).toEqual(['Bear']);
     });
 
     it('Expects that the assemblage select is initialized after the assemblage model is fetched', function() {

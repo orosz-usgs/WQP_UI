@@ -2,11 +2,12 @@ import contains from 'lodash/collection/contains';
 import filter from 'lodash/collection/filter';
 import has from 'lodash/object/has';
 import last from 'lodash/array/last';
+import union from 'lodash/array/union';
 
 import InputValidation from './inputValidationView';
 import { CodeSelect, CascadedCodeSelect } from './portalViews';
 import { getPostalCode } from '../stateFIPS';
-
+import { getAnchorQueryValues} from '../utils';
 
 const USA = 'US';
 
@@ -28,7 +29,7 @@ export default class PlaceInputView {
         this.countryModel = countryModel;
     }
 
-    initializeCountrySelect($select, model) {
+    initializeCountrySelect($select, model, initValues=[]) {
         var isMatch = function (searchTerm, lookup) {
             var termMatcher;
 
@@ -52,12 +53,16 @@ export default class PlaceInputView {
             isMatch: isMatch
         };
 
-        new CodeSelect($select, spec, {
+        new CodeSelect(
+            $select,
+            spec, {
             templateSelection: templateSelection
-        });
+            },
+            initValues
+        );
     }
 
-    initializeStateSelect($select, model, getCountryKeys) {
+    initializeStateSelect($select, model, getCountryKeys, initValues=[]) {
         var isMatch = function (searchTerm, lookup) {
             var termMatcher;
             var codes;
@@ -94,12 +99,17 @@ export default class PlaceInputView {
             return result;
         };
 
-        new CascadedCodeSelect($select, spec, {
-            templateSelection: templateSelection
-        });
+        new CascadedCodeSelect(
+            $select,
+            spec,
+            {
+                templateSelection: templateSelection
+            },
+            initValues
+        );
     }
 
-    initializeCountySelect($select, model, getStateKeys) {
+    initializeCountySelect($select, model, getStateKeys, initValues) {
         var isMatch = function(searchTerm, lookup) {
             var termMatcher;
             var county;
@@ -135,9 +145,14 @@ export default class PlaceInputView {
             return result;
         };
 
-        new CascadedCodeSelect($select, countySpec, {
-            templateSelection: templateSelection
-        });
+        new CascadedCodeSelect(
+            $select,
+            countySpec,
+            {
+                templateSelection: templateSelection
+            },
+            initValues
+        );
     }
 
     /*
@@ -148,44 +163,53 @@ export default class PlaceInputView {
      */
     initialize() {
         //Initialize select els
-        var $countrySelect = this.$container.find('#countrycode');
-        var $stateSelect = this.$container.find('#statecode');
-        var $countySelect = this.$container.find('#countycode');
+        let $countrySelect = this.$container.find('#countrycode');
+        let $stateSelect = this.$container.find('#statecode');
+        let $countySelect = this.$container.find('#countycode');
 
-        //Fetch initial model data
-        var fetchCountries = this.countryModel.fetch();
-        var fetchUSStates = this.stateModel.fetch([USA]);
-        var fetchComplete = $.when(fetchCountries, fetchUSStates);
+        const initCountries = getAnchorQueryValues($countrySelect.attr('name'));
+        const initStates = getAnchorQueryValues($stateSelect.attr('name'));
+        const initCounties = getAnchorQueryValues($countySelect.attr('name'));
 
-        this.stateModel.fetch([USA]);
-
-        var getCountryKeys = function () {
-            var results = $countrySelect.val();
+        const getCountryKeys = function () {
+            const results = $countrySelect.val();
             return results.length > 0 ? results : [USA];
         };
 
-        var getStateKeys = function() {
-            var results = $stateSelect.val();
+        const getStateKeys = function() {
+            const results = $stateSelect.val();
             return results.length > 0 ? results : [];
         };
 
+        //Fetch initial model data
+        let fetchCountries = this.countryModel.fetch();
+        let fetchStates = this.stateModel.fetch(union([USA], initCountries));
+        let fetchCounties;
+        if (initStates.length) {
+            fetchCounties = this.countyModel.fetch(initStates);
+        } else {
+            fetchCounties = $.Deferred().resolve();
+        }
+        let fetchComplete = $.when(fetchCountries, fetchStates, fetchCounties);
+
         //Initialize select2s
         fetchCountries.done(() => {
-            this.initializeCountrySelect($countrySelect, this.countryModel);
+            this.initializeCountrySelect($countrySelect, this.countryModel, initCountries);
         });
-        // Don't need to wait for stateModel to finish loading as the model is checked before display to see if
-        // more data needs to be loaded
-        this.initializeStateSelect($stateSelect, this.stateModel, getCountryKeys);
-
-        this.initializeCountySelect($countySelect, this.countyModel, getStateKeys);
+        fetchStates.done(() => {
+            this.initializeStateSelect($stateSelect, this.stateModel, getCountryKeys, initStates);
+        });
+        fetchCounties.done(() => {
+            this.initializeCountySelect($countySelect, this.countyModel, getStateKeys, initCounties);
+        });
 
         //Add event handlers
         $countrySelect.on('change', function (ev) {
             /* update states */
-            var countries = $(ev.target).val();
-            var states = $stateSelect.val();
-            var isInCountries = function(state) {
-                var countryCode = state.split(':')[0];
+            let countries = $(ev.target).val();
+            const states = $stateSelect.val();
+            const isInCountries = function(state) {
+                const countryCode = state.split(':')[0];
                 return contains(countries, countryCode);
             };
 
@@ -196,11 +220,11 @@ export default class PlaceInputView {
         });
 
         $stateSelect.on('change', function (ev) {
-            var states = $(ev.target).val();
-            var counties = $countySelect.val();
-            var isInStates = function(county) {
-                var codes = county.split(':');
-                var stateCode = codes[0] + ':' + codes[1];
+            const states = $(ev.target).val();
+            const counties = $countySelect.val();
+            const isInStates = function(county) {
+                const codes = county.split(':');
+                const stateCode = codes[0] + ':' + codes[1];
                 return contains(states, stateCode);
             };
 
@@ -209,7 +233,7 @@ export default class PlaceInputView {
         new InputValidation({
             inputEl : $countySelect,
             validationFnc : function(val, ev) {
-                var result;
+                let result;
                 if (getStateKeys().length === 0) {
                     ev.preventDefault();
                     result  = {

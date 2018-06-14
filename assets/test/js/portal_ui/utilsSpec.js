@@ -1,4 +1,5 @@
-import { getQueryString, toggleShowHideSections, getQueryParamJson } from '../../../js/utils';
+import { getQueryString, toggleShowHideSections, getQueryParamJson, getAnchorQueryValues,
+    initializeInput } from '../../../js/utils';
 
 
 describe('Test PORTAl.UTILS package', function () {
@@ -95,6 +96,67 @@ describe('Test PORTAl.UTILS package', function () {
             expect(isVisible).toBe(false);
             expect($('#show-hide-toggle').attr('title')).toContain('Show');
             expect($('#show-hide-toggle img').attr('alt')).toEqual('show');
+        });
+    });
+
+    describe('getAnchorQueryValue', () =>  {
+        it('Return the empty array if there is no anchor part of the url', () => {
+            window.location.hash = '';
+
+            expect(getAnchorQueryValues('name1')).toEqual([]);
+        });
+
+        it('Return the empty array if the anchor part does not contain the parameter name', () => {
+           window.location.hash = '#name2=val1&name3=val2';
+
+           expect(getAnchorQueryValues('name1')).toEqual([]);
+        });
+
+        it('Will decode url encoded parameters', () => {
+            window.location.hash = '#name1=this%20and%20that';
+
+            expect(getAnchorQueryValues('name1')).toEqual(['this and that']);
+        });
+
+        it('Return the parameter when name is in the anchor part of the URL', () => {
+            window.location.hash = '#name3=val3&name2=val1&name3=val2';
+
+           expect(getAnchorQueryValues('name2')).toEqual(['val1']);
+           expect(getAnchorQueryValues('name3')).toEqual(['val3', 'val2']);
+        });
+
+        it('Return an empty array if parameter value is empty', () => {
+            window.location.hash = '#name3=val3&name2=&name3=val2';
+
+            expect(getAnchorQueryValues('name2')).toEqual(['']);
+        });
+
+    });
+
+    describe('initializeTextInput', () => {
+
+        let $testInput;
+        beforeEach(() => {
+            $('body').append('<input type="text" id="test-id" name="testname" />');
+            $testInput = $('#test-id');
+        });
+
+        afterEach(() => {
+            $testInput.remove();
+        });
+
+        it('does not set the value if the anchor part does not contain testname', () => {
+            window.location.hash = '#name1=val1';
+            initializeInput($testInput);
+
+            expect($testInput.val()).toEqual('');
+        });
+
+        it('sets the value if the anchor part does contain testname', () => {
+            window.location.hash = '#name1=val1&testname=val2';
+            initializeInput($testInput);
+
+            expect($testInput.val()).toEqual('val2');
         });
     });
 });
