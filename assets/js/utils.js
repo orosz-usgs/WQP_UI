@@ -141,3 +141,30 @@ export const getHeaders = function() {
     }
     return headers;
 };
+
+/*
+ * @param {String} param
+ * @return {Array} containing the values of the query parameter that is currently in the anchor part of the url
+ */
+export const getAnchorQueryValues = function(param) {
+    const queryParams = window.location.hash.slice(1).split('&'); // Array of Arrays[name, value]
+    return queryParams
+        .map((queryParamString) => {
+            return queryParamString.split('=');
+        })
+        .filter((nameValuePair) => {
+            return nameValuePair[0] === param;
+        })
+        .map((nameValuePair) => {
+            return decodeURIComponent(nameValuePair[1]);
+        });
+};
+
+/*
+ * Initialize the value of the $el input. Will only use the first value returned from getAnchorQueryValues if any.
+ * @param {Jquery element} $el - should be a text input with a name attribute
+ */
+export const initializeInput = function($el) {
+    const initValues = getAnchorQueryValues($el.attr('name'));
+    $el.val(initValues.length ? initValues[0] : '');
+};

@@ -67,6 +67,25 @@ export const setFeatureSource = function(featureSourceId) {
     });
 };
 
+const DISTANCE = 'distance';
+
+export const setDataFromUrl = function(url) {
+    if (url.indexOf(Config.NLDI_SERVICES_ENDPOINT) !== 0) {
+        return;
+    }
+    const nldiUri = url.slice(Config.NLDI_SERVICES_ENDPOINT.length, url.indexOf('?')).split('/');
+    if (nldiUri.length !== 5) {
+        return;
+    }
+    setFeatureSource(nldiUri[0]);
+    modelData.featureId = nldiUri[1];
+    modelData.navigation = find(NAVIGATION_MODES, (mode) => mode.id === nldiUri[3]);
+
+    const queryParams = url.slice(url.indexOf('?'));
+    /* This assumes that distance is the only URL query parameter */
+    modelData.distance = queryParams.slice(queryParams.indexOf(DISTANCE) + DISTANCE.length + 1);
+};
+
 export const getUrl = function(dataSource) {
     var result = '';
     var dataSourceString = dataSource ? '/' + dataSource : '';

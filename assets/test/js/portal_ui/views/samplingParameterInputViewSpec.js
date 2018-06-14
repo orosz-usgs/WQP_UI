@@ -3,11 +3,12 @@ import SamplingParameterInputView from '../../../../js/views/samplingParameterIn
 
 
 describe('Tests for SamplingParameterInputView', function() {
-    var testView;
-    var $testDiv;
-    var $sampleMedia, $characteristicType, $characteristicName, $projectCode, $minresults, $startDate, $endDate;
-    var sampleMediaModel, characteristicTypeModel;
-    var fetchSampleMediaDeferred, fetchCharacteristicTypeDeferred;
+    let testView;
+    let $testDiv;
+    let $sampleMedia, $characteristicType, $characteristicName, $projectCode, $minresults, $startDate, $endDate;
+    let $pCode;
+    let sampleMediaModel, characteristicTypeModel;
+    let fetchSampleMediaDeferred, fetchCharacteristicTypeDeferred;
 
     beforeEach(function() {
         $('body').append('<div id="test-div">' +
@@ -15,16 +16,17 @@ describe('Tests for SamplingParameterInputView', function() {
                 '<select multiple id="characteristicType"></select>' +
                 '<select multiple id="characteristicName"></select>' +
                 '<select multiple id="project-code"></select>' +
-                '<input type="text" id="pCode" \\>' +
-                '<input type="number" id="minresults" \\>' +
-                '<input type="text" id="startDateLo" \\>' +
-                '<input type="text" id="startDateHi" \\>' +
+                '<input type="text" id="pCode" name="pCode" \\>' +
+                '<input type="number" id="minresults" name="minresults" \\>' +
+                '<input type="text" id="startDateLo" name="startDateLo" \\>' +
+                '<input type="text" id="startDateHi" name="startDateHi" \\>' +
                 '</div>'
         );
         $testDiv = $('#test-div');
         $sampleMedia = $('#sampleMedia');
         $characteristicType = $('#characteristicType');
         $characteristicName = $('#characteristicName');
+        $pCode = $('#pCode');
         $projectCode  = $('#project-code');
         $minresults = $('#minresults');
         $startDate = $('#startDateLo');
@@ -79,8 +81,18 @@ describe('Tests for SamplingParameterInputView', function() {
         expect(CodeSelect.prototype.initialize.calls.argsFor(1)[0].attr('id')).toEqual($characteristicType.attr('id'));
     });
 
+    it('Expects that the pCode, min results, and dates are initialized if in the anchor url', () => {
+        window.location.hash = '#pCode=00060&minresults=3&startDateLo=01-01-2001&startDateHi=02-01-2010';
+        testView.initialize();
+
+        expect($pCode.val()).toEqual('00060');
+        expect($minresults.val()).toEqual('3');
+        expect($startDate.val()).toEqual('01-01-2001');
+        expect($endDate.val()).toEqual('02-01-2010');
+    });
+
     describe('Tests for promise returned from initialize', function() {
-        var initializeSuccessSpy, initializeFailSpy;
+        let initializeSuccessSpy, initializeFailSpy;
 
         beforeEach(function () {
             initializeSuccessSpy = jasmine.createSpy('initializeSuccessSpy');

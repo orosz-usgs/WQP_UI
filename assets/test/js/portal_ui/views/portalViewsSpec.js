@@ -19,9 +19,10 @@ describe('Tests for portalViews functions and objects', function () {
             new StaticSelect2($('#test-select'), ['T1', 'T2', 'T3']);
             expect($.fn.select2).toHaveBeenCalled();
             expect($.fn.select2.calls.argsFor(0)[0].data).toEqual([
-                {id: 'T1', text: 'T1'}, {id: 'T2', text: 'T2'}, {id: 'T3', text: 'T3'}
+                {id: 'T1', text: 'T1', selected: false},
+                {id: 'T2', text: 'T2', selected: false},
+                {id: 'T3', text: 'T3', selected: false}
             ]);
-
         });
 
         it('Expects select2 to be called with the additional options', function () {
@@ -30,6 +31,16 @@ describe('Tests for portalViews functions and objects', function () {
             });
 
             expect($.fn.select2.calls.argsFor(0)[0].placeholder).toEqual('Any');
+        });
+
+        it('Expects the selected boolean to match the initValues', () => {
+            new StaticSelect2($('#test-select'), ['T1', 'T2', 'T3'], {}, ['T2', 'T3']);
+
+            expect($.fn.select2.calls.argsFor(0)[0].data).toEqual([
+                {id: 'T1', text: 'T1', selected: false},
+                {id: 'T2', text: 'T2', selected: true},
+                {id: 'T3', text: 'T3', selected: true}
+            ]);
         });
     });
 
@@ -58,13 +69,22 @@ describe('Tests for portalViews functions and objects', function () {
         });
 
         it('Expects select2 to be initialized with defaults properties', function () {
-            new PagedCodeSelect($('#test-select2'), testSpec, {});
+            new PagedCodeSelect($('#test-select2'), testSpec, {}, null, null, ['val1', 'val2']);
             expect($.fn.select2).toHaveBeenCalled();
 
             var options = $.fn.select2.calls.argsFor(0)[0];
             expect(options.allowClear).toEqual(true);
             expect(options.templateSelection).toBeDefined();
             expect(options.ajax).toBeDefined();
+            expect(options.data).toEqual([{
+                id: 'val1',
+                text: 'val1',
+                selected: true
+            },{
+                id: 'val2',
+                text: 'val2',
+                selected: true
+            }]);
         });
 
         it('Expects select2 defaults to be overriden and additional parameters used to create the select2', function () {
@@ -147,7 +167,7 @@ describe('Tests for portalViews functions and objects', function () {
             $('#test-div').remove();
         });
 
-        it('Expects that the select2 is not initialized', function () {
+        it('Expects that the select2 is initialized', function () {
             new CodeSelect($('#test-select2'), testSpec);
             expect($.fn.select2).toHaveBeenCalled();
             var options = $.fn.select2.calls.argsFor(0)[0];
@@ -157,10 +177,22 @@ describe('Tests for portalViews functions and objects', function () {
             expect(options.data.length).toBe(3);
             expect(options.data[0]).toEqual({
                 id: 'v1',
-                text: 'Text1 (P1)'
+                text: 'Text1 (P1)',
+                selected : false
             });
         });
 
+        it('Expects the select2 to be initialized with initValues', () =>  {
+            new CodeSelect($('#test-select2'), testSpec, {}, ['v1', 'v2']);
+            const options = $.fn.select2.calls.argsFor(0)[0];
+
+            expect(options.data[0].id).toBe('v1');
+            expect(options.data[0].selected).toBe(true);
+            expect(options.data[1].id).toBe('v3');
+            expect(options.data[1].selected).toBe(false);
+            expect(options.data[2].id).toBe('v2');
+            expect(options.data[2].selected).toBe(true);
+        });
 
         it('Expects select2 options to be merged with defaults', function () {
             var options;
