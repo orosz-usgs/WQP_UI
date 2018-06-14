@@ -19,6 +19,7 @@ export default class ShowAPIView {
     initialize() {
         var $apiQueryTitle = this.$container.find('#query-div b');
         var $apiQueryText = this.$container.find('#query-div textarea'); // added for WQP-1195
+        var $cUrlText = this.$container.find('#curl-query-div textarea'); // added for WQP-1195
         var $wfsText = this.$container.find('#getfeature-query-div textarea'); // added for WQP-1195
 
 
@@ -45,16 +46,19 @@ end -- original code */
             $apiQueryDiv.show();
             $apiQueryTitle.html(resultType.replace(/([A-Z])/g, ' $1')); // added for WQP-1195
 
+// following two lines added for testing
+var $goalcUrlText = this.$container.find('#temporary-curl-query-div textarea')
+$goalcUrlText.html('cURL should look something like: \'https://cida-eros-wqpdev.er.usgs.gov:8443/wqp/Station/search/count?mimeType=json\' -H \'Origin: http://127.0.0.1:5050\' -H \'Accept-Encoding: gzip, deflate, br\' -H \'Accept-Language: en-US,en;q=0.9\' -H \'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36\' -H \'Content-Type: application/json\' -H \'Accept: */*\' -H \'Referer: http://127.0.0.1:5050/portal/\' -H \'Connection: keep-alive\' --data-binary \'{"countrycode":["US"],"statecode":["US:01","US:06"],"countycode":["US:01:003","US:06:059","US:01:007"]}\' --compressed --insecure')
+
             if (resultType != 'Result' ) {
                 $apiQueryText.html(queryService.getFormUrl(resultType, queryStringWithoutDataProfile));
             } else if (resultType == 'Result') {
                 $apiQueryText.html(queryService.getFormUrl(resultType, queryString));
             } else {
-                console.debug('failed to match and resultType, cannot create URL')
+                console.debug('failed to match any resultType, cannot create URL')
             }
 
-// following line needs to change to accommodate the correct query string
-            $apiQueryText.html(queryService.getFormUrl(resultType, queryStringWithoutDataProfile));
+            $cUrlText.html('this is what is built so far: '+ Config.QUERY_URLS[resultType]);
 
 /* start - original code
             $sitesText.html(queryService.getFormUrl('Station', queryStringWithoutDataProfile));
@@ -69,16 +73,16 @@ end - original code */
     }
 // start -  added for WQP-1195
     updateWebCallDisplay(resultType) {
-        var $apiQueriesDiv = this.$container.find('#api-queries-div');
+        // var $apiQueriesDiv = this.$container.find('#api-queries-div');
+        // $apiQueriesDiv.hide(750);
 
-/* turned off
+
         var $apiQueryTitle = this.$container.find('#query-div b');
         var $apiQueryText = this.$container.find('#query-div textarea');
-*/
-        $apiQueriesDiv.hide(750);
 
-  //  turned off to prevent auto updating    $apiQueryTitle.html(resultType.replace(/([A-Z])/g, ' $1'));
-/* turned off to prevent auto updating
+
+        $apiQueryTitle.html(resultType.replace(/([A-Z])/g, ' $1'));
+
         var queryParamArray = this.getQueryParamArray();
 
         var queryParamArray = this.getQueryParamArray();
@@ -93,9 +97,8 @@ end - original code */
         } else if (resultType == 'Result') {
             $apiQueryText.html(queryService.getFormUrl(resultType, queryString));
         } else {
-            console.debug('failed to match and resultType, cannot create URL')
+            console.debug('failed to match any resultType, cannot create URL')
         }
-*/
     }
 // end - added for WQP-1195
 }

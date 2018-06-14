@@ -69,7 +69,7 @@ export default class DownloadFormView {
      *      @resolve - if all initialization including successful fetches are complete
      *      @reject - if any fetches failed.
      */
-    initialize(updateWebCallDisplay, hideDivOnChange) {
+    initialize(updateWebCallDisplay) {
         var placeInputView = this.getPlaceInputView();
         var pointLocationInputView = new PointLocationInputView({
             $container : this.$form.find('#point-location')
