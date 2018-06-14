@@ -124,6 +124,13 @@ describe('Test PORTAl.UTILS package', function () {
            expect(getAnchorQueryValues('name2')).toEqual(['val1']);
            expect(getAnchorQueryValues('name3')).toEqual(['val3', 'val2']);
         });
+
+        it('Return an empty array if parameter value is empty', () => {
+            window.location.hash = '#name3=val3&name2=&name3=val2';
+
+            expect(getAnchorQueryValues('name2')).toEqual(['']);
+        });
+
     });
 
     describe('initializeTextInput', () => {
@@ -150,6 +157,6 @@ describe('Test PORTAl.UTILS package', function () {
             initializeInput($testInput);
 
             expect($testInput.val()).toEqual('val2');
-        })
+        });
     });
 });
