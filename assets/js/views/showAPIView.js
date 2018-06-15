@@ -1,5 +1,6 @@
 import queryService from '../queryService';
 import { getQueryString } from '../utils';
+import {getUrl} from "../nldiModel";
 
 
 /*
@@ -17,13 +18,11 @@ export default class ShowAPIView {
     }
 
     initialize() {
-        var $apiQueryTitle = this.$container.find('#query-div b');
-        var $apiQueryText = this.$container.find('#query-div textarea'); // added for WQP-1195
-        var $cUrlText = this.$container.find('#curl-query-div textarea'); // added for WQP-1195
-        var $wfsText = this.$container.find('#getfeature-query-div textarea'); // added for WQP-1195
-
-
-        var $apiQueryDiv = this.$container.find('#api-queries-div');
+        let $apiQueryDiv = this.$container.find('#api-queries-div');
+        let $apiQueryTitle = this.$container.find('#query-div b');
+        let $apiQueryText = this.$container.find('#query-div textarea'); // added for WQP-1195
+        let $cUrlText = this.$container.find('#curl-query-div textarea'); // added for WQP-1195
+        let $wfsText = this.$container.find('#getfeature-query-div textarea'); // added for WQP-1195
 
 /* start -- original code
         var $sitesText = this.$container.find('#sites-query-div textarea');
@@ -34,31 +33,34 @@ export default class ShowAPIView {
 end -- original code */
 
         this.$container.find('#show-queries-button').click(() => {
-            var resultType = this.getRequestType(); // added for WQP-1195
+            let resultType = this.getRequestType(); // added for WQP-1195
 
-            var queryParamArray = this.getQueryParamArray();
-            var queryWithoutDataProfileArray = queryParamArray.filter((param) => {
-                return param.name !== 'dataProfile';
+            let queryParamArray = this.getQueryParamArray();
+            let queryWithoutDataProfileArray = queryParamArray.filter((param) => {
+               return param.name !== 'dataProfile';
             });
-            var queryString = getQueryString(queryParamArray);
-            var queryStringWithoutDataProfile = getQueryString(queryWithoutDataProfileArray);
+
+            let queryString = getQueryString(queryParamArray);
+            let queryStringWithoutDataProfile = getQueryString(queryWithoutDataProfileArray);
+            let apiQueryString =  ''; // added for WQP-1195
+
+            let isDataProfileUsed = this.checkForUseOfDataProfileArray()[resultType]; // added for WQP-1195
+            if (isDataProfileUsed) {
+                apiQueryString = queryService.getFormUrl(resultType, queryString);
+            } else {
+                apiQueryString = queryService.getFormUrl(resultType, queryStringWithoutDataProfile);
+            }
+
+            let curlString = this.buildCurlString(resultType); // added for WQP-1195
 
             $apiQueryDiv.show();
             $apiQueryTitle.html(resultType.replace(/([A-Z])/g, ' $1')); // added for WQP-1195
+            $apiQueryText.html(apiQueryString); // modified for WQP-1195
+            $cUrlText.html(curlString);
 
 // following two lines added for testing
-var $goalcUrlText = this.$container.find('#temporary-curl-query-div textarea')
-$goalcUrlText.html('cURL should look something like: \'https://cida-eros-wqpdev.er.usgs.gov:8443/wqp/Station/search/count?mimeType=json\' -H \'Origin: http://127.0.0.1:5050\' -H \'Accept-Encoding: gzip, deflate, br\' -H \'Accept-Language: en-US,en;q=0.9\' -H \'User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36\' -H \'Content-Type: application/json\' -H \'Accept: */*\' -H \'Referer: http://127.0.0.1:5050/portal/\' -H \'Connection: keep-alive\' --data-binary \'{"countrycode":["US"],"statecode":["US:01","US:06"],"countycode":["US:01:003","US:06:059","US:01:007"]}\' --compressed --insecure')
-
-            if (resultType != 'Result' ) {
-                $apiQueryText.html(queryService.getFormUrl(resultType, queryStringWithoutDataProfile));
-            } else if (resultType == 'Result') {
-                $apiQueryText.html(queryService.getFormUrl(resultType, queryString));
-            } else {
-                console.debug('failed to match any resultType, cannot create URL')
-            }
-
-            $cUrlText.html('this is what is built so far: '+ Config.QUERY_URLS[resultType]);
+let $goalcUrlText = this.$container.find('#temporary-curl-query-div textarea')
+$goalcUrlText.html('curl -X POST --header \'Content-Type: application/json\' --header \'Accept: application/zip\' -d \'{"statecode":["US:02"],"countycode":["US:02:016"]}\' \'https://www.waterqualitydata.us/data/Station/search?mimeType=csv&zip=yes\'')
 
 /* start - original code
             $sitesText.html(queryService.getFormUrl('Station', queryStringWithoutDataProfile));
@@ -71,12 +73,13 @@ end - original code */
             $wfsText.html(L.WQPSitesLayer.getWfsGetFeatureUrl(queryWithoutDataProfileArray));
         });
     }
+
 // start -  added for WQP-1195
     updateWebCallDisplay(resultType) {
         // var $apiQueriesDiv = this.$container.find('#api-queries-div');
         // $apiQueriesDiv.hide(750);
 
-
+/* start - disabled
         var $apiQueryTitle = this.$container.find('#query-div b');
         var $apiQueryText = this.$container.find('#query-div textarea');
 
@@ -99,6 +102,35 @@ end - original code */
         } else {
             console.debug('failed to match any resultType, cannot create URL')
         }
+end - disabled */
+    }
+
+    checkForUseOfDataProfileArray() {
+        let dataProfileUsed = {
+            'Station' : false,
+            'Project' : false,
+            'ProjectMonitoringLocationWeighting' : false,
+            'Result' : true,
+            'Activity' : false,
+            'ActivityMetric' : false,
+            'ResultDetectionQuantitationLimit' : false,
+            'default' : false
+        };
+
+        return dataProfileUsed;
+    }
+
+    buildCurlString(resultType) {
+        let contentType = 'application/json';
+        let zipType = ' TODO -- zip type ';
+        let dataCode = 'TODO -- data codes';
+        let urlBase = Config.QUERY_URLS[resultType];
+        let mimeType = 'TODO -- mime type';
+        let zipYesNo = 'TODO -- zip'
+
+        let curlString = `curl -X POST --header 'Content-Type: ${contentType}' --header 'Accept: ${zipType}' -d'${dataCode}''${urlBase}?mimeType=${mimeType}&zip=${zipYesNo}'`;
+
+        return curlString;
     }
 // end - added for WQP-1195
 }
