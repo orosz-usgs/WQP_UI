@@ -51,7 +51,7 @@ end -- original code */
                 apiQueryString = queryService.getFormUrl(resultType, queryStringWithoutDataProfile);
             }
 
-            let curlString = this.buildCurlString(resultType); // added for WQP-1195
+            let curlString = this.buildCurlString(resultType, queryParamArray); // added for WQP-1195
 
             $apiQueryDiv.show();
             $apiQueryTitle.html(resultType.replace(/([A-Z])/g, ' $1')); // added for WQP-1195
@@ -120,15 +120,64 @@ end - disabled */
         return dataProfileUsed;
     }
 
-    buildCurlString(resultType) {
-        let contentType = 'application/json';
-        let zipType = ' TODO -- zip type ';
-        let dataCode = 'TODO -- data codes';
-        let urlBase = Config.QUERY_URLS[resultType];
-        let mimeType = 'TODO -- mime type';
-        let zipYesNo = 'TODO -- zip'
+     buildCurlString(resultType, queryParamArray) {
+        let countryCodes = [];
+        let stateCodes = [];
+        let countyCodes = [];
 
-        let curlString = `curl -X POST --header 'Content-Type: ${contentType}' --header 'Accept: ${zipType}' -d'${dataCode}''${urlBase}?mimeType=${mimeType}&zip=${zipYesNo}'`;
+        let curlParamsArray = [
+                {name: 'mimeType', value: ''},
+                {name: 'zipType', value: ''},
+                {name: 'sortType', value: ''}
+            ];
+
+
+        let countryCodesString = '';
+
+
+        for(let key in queryParamArray) {
+            if(queryParamArray.hasOwnProperty(key)) {
+                let currentObject = queryParamArray[key];
+
+                if (currentObject['name'] === 'countrycode') {
+                    countryCodes = currentObject['value'];
+                    countryCodesString = '"countrycode":' + JSON.stringify(countryCodes);
+
+                }
+                if (currentObject['name'] === 'statecode') {
+                    stateCodes = currentObject['value'];
+                }
+                if (currentObject['name'] === 'countycode') {
+                    countryCodes = currentObject['value'];
+
+                }
+                if (currentObject['name'] === 'mimeType') {
+                    curlParamsArray[0].value = currentObject['value'];
+                }
+                if (currentObject['name'] === 'zip') {
+                    curlParamsArray[1].value = currentObject['value'];
+                }
+                if (currentObject['name'] === 'sorted') {
+                    console.log('!!!this is value ' + currentObject['value'])
+                    curlParamsArray[2].value = currentObject['value'];
+                }
+            }
+        }
+console.log('this is the countryValue now ' + countryCodes)
+console.log('this is the statecode now ' + stateCodes)
+console.log('this is the countycodes now ' + countyCodes)
+console.log('this is the array params ' + JSON.stringify(curlParamsArray))
+
+
+
+console.log('in buildCurlString, queryParamArray ' + JSON.stringify(queryParamArray))
+        let contentType = 'application/json';
+
+        let urlBase = Config.QUERY_URLS[resultType];
+
+        let params = $.param(curlParamsArray);
+
+        let curlString = `curl -X POST --header 'Content-Type: ${contentType}' --header 'Accept: ' -d'{${countryCodesString}}''${urlBase}?${params}'`;
 
         return curlString;
     }
