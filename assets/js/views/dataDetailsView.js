@@ -80,6 +80,12 @@ export default class DataDetailsView {
             const val = $(this).is(':checked') ? 'yes' : 'no';
             $hiddenSorted.val(val).trigger('change');
         });
+
+        $hiddenSorted.change(() => {
+            if (!$hiddenSorted.val()) {
+                $sorted.prop('checked', false);
+            }
+        })
     }
 
     getResultType() {
