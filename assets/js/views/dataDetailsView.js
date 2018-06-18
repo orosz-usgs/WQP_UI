@@ -85,7 +85,7 @@ export default class DataDetailsView {
             if (!$hiddenSorted.val()) {
                 $sorted.prop('checked', false);
             }
-        })
+        });
     }
 
     getResultType() {
