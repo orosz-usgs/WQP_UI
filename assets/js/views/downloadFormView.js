@@ -165,7 +165,10 @@ export default class DownloadFormView {
         const $shareContainer = this.$form.find('.share-container');
         const $shareText = $shareContainer.find('textarea');
         $shareText.val(window.location.href);
-
+        $shareContainer.find('button').click(() => {
+            $shareText.get(0).select();
+            document.execCommand('copy');
+        });
 
         // Set up change event handler for form inputs to update the hash part of the url
         let $inputs = this.$form.find(':input[name]');
@@ -175,10 +178,6 @@ export default class DownloadFormView {
             window.location.hash = `#${queryString}`;
 
             $shareText.val(window.location.href);
-        });
-        $shareContainer.find('button').click(() => {
-            $shareText.get(0).select();
-            document.execCommand('copy');
         });
 
 
