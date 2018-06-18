@@ -46,15 +46,23 @@ export default class BoundingBoxInputView {
 
         //Update bBox hidden input if any of the bounding box text fields are updated
         $textInputs.change(() => {
-            var north = $north.val();
-            var south = $south.val();
-            var east = $east.val();
-            var west = $west.val();
-            var bboxVal = '';
+            const north = $north.val();
+            const south = $south.val();
+            const east = $east.val();
+            const west = $west.val();
             if (north && south && east && west) {
-                bboxVal = west + ',' + south + ',' + east + ',' + north;
+                let bboxVal = west + ',' + south + ',' + east + ',' + north;
+                $bbox.val(bboxVal).trigger('change');
+            } else if ($bbox.val()) {
+                $bbox.val('');
             }
-            $bbox.val(bboxVal).trigger('change');
+        });
+
+        // Add change event handler for $bbox to clear text inputs if $bbox is empty
+        $bbox.change(() => {
+            if (!$bbox.val()) {
+                $textInputs.val('');
+            }
         });
     }
 }
