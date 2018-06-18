@@ -82,6 +82,7 @@ export default {
         if (queryParams) {
             result = result + '?' + queryParams;
         }
+
         return result;
     }
 };

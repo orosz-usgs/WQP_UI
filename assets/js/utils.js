@@ -168,3 +168,67 @@ export const initializeInput = function($el) {
     const initValues = getAnchorQueryValues($el.attr('name'));
     $el.val(initValues.length ? initValues[0] : '');
 };
+
+/*
+ *  Creates a constant with properties indicating if a data profile is used
+ *  @ return {object} a data profile object with boolean properties indicating whether data profile is used
+ */
+export const checkForUseOfDataProfileArray = function () {
+    let dataProfileUsed = {
+        'Station': false,
+        'Project': false,
+        'ProjectMonitoringLocationWeighting': false,
+        'Result': true,
+        'Activity': false,
+        'ActivityMetric': false,
+        'ResultDetectionQuantitationLimit': false,
+        'default': false
+    };
+    return dataProfileUsed;
+};
+
+/*
+ * Takes the values from the form and separates them into groups
+ * @param queryParamArray {array} Contains the values of user selected form elements.
+ * @return {string} The formatted string used to make curl calls.
+ */
+export const separateCurlDataFromParams = function (queryParamArray) {
+    let allParams = {};
+    allParams.curlParamsArray = [];
+    allParams.curlDataArray = [];
+
+    // separate data parameters
+    each(queryParamArray, function (param) {
+        if (param['name'] === 'mimeType' || param['name'] === 'zip' || param['name'] === 'sorted') {
+            allParams.curlParamsArray.push(param);
+        } else {
+            allParams.curlDataArray.push(param);
+        }
+    });
+    return allParams;
+};
+
+/*
+ * Assembles a curl string from the user entered form values
+ * @param resultType {string} The result returned when the user selects form elements.
+ * @return {string} a formatted line that can be used a curl command.
+ */
+export const buildCurlString = function(resultType, allParams) {
+    let contentType = 'application/json';
+    let urlBase = Config.QUERY_URLS[resultType];
+    let params = $.param(allParams.curlParamsArray);
+
+    let dataParamsString = '';
+
+    each(allParams.curlDataArray, function (param) {
+        let partialDataParamsString = `"${param.name}":["${param.value}"]`;
+        dataParamsString = dataParamsString + partialDataParamsString;
+        dataParamsString = dataParamsString + ',';
+    });
+    // remove the trailing comma and add final formatting
+    if (dataParamsString != '') {
+        dataParamsString = dataParamsString.slice(0, -1);
+        dataParamsString = `-d '{${dataParamsString}}'`;
+    }
+    return `curl -X POST --header 'Content-Type: ${contentType}' --header 'Accept: application/vnd.geo+json' ${dataParamsString} '${urlBase}?${params}'`;
+};
