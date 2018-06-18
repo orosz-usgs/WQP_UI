@@ -158,6 +158,15 @@ describe('Tests for DataDetailsView', function() {
         window.location.hash = '';
     });
 
+    it('If sorted-yes and the hidden input is cleared, the checkbox is unchecked', () => {
+        testView.initialize();
+        $sorted.prop('checked', true);
+        $hiddenSorted.val('yes');
+        $hiddenSorted.val('').trigger('change');
+
+        expect($sorted.prop('checked')).toBe(false);
+    });
+
     it('Expects that getResultType returns the currently selected result type', function() {
         testView.initialize();
         $samples.prop('checked', true).trigger('change');

@@ -102,4 +102,18 @@ describe('Tests for BoundingBoxInputView', function() {
         $south.val('').trigger('change');
         expect($bbox.val()).toEqual('');
     });
+
+    it('Expects the bbox inputs to be cleared if the hidden input is cleared', () => {
+        testView.initialize();
+
+        $north.val('12').trigger('change');
+        $south.val('13').trigger('change');
+        $west.val('15').trigger('change');
+        $east.val('14').trigger('change');
+
+        expect($bbox.val()).toEqual('15,13,14,12');
+
+        $bbox.val('').trigger('change');
+        expect($bbox.val()).toEqual('');
+    });
 });

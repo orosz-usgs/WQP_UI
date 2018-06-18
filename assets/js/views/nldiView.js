@@ -37,6 +37,13 @@ export default class NldiView {
                 });
             }
         });
+
+        // Add change handler for the hidden input so the NLDI can be cleared on a reset
+        this.$input.change(() => {
+           if (!this.$input.val()) {
+               this.clearHandler();
+           }
+        });
     }
 
     getRetrieveMessage() {
@@ -64,7 +71,10 @@ export default class NldiView {
     }
 
     updateNldiInput(url) {
-        this.$input.val(url).trigger('change');
+        // Only trigger a change if non-null url or if the $input.val is being changed from an url to null
+        if (url || this.$input.val()) {
+            this.$input.val(url).trigger('change');
+        }
     }
 
     /*
