@@ -169,6 +169,11 @@ export default class DownloadFormView {
             window.location.hash = `#${queryString}`;
         });
 
+        // Initialize the share window and button event handler
+        const $shareContainer = this.$form.find('.share-container');
+        const $shareText = $shareContainer.find('input[type="text"]');
+        $shareText.val(`${window.location.href}${window.location.hash}`);
+
         // Set up the Download button
         this.$form.find('#main-button').click((event) => {
             const fileFormat = dataDetailsView.getMimeType();
