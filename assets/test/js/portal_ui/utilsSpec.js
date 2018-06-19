@@ -1,5 +1,5 @@
 import { getQueryString, toggleShowHideSections, getQueryParamJson, getAnchorQueryValues,
-    initializeInput } from '../../../js/utils';
+    initializeInput, checkForUseOfDataProfileArray, separateCurlDataFromParams, buildCurlString } from '../../../js/utils';
 
 
 describe('Test PORTAl.UTILS package', function () {

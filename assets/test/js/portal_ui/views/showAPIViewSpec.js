@@ -21,7 +21,7 @@ describe('Tests for ShowAPIViewSpec', function() {
     afterEach(function() {
         $testDiv.remove();
     });
-
+// TODO -- FIX this test
     it('Expects that clicking on the show-queries-button fills in the text areas appropriately', function() {
         var testView;
         var mockGetQueryParamArray;
@@ -45,7 +45,7 @@ describe('Tests for ShowAPIViewSpec', function() {
         expect($('#activities-query-div textarea').html()).toContain('Activity?Testparam1=value1&amp;Testparam2=value2');
         expect($('#resultdetection-query-div textarea').html()).toContain('ResultDetectionQuantitationLimit?Testparam1=value1&amp;Testparam2=value2');
     });
-
+// TODO -- FIX this test
     it('Expect that clicking on the show-queries-button when a dataProfile parameter is passed in is only reflected in the results-query-div', function() {
         var testView;
         var mockGetQueryParamArray;
