@@ -161,13 +161,25 @@ export default class DownloadFormView {
             toggleShowHideSections($(this), $(this).parents('.subpanel').find('.subpanel-body'));
         });
 
+        // Initialize the share window and button event handler
+        const $shareContainer = this.$form.find('.share-container');
+        const $shareText = $shareContainer.find('textarea');
+        $shareText.val(window.location.href);
+        $shareContainer.find('button').click(() => {
+            $shareText.get(0).select();
+            document.execCommand('copy');
+        });
+
         // Set up change event handler for form inputs to update the hash part of the url
         let $inputs = this.$form.find(':input[name]');
         $inputs.change(() => {
             const queryParamArray = this.getQueryParamArray();
             const queryString = getQueryString(queryParamArray, ['zip']);
             window.location.hash = `#${queryString}`;
+
+            $shareText.val(window.location.href);
         });
+
 
         // Add click handler for reset button
         this.$form.find('.reset-button').click(() => {
