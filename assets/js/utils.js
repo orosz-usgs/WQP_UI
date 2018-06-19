@@ -171,7 +171,7 @@ export const initializeInput = function($el) {
 
 /*
  *  Creates a constant with properties indicating if a data profile is used
- *  @ return {object} a data profile object with boolean properties indicating whether data profile is used
+ *  @return {object} a data profile object with boolean properties indicating whether data profile is used
  */
 export const checkForUseOfDataProfileArray = function () {
     let dataProfileUsed = {
@@ -188,7 +188,7 @@ export const checkForUseOfDataProfileArray = function () {
 };
 
 /*
- * Takes the values from the form and separates them into groups
+ * Takes the values from the form and separates them into two groups, data and query parameters
  * @param queryParamArray {array} Contains the values of user selected form elements.
  * @return {string} The formatted string used to make curl calls.
  */
@@ -214,13 +214,15 @@ export const separateCurlDataFromParams = function (queryParamArray) {
  * @return {string} a formatted line that can be used a curl command.
  */
 export const buildCurlString = function(resultType, allParams) {
-    let contentType = 'application/json';
+    let curlLeadingString = "curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/";
     let urlBase = Config.QUERY_URLS[resultType];
     let params = $.param(allParams.curlParamsArray);
 
     let dataParamsString = '';
+    let mimeTypeValue = '';
 
-    each(allParams.curlDataArray, function (param) {
+    // create a string of formatted parameters
+    each(allParams.curlDataArray, function(param) {
         let partialDataParamsString = `"${param.name}":["${param.value}"]`;
         dataParamsString = dataParamsString + partialDataParamsString;
         dataParamsString = dataParamsString + ',';
@@ -230,5 +232,13 @@ export const buildCurlString = function(resultType, allParams) {
         dataParamsString = dataParamsString.slice(0, -1);
         dataParamsString = `-d '{${dataParamsString}}'`;
     }
-    return `curl -X POST --header 'Content-Type: ${contentType}' --header 'Accept: application/vnd.geo+json' ${dataParamsString} '${urlBase}?${params}'`;
+
+    // grab the value of the mimeType
+    each(allParams.curlParamsArray, function(param) {
+        if (param['name'] === 'mimeType') {
+            mimeTypeValue = param['value'];
+        }
+    });
+
+    return `${curlLeadingString}${mimeTypeValue}' ${dataParamsString} '${urlBase}?${params}'`;
 };

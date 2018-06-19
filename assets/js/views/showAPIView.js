@@ -6,7 +6,8 @@ import { getQueryString, checkForUseOfDataProfileArray, separateCurlDataFromPara
  * @param {Object} options
  *      @prop {Jquery element} $container - The container containing the show button and the query windows.
  *      @prop {Function} getQueryParamArray - Returns the current query parameter array
-    *       @returns {Array of Objects with name and value properties}
+ *      @prop {Function} getResultType - Returns the result type value the user selected in the form
+ *      @returns {Array of Objects with name and value properties}
  */
 export default class ShowAPIView {
     constructor({$container, getQueryParamArray, getResultType}) { // added parameter for WQP-1195
