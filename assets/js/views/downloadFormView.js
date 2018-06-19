@@ -170,6 +170,12 @@ export default class DownloadFormView {
             window.location.hash = `#${queryString}`;
         });
 
+        // Add click handler for reset button
+        this.$form.find('.reset-button').click(() => {
+            $inputs.val('');
+            $inputs.trigger('change');
+        });
+
         // Set up the Download button
         this.$form.find('#main-button').click((event) => {
             const fileFormat = this.dataDetailsView.getMimeType();
