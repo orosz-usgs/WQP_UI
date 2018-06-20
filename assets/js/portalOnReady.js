@@ -14,26 +14,26 @@ $(document).ready(function () {
         log.setLevel('warn', false);
     }
 
-    var $form = $('#params');
+    let $form = $('#params');
 
     // Create sub views
-    var downloadProgressDialog = new DownloadProgressDialog($('#download-status-dialog'));
-    var downloadFormView = new DownloadFormView({
+    let downloadProgressDialog = new DownloadProgressDialog($('#download-status-dialog'));
+    let downloadFormView = new DownloadFormView({
         $form : $form,
         downloadProgressDialog : downloadProgressDialog
     });
-    var siteMapView = new SiteMapView({
+    let siteMapView = new SiteMapView({
         $container : $('#mapping-div'),
         downloadProgressDialog : downloadProgressDialog,
         downloadFormView : downloadFormView
     });
-    var showAPIView = new ShowAPIView({
+    let showAPIView = new ShowAPIView({
         $container : $('#show-queries-div'),
         getQueryParamArray : $.proxy(downloadFormView.getQueryParamArray, downloadFormView),
         getResultType: $.proxy(downloadFormView.getResultType, downloadFormView)
     });
 
-    var arcGisOnlineHelpView = new ArcGisOnlineHelpView({
+    let arcGisOnlineHelpView = new ArcGisOnlineHelpView({
         $button : $('#show-arcgis-online-help'),
         $dialog : $('#arcgis-online-dialog'),
         $siteMapViewContainer : $('#mapping-div'),
@@ -41,8 +41,7 @@ $(document).ready(function () {
     });
 
     //Initialize subviews
-// original line    var initDownloadForm = downloadFormView.initialize();
-    var initDownloadForm = downloadFormView.initialize($.proxy(showAPIView.updateWebCallDisplay, showAPIView), $.proxy(showAPIView.hideDivOnChange, showAPIView)); // new line for WQP-1195
+    let initDownloadForm = downloadFormView.initialize($.proxy(showAPIView.updateWebCallDisplay, showAPIView), $.proxy(showAPIView.hideDivOnChange, showAPIView)); // new line for WQP-1195
     siteMapView.initialize();
     showAPIView.initialize();
     arcGisOnlineHelpView.initialize();
