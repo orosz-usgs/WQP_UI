@@ -160,14 +160,14 @@ describe('Test PORTAl.UTILS package', function () {
         });
     });
 
-    describe('CheckForUseOfDataProfileArray', () => {
+    describe('Test for checkForUseOfDataProfileArray', () => {
         it('will return a boolean value indicating whether or not the Data Profile should be used.', () => {
             expect(checkForUseOfDataProfileArray()['Result']).toEqual(true);
             expect(checkForUseOfDataProfileArray()['Station']).toEqual(false);
         });
     });
 
-    describe('SeparateCurlDataFromParams', () => {
+    describe('Test for separateCurlDataFromParams', () => {
 
         let testAllParams = [
             {name : 'statecode', value : ['US:55', 'US:54'], multiple: false},
@@ -183,7 +183,7 @@ describe('Test PORTAl.UTILS package', function () {
         });
     });
 
-    describe('BuildCurlString', () => {
+    describe('Test for buildCurlString', () => {
 
         let testResultType = 'Station';
         let testAllParams = {};

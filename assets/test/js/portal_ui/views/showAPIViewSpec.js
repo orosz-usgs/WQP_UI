@@ -44,7 +44,7 @@ describe('Tests for ShowAPIViewSpec', function() {
         expect($('#getfeature-query-div textarea').html()).toContain('SEARCHPARAMS=' + encodeURIComponent('Testparam1:value1;Testparam2:value2'));
     });
 
-    fit('expect that clicking on the show-queries-button when a dataProfile parameter show when appropriate.', function() {
+    it('expect that clicking on the show-queries-button when a dataProfile parameter show when appropriate.', function() {
         let testView;
         let mockGetQueryParamArray;
         let mockGetResultType;
