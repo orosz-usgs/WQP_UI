@@ -214,7 +214,7 @@ export const separateCurlDataFromParams = function (queryParamArray) {
  * @return {string} a formatted line that can be used a curl command.
  */
 export const buildCurlString = function(resultType, allParams) {
-    let curlLeadingString = "curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/";
+    let curlLeadingString = 'curl -X POST --header \'Content-Type: application/json\' --header \'Accept: application/';
     let urlBase = Config.QUERY_URLS[resultType];
     let params = $.param(allParams.curlParamsArray);
 

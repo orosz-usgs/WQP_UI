@@ -51,6 +51,6 @@ export default class ShowAPIView {
         });
     }
 
-    updateWebCallDisplay(resultType) {
+    updateWebCallDisplay() {
     }
 }

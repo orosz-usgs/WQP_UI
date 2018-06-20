@@ -101,7 +101,7 @@ export default class DownloadFormView {
             updateResultTypeAction : (resultType) => {
                 this.$form.attr('action', queryService.getFormUrl(resultType));
                 updateWebCallDisplay(resultType);
-            },
+            }
         });
 
         // fetch the providers and initialize the providers select
