@@ -1,7 +1,8 @@
 import each from 'lodash/collection/each';
 import includes from 'lodash/collection/includes';
 import reject from 'lodash/collection/reject';
-
+import omit from "lodash/object/omit";
+import pick from "lodash/object/pick";
 
 const COLLAPSE_IMG = Config.STATIC_ENDPOINT + 'img/collapse.png';
 const EXPAND_IMG = Config.STATIC_ENDPOINT + 'img/expand.png';
@@ -169,60 +170,27 @@ export const initializeInput = function($el) {
     $el.val(initValues.length ? initValues[0] : '');
 };
 
-/*
- *  Creates a constant with properties indicating if a data profile is used
- *  @return {object} a data profile object with boolean properties indicating whether data profile is used
- */
-export const checkForUseOfDataProfileArray = function () {
-    let dataProfileUsed = {
-        'Station': false,
-        'Project': false,
-        'ProjectMonitoringLocationWeighting': false,
-        'Result': true,
-        'Activity': false,
-        'ActivityMetric': false,
-        'ResultDetectionQuantitationLimit': false,
-        'default': false
-    };
-    return dataProfileUsed;
-};
-
-/*
- * Takes the values from the form and separates them into two groups, data and query parameters
- * @param queryParamArray {array} Contains the values of user selected form elements.
- * @return {string} The formatted string used to make curl calls.
- */
-export const separateCurlDataFromParams = function (queryParamArray) {
-    let allParams = {};
-    allParams.curlParamsArray = [];
-    allParams.curlDataArray = [];
-
-    // separate data parameters
-    each(queryParamArray, function (param) {
-        if (param['name'] === 'mimeType' || param['name'] === 'zip' || param['name'] === 'sorted') {
-            allParams.curlParamsArray.push(param);
-        } else {
-            allParams.curlDataArray.push(param);
-        }
-    });
-    return allParams;
-};
 
 /*
  * Assembles a curl string from the user entered form values
  * @param resultType {string} The result returned when the user selects form elements.
  * @return {string} a formatted line that can be used a curl command.
  */
-export const buildCurlString = function(resultType, allParams) {
+export const buildCurlString = function(resultType, queryParamArray) {
     let curlLeadingString = 'curl -X POST --header \'Content-Type: application/json\' --header \'Accept: application/';
     let urlBase = Config.QUERY_URLS[resultType];
-    let params = $.param(allParams.curlParamsArray);
+    let queryParamJson = getQueryParamJson(queryParamArray);
+    let dataParameters = omit(queryParamJson, ['mimeType', 'zip', 'sorted']);
+console.log('this is dataParameters ' + JSON.stringify(dataParameters))
+    let queryParameters = pick(queryParamJson, ['mimeType', 'zip', 'sorted']);
+console.log('this is queryParameters ' + JSON.stringify(queryParameters))
+
+    let params = $.param(queryParameters);
 
     let dataParamsString = '';
-    let mimeTypeValue = '';
 
     // create a string of formatted parameters
-    each(allParams.curlDataArray, function(param) {
+    each(dataParameters, function(param) {
         let partialDataParamsString = `"${param.name}":["${param.value}"]`;
         dataParamsString = dataParamsString + partialDataParamsString;
         dataParamsString = dataParamsString + ',';
@@ -233,12 +201,7 @@ export const buildCurlString = function(resultType, allParams) {
         dataParamsString = `-d '{${dataParamsString}}'`;
     }
 
-    // grab the value of the mimeType
-    each(allParams.curlParamsArray, function(param) {
-        if (param['name'] === 'mimeType') {
-            mimeTypeValue = param['value'];
-        }
-    });
+    let mimeTypeValue = (pick(queryParameters, ['mimeType'])['mimeType']);
 
     return `${curlLeadingString}${mimeTypeValue}' ${dataParamsString} '${urlBase}?${params}'`;
 };

@@ -1,5 +1,5 @@
 import queryService from '../queryService';
-import { getQueryString, checkForUseOfDataProfileArray, separateCurlDataFromParams, buildCurlString } from '../utils';
+import { getQueryString, buildCurlString } from '../utils';
 
 /*
  * Initializes the windows which show the various API calls
@@ -26,22 +26,23 @@ export default class ShowAPIView {
         this.$container.find('#show-queries-button').click(() => {
             let resultType = this.getResultType();
             let queryParamArray = this.getQueryParamArray();
+console.log('queryParamArray ' + JSON.stringify(queryParamArray));
             let queryWithoutDataProfileArray = queryParamArray.filter((param) => {
                return param.name !== 'dataProfile';
             });
+console.log('queryWithoutDataProfileArray ' + JSON.stringify(queryWithoutDataProfileArray))
 
             let queryString = getQueryString(queryParamArray);
             let queryStringWithoutDataProfile = getQueryString(queryWithoutDataProfileArray);
             let apiQueryString =  '';
-            let isDataProfileUsed = checkForUseOfDataProfileArray()[resultType];
-            if (isDataProfileUsed) {
+
+            if (dataProfileUsed[resultType]) {
                 apiQueryString = queryService.getFormUrl(resultType, queryString);
             } else {
                 apiQueryString = queryService.getFormUrl(resultType, queryStringWithoutDataProfile);
             }
 
-            let allParams = separateCurlDataFromParams(queryParamArray);
-            let curlString = buildCurlString(resultType, allParams);
+            let curlString = buildCurlString(resultType, queryParamArray);
 
             $apiQueryDiv.show();
             $apiQueryTitle.html(resultType.replace(/([A-Z])/g, ' $1'));
@@ -54,3 +55,14 @@ export default class ShowAPIView {
     updateWebCallDisplay() {
     }
 }
+
+export const dataProfileUsed = {
+    'Station': false,
+    'Project': false,
+    'ProjectMonitoringLocationWeighting': false,
+    'Result': true,
+    'Activity': false,
+    'ActivityMetric': false,
+    'ResultDetectionQuantitationLimit': false,
+    'default': false
+};

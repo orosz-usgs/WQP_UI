@@ -41,7 +41,7 @@ $(document).ready(function () {
     });
 
     //Initialize subviews
-    let initDownloadForm = downloadFormView.initialize($.proxy(showAPIView.updateWebCallDisplay, showAPIView), $.proxy(showAPIView.hideDivOnChange, showAPIView)); // new line for WQP-1195
+    let initDownloadForm = downloadFormView.initialize($.proxy(showAPIView.updateWebCallDisplay, showAPIView));
     siteMapView.initialize();
     showAPIView.initialize();
     arcGisOnlineHelpView.initialize();

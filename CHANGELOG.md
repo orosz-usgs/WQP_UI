@@ -11,6 +11,6 @@ the browser clipboard.
 - Curl command that shows when the 'Show Web Calls' button is clicked
 
 ### Changed
-- Function of 'Show Web Calls' button so that only one call, based on which radio button is selected, is shown
+- Function of 'Show Web Calls' button so that only one call, based on which result type radio button is selected, is shown
 
 [Unreleased]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.7.0...master

@@ -160,13 +160,6 @@ describe('Test PORTAl.UTILS package', function () {
         });
     });
 
-    describe('Test for checkForUseOfDataProfileArray', () => {
-        it('will return a boolean value indicating whether or not the Data Profile should be used.', () => {
-            expect(checkForUseOfDataProfileArray()['Result']).toEqual(true);
-            expect(checkForUseOfDataProfileArray()['Station']).toEqual(false);
-        });
-    });
-
     describe('Test for separateCurlDataFromParams', () => {
 
         let testAllParams = [
