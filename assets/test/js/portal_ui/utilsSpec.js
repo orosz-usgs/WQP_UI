@@ -179,7 +179,7 @@ describe('Test PORTAl.UTILS package', function () {
            let result =  separateCurlDataFromParams(testAllParams);
 
            expect(result.curlParamsArray).toContain({'name':'mimeType','value':'csv','multiple':false});
-           expect(result.curlDataArray).toContain({'name':'statecode','value':['US:55','US:54'],'multiple':false},{'name':'huc','value':'0701*;0702*','multiple':true},{'name':'siteType','value':'Well','multiple':true})
+           expect(result.curlDataArray).toContain({'name':'statecode','value':['US:55','US:54'],'multiple':false},{'name':'huc','value':'0701*;0702*','multiple':true},{'name':'siteType','value':'Well','multiple':true});
         });
     });
 
