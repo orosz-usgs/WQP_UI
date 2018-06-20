@@ -10,22 +10,21 @@ import { getQueryString, checkForUseOfDataProfileArray, separateCurlDataFromPara
  *      @returns {Array of Objects with name and value properties}
  */
 export default class ShowAPIView {
-    constructor({$container, getQueryParamArray, getResultType}) { // added parameter for WQP-1195
+    constructor({$container, getQueryParamArray, getResultType}) {
         this.$container = $container;
         this.getQueryParamArray = getQueryParamArray;
-        this.getResultType = getResultType; // added for WQP-1195
+        this.getResultType = getResultType;
     }
 
     initialize() {
         let $apiQueryDiv = this.$container.find('#api-queries-div');
         let $apiQueryTitle = this.$container.find('#query-div b');
-        let $apiQueryText = this.$container.find('#query-div textarea'); // added for WQP-1195
-        let $cUrlText = this.$container.find('#curl-query-div textarea'); // added for WQP-1195
-        let $wfsText = this.$container.find('#getfeature-query-div textarea'); // added for WQP-1195
+        let $apiQueryText = this.$container.find('#query-div textarea');
+        let $cUrlText = this.$container.find('#curl-query-div textarea');
+        let $wfsText = this.$container.find('#getfeature-query-div textarea');
 
         this.$container.find('#show-queries-button').click(() => {
-            let resultType = this.getResultType(); // added for WQP-1195
-console.log('in showAPIView. This is resultType ' + resultType)
+            let resultType = this.getResultType();
             let queryParamArray = this.getQueryParamArray();
             let queryWithoutDataProfileArray = queryParamArray.filter((param) => {
                return param.name !== 'dataProfile';
@@ -33,30 +32,27 @@ console.log('in showAPIView. This is resultType ' + resultType)
 
             let queryString = getQueryString(queryParamArray);
             let queryStringWithoutDataProfile = getQueryString(queryWithoutDataProfileArray);
-            let apiQueryString =  ''; // added for WQP-1195
-console.log('in showAPIView. This is resultType now ' + result Type)
-            let isDataProfileUsed = checkForUseOfDataProfileArray()[resultType]; // added for WQP-1195
-console.log('this is isDataProfile used ' + isDataProfileUsed)
+            let apiQueryString =  '';
+            let isDataProfileUsed = checkForUseOfDataProfileArray()[resultType];
             if (isDataProfileUsed) {
                 apiQueryString = queryService.getFormUrl(resultType, queryString);
             } else {
                 apiQueryString = queryService.getFormUrl(resultType, queryStringWithoutDataProfile);
             }
-console.log('this is querystring' + apiQueryString)
+
             let allParams = separateCurlDataFromParams(queryParamArray);
-            let curlString = buildCurlString(resultType, allParams); // added for WQP-1195
+            let curlString = buildCurlString(resultType, allParams);
 
             $apiQueryDiv.show();
-            $apiQueryTitle.html(resultType.replace(/([A-Z])/g, ' $1')); // added for WQP-1195
-            $apiQueryText.html(apiQueryString); // modified for WQP-1195
+            $apiQueryTitle.html(resultType.replace(/([A-Z])/g, ' $1'));
+            $apiQueryText.html(apiQueryString);
             $cUrlText.html(curlString);
-
             $wfsText.html(L.WQPSitesLayer.getWfsGetFeatureUrl(queryWithoutDataProfileArray));
         });
     }
 
-// start -  added for WQP-1195
+
     updateWebCallDisplay(resultType) {
     }
-// end - added for WQP-1195
+
 }

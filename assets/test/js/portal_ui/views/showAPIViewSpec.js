@@ -18,8 +18,8 @@ describe('Tests for ShowAPIViewSpec', function() {
     afterEach(function() {
         $testDiv.remove();
     });
-// TODO -- FIX this test
-    it('Expects that clicking on the show-queries-button fills in the text areas appropriately', function() {
+
+    it('expect that clicking on the show-queries-button fills in the text areas appropriately.', function() {
         let testView;
         let mockGetQueryParamArray;
         let mockGetResultType;
@@ -29,24 +29,25 @@ describe('Tests for ShowAPIViewSpec', function() {
             {name : 'Testparam2', value : 'value2'}
         ]);
 
-        mockGetResultType = jasmine.createSpy('mockGetResultType').and.returnValue('Project');
+        mockGetResultType = jasmine.createSpy('mockGetResultType').and.returnValue('Station');
 
         testView = new ShowAPIView({
             $container : $testDiv,
             getQueryParamArray : mockGetQueryParamArray,
             getResultType: mockGetResultType
         });
-        spyOn(ShowAPIView, )
+
         testView.initialize();
         $('#show-queries-button').trigger('click');
-  //      expect($('#query-div textarea').html()).toContain('Project?Testparam1=value1&amp;Testparam2=value2');
-        expect($('#curl-query-div textarea').html()).toContain('');
+        expect($('#query-div textarea').html()).toContain('Station?Testparam1=value1&amp;Testparam2=value2');
+        expect($('#curl-query-div textarea').html()).toContain('curl -X POST --header \'Content-Type: application/json\' --header \'Accept: application/\' -d \'{"Testparam1":["value1"],"Testparam2":["value2"]}\' \'http://fakestationservice/Station?');
         expect($('#getfeature-query-div textarea').html()).toContain('SEARCHPARAMS=' + encodeURIComponent('Testparam1:value1;Testparam2:value2'));
     });
-// TODO -- FIX this test
-    it('Expect that clicking on the show-queries-button when a dataProfile parameter is passed in is only reflected in the results-query-div', function() {
+
+    fit('expect that clicking on the show-queries-button when a dataProfile parameter show when appropriate.', function() {
         let testView;
         let mockGetQueryParamArray;
+        let mockGetResultType;
 
         mockGetQueryParamArray = jasmine.createSpy('mockGetQueryParamArray').and.returnValue([
             {name: 'dataProfile', value: 'narrow'},
@@ -54,15 +55,17 @@ describe('Tests for ShowAPIViewSpec', function() {
             {name : 'Testparam2', value : 'value2'}
         ]);
 
+        mockGetResultType = jasmine.createSpy('mockGetResultType').and.returnValue('Result');
+
         testView = new ShowAPIView({
             $container : $testDiv,
-            getQueryParamArray : mockGetQueryParamArray
+            getQueryParamArray : mockGetQueryParamArray,
+            getResultType: mockGetResultType
         });
         testView.initialize();
         $('#show-queries-button').trigger('click');
 
-        expect($('#query-div textarea').html()).toContain('Station?Testparam1=value1&amp;Testparam2=value2');
-        expect($('#curl-query-div textarea').html()).toContain('Result?dataProfile=narrow&amp;Testparam1=value1&amp;Testparam2=value2');
+        expect($('#query-div textarea').html()).toContain('Result?dataProfile=narrow&amp;Testparam1=value1&amp;Testparam2=value2');
         expect($('#getfeature-query-div textarea').html()).toContain('SEARCHPARAMS=' + encodeURIComponent('Testparam1:value1;Testparam2:value2'));
     });
 });

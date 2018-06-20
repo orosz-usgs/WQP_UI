@@ -100,7 +100,7 @@ export default class DownloadFormView {
             $container : this.$form.find('#download-box-input-div'),
             updateResultTypeAction : (resultType) => {
                 this.$form.attr('action', queryService.getFormUrl(resultType));
-                updateWebCallDisplay(resultType); // added for WQP-1195
+                updateWebCallDisplay(resultType);
             },
         });
 

@@ -160,14 +160,14 @@ describe('Test PORTAl.UTILS package', function () {
         });
     });
 
-    describe('checkForUseOfDataProfileArray', () => {
-        it('will return a boolean value indicating whether or not the Data Profile should be used', () => {
+    describe('CheckForUseOfDataProfileArray', () => {
+        it('will return a boolean value indicating whether or not the Data Profile should be used.', () => {
             expect(checkForUseOfDataProfileArray()['Result']).toEqual(true);
             expect(checkForUseOfDataProfileArray()['Station']).toEqual(false);
         });
     });
 
-    describe('separateCurlDataFromParams', () => {
+    describe('SeparateCurlDataFromParams', () => {
 
         let testAllParams = [
             {name : 'statecode', value : ['US:55', 'US:54'], multiple: false},
@@ -175,7 +175,7 @@ describe('Test PORTAl.UTILS package', function () {
             {name : 'siteType', value : 'Well', multiple: true},
             {name : 'mimeType', value : 'csv', multiple: false}
         ];
-        fit('will return an object with two properties, an array of curl data pairs, and an array of query parameters ', () => {
+        it('will return an object with two properties, an array of curl data pairs, and an array of query parameters.', () => {
            let result =  separateCurlDataFromParams(testAllParams);
 
            expect(result.curlParamsArray).toContain({"name":"mimeType","value":"csv","multiple":false});
@@ -183,26 +183,26 @@ describe('Test PORTAl.UTILS package', function () {
         });
     });
 
-    describe('buildCurlString', () => {
+    describe('BuildCurlString', () => {
 
         let testResultType = 'Station';
         let testAllParams = {};
-        testAllParams.testCurlParamsArray = [
+        testAllParams.curlParamsArray = [
             {name: 'mimeType', value: 'mimeTypeTestValue'},
             {name: 'zipType', value: 'zipTypeTestValue'},
             {name: 'sorted', value: 'sortedTestValue'}
         ];
-        testAllParams.testCurlDataArray = [
+        testAllParams.curlDataArray = [
             {name : 'statecode', value : ['US:55', 'US:54'], multiple: false},
             {name : 'huc', value: '0701*;0702*', multiple: true},
             {name : 'siteType', value : 'Well', multiple: true}
         ];
 
-        it('will return a complete curl command as a string', () => {
+        it('will return a complete curl command as a string.', () => {
             let result = buildCurlString(testResultType, testAllParams);
- console.log('this is the result ' + result);
-        expect(result).toContain('P1=Value1');
 
+            expect(result).toContain('"statecode":["US:55,US:54"]');
+            expect(result).toContain('mimeType=mimeTypeTestValue&zipType=zipTypeTestValue&sorted=sortedTestValue');
         });
     });
 });

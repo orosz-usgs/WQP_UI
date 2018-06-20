@@ -54,7 +54,7 @@ export default class DataDetailsView {
             // Can only download sites if kml is checked
             setEnabled(this.$container.find('.result-type:not(#sites)'), !kmlChecked);
 
-            this.updateResultTypeAction(this.getResultType()); // added for WQP-1195
+            this.updateResultTypeAction(this.getResultType());
         });
 
         $resultTypeRadioboxes.change((event) => {
