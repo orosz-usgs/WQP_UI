@@ -14,7 +14,7 @@
                         {% endif %}
                         "
         />
-            <button type="button" class="reset-button">Reset form</button>
+            <button type="button" class="btn reset-button">Reset form</button>
             <div class="panel panel-default" id="location-parameters">
                 <div class="panel-heading">
                     LOCATION
@@ -466,6 +466,10 @@
                         <input type="hidden" name="sorted" id="hidden-sorted" value="no"/>
                         <div id="form-action">
                             <button id="main-button" class="btn" type="submit">DOWNLOAD</button>
+                            <div class="share-container">
+                                <button type="button" class="btn">Copy to clipboard</button>
+                                <textarea readonly rows="3"></textarea>
+                            </div>
                         </div>
                     </div>
                 </div>
