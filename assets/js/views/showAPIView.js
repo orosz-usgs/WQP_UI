@@ -26,22 +26,18 @@ export default class ShowAPIView {
         this.$container.find('#show-queries-button').click(() => {
             let resultType = this.getResultType();
             let queryParamArray = this.getQueryParamArray();
-console.log('queryParamArray ' + JSON.stringify(queryParamArray));
             let queryWithoutDataProfileArray = queryParamArray.filter((param) => {
                return param.name !== 'dataProfile';
             });
-console.log('queryWithoutDataProfileArray ' + JSON.stringify(queryWithoutDataProfileArray))
 
-            let queryString = getQueryString(queryParamArray);
-            let queryStringWithoutDataProfile = getQueryString(queryWithoutDataProfileArray);
-            let apiQueryString =  '';
-
+            let queryString = '';
             if (dataProfileUsed[resultType]) {
-                apiQueryString = queryService.getFormUrl(resultType, queryString);
+                queryString = getQueryString(queryParamArray);
             } else {
-                apiQueryString = queryService.getFormUrl(resultType, queryStringWithoutDataProfile);
+                queryString = getQueryString(queryWithoutDataProfileArray);
             }
 
+            let apiQueryString = queryService.getFormUrl(resultType, queryString);
             let curlString = buildCurlString(resultType, queryParamArray);
 
             $apiQueryDiv.show();
