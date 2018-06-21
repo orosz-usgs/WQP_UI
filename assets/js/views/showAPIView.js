@@ -1,5 +1,6 @@
 import queryService from '../queryService';
-import { getQueryString, buildCurlString } from '../utils';
+import { getQueryString, buildCurlString, dataProfileUsed } from '../utils';
+
 
 /*
  * Initializes the windows which show the various API calls
@@ -48,14 +49,3 @@ export default class ShowAPIView {
         });
     }
 }
-
-export const dataProfileUsed = {
-    'Station': false,
-    'Project': false,
-    'ProjectMonitoringLocationWeighting': false,
-    'Result': true,
-    'Activity': false,
-    'ActivityMetric': false,
-    'ResultDetectionQuantitationLimit': false,
-    'default': false
-};

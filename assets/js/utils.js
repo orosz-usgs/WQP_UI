@@ -194,3 +194,15 @@ export const buildCurlString = function(resultType, queryParamArray) {
 
     return `${curlLeadingString}${mimeTypeValue}'${curlDataParamsString} '${urlBase}?${params}'`;
 };
+
+export const dataProfileUsed = {
+    'Station': false,
+    'Project': false,
+    'ProjectMonitoringLocationWeighting': false,
+    'Result': true,
+    'Activity': false,
+    'ActivityMetric': false,
+    'ResultDetectionQuantitationLimit': false,
+    'default': false
+};
+

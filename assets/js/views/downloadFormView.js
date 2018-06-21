@@ -70,7 +70,7 @@ export default class DownloadFormView {
      *      @resolve - if all initialization including successful fetches are complete
      *      @reject - if any fetches failed.
      */
-     initialize(updateResultTypeAction) {
+     initialize() {
         const placeInputView = this.getPlaceInputView();
         const pointLocationInputView = new PointLocationInputView({
             $container : this.$form.find('#point-location')
