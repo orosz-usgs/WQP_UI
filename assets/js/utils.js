@@ -170,6 +170,17 @@ export const initializeInput = function($el) {
     $el.val(initValues.length ? initValues[0] : '');
 };
 
+export const contentType = {
+    'csv': 'text/csv',
+    'tsv': 'text/plain',
+    'xml': 'application/xml',
+    'json': 'application/json',
+    'xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'kml': 'application/vnd.google-earth.kml+xml',
+    'kmz': 'application/vnd.google-earth.kmz',
+    'geojson': 'application/vnd.geo+json',
+    'text': 'text/html'
+};
 
 /*
  * Assembles a curl string from the user entered form values
@@ -177,16 +188,22 @@ export const initializeInput = function($el) {
  * @param queryParamArray An array of values gathered from user input on web form.
  * @return {string} a formatted line that can be used a curl command.
  */
-export const buildCurlString = function(resultType, queryParamArray) {
-    let curlLeadingString = 'curl -X POST --header \'Content-Type: application/json\' --header \'Accept: application/';
+export const getCurlString = function(resultType, queryParamArray) {
+    let curlLeadingString = 'curl -X POST --header \'Content-Type: text/html\' --header \'Accept: ';
     let urlBase = Config.QUERY_URLS[resultType];
     let queryParamJson = getQueryParamJson(queryParamArray);
     let dataParameters = omit(queryParamJson, ['mimeType', 'zip', 'sorted']);
     let queryParameters = pick(queryParamJson, ['mimeType', 'zip', 'sorted']);
     let params = $.param(queryParameters);
-    let mimeTypeValue = pick(queryParameters, ['mimeType'])['mimeType'];
-    let curlDataParamsString = '';
 
+    let mimeTypeValue = '';
+    if (pick(queryParameters, ['zip'])['zip'] === 'yes') {
+       mimeTypeValue = 'application/zip';
+    } else {
+       mimeTypeValue = contentType[pick(queryParameters, ['mimeType'])['mimeType']];
+    }
+
+    let curlDataParamsString = '';
     // don't let empty objects show up in the curl command display
     if (Object.keys(dataParameters).length > 0) {
         curlDataParamsString = ` -d '${JSON.stringify(dataParameters)}'`;
@@ -205,4 +222,5 @@ export const dataProfileUsed = {
     'ResultDetectionQuantitationLimit': false,
     'default': false
 };
+
 

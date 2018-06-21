@@ -1,5 +1,5 @@
 import queryService from '../queryService';
-import { getQueryString, buildCurlString, dataProfileUsed } from '../utils';
+import { getQueryString, getCurlString, dataProfileUsed } from '../utils';
 
 
 /*
@@ -39,7 +39,7 @@ export default class ShowAPIView {
             }
 
             let apiQueryString = queryService.getFormUrl(resultType, queryString);
-            let curlString = buildCurlString(resultType, queryParamArray);
+            let curlString = getCurlString(resultType, queryParamArray);
 
             $apiQueryDiv.show();
             $apiQueryTitle.html(resultType.replace(/([A-Z])/g, ' $1'));
