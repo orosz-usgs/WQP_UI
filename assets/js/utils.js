@@ -173,7 +173,8 @@ export const initializeInput = function($el) {
 
 /*
  * Assembles a curl string from the user entered form values
- * @param resultType {string} The result returned when the user selects form elements.
+ * @param resultType {string} The value gathered from user input on the web form.
+ * @param queryParamArray An array of values gathered from user input on web form.
  * @return {string} a formatted line that can be used a curl command.
  */
 export const buildCurlString = function(resultType, queryParamArray) {
@@ -181,27 +182,15 @@ export const buildCurlString = function(resultType, queryParamArray) {
     let urlBase = Config.QUERY_URLS[resultType];
     let queryParamJson = getQueryParamJson(queryParamArray);
     let dataParameters = omit(queryParamJson, ['mimeType', 'zip', 'sorted']);
-console.log('this is dataParameters ' + JSON.stringify(dataParameters))
     let queryParameters = pick(queryParamJson, ['mimeType', 'zip', 'sorted']);
-console.log('this is queryParameters ' + JSON.stringify(queryParameters))
-
     let params = $.param(queryParameters);
+    let mimeTypeValue = (pick(queryParameters, ['mimeType'])['mimeType']);
+    let curlDataParamsString = '';
 
-    let dataParamsString = '';
-
-    // create a string of formatted parameters
-    each(dataParameters, function(param) {
-        let partialDataParamsString = `"${param.name}":["${param.value}"]`;
-        dataParamsString = dataParamsString + partialDataParamsString;
-        dataParamsString = dataParamsString + ',';
-    });
-    // remove the trailing comma and add final formatting
-    if (dataParamsString != '') {
-        dataParamsString = dataParamsString.slice(0, -1);
-        dataParamsString = `-d '{${dataParamsString}}'`;
+    // don't let empty objects show up in the curl command display
+    if (Object.keys(dataParameters).length > 0) {
+        curlDataParamsString = ` -d '${JSON.stringify(dataParameters)}'`;
     }
 
-    let mimeTypeValue = (pick(queryParameters, ['mimeType'])['mimeType']);
-
-    return `${curlLeadingString}${mimeTypeValue}' ${dataParamsString} '${urlBase}?${params}'`;
+    return `${curlLeadingString}${mimeTypeValue}'${curlDataParamsString} '${urlBase}?${params}'`;
 };

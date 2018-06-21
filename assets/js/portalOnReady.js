@@ -41,7 +41,7 @@ $(document).ready(function () {
     });
 
     //Initialize subviews
-    let initDownloadForm = downloadFormView.initialize($.proxy(showAPIView.updateWebCallDisplay, showAPIView));
+    let initDownloadForm = downloadFormView.initialize();
     siteMapView.initialize();
     showAPIView.initialize();
     arcGisOnlineHelpView.initialize();

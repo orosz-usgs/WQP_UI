@@ -65,11 +65,12 @@ export default class DownloadFormView {
 
     /*
      * Initializes the form and sets up the DOM event handlers
+     * @param updateResultTypeAction - method that gets the resultType value the user entered in the web form.
      * @return jquery promise
      *      @resolve - if all initialization including successful fetches are complete
      *      @reject - if any fetches failed.
      */
-     initialize(updateWebCallDisplay) {
+     initialize(updateResultTypeAction) {
         const placeInputView = this.getPlaceInputView();
         const pointLocationInputView = new PointLocationInputView({
             $container : this.$form.find('#point-location')
@@ -100,7 +101,6 @@ export default class DownloadFormView {
             $container : this.$form.find('#download-box-input-div'),
             updateResultTypeAction : (resultType) => {
                 this.$form.attr('action', queryService.getFormUrl(resultType));
-                updateWebCallDisplay(resultType);
             }
         });
 

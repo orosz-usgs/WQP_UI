@@ -51,9 +51,6 @@ console.log('queryWithoutDataProfileArray ' + JSON.stringify(queryWithoutDataPro
             $wfsText.html(L.WQPSitesLayer.getWfsGetFeatureUrl(queryWithoutDataProfileArray));
         });
     }
-
-    updateWebCallDisplay() {
-    }
 }
 
 export const dataProfileUsed = {
