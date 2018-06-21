@@ -26,7 +26,9 @@ describe('Tests for ShowAPIViewSpec', function() {
 
         mockGetQueryParamArray = jasmine.createSpy('mockGetQueryParamArray').and.returnValue([
             {name : 'Testparam1', value : 'value1'},
-            {name : 'Testparam2', value : 'value2'}
+            {name : 'Testparam2', value : 'value2'},
+            {name : 'zip', value : 'fakeZipValue'},
+            {name : 'mimeType', value : 'fakeMimeType'}
         ]);
 
         mockGetResultType = jasmine.createSpy('mockGetResultType').and.returnValue('Station');
@@ -40,11 +42,11 @@ describe('Tests for ShowAPIViewSpec', function() {
         testView.initialize();
         $('#show-queries-button').trigger('click');
         expect($('#query-div textarea').html()).toContain('Station?Testparam1=value1&amp;Testparam2=value2');
-        expect($('#curl-query-div textarea').html()).toContain('curl -X POST --header \'Content-Type: application/json\' --header \'Accept: application/\' -d \'{"Testparam1":["value1"],"Testparam2":["value2"]}\' \'http://fakestationservice/Station?');
+        expect($('#curl-query-div textarea').html()).toContain('{"Testparam1":"value1","Testparam2":"value2"}');
         expect($('#getfeature-query-div textarea').html()).toContain('SEARCHPARAMS=' + encodeURIComponent('Testparam1:value1;Testparam2:value2'));
     });
 
-    it('expect that clicking on the show-queries-button when a dataProfile parameter show when appropriate.', function() {
+    it('expect that clicking on the show-queries-button will show dataProfile parameter when appropriate.', function() {
         let testView;
         let mockGetQueryParamArray;
         let mockGetResultType;
@@ -52,7 +54,9 @@ describe('Tests for ShowAPIViewSpec', function() {
         mockGetQueryParamArray = jasmine.createSpy('mockGetQueryParamArray').and.returnValue([
             {name: 'dataProfile', value: 'narrow'},
             {name : 'Testparam1', value : 'value1'},
-            {name : 'Testparam2', value : 'value2'}
+            {name : 'Testparam2', value : 'value2'},
+            {name : 'zip', value : 'fakeZipValue'},
+            {name : 'mimeType', value : 'fakeMimeType'}
         ]);
 
         mockGetResultType = jasmine.createSpy('mockGetResultType').and.returnValue('Result');
@@ -66,6 +70,8 @@ describe('Tests for ShowAPIViewSpec', function() {
         $('#show-queries-button').trigger('click');
 
         expect($('#query-div textarea').html()).toContain('Result?dataProfile=narrow&amp;Testparam1=value1&amp;Testparam2=value2');
+        expect($('#curl-query-div textarea').html()).toContain('Result?mimeType=fakeMimeType&amp;zip=fakeZipValue');
+        expect($('#curl-query-div textarea').html()).toContain('{"dataProfile":"narrow","Testparam1":"value1","Testparam2":"value2"}');
         expect($('#getfeature-query-div textarea').html()).toContain('SEARCHPARAMS=' + encodeURIComponent('Testparam1:value1;Testparam2:value2'));
     });
 });

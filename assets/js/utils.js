@@ -1,8 +1,8 @@
 import each from 'lodash/collection/each';
 import includes from 'lodash/collection/includes';
 import reject from 'lodash/collection/reject';
-import omit from "lodash/object/omit";
-import pick from "lodash/object/pick";
+import omit from 'lodash/object/omit';
+import pick from 'lodash/object/pick';
 
 const COLLAPSE_IMG = Config.STATIC_ENDPOINT + 'img/collapse.png';
 const EXPAND_IMG = Config.STATIC_ENDPOINT + 'img/expand.png';
@@ -184,7 +184,7 @@ export const buildCurlString = function(resultType, queryParamArray) {
     let dataParameters = omit(queryParamJson, ['mimeType', 'zip', 'sorted']);
     let queryParameters = pick(queryParamJson, ['mimeType', 'zip', 'sorted']);
     let params = $.param(queryParameters);
-    let mimeTypeValue = (pick(queryParameters, ['mimeType'])['mimeType']);
+    let mimeTypeValue = pick(queryParameters, ['mimeType'])['mimeType'];
     let curlDataParamsString = '';
 
     // don't let empty objects show up in the curl command display
