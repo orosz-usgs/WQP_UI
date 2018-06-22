@@ -1,5 +1,5 @@
 import queryService from '../queryService';
-import { getQueryString } from '../utils';
+import { getQueryString, getCurlString } from '../utils';
 
 
 /*
@@ -7,37 +7,38 @@ import { getQueryString } from '../utils';
  * @param {Object} options
  *      @prop {Jquery element} $container - The container containing the show button and the query windows.
  *      @prop {Function} getQueryParamArray - Returns the current query parameter array
-    *       @returns {Array of Objects with name and value properties}
+ *      @prop {Function} getResultType - Returns the result type value the user selected in the form
+ *      @returns {Array of Objects with name and value properties}
  */
 export default class ShowAPIView {
-    constructor({$container, getQueryParamArray}) {
+    constructor({$container, getQueryParamArray, getResultType}) {
         this.$container = $container;
         this.getQueryParamArray = getQueryParamArray;
+        this.getResultType = getResultType;
     }
 
     initialize() {
-        var $apiQueryDiv = this.$container.find('#api-queries-div');
-        var $sitesText = this.$container.find('#sites-query-div textarea');
-        var $resultsText = this.$container.find('#results-query-div textarea');
-        var $activitiesText = this.$container.find('#activities-query-div textarea');
-        var $activitymetricsText = this.$container.find('#activitymetrics-query-div textarea');
-        var $resultdetectionText = this.$container.find('#resultdetection-query-div textarea');
-        var $wfsText = this.$container.find('#getfeature-query-div textarea');
+        let $apiQueryDiv = this.$container.find('#api-queries-div');
+        let $apiQueryTitle = this.$container.find('#query-div b');
+        let $apiQueryText = this.$container.find('#query-div textarea');
+        let $curlText = this.$container.find('#curl-query-div textarea');
+        let $wfsText = this.$container.find('#getfeature-query-div textarea');
 
         this.$container.find('#show-queries-button').click(() => {
-            var queryParamArray = this.getQueryParamArray();
-            var queryWithoutDataProfileArray = queryParamArray.filter((param) => {
-                return param.name !== 'dataProfile';
-            });
-            var queryString = getQueryString(queryParamArray);
-            var queryStringWithoutDataProfile = getQueryString(queryWithoutDataProfileArray);
+            let resultType = this.getResultType();
+            let queryParamArray = this.getQueryParamArray();
+
+            let apiQueryString = queryService.getFormUrl(resultType, getQueryString(queryParamArray));
+            let curlString = getCurlString(resultType, queryParamArray);
 
             $apiQueryDiv.show();
-            $sitesText.html(queryService.getFormUrl('Station', queryStringWithoutDataProfile));
-            $resultsText.html(queryService.getFormUrl('Result', queryString));
-            $activitiesText.html(queryService.getFormUrl('Activity', queryStringWithoutDataProfile));
-            $activitymetricsText.html(queryService.getFormUrl('ActivityMetric', queryStringWithoutDataProfile));
-            $resultdetectionText.html(queryService.getFormUrl('ResultDetectionQuantitationLimit', queryStringWithoutDataProfile));
+            $apiQueryTitle.html(resultType.replace(/([A-Z])/g, ' $1'));
+            $apiQueryText.html(apiQueryString);
+            $curlText.html(curlString);
+
+            let queryWithoutDataProfileArray = queryParamArray.filter((param) => {
+               return param.name !== 'dataProfile';
+            });
             $wfsText.html(L.WQPSitesLayer.getWfsGetFeatureUrl(queryWithoutDataProfileArray));
         });
     }

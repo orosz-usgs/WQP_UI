@@ -53,6 +53,8 @@ export default class DataDetailsView {
 
             // Can only download sites if kml is checked
             setEnabled(this.$container.find('.result-type:not(#sites)'), !kmlChecked);
+
+            this.updateResultTypeAction(this.getResultType());
         });
 
         $resultTypeRadioboxes.change((event) => {
@@ -73,6 +75,7 @@ export default class DataDetailsView {
             } else if ($narrowResults.prop('checked')){
                 this.$container.append('<input type="hidden" name="dataProfile" value="narrowResult" />');
             }
+
             this.updateResultTypeAction(resultType);
         });
 

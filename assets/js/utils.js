@@ -1,7 +1,8 @@
 import each from 'lodash/collection/each';
 import includes from 'lodash/collection/includes';
 import reject from 'lodash/collection/reject';
-
+import omit from 'lodash/object/omit';
+import pick from 'lodash/object/pick';
 
 const COLLAPSE_IMG = Config.STATIC_ENDPOINT + 'img/collapse.png';
 const EXPAND_IMG = Config.STATIC_ENDPOINT + 'img/expand.png';
@@ -168,3 +169,38 @@ export const initializeInput = function($el) {
     const initValues = getAnchorQueryValues($el.attr('name'));
     $el.val(initValues.length ? initValues[0] : '');
 };
+
+/*
+ * Assembles a curl string from the user entered form values
+ * @param resultType {string} The value gathered from user input on the web form.
+ * @param queryParamArray An array of values gathered from user input on web form.
+ * @return {string} a formatted line that can be used a curl command.
+ */
+export const getCurlString = function(resultType, queryParamArray) {
+    let curlLeadingString = 'curl -X POST --header \'Content-Type: application/json\' --header \'Accept: application/zip';
+    let urlBase = Config.QUERY_URLS[resultType];
+    let queryParamJson = getQueryParamJson(queryParamArray);
+    let dataParameters = omit(queryParamJson, ['mimeType', 'zip', 'sorted']);
+    let queryParameters = pick(queryParamJson, ['mimeType', 'zip', 'sorted']);
+    let params = $.param(queryParameters);
+    let curlDataParamsString = '';
+    // don't let empty objects show up in the curl command display
+    if (Object.keys(dataParameters).length > 0) {
+        curlDataParamsString = ` -d '${JSON.stringify(dataParameters)}'`;
+    }
+
+    return `${curlLeadingString}'${curlDataParamsString} '${urlBase}?${params}'`;
+};
+
+export const dataProfileUsed = {
+    'Station': false,
+    'Project': false,
+    'ProjectMonitoringLocationWeighting': false,
+    'Result': true,
+    'Activity': false,
+    'ActivityMetric': false,
+    'ResultDetectionQuantitationLimit': false,
+    'default': false
+};
+
+

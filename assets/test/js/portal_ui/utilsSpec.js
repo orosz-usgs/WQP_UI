@@ -1,11 +1,11 @@
 import { getQueryString, toggleShowHideSections, getQueryParamJson, getAnchorQueryValues,
-    initializeInput } from '../../../js/utils';
+    initializeInput, getCurlString } from '../../../js/utils';
 
 
 describe('Test PORTAl.UTILS package', function () {
     describe('Test getQueryString', function() {
 
-        var testParamArray = [
+        let testParamArray = [
             {name : 'P1', value : 'Value1'},
             {name : 'P2', value : ['Value2_1', 'Value2_2', 'Value2_3']},
             {name : 'P3', value : 'Value3'},
@@ -13,7 +13,7 @@ describe('Test PORTAl.UTILS package', function () {
         ];
 
         it('Expects that if ignoreList and mulitSelectDelimited are not specified that the array is serialized', function() {
-            var result = getQueryString(testParamArray);
+            let result = getQueryString(testParamArray);
             expect(result).toContain('P1=Value1');
             expect(result).toContain('P2=Value2_1');
             expect(result).toContain('P2=Value2_2');
@@ -24,7 +24,7 @@ describe('Test PORTAl.UTILS package', function () {
         });
 
         it('Expects that if ignoreList contains names that are in the parameters array that the result string does not contain those parameters', function() {
-            var result = getQueryString(testParamArray, ['P2', 'P3']);
+            let result = getQueryString(testParamArray, ['P2', 'P3']);
             expect(result).toContain('P1=Value1');
             expect(result).not.toContain('P2=Value2_1');
             expect(result).not.toContain('P2=Value2_2');
@@ -35,7 +35,7 @@ describe('Test PORTAl.UTILS package', function () {
         });
 
         it('Expects that if multiSelectDelimited is set to true, duplicate param names are serialized into a single param', function() {
-            var result = getQueryString(testParamArray, [], true);
+            let result = getQueryString(testParamArray, [], true);
             expect(result).toContain('P1=Value1');
             expect(result).toContain('P2=Value2_1%3BValue2_2%3BValue2_3');
             expect(result).toContain('P3=Value3');
@@ -43,7 +43,7 @@ describe('Test PORTAl.UTILS package', function () {
         });
 
         it('Expects that ignoreList is respected when multiSelectDelimited is set to true', function() {
-            var result = getQueryString(testParamArray, ['P2', 'P3'], true);
+            let result = getQueryString(testParamArray, ['P2', 'P3'], true);
             expect(result).toContain('P1=Value1');
             expect(result).not.toContain('P2=Value2_1%3BValue2_2%3BValue2_3');
             expect(result).not.toContain('P3=Value3');
@@ -53,7 +53,7 @@ describe('Test PORTAl.UTILS package', function () {
 
     describe('Test getQueryParamJson', function() {
 
-        var testArray = [
+        let testArray = [
             {name : 'statecode', value : ['US:55', 'US:54'], multiple: false},
             {name : 'huc', value: '0701*;0702*', multiple: true},
             {name : 'siteType', value : 'Well', multiple: true},
@@ -61,7 +61,7 @@ describe('Test PORTAl.UTILS package', function () {
         ];
 
         it('Expects that the calling the function produces the currently encoded json object', function() {
-            var result = getQueryParamJson(testArray);
+            let result = getQueryParamJson(testArray);
 
             expect(result.statecode).toEqual(['US:55', 'US:54']);
             expect(result.siteType).toEqual(['Well']);
@@ -73,7 +73,7 @@ describe('Test PORTAl.UTILS package', function () {
 
     describe('Test toggleShowHideSections', function () {
         beforeEach(function () {
-            var buttonHtml = '<button id="show-hide-toggle" title="Show content">' +
+            let buttonHtml = '<button id="show-hide-toggle" title="Show content">' +
                 '<img src="img/expand.png" alt="show" /></button>';
             $('body').append('<div id="test-div">' + buttonHtml + '<div id="content-div" style="display:none;">Here\'s the content</div></div>');
         });
@@ -83,14 +83,14 @@ describe('Test PORTAl.UTILS package', function () {
         });
 
         it('Expects when toggleShowHideSections is called content is hidden', function () {
-            var isVisible = toggleShowHideSections($('#show-hide-toggle'), $('#content-div'));
+            let isVisible = toggleShowHideSections($('#show-hide-toggle'), $('#content-div'));
             expect(isVisible).toBe(true);
             expect($('#show-hide-toggle').attr('title')).toContain('Hide');
             expect($('#show-hide-toggle img').attr('alt')).toEqual('hide');
         });
 
         it('Expects when toggleShowHideSections is called twice, the content is shown', function () {
-            var isVisible = toggleShowHideSections($('#show-hide-toggle'), $('#content-div'));
+            let isVisible = toggleShowHideSections($('#show-hide-toggle'), $('#content-div'));
             isVisible = toggleShowHideSections($('#show-hide-toggle'), $('#content-div'));
 
             expect(isVisible).toBe(false);
@@ -157,6 +157,31 @@ describe('Test PORTAl.UTILS package', function () {
             initializeInput($testInput);
 
             expect($testInput.val()).toEqual('val2');
+        });
+    });
+
+    describe('Tests for buildCurlString', () => {
+
+        let testResultType = 'Station';
+
+        let testQueryParamArray = [
+            {name: 'mimeType', value: 'json'},
+            {name: 'zip', value: 'yes'},
+            {name: 'sorted', value: 'sortedTestValue'},
+            {name: 'statecode', value : ['US:55', 'US:54'], multiple: false},
+            {name: 'huc', value: '0701*;0702*', multiple: true},
+            {name: 'siteType', value : 'Well', multiple: true},
+            {name: 'startDateLo', value:'07-23-1999', multiple:false}
+        ];
+
+        it('will return a complete curl command as a string.', () => {
+            let result = getCurlString(testResultType, testQueryParamArray);
+
+            expect(result).toContain('"statecode":["US:55","US:54"]');
+            expect(result).toContain('mimeType=json');
+            expect(result).toContain('zip=yes');
+            expect(result).toContain('sorted=sortedTestValue');
+            expect(result).toContain('application/zip');
         });
     });
 });

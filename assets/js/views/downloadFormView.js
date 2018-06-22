@@ -65,11 +65,12 @@ export default class DownloadFormView {
 
     /*
      * Initializes the form and sets up the DOM event handlers
+     * @param updateResultTypeAction - method that gets the resultType value the user entered in the web form.
      * @return jquery promise
      *      @resolve - if all initialization including successful fetches are complete
      *      @reject - if any fetches failed.
      */
-    initialize() {
+     initialize() {
         const placeInputView = this.getPlaceInputView();
         const pointLocationInputView = new PointLocationInputView({
             $container : this.$form.find('#point-location')
@@ -96,7 +97,7 @@ export default class DownloadFormView {
             $container : this.$form.find('#biological'),
             assemblageModel : new CachedCodes({codes: 'assemblage'})
         });
-        const dataDetailsView = new DataDetailsView({
+        this.dataDetailsView = new DataDetailsView({
             $container : this.$form.find('#download-box-input-div'),
             updateResultTypeAction : (resultType) => {
                 this.$form.attr('action', queryService.getFormUrl(resultType));
@@ -126,7 +127,7 @@ export default class DownloadFormView {
             initSamplingParametersInputView,
             initSiteParameterInputView);
 
-        dataDetailsView.initialize();
+        this.dataDetailsView.initialize();
         pointLocationInputView.initialize();
         boundingBoxInputView.initialize();
         if (Config.NLDI_ENABLED) {
@@ -189,8 +190,8 @@ export default class DownloadFormView {
 
         // Set up the Download button
         this.$form.find('#main-button').click((event) => {
-            const fileFormat = dataDetailsView.getMimeType();
-            const resultType = dataDetailsView.getResultType();
+            const fileFormat = this.dataDetailsView.getMimeType();
+            const resultType = this.dataDetailsView.getResultType();
             const queryParamArray = this.getQueryParamArray();
             const queryString = decodeURIComponent(getQueryString(queryParamArray));
 
@@ -198,7 +199,7 @@ export default class DownloadFormView {
                 window._gaq.push([
                     '_trackEvent',
                     'Portal Page',
-                    dataDetailsView.getResultType() + 'Download',
+                    this.dataDetailsView.getResultType() + 'Download',
                     queryString,
                     parseInt(totalCount)]);
 
@@ -266,5 +267,9 @@ export default class DownloadFormView {
             }
         });
         return result;
+    }
+
+    getResultType() {
+        return this.dataDetailsView.getResultType();
     }
 }
