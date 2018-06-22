@@ -1,5 +1,5 @@
 import queryService from '../queryService';
-import { getQueryString, getCurlString, dataProfileUsed } from '../utils';
+import { getQueryString, getCurlString } from '../utils';
 
 
 /*
