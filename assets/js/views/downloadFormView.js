@@ -12,7 +12,7 @@ import portalHelp from '../portalHelp';
 import { CachedCodes, CodesWithKeys } from '../portalModels';
 import providers from '../providers';
 import queryService from '../queryService';
-import { toggleShowHideSections, getQueryString, getAnchorQueryValues } from '../utils';
+import { toggleShowHideSections, getQueryString, getAnchorQueryValues, setEnabled } from '../utils';
 
 /*
  * Initializes the download form and provides methods to get information from the form
@@ -184,7 +184,13 @@ export default class DownloadFormView {
 
         // Add click handler for reset button
         this.$form.find('.reset-button').click(() => {
-            $inputs.val('');
+            $inputs.not('input[name="mimeType"], #zip', ).val('');
+            this.$form.find('input.result-type:checked').prop('checked', false);
+            $('#sites').prop('checked', true);
+            $('#csv').prop('checked', true);
+            $('#sorted').prop('checked', false);
+            $('#hidden-sorted').prop('value', 'no');
+            setEnabled(this.$form.find('input[name="mimeType"]'), true);
             $inputs.trigger('change');
         });
 
