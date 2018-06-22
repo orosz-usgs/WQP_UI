@@ -163,17 +163,8 @@ describe('Test PORTAl.UTILS package', function () {
     describe('Tests for buildCurlString', () => {
 
         let testResultType = 'Station';
-        let testQueryParamArrayZipNo = [
-            {name: 'mimeType', value: 'json'},
-            {name: 'zip', value: 'no'},
-            {name: 'sorted', value: 'sortedTestValue'},
-            {name: 'statecode', value : ['US:55', 'US:54'], multiple: false},
-            {name: 'huc', value: '0701*;0702*', multiple: true},
-            {name: 'siteType', value : 'Well', multiple: true},
-            {name: 'startDateLo', value:'07-23-1999', multiple:false}
-        ];
 
-        let testQueryParamArrayZipYes = [
+        let testQueryParamArray = [
             {name: 'mimeType', value: 'json'},
             {name: 'zip', value: 'yes'},
             {name: 'sorted', value: 'sortedTestValue'},
@@ -181,20 +172,10 @@ describe('Test PORTAl.UTILS package', function () {
             {name: 'huc', value: '0701*;0702*', multiple: true},
             {name: 'siteType', value : 'Well', multiple: true},
             {name: 'startDateLo', value:'07-23-1999', multiple:false}
-        ]
+        ];
 
-        it('will return a complete curl command as a string with accept type equaling json .', () => {
-            let result = getCurlString(testResultType, testQueryParamArrayZipNo);
-
-            expect(result).toContain('"statecode":["US:55","US:54"]');
-            expect(result).toContain('mimeType=json');
-            expect(result).toContain('zip=no');
-            expect(result).toContain('sorted=sortedTestValue');
-            expect(result).toContain('application/json');
-        });
-
-        it('will return a complete curl command as a string Accept type equaling zip.', () => {
-            let result = getCurlString(testResultType, testQueryParamArrayZipYes);
+        it('will return a complete curl command as a string.', () => {
+            let result = getCurlString(testResultType, testQueryParamArray);
 
             expect(result).toContain('"statecode":["US:55","US:54"]');
             expect(result).toContain('mimeType=json');

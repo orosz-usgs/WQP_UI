@@ -170,18 +170,6 @@ export const initializeInput = function($el) {
     $el.val(initValues.length ? initValues[0] : '');
 };
 
-export const contentType = {
-    'csv': 'text/csv',
-    'tsv': 'text/plain',
-    'xml': 'application/xml',
-    'json': 'application/json',
-    'xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    'kml': 'application/vnd.google-earth.kml+xml',
-    'kmz': 'application/vnd.google-earth.kmz',
-    'geojson': 'application/vnd.geo+json',
-    'text': 'text/html'
-};
-
 /*
  * Assembles a curl string from the user entered form values
  * @param resultType {string} The value gathered from user input on the web form.
@@ -189,27 +177,19 @@ export const contentType = {
  * @return {string} a formatted line that can be used a curl command.
  */
 export const getCurlString = function(resultType, queryParamArray) {
-    let curlLeadingString = 'curl -X POST --header \'Content-Type: text/html\' --header \'Accept: ';
+    let curlLeadingString = 'curl -X POST --header \'Content-Type: application/json\' --header \'Accept: application/zip';
     let urlBase = Config.QUERY_URLS[resultType];
     let queryParamJson = getQueryParamJson(queryParamArray);
     let dataParameters = omit(queryParamJson, ['mimeType', 'zip', 'sorted']);
     let queryParameters = pick(queryParamJson, ['mimeType', 'zip', 'sorted']);
     let params = $.param(queryParameters);
-
-    let mimeTypeValue = '';
-    if (pick(queryParameters, ['zip'])['zip'] === 'yes') {
-       mimeTypeValue = 'application/zip';
-    } else {
-       mimeTypeValue = contentType[pick(queryParameters, ['mimeType'])['mimeType']];
-    }
-
     let curlDataParamsString = '';
     // don't let empty objects show up in the curl command display
     if (Object.keys(dataParameters).length > 0) {
         curlDataParamsString = ` -d '${JSON.stringify(dataParameters)}'`;
     }
 
-    return `${curlLeadingString}${mimeTypeValue}'${curlDataParamsString} '${urlBase}?${params}'`;
+    return `${curlLeadingString}'${curlDataParamsString} '${urlBase}?${params}'`;
 };
 
 export const dataProfileUsed = {

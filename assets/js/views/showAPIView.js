@@ -21,30 +21,24 @@ export default class ShowAPIView {
         let $apiQueryDiv = this.$container.find('#api-queries-div');
         let $apiQueryTitle = this.$container.find('#query-div b');
         let $apiQueryText = this.$container.find('#query-div textarea');
-        let $cUrlText = this.$container.find('#curl-query-div textarea');
+        let $curlText = this.$container.find('#curl-query-div textarea');
         let $wfsText = this.$container.find('#getfeature-query-div textarea');
 
         this.$container.find('#show-queries-button').click(() => {
             let resultType = this.getResultType();
             let queryParamArray = this.getQueryParamArray();
-            let queryWithoutDataProfileArray = queryParamArray.filter((param) => {
-               return param.name !== 'dataProfile';
-            });
 
-            let queryString = '';
-            if (dataProfileUsed[resultType]) {
-                queryString = getQueryString(queryParamArray);
-            } else {
-                queryString = getQueryString(queryWithoutDataProfileArray);
-            }
-
-            let apiQueryString = queryService.getFormUrl(resultType, queryString);
+            let apiQueryString = queryService.getFormUrl(resultType, getQueryString(queryParamArray));
             let curlString = getCurlString(resultType, queryParamArray);
 
             $apiQueryDiv.show();
             $apiQueryTitle.html(resultType.replace(/([A-Z])/g, ' $1'));
             $apiQueryText.html(apiQueryString);
-            $cUrlText.html(curlString);
+            $curlText.html(curlString);
+
+            let queryWithoutDataProfileArray = queryParamArray.filter((param) => {
+               return param.name !== 'dataProfile';
+            });
             $wfsText.html(L.WQPSitesLayer.getWfsGetFeatureUrl(queryWithoutDataProfileArray));
         });
     }
