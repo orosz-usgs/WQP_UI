@@ -4,7 +4,7 @@ import DataDetailsView from '../../../../js/views/dataDetailsView';
 describe('Tests for DataDetailsView', function() {
     let testView;
     let $testDiv;
-    let $kml, $sites, $samples, $biosamples, $sorted, $hiddenSorted, $narrowsamples, $activity, $activitymetrics, $resultdet;
+    let $kml, $resetButton, $sites, $samples, $biosamples, $sorted, $hiddenSorted, $narrowsamples, $activity, $activitymetrics, $resultdet;
     let $projects, $projMonWeight;
     let updateResultTypeAction;
 
@@ -27,9 +27,11 @@ describe('Tests for DataDetailsView', function() {
             '<input type="checkbox" id="sorted" />' +
             '<input type="hidden" name="sorted" id="hidden-sorted" value="no" />' +
             '<input type="hidden" name="zip" id="zip" value="yes" />' +
+            '<input type="hidden" name="dataProfile" value="biological">' +
             '</form></div>'
         );
         $testDiv = $('#test-div');
+        $resetButton = $('#portalPageResetButton');
         $kml = $('#kml');
         $sites = $('#sites');
         $projects = $('#projects');
@@ -191,5 +193,18 @@ describe('Tests for DataDetailsView', function() {
 
         expect($('#tsv').prop('checked'))
             .toBe(true);
+    });
+
+    fit('Expects the "Reset Form" button will return form to on-page-load-state', () => {
+        testView.initialize();
+        testView.resetForm($testDiv);
+
+        expect($('.result-type').is(':disabled')).toBe(false);
+        expect($('input[type="radio"]').is(':disabled')).toBe(false);
+        expect($sites.is(':checked')).toBe(true);
+        expect($('#csv').is(':checked')).toBe(true);
+        expect($sorted.prop('checked')).toBe(false);
+        expect($hiddenSorted.val()).toEqual('no');
+        expect($('input[name="dataProfile"]').length).toBe(0);
     });
 });
