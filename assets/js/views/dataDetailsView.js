@@ -91,6 +91,19 @@ export default class DataDetailsView {
         });
     }
 
+    resetForm(webForm) {
+        let $inputs = webForm.find(':input[name]');
+        $inputs.not('input[name="mimeType"], #zip', ).val('');
+        webForm.find('input.result-type:checked').prop('checked', false);
+        $('#sites').prop('checked', true);
+        $('#csv').prop('checked', true);
+        $('#sorted').prop('checked', false);
+        $('#hidden-sorted').prop('value', 'no');
+        $('input[name="dataProfile"]').remove();
+        setEnabled(webForm.find('input[name="mimeType"]'), true);
+        $inputs.trigger('change');
+    }
+
     getResultType() {
         return this.$container.find('input.result-type:checked').val();
     }

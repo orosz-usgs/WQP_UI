@@ -181,17 +181,9 @@ export default class DownloadFormView {
             $shareText.val(window.location.href);
         });
 
-
         // Add click handler for reset button
         this.$form.find('.reset-button').click(() => {
-            $inputs.not('input[name="mimeType"], #zip', ).val('');
-            this.$form.find('input.result-type:checked').prop('checked', false);
-            $('#sites').prop('checked', true);
-            $('#csv').prop('checked', true);
-            $('#sorted').prop('checked', false);
-            $('#hidden-sorted').prop('value', 'no');
-            setEnabled(this.$form.find('input[name="mimeType"]'), true);
-            $inputs.trigger('change');
+            this.dataDetailsView.resetForm(this.$form);
         });
 
         // Set up the Download button
