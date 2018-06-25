@@ -12,7 +12,7 @@ import portalHelp from '../portalHelp';
 import { CachedCodes, CodesWithKeys } from '../portalModels';
 import providers from '../providers';
 import queryService from '../queryService';
-import { toggleShowHideSections, getQueryString, getAnchorQueryValues, setEnabled } from '../utils';
+import { toggleShowHideSections, getQueryString, getAnchorQueryValues } from '../utils';
 
 /*
  * Initializes the download form and provides methods to get information from the form
