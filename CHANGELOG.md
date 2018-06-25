@@ -13,4 +13,8 @@ the browser clipboard.
 ### Changed
 - Function of 'Show Web Calls' button so that only one call, based on which result type radio button is selected, is shown
 
+### Fixed
+- An issue that affected the ability to add some query parameters to the 'web calls' on the portal page after the 'Reset
+form' button was pressed 
+
 [Unreleased]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.7.0...master

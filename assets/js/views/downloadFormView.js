@@ -181,6 +181,7 @@ export default class DownloadFormView {
             $shareText.val(window.location.href);
         });
 
+
         // Add click handler for reset button
         this.$form.find('.reset-button').click(() => {
             this.dataDetailsView.resetForm(this.$form);
