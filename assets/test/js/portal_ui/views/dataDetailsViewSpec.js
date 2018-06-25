@@ -4,7 +4,7 @@ import DataDetailsView from '../../../../js/views/dataDetailsView';
 describe('Tests for DataDetailsView', function() {
     let testView;
     let $testDiv;
-    let $kml, $resetButton, $sites, $samples, $biosamples, $sorted, $hiddenSorted, $narrowsamples, $activity, $activitymetrics, $resultdet;
+    let $kml, $sites, $samples, $biosamples, $sorted, $hiddenSorted, $narrowsamples, $activity, $activitymetrics, $resultdet;
     let $projects, $projMonWeight;
     let updateResultTypeAction;
 
@@ -31,7 +31,6 @@ describe('Tests for DataDetailsView', function() {
             '</form></div>'
         );
         $testDiv = $('#test-div');
-        $resetButton = $('#portalPageResetButton');
         $kml = $('#kml');
         $sites = $('#sites');
         $projects = $('#projects');
@@ -195,7 +194,7 @@ describe('Tests for DataDetailsView', function() {
             .toBe(true);
     });
 
-    fit('Expects the "Reset Form" button will return form to on-page-load-state', () => {
+    it('Expects the "Reset Form" button will return form to on-page-load-state', () => {
         testView.initialize();
         testView.resetForm($testDiv);
 
