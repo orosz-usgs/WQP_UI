@@ -14,6 +14,8 @@ the browser clipboard.
 - Function of 'Show Web Calls' button so that only one call, based on which result type radio button is selected, is shown
 
 ### Fixed
+- Media breakpoint formatting that caused 'Select data to download' radio buttons to be inaccessible at screen widths
+between 768px and 992px
 - An issue that affected the ability to add some query parameters to the 'web calls' on the portal page after the 'Reset
 form' button was pressed 
 
