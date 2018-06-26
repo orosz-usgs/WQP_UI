@@ -16,5 +16,6 @@ the browser clipboard.
 ### Fixed
 - Media breakpoint formatting that caused 'Select data to download' radio buttons to be inaccessible at screen widths
 between 768px and 992px
+- Can now select pour points for NLDI navigation.
   
 [Unreleased]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.7.0...master
