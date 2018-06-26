@@ -91,14 +91,14 @@ export default class DataDetailsView {
         });
     }
 
-    resetForm() {
+    resetContainer() {
         let $inputs = this.$container.find(':input[name]');
-        $inputs.not('input[name="mimeType"], #zip', ).val('');
+
         this.$container.find('input.result-type:checked').prop('checked', false);
         $('#sites').prop('checked', true);
         $('#csv').prop('checked', true);
         $('#sorted').prop('checked', false);
-        $('#hidden-sorted').prop('value', 'no');
+        $('#hidden-sorted').prop('value', '');
         $('input[name="dataProfile"]').remove();
         setEnabled(this.$container.find('input[name="mimeType"]'), true);
         $inputs.trigger('change');

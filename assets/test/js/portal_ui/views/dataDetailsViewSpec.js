@@ -194,16 +194,16 @@ describe('Tests for DataDetailsView', function() {
             .toBe(true);
     });
 
-    it('Expects the "Reset Form" button will return form to on-page-load-state', () => {
+    it('Expects the resetForm function will return "data details" section of form to on-page-load-state', () => {
         testView.initialize();
-        testView.resetForm($testDiv);
+        testView.resetContainer();
 
         expect($('.result-type').is(':disabled')).toBe(false);
         expect($('input[type="radio"]').is(':disabled')).toBe(false);
         expect($sites.is(':checked')).toBe(true);
         expect($('#csv').is(':checked')).toBe(true);
         expect($sorted.prop('checked')).toBe(false);
-        expect($hiddenSorted.val()).toEqual('no');
+        expect($hiddenSorted.val()).toEqual('');
         expect($('input[name="dataProfile"]').length).toBe(0);
     });
 });

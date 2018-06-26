@@ -12,8 +12,8 @@ import portalHelp from '../portalHelp';
 import { CachedCodes, CodesWithKeys } from '../portalModels';
 import providers from '../providers';
 import queryService from '../queryService';
-import { toggleShowHideSections, getQueryString, getAnchorQueryValues } from '../utils';
-
+import { toggleShowHideSections, getQueryString, getAnchorQueryValues, resetContainer } from '../utils';
+import each from 'lodash/collection/each';
 /*
  * Initializes the download form and provides methods to get information from the form
  * @param {Object} options
@@ -181,10 +181,23 @@ export default class DownloadFormView {
             $shareText.val(window.location.href);
         });
 
-
+        let viewContainers = {
+            'placeInputView': placeInputView.$container,
+            'siteParameterInputView': siteParameterInputView.$container,
+            'samplingParametersInputView': samplingParametersInputView.$container,
+            'biologicalSamplingInputView': biologicalSamplingInputView.$container,
+            'pointLocationInputView': pointLocationInputView.$container,
+            'boundingBoxInputView': boundingBoxInputView.$container
+        }
+        let $dataProviders = this.$form.find('#providers-select');
         // Add click handler for reset button
         this.$form.find('.reset-button').click(() => {
-            this.dataDetailsView.resetForm();
+            each(viewContainers, function(value) {
+                resetContainer(value);
+            });
+            $dataProviders.val('');
+            $dataProviders.trigger('change');
+            this.dataDetailsView.resetContainer();
         });
 
         // Set up the Download button

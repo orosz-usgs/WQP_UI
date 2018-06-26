@@ -192,6 +192,12 @@ export const getCurlString = function(resultType, queryParamArray) {
     return `${curlLeadingString}'${curlDataParamsString} '${urlBase}?${params}'`;
 };
 
+export const resetContainer = function($container) {
+    let $inputs = $container.find(':input[name]');
+    $inputs.val('');
+    $inputs.trigger('change');
+}
+
 export const dataProfileUsed = {
     'Station': false,
     'Project': false,
