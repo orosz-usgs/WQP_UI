@@ -184,7 +184,7 @@ export default class DownloadFormView {
 
         // Add click handler for reset button
         this.$form.find('.reset-button').click(() => {
-            this.dataDetailsView.resetForm(this.$form);
+            this.dataDetailsView.resetForm();
         });
 
         // Set up the Download button
