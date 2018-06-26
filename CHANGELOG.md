@@ -13,4 +13,8 @@ the browser clipboard.
 ### Changed
 - Function of 'Show Web Calls' button so that only one call, based on which result type radio button is selected, is shown
 
+### Fixed
+- Media breakpoint formatting that caused 'Select data to download' radio buttons to be inaccessible at screen widths
+between 768px and 992px
+  
 [Unreleased]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.7.0...master
