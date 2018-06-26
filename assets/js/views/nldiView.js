@@ -290,7 +290,7 @@ export default class NldiView {
         );
 
         const featureSourceSelectControl = L.control.featureSourceSelectControl({
-            changeHandler : this.featureSourceChangeHandler,
+            changeHandler : this.featureSourceChangeHandler.bind(this),
             featureSourceOptions : nldiModel.FEATURE_SOURCES,
             initialFeatureSourceValue : nldiModel.getData().featureSource.id
         });
