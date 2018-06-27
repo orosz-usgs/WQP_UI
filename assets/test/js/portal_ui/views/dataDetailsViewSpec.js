@@ -27,6 +27,7 @@ describe('Tests for DataDetailsView', function() {
             '<input type="checkbox" id="sorted" />' +
             '<input type="hidden" name="sorted" id="hidden-sorted" value="no" />' +
             '<input type="hidden" name="zip" id="zip" value="yes" />' +
+            '<input type="hidden" name="dataProfile" value="biological">' +
             '</form></div>'
         );
         $testDiv = $('#test-div');
@@ -191,5 +192,18 @@ describe('Tests for DataDetailsView', function() {
 
         expect($('#tsv').prop('checked'))
             .toBe(true);
+    });
+
+    it('Expects the resetForm function will return "data details" section of form to on-page-load-state', () => {
+        testView.initialize();
+        testView.resetContainer();
+
+        expect($('.result-type').is(':disabled')).toBe(false);
+        expect($('input[type="radio"]').is(':disabled')).toBe(false);
+        expect($sites.is(':checked')).toBe(true);
+        expect($('#csv').is(':checked')).toBe(true);
+        expect($sorted.prop('checked')).toBe(false);
+        expect($hiddenSorted.val()).toEqual('');
+        expect($('input[name="dataProfile"]').length).toBe(0);
     });
 });

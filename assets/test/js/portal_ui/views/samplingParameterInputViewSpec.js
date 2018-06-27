@@ -163,4 +163,16 @@ describe('Tests for SamplingParameterInputView', function() {
         $endDate.val('11-2001').trigger('change');
         expect($endDate.val()).toEqual('11-30-2001');
     });
+
+    it('Expects that the "SAMPLING PARAMETERS" fields will blank after "resetContainer" is run', function() {
+        window.location.hash = '#pCode=00060&minresults=3&startDateLo=01-01-2001&startDateHi=02-01-2010';
+        testView.initialize();
+        expect($pCode.val()).toEqual('00060');
+
+        testView.resetContainer();
+        expect($pCode.val()).toEqual('');
+        expect($minresults.val()).toEqual('');
+        expect($startDate.val()).toEqual('');
+        expect($endDate.val()).toEqual('');
+    });
 });

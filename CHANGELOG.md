@@ -16,6 +16,8 @@ the browser clipboard.
 ### Fixed
 - Media breakpoint formatting that caused 'Select data to download' radio buttons to be inaccessible at screen widths
 between 768px and 992px
-- Can now select pour points for NLDI navigation.
-  
+- Can now select pour points for NLDI navigation.  
+- An issue that affected the ability to add some query parameters to the 'web calls' on the portal page after the 'Reset
+form' button was pressed 
+
 [Unreleased]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.7.0...master

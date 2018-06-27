@@ -150,6 +150,14 @@ describe('Tests for SiteParameterInputView', function() {
 
         expect($testDiv.has('.error-message').length).toBe(0);
     });
+    it('Expects that the "Site Parameters" fields will blank after "resetContainer" is run', function() {
+        window.location.hash = '#huc=0701*;0801&minactivities=4';
+        testView.initialize();
+        expect($huc.val()).toEqual('0701*;0801');
+        expect($minActivities.val()).toEqual('4');
 
-
+        testView.resetContainer();
+        expect($huc.val()).toEqual('');
+        expect($minActivities.val()).toEqual('');
+    });
 });

@@ -58,5 +58,16 @@ describe('Tests for pointLocationInputView', function() {
         window.location.hash = '';
     });
 
+    it('Expects that the "Point Location" fields will blank after "resetContainer" is run', function() {
+        window.location.hash = '#within=20&lat=43:04:05&long=-100:10:20';
+        testView.initialize();
+        expect($within.val()).toEqual('20');
+
+        testView.resetContainer();
+        expect($within.val()).toEqual('');
+        expect($lat.val()).toEqual('');
+        expect($lon.val()).toEqual('');
+    });
+
     // Can't seem to mock the navigator object so can't test the geolocation code.
 });

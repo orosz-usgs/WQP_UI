@@ -42,7 +42,7 @@ export default class DataDetailsView {
         const mimeTypeInitValues = getAnchorQueryValues($mimeTypeRadioboxes.attr('name'));
         if (mimeTypeInitValues.length) {
             this.$container.find(`input[value="${mimeTypeInitValues[0]}"]`).prop('checked', true);
-            // Need to disable checkboxes for download other that sites.
+            // Need to disable checkboxes for download other than sites.
             if (mimeTypeInitValues[0] === 'kml') {
                 setEnabled(this.$container.find('.result-type:not(#sites)'), false);
             }
@@ -89,6 +89,19 @@ export default class DataDetailsView {
                 $sorted.prop('checked', false);
             }
         });
+    }
+
+    resetContainer() {
+        let $inputs = this.$container.find(':input[name]');
+
+        this.$container.find('input.result-type:checked').prop('checked', false);
+        $('#sites').prop('checked', true);
+        $('#csv').prop('checked', true);
+        $('#sorted').prop('checked', false);
+        $('#hidden-sorted').prop('value', '');
+        $('input[name="dataProfile"]').remove();
+        setEnabled(this.$container.find('input[name="mimeType"]'), true);
+        $inputs.trigger('change');
     }
 
     getResultType() {

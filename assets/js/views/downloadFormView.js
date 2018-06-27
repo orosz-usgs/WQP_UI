@@ -14,6 +14,7 @@ import providers from '../providers';
 import queryService from '../queryService';
 import { toggleShowHideSections, getQueryString, getAnchorQueryValues } from '../utils';
 
+
 /*
  * Initializes the download form and provides methods to get information from the form
  * @param {Object} options
@@ -181,11 +182,18 @@ export default class DownloadFormView {
             $shareText.val(window.location.href);
         });
 
-
+        let $dataProviders = this.$form.find('#providers-select');
         // Add click handler for reset button
         this.$form.find('.reset-button').click(() => {
-            $inputs.val('');
-            $inputs.trigger('change');
+            placeInputView.resetContainer();
+            pointLocationInputView.resetContainer();
+            boundingBoxInputView.resetContainer();
+            samplingParametersInputView.resetContainer();
+            biologicalSamplingInputView.resetContainer();
+            siteParameterInputView.resetContainer();
+            this.dataDetailsView.resetContainer();
+            $dataProviders.val('');
+            $dataProviders.trigger('change');
         });
 
         // Set up the Download button

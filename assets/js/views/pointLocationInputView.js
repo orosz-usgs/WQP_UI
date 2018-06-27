@@ -64,4 +64,10 @@ export default class PointLocationInputView {
             });
         }
     }
+
+    resetContainer() {
+        let $inputs = this.$container.find(':input[name]');
+        $inputs.val('');
+        $inputs.trigger('change');
+    }
 }
