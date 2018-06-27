@@ -7,9 +7,9 @@ describe('Tests for pointLocationInputView', function() {
 
     beforeEach(function() {
         $('body').append('<div id="test-div">' +
-            '<input type="text" id="within" name="within" value="testValue1"/>' +
-            '<input type="text" id="lat" name="lat" value="testValue1"/>' +
-            '<input type="text" id="long" name="long" value="testValue1"/>' +
+            '<input type="text" id="within" name="within"/>' +
+            '<input type="text" id="lat" name="lat"/>' +
+            '<input type="text" id="long" name="long"/>' +
             '<div id="useMyLocation"></div>' +
             '</div>');
         $testDiv = $('#test-div');
