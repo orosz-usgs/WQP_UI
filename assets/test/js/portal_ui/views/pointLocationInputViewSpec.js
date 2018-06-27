@@ -7,9 +7,9 @@ describe('Tests for pointLocationInputView', function() {
 
     beforeEach(function() {
         $('body').append('<div id="test-div">' +
-            '<input type="text" id="within" name="within" />' +
-            '<input type="text" id="lat" name="lat" />' +
-            '<input type="text" id="long" name="long" />' +
+            '<input type="text" id="within" name="within" value="testValue1"/>' +
+            '<input type="text" id="lat" name="lat" value="testValue1"/>' +
+            '<input type="text" id="long" name="long" value="testValue1"/>' +
             '<div id="useMyLocation"></div>' +
             '</div>');
         $testDiv = $('#test-div');
@@ -56,6 +56,17 @@ describe('Tests for pointLocationInputView', function() {
         expect($lat.val()).toEqual('43:04:05');
         expect($lon.val()).toEqual('-100:10:20');
         window.location.hash = '';
+    });
+
+    it('Expects that the "Point Location" fields will blank after "resetContainer" is run', function() {
+        window.location.hash = '#within=20&lat=43:04:05&long=-100:10:20';
+        testView.initialize();
+        expect($within.val()).toEqual('20');
+
+        testView.resetContainer();
+        expect($within.val()).toEqual('');
+        expect($lat.val()).toEqual('');
+        expect($lon.val()).toEqual('');
     });
 
     // Can't seem to mock the navigator object so can't test the geolocation code.

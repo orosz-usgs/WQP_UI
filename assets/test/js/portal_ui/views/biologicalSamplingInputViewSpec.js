@@ -93,4 +93,13 @@ describe('Tests for biologicalSamplingInputView', function() {
             }, 100);
         });
     });
+
+    it('Expects that the "Biological sampling parameters" fields will blank after "resetContainer" is run', function() {
+        window.location.hash = '#subjectTaxonomicName=testName';
+        testView.initialize();
+        expect($taxonomicName.val()).toEqual(['testName']);
+
+        testView.resetContainer();
+        expect($taxonomicName.val()).toEqual([]);
+    });
 });

@@ -116,4 +116,16 @@ describe('Tests for BoundingBoxInputView', function() {
         $bbox.val('').trigger('change');
         expect($bbox.val()).toEqual('');
     });
+
+    it('Expects that the "Bounding Box" fields will blank after "resetContainer" is run', function() {
+        window.location.hash = '#bBox=-101,42,-100,43';
+        testView.initialize();
+        expect($bbox.val()).toEqual('-101,42,-100,43');
+
+        testView.resetContainer();
+        expect($north.val()).toEqual('');
+        expect($south.val()).toEqual('');
+        expect($west.val()).toEqual('');
+        expect($east.val()).toEqual('');
+    });
 });

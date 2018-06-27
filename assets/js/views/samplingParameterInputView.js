@@ -115,4 +115,10 @@ export default class SamplingParameterInputView {
 
         return fetchComplete;
     }
+
+    resetContainer() {
+        let $inputs = this.$container.find(':input[name]');
+        $inputs.val('');
+        $inputs.trigger('change');
+    }
 }
