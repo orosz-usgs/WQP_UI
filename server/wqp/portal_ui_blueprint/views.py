@@ -2,10 +2,12 @@
 Views and a view decorator that implement an Oauth2 client.
 '''
 
+from io import BytesIO
 import pickle
 
 import arrow
-from flask import render_template, request, make_response, redirect, url_for, abort, Response, jsonify, Blueprint
+from flask import render_template, request, make_response, redirect, url_for, abort, Response, jsonify, Blueprint, \
+    send_file
 import redis
 
 from ..auth.views import authentication_required_when_configured
@@ -189,7 +191,15 @@ def wqp_download_proxy(op):
     if access_token:
         headers['Authorization'] =  'Bearer {0}'.format(access_token)
     resp = session.post(target_url, data=request.form, headers=headers, verify=proxy_cert_verification)
-    return make_response(resp.content, resp.status_code, resp.headers.items())
+    try:
+        filename = resp.headers['Content-Disposition'].split('filename=')[1]
+    except IndexError:
+        filename = 'default_file'
+
+    return send_file(BytesIO(resp.content),
+                     mimetype=resp.headers['Content-Type'],
+                     as_attachment=True,
+                     attachment_filename=filename)
 
 @portal_ui.route('/wqp_geoserver/<op>', methods=['GET', 'POST'])
 def wqp_geoserverproxy(op):

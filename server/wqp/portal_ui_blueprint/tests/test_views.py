@@ -19,8 +19,8 @@ class TestWqpDownloadProxy(TestCase):
     def test_no_access_token(self, mock_make_resp, mock_post):
         mock_resp = mock.Mock(requests.Response)
         mock_resp.status_code = 200
-        mock_resp.contents = 'dummy contents'
-        mock_resp.headers = {'Content-Type': 'text'}
+        mock_resp.content = b'dummy contents'
+        mock_resp.headers = {'Content-Type': 'text', 'Content-Disposition': 'attachment; filename=this.txt'}
         mock_post.return_value = mock_resp
 
         mock_make_resp.return_value = 'Dummy text'
@@ -36,8 +36,8 @@ class TestWqpDownloadProxy(TestCase):
     def test_access_token(self, mock_make_resp, mock_post):
         mock_resp = mock.Mock(requests.Response)
         mock_resp.status_code = 200
-        mock_resp.contents = 'dummy contents'
-        mock_resp.headers = {'Content-Type': 'text'}
+        mock_resp.content = b'dummy contents'
+        mock_resp.headers = {'Content-Type': 'text', 'Content-Disposition': 'attachment; filename=this.txt'}
         mock_post.return_value = mock_resp
 
         mock_make_resp.return_value = 'Dummy text'
