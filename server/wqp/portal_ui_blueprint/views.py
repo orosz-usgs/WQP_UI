@@ -194,7 +194,7 @@ def wqp_download_proxy(op):
     try:
         filename = resp.headers['Content-Disposition'].split('filename=')[1]
     except IndexError:
-        filename='default_file'
+        filename = 'default_file'
 
     return send_file(BytesIO(resp.content),
                      mimetype=resp.headers['Content-Type'],
