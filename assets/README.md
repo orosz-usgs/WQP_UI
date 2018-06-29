@@ -28,6 +28,11 @@ Run the node.js development server at
 npm run watch
 ```
 
+If you need to run the development server at https [https://127.0.0.1:9000](https://127.0.0.1:9000):
+```bash
+npm run httpswatch
+```
+
 ## Test the production static assets build locally
 
 To build the complete production package, built to `./dist`:
