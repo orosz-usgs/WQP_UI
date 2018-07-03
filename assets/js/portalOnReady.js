@@ -46,7 +46,11 @@ $(document).ready(function () {
     showAPIView.initialize();
     arcGisOnlineHelpView.initialize();
 
-    initDownloadForm.fail(function() {
-        $('#service-error-dialog').modal('show');
+    initDownloadForm.fail(function(jqxhr) {
+        let $dialog = $('#service-error-dialog');
+        if (jqxhr.status === 401 || jqxhr.status === 403) {
+            $dialog.find('.modal-body').html('No longer authorized to use the application. Please reload the page to login again');
+        }
+        $dialog.modal('show');
     });
 });
