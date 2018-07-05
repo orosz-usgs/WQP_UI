@@ -20,8 +20,8 @@ export default class PointLocationInputView {
     // GeoLocation easter egg.
     updateMyLocation($lat, $lon) {
         var updateInputs = function(position) {
-            $lat.val(position.coords.latitude);
-            $lon.val(position.coords.longitude);
+            $lat.val(position.coords.latitude).trigger('change');
+            $lon.val(position.coords.longitude).trigger('change');
         };
 
         var displayError = function(err) {
@@ -67,7 +67,7 @@ export default class PointLocationInputView {
 
     resetContainer() {
         let $inputs = this.$container.find(':input[name]');
-        $inputs.val('');
+        $inputs.val('').trigger('change');
         $inputs.trigger('change');
     }
 }
