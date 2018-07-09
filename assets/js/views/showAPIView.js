@@ -15,6 +15,7 @@ export default class ShowAPIView {
         this.$container = $container;
         this.getQueryParamArray = getQueryParamArray;
         this.getResultType = getResultType;
+        this.showAPIViewVisible = false;
     }
 
     initialize() {
@@ -24,7 +25,7 @@ export default class ShowAPIView {
         let $curlText = this.$container.find('#curl-query-div textarea');
         let $wfsText = this.$container.find('#getfeature-query-div textarea');
 
-        this.$container.find('#show-queries-button').click(() => {
+        const showServiceCallsHandler = () => {
             let resultType = this.getResultType();
             let queryParamArray = this.getQueryParamArray();
 
@@ -40,6 +41,17 @@ export default class ShowAPIView {
                return param.name !== 'dataProfile';
             });
             $wfsText.html(L.WQPSitesLayer.getWfsGetFeatureUrl(queryWithoutDataProfileArray));
+        };
+
+        // Update the service calls when the
+        this.$container.find('#show-queries-button').click(() => {
+            this.showAPIViewVisible = true;
+            showServiceCallsHandler();
+        });
+        this.$container.closest('form').change(() => {
+            if (this.showAPIViewVisible) {
+                showServiceCallsHandler();
+            }
         });
     }
 }
