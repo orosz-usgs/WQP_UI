@@ -191,7 +191,7 @@ def wqp_download_proxy(op):
     if access_token:
         headers['Authorization'] = 'Bearer {0}'.format(access_token)
     resp = session.post(target_url, data=request.form, headers=headers, verify=proxy_cert_verification)
-    if resp.status_code == 200: # pylint: disable=R1705
+    if resp.status_code == 200:  # pylint: disable=R1705
 
         try:
             filename = resp.headers['Content-Disposition'].split('filename=')[1]
