@@ -30,6 +30,7 @@ class Providers {
             },
             error: (jqXHR, textStatus, error) => {
                 this.ids = [];
+                let msg = '';
                 log.error('Unable to retrieve provider list with error: ' + error);
                 deferred.reject(jqXHR, error);
             }
