@@ -33,7 +33,8 @@ export default class DownloadProgressDialog {
         this.totalCountProp = {
             'Station': 'sites',
             'Result': 'results',
-            'Activity': 'activities'
+            'Activity': 'activities',
+            'Project': 'projects'
         };
     }
 
