@@ -4,6 +4,7 @@ import queryService from '../../../js/queryService';
 import { Cookie } from '../../../js/utils';
 
 
+
 describe('Tests for queryService', function() {
     describe('Tests for queryService.fetchQueryCounts', function() {
         var fakeServer;
@@ -95,7 +96,6 @@ describe('Tests for queryService', function() {
 
             expect(successSpy).not.toHaveBeenCalled();
             expect(errorSpy).toHaveBeenCalled();
-
         });
 
         it('Expects that a authorization header is added if an access_token cookie is present', function() {

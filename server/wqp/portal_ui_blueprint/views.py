@@ -189,17 +189,21 @@ def wqp_download_proxy(op):
     headers = {}
     access_token = request.cookies.get('access_token')
     if access_token:
-        headers['Authorization'] =  'Bearer {0}'.format(access_token)
+        headers['Authorization'] = 'Bearer {0}'.format(access_token)
     resp = session.post(target_url, data=request.form, headers=headers, verify=proxy_cert_verification)
-    try:
-        filename = resp.headers['Content-Disposition'].split('filename=')[1]
-    except IndexError:
-        filename = 'default_file'
+    if resp.status_code == 200:  # pylint: disable=R1705
 
-    return send_file(BytesIO(resp.content),
-                     mimetype=resp.headers['Content-Type'],
-                     as_attachment=True,
-                     attachment_filename=filename)
+        try:
+            filename = resp.headers['Content-Disposition'].split('filename=')[1]
+        except (IndexError, KeyError):
+            filename = 'default_file'
+
+        return send_file(BytesIO(resp.content),
+                         mimetype=resp.headers['Content-Type'],
+                         as_attachment=True,
+                         attachment_filename=filename)
+    else:
+        return make_response(resp.content, resp.status_code, resp.headers.items())
 
 @portal_ui.route('/wqp_geoserver/<op>', methods=['GET', 'POST'])
 def wqp_geoserverproxy(op):

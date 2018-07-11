@@ -65,7 +65,11 @@ export default {
             },
             error: function(jqXHR, textStatus) {
                 log.error('Unable to contact the WQP services: ' + textStatus);
-                deferred.reject('Unable to contact the WQP services: ' + textStatus);
+                if (jqXHR.status === 401 || jqXHR.status === 403) {
+                    deferred.reject('No longer authorized to use the application. Please reload the page to login again');
+                } else {
+                    deferred.reject('Unable to contact the WQP services: ' + textStatus);
+                }
             }
         });
 

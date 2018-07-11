@@ -45,7 +45,7 @@ describe('Tests for providers', function () {
         providers.fetch().done(successSpy).fail(failureSpy);
         server.requests[0].respond(500, {}, 'Bad data');
 
-        expect(failureSpy).toHaveBeenCalledWith('Internal Server Error');
+        expect(failureSpy).toHaveBeenCalled();
         expect(successSpy).not.toHaveBeenCalled();
         expect(providers.getIds()).toEqual([]);
     });

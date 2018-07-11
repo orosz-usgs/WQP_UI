@@ -69,8 +69,15 @@ export default class SiteMap {
                             usePopover: isExtraSmallBrowser()
                         });
                     })
-                    .fail(() => {
-                        this.map.openPopup('Failed to fetch sites', this.map.getCenter());
+                    .fail((jqxhr) => {
+                        let msg = '';
+                        if (jqxhr.status === 401 || jqxhr.status === 403) {
+                            msg = 'No longer authorized to use the application. Please reload the page to login again';
+
+                        } else {
+                            msg = 'Failed to fetch sites';
+                        }
+                        this.map.openPopup(msg, this.map.getCenter());
                     })
                     .always(() => {
                         this.$loadingIndicator.hide();
