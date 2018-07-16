@@ -25,17 +25,21 @@ const DIALOG = {
     }
 };
 
+const RESULT_TYPE_TO_TOTAL_COUNT_PROPERTY_MAP = {
+    'Station': 'sites',
+    'Result': 'results',
+    'Activity': 'activities',
+    'ActivityMetric': 'activitymetrics',
+    'Project': 'projects',
+    'ProjectMonitoringLocationWeighting': 'projectmonitoringlocationweightings',
+    'ResultDetectionQuantitationLimit': 'resultdetections',
+    'Organization': 'organizations'
+};
+
 
 export default class DownloadProgressDialog {
     constructor(el) {
         this.el = el;
-
-        this.totalCountProp = {
-            'Station': 'sites',
-            'Result': 'results',
-            'Activity': 'activities',
-            'Project': 'projects'
-        };
     }
 
 
@@ -58,7 +62,7 @@ export default class DownloadProgressDialog {
     }
 
     updateProgress(counts, resultType, fileFormat, continueFnc) {
-        var totalCount = counts.total[this.totalCountProp[resultType]];
+        var totalCount = counts.total[RESULT_TYPE_TO_TOTAL_COUNT_PROPERTY_MAP[resultType]];
 
         var getCountMessage = function () {
             // Return a string showing the site counts, formatted to be shown in html.

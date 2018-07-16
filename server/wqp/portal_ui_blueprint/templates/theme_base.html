@@ -40,7 +40,6 @@
                 Activity: Config.SEARCH_QUERY_ENDPOINT + 'Activity/search',
                 ActivityMetric: Config.SEARCH_QUERY_ENDPOINT + 'ActivityMetric/search',
                 ResultDetectionQuantitationLimit: Config.SEARCH_QUERY_ENDPOINT + 'ResultDetectionQuantitationLimit/search',
-                biologicalresult: Config.SEARCH_QUERY_ENDPOINT + 'biologicalresult/search',
                 Organization: Config.SEARCH_QUERY_ENDPOINT + 'Organization/search'
             };
             if ("{{ config.WATERAUTH_AUTHORIZE_URL }}") {
@@ -52,7 +51,6 @@
 					Activity: '{{ url_for("portal_ui.wqp_download_proxy", op="Activity") }}',
 					ActivityMetric: '{{ url_for("portal_ui.wqp_download_proxy", op="ActivityMetric") }}',
 					ResultDetectionQuantitationLimit: '{{ url_for("portal_ui.wqp_download_proxy", op="ResultDetectionQuantitationLimit") }}',
-					biologicalresult: '{{ url_for("portal_ui.wqp_download_proxy", op="biologicalresult") }}',
                     Organization: '{{ url_for("portal_ui.wqp_download_proxy", op="Organization") }}'
 				}
 			} else  {
