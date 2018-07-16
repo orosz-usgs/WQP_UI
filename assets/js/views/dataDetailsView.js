@@ -1,5 +1,4 @@
 import { setEnabled, initializeInput, getAnchorQueryValues } from '../utils';
-import selectDataTemplate from '../hbTemplates/selectData.hbs';
 
 
 /*
@@ -23,13 +22,11 @@ export default class DataDetailsView {
      * Initializes the widgets and sets up the DOM event handlers.
      */
     initialize() {
-        this.$container.find('#download-data-kind-box').append(selectDataTemplate({section: 'main'}));
-
         let $kml = this.$container.find('#kml');
 
-        let $site = this.$container.find('#main-sites');
-        let $biosamples = this.$container.find('#main-biosamples');
-        let $narrowResults = this.$container.find('#main-narrowsamples');
+        let $site = this.$container.find('#sites');
+        let $biosamples = this.$container.find('#biosamples');
+        let $narrowResults = this.$container.find('#narrowsamples');
 
         let $sorted = this.$container.find('#sorted');
         let $hiddenSorted = this.$container.find('input[type="hidden"][name="sorted"]');
@@ -47,7 +44,7 @@ export default class DataDetailsView {
             this.$container.find(`input[value="${mimeTypeInitValues[0]}"]`).prop('checked', true);
             // Need to disable checkboxes for download other than sites.
             if (mimeTypeInitValues[0] === 'kml') {
-                setEnabled(this.$container.find('.result-type:not(#main-sites)'), false);
+                setEnabled(this.$container.find('.result-type:not(#sites)'), false);
             }
         }
 
@@ -55,7 +52,7 @@ export default class DataDetailsView {
             const kmlChecked = $kml.prop('checked');
 
             // Can only download sites if kml is checked
-            setEnabled(this.$container.find('.result-type:not(#main-sites)'), !kmlChecked);
+            setEnabled(this.$container.find('.result-type:not(#sites)'), !kmlChecked);
 
             this.updateResultTypeAction(this.getResultType());
         });
@@ -98,7 +95,7 @@ export default class DataDetailsView {
         let $inputs = this.$container.find(':input[name]');
 
         this.$container.find('input.result-type:checked').prop('checked', false);
-        $('#main-sites').prop('checked', true);
+        $('#sites').prop('checked', true);
         $('#csv').prop('checked', true);
         $('#sorted').prop('checked', false);
         $('#hidden-sorted').prop('value', '');
