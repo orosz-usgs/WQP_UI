@@ -70,7 +70,8 @@ export default class DownloadProgressDialog {
                 isResults : resultType === 'Result',
                 isActivities : resultType === 'Activity',
                 isActivityMetrics : resultType === 'ActivityMetric',
-                isResultDetection: resultType === 'ResultDetectionQuantitationLimit'
+                isResultDetection: resultType === 'ResultDetectionQuantitationLimit',
+                isOrganization: resultType === 'Organization'
             };
             context.providers = map(providers.getIds(), function (provider) {
                 return {

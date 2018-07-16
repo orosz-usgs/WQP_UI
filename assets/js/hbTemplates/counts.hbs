@@ -17,6 +17,9 @@ Your query will return
 {{#if isResultDetection}}
     data on <b>{{total.resultdetections}}</b> result detection quantitation limit data
 {{/if}}
+{{#if isOrganization}}
+data on <b>{{total.organizations}}</b> organizations
+{{/if}}
 {{#if showSites}}
     <b>{{total.sites}}</b> sites:<br />
 {{else}}
@@ -40,6 +43,9 @@ Your query will return
     {{/if}}
     {{#if ../isResultDetection}}
         data on <b>{{counts.resultdetections}}</b> result detection quantitation limit data
+    {{/if}}
+    {{#if ../isOrganization}}
+        data on <b>{{counts.organizations}}</b> organizations
     {{/if}}
     {{#if ../showSites}}
         {{counts.sites}} sites <br/>

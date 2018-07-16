@@ -393,49 +393,6 @@
                     <div id="download-box-input-div">
                         <div id="download-data-kind-box">
                             <b>Select data to download:</b>
-                            <ul>
-                                <li>
-                                    <input checked="checked" type="radio" class="result-type" id="sites"
-                                           value="Station">
-                                    <label for="sites">Site data only</label>
-                                </li>
-                                <li>
-                                    <input type="radio" class="result-type" id="projects"
-                                           value="Project">
-                                    <label for="projects">Project data</label>
-                                </li>
-                                <li>
-                                    <input type="radio" class="result-type" id="proj-mon-weight"
-                                           value="ProjectMonitoringLocationWeighting">
-                                    <label for="proj-mon-weight">Project Monitoring Location Weighting data</label>
-                                </li>
-                                <li>
-                                    <input type="radio" class="result-type" id="samples" value="Result">
-                                    <label for="samples">Sample results (physical/chemical metadata)</label>
-                                </li>
-                                <li>
-                                    <input type="radio" class="result-type" id="biosamples" value="Result">
-                                    <label for="biosamples">Sample results (biological metadata)</label>
-                                </li>
-                                <li>
-                                    <input type="radio" class="result-type" id="narrowsamples" value="Result">
-                                    <label for="narrowsamples">Sample results (narrow)</label>
-                                </li>
-                                <li>
-                                    <input type="radio" class="result-type" id="activity-input" value="Activity"/>
-                                    <label for="activity-input">Sampling Activity</label>
-                                </li>
-                                <li>
-                                    <input type="radio" class="result-type" id="activitymetric-input"
-                                           value="ActivityMetric"/>
-                                    <label for="activitymetric-input">Sampling Activity Metrics</label>
-                                </li>
-                                <li>
-                                    <input type="radio" class="result-type" id="resultdetection"
-                                           value="ResultDetectionQuantitationLimit"/>
-                                    <label for="resultdetection">Result Detection Quantitation Limit Data</label>
-                                </li>
-                            </ul>
                         </div>
                         <div id="download-tabular-data">
                             <b>File format:</b><br/>
@@ -532,19 +489,28 @@
                 <ul class="download-lists">
                     <li>
                         <input checked="checked" type="radio" name="resultType" id="dialog-sites" value="Station"/>
-                        <label for="dialog-sites">Sites only</label>
+                        <label for="dialog-sites">Site data only</label>
+                    </li>
+                    <li>
+                        <input type="radio" class="result-type" id="dialog-projects" value="Project">
+                        <label for="dialog-projects">Project data</label>
+                    </li>
+                    <li>
+                        <input type="radio" class="result-type" id="dialog-proj-mon-weight"
+                               value="ProjectMonitoringLocationWeighting">
+                        <label for="dialog-proj-mon-weight">Project Monitoring Location Weighting data</label>
                     </li>
                     <li>
                         <input type="radio" name="resultType" id="dialog-samples" value="Result"/>
-                        <label for="dialog-samples">Sample results only</label>
+                        <label for="dialog-samples">Sample results (physical/chemical metadata)</label>
                     </li>
                     <li>
                         <input type="radio" name="resultType" id="dialog-biosamples" value="Result"/>
-                        <label for="dialog-biosamples">Sample results with biological metadata</label>
+                        <label for="dialog-biosamples">Sample results (biological metadata)</label>
                     </li>
                     <li>
                         <input type="radio" name="resultType" id="dialog-narrowsamples" value="Result"/>
-                        <label for="dialog-narrowsamples">Sample results with narrow metadata</label>
+                        <label for="dialog-narrowsamples">Sample results (narrow)</label>
                     </li>
                     <li>
                         <input type="radio" name="resultType" id="dialog-activities" value="Activity"/>
@@ -558,6 +524,10 @@
                         <input type="radio" name="resultType" id="dialog-resultdetection"
                                value="ResultDetectionQuantitationLimit"/>
                         <label for="dialog-resultdetection">Result Detection Quantitation Limit Data</label>
+                    </li>
+                    <li>
+                        <input type="radio" class="result-type" id="dialog-organization" value="Organization" />
+                        <label for="dialog-organization">Organization data</label>
                     </li>
                 </ul>
             </div>

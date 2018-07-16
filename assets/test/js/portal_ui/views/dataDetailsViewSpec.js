@@ -5,21 +5,13 @@ describe('Tests for DataDetailsView', function() {
     let testView;
     let $testDiv;
     let $kml, $sites, $samples, $biosamples, $sorted, $hiddenSorted, $narrowsamples, $activity, $activitymetrics, $resultdet;
-    let $projects, $projMonWeight;
+    let $projects, $projMonWeight, $organizations;
     let updateResultTypeAction;
 
     beforeEach(function() {
         $('body').append('<div id="test-div">' +
             '<form>' +
-            '<input checked class="result-type" type="radio" id="sites" value="Station" />' +
-            '<input class="result-type" type="radio" id="projects" value="Project" />' +
-            '<input class="result-type" type="radio" id="proj-mon-weight" value="ProjectMonitoringLocationWeighting" />' +
-            '<input class="result-type" type="radio" id="samples" value="Result" />' +
-            '<input class="result-type" type="radio" id="biosamples" value="Result" />' +
-            '<input class="result-type" type="radio" id="narrowsamples" value="Result" />' +
-            '<input class="result-type" type="radio" id="activity-input" value="Activity" />' +
-            '<input class="result-type" type="radio" id="activitymetric-input" value="ActivityMetric" />' +
-            '<input class="result-type" type="radio" id="resultdetection" value="ResultDetectionQuantitationLimit" />' +
+            '<div id="download-data-kind-box"></div>' +
             '<input type="radio" checked name="mimeType" id="csv" value="csv" />' +
             '<input type="radio" checked name="mimeType" id="tsv" value="tsv" />' +
             '<input type="radio" checked name="mimeType" id="xlsx" value="xlsx" />' +
@@ -32,15 +24,6 @@ describe('Tests for DataDetailsView', function() {
         );
         $testDiv = $('#test-div');
         $kml = $('#kml');
-        $sites = $('#sites');
-        $projects = $('#projects');
-        $projMonWeight = $('#proj-mon-weight');
-        $samples = $('#samples');
-        $biosamples = $('#biosamples');
-        $narrowsamples = $('#narrowsamples');
-        $activity = $('#activity-input');
-        $activitymetrics = $('#activitymetric-input');
-        $resultdet = $('#resultdetection');
 
         $sorted = $('#sorted');
         $hiddenSorted = $('#hidden-sorted');
@@ -51,6 +34,18 @@ describe('Tests for DataDetailsView', function() {
             $container : $testDiv,
             updateResultTypeAction : updateResultTypeAction
         });
+        testView.initialize();
+
+        $sites = $('#main-sites');
+        $projects = $('#main-projects');
+        $projMonWeight = $('#main-proj-mon-weight');
+        $samples = $('#main-samples');
+        $biosamples = $('#main-biosamples');
+        $narrowsamples = $('#main-narrowsamples');
+        $activity = $('#main-activity-input');
+        $activitymetrics = $('#main-activitymetric-input');
+        $resultdet = $('#main-resultdetection');
+        $organizations = $('#main-organization');
     });
 
     afterEach(function() {
@@ -58,7 +53,6 @@ describe('Tests for DataDetailsView', function() {
     });
 
     it('Expects that if the kml button is checked that checkboxes other than the sites checkbox are disabled', function() {
-        testView.initialize();
         $kml.prop('checked', true).trigger('change');
 
         expect($sites.is(':disabled')).toBe(false);
@@ -70,6 +64,7 @@ describe('Tests for DataDetailsView', function() {
         expect($activity.is(':disabled')).toBe(true);
         expect($activitymetrics.is(':disabled')).toBe(true);
         expect($resultdet.is(':disabled')).toBe(true);
+        expect($organizations.is(':disabled')).toBe(true);
 
         $kml.prop('checked', false).trigger('change');
 
@@ -82,10 +77,10 @@ describe('Tests for DataDetailsView', function() {
         expect($activity.is(':disabled')).toBe(false);
         expect($activitymetrics.is(':disabled')).toBe(false);
         expect($resultdet.is(':disabled')).toBe(false);
+        expect($organizations.is(':disabled')).toBe(false);
     });
 
     it('Expects that if the result-type radio button is changed, updateResultTypeAction is executed', function() {
-        testView.initialize();
         $samples.prop('checked', true).trigger('change');
         expect(updateResultTypeAction).toHaveBeenCalledWith('Result');
 
@@ -120,10 +115,13 @@ describe('Tests for DataDetailsView', function() {
         $resultdet.prop('checked', true).trigger('change');
         expect(updateResultTypeAction.calls.count()).toBe(9);
         expect(updateResultTypeAction.calls.argsFor(8)[0]).toEqual('ResultDetectionQuantitationLimit');
+
+        $organizations.prop('checked', true).trigger('change');
+        expect(updateResultTypeAction.calls.count()).toBe(10);
+        expect(updateResultTypeAction.calls.argsFor(9)[0]).toEqual('Organization');
     });
 
     it('Expects that if the biosamples radio button is checked, a hidden input is added with name dataProfile', function() {
-        testView.initialize();
         $biosamples.prop('checked', true).trigger('change');
         expect($testDiv.find('input[type="hidden"][name="dataProfile"]').length).toBe(1);
 
@@ -132,7 +130,6 @@ describe('Tests for DataDetailsView', function() {
     });
 
     it('Expects that if the narrowsamples radio button is checked, a hidden input is added with name dataProfile', function() {
-        testView.initialize();
         $narrowsamples.prop('checked', true).trigger('change');
         expect($testDiv.find('input[type="hidden"][name="dataProfile"]').length).toBe(1);
 
@@ -141,7 +138,6 @@ describe('Tests for DataDetailsView', function() {
     });
 
     it('Expects that changing the sort checkbox updates the hidden sorted input', function() {
-        testView.initialize();
         $sorted.prop('checked', true).trigger('change');
         expect($hiddenSorted.val()).toEqual('yes');
 
@@ -160,7 +156,6 @@ describe('Tests for DataDetailsView', function() {
     });
 
     it('If sorted-yes and the hidden input is cleared, the checkbox is unchecked', () => {
-        testView.initialize();
         $sorted.prop('checked', true);
         $hiddenSorted.val('yes');
         $hiddenSorted.val('').trigger('change');
@@ -169,7 +164,6 @@ describe('Tests for DataDetailsView', function() {
     });
 
     it('Expects that getResultType returns the currently selected result type', function() {
-        testView.initialize();
         $samples.prop('checked', true).trigger('change');
         expect(testView.getResultType()).toEqual('Result');
 
@@ -178,7 +172,6 @@ describe('Tests for DataDetailsView', function() {
     });
 
     it('Expects that getMimeType returns the currently selected mime type', function() {
-        testView.initialize();
         $('#xlsx').trigger('click');
         expect(testView.getMimeType()).toEqual('xlsx');
 
@@ -195,7 +188,6 @@ describe('Tests for DataDetailsView', function() {
     });
 
     it('Expects the resetForm function will return "data details" section of form to on-page-load-state', () => {
-        testView.initialize();
         testView.resetContainer();
 
         expect($('.result-type').is(':disabled')).toBe(false);
