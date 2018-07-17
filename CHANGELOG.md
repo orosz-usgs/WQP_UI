@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Download proxy now works on Firefox and when remotely deployed.
 - Download of data in Excel format when there are undefined counts now works.
 - All endpoints now do not allow a download when there is no data to download.
+- Bug that prevented portal page selects from working in Internet Explorer 11.
 
 ## [5.8.0]
 ### Added
