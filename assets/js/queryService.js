@@ -46,7 +46,8 @@ export default {
                         results: formatCount(data, 'Total-Result-Count'),
                         activities: formatCount(data, 'Total-Activity-Count'),
                         activitymetrics: formatCount(data, 'Total-ActivityMetric-Count'),
-                        resultdetections: formatCount(data, 'Total-ResultDetectionQuantitationLimit-Count')
+                        resultdetections: formatCount(data, 'Total-ResultDetectionQuantitationLimit-Count'),
+                        organizations: formatCount(data, 'Total-Organization-Count')
                     }
                 };
                 each(providers, function(provider) {
@@ -57,7 +58,8 @@ export default {
                         results: formatCount(data, provider + '-Result-Count'),
                         activities: formatCount(data, provider + '-Activity-Count'),
                         activitymetrics: formatCount(data, provider + '-ActivityMetric-Count'),
-                        resultdetections: formatCount(data, provider + '-ResultDetectionQuantitationLimit-Count')
+                        resultdetections: formatCount(data, provider + '-ResultDetectionQuantitationLimit-Count'),
+                        organizations: formatCount(data, provider + '-Organization-Count')
                     };
                 });
                 log.debug('Successfully got counts');

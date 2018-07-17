@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - New npm script that can be used to run the static server using https
 - Handles 401 or 403 status from ajax calls and informs user that they need to reload the page.
+- Radio button for selecting the organization data endpoint in the Download form.
 
 ### Changed
 - Computed web service calls are now updated when search form changes are made.
@@ -15,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - Download proxy now works on Firefox and when remotely deployed.
 - Download of data in Excel format when there are undefined counts now works.
+- All endpoints now do not allow a download when there is no data to download.
 
 ## [5.8.0]
 ### Added

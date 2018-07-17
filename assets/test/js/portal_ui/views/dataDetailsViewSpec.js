@@ -5,7 +5,7 @@ describe('Tests for DataDetailsView', function() {
     let testView;
     let $testDiv;
     let $kml, $sites, $samples, $biosamples, $sorted, $hiddenSorted, $narrowsamples, $activity, $activitymetrics, $resultdet;
-    let $projects, $projMonWeight;
+    let $projects, $projMonWeight, $organizations;
     let updateResultTypeAction;
 
     beforeEach(function() {
@@ -20,6 +20,7 @@ describe('Tests for DataDetailsView', function() {
             '<input class="result-type" type="radio" id="activity-input" value="Activity" />' +
             '<input class="result-type" type="radio" id="activitymetric-input" value="ActivityMetric" />' +
             '<input class="result-type" type="radio" id="resultdetection" value="ResultDetectionQuantitationLimit" />' +
+            '<input class="result-type" type="radio" id="organization" value="Organization" />' +
             '<input type="radio" checked name="mimeType" id="csv" value="csv" />' +
             '<input type="radio" checked name="mimeType" id="tsv" value="tsv" />' +
             '<input type="radio" checked name="mimeType" id="xlsx" value="xlsx" />' +
@@ -41,6 +42,7 @@ describe('Tests for DataDetailsView', function() {
         $activity = $('#activity-input');
         $activitymetrics = $('#activitymetric-input');
         $resultdet = $('#resultdetection');
+        $organizations = $('#organization');
 
         $sorted = $('#sorted');
         $hiddenSorted = $('#hidden-sorted');
@@ -70,6 +72,7 @@ describe('Tests for DataDetailsView', function() {
         expect($activity.is(':disabled')).toBe(true);
         expect($activitymetrics.is(':disabled')).toBe(true);
         expect($resultdet.is(':disabled')).toBe(true);
+        expect($organizations.is(':disabled')).toBe(true);
 
         $kml.prop('checked', false).trigger('change');
 
@@ -82,6 +85,7 @@ describe('Tests for DataDetailsView', function() {
         expect($activity.is(':disabled')).toBe(false);
         expect($activitymetrics.is(':disabled')).toBe(false);
         expect($resultdet.is(':disabled')).toBe(false);
+        expect($organizations.is(':disabled')).toBe(false);
     });
 
     it('Expects that if the result-type radio button is changed, updateResultTypeAction is executed', function() {
@@ -120,6 +124,10 @@ describe('Tests for DataDetailsView', function() {
         $resultdet.prop('checked', true).trigger('change');
         expect(updateResultTypeAction.calls.count()).toBe(9);
         expect(updateResultTypeAction.calls.argsFor(8)[0]).toEqual('ResultDetectionQuantitationLimit');
+
+        $organizations.prop('checked', true).trigger('change');
+        expect(updateResultTypeAction.calls.count()).toBe(10);
+        expect(updateResultTypeAction.calls.argsFor(9)[0]).toEqual('Organization');
     });
 
     it('Expects that if the biosamples radio button is checked, a hidden input is added with name dataProfile', function() {
