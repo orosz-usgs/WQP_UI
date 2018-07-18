@@ -2,6 +2,7 @@ import has from 'lodash/object/has';
 import isEqual from 'lodash/lang/isEqual';
 import map from 'lodash/collection/map';
 import filter from 'lodash/collection/filter';
+import includes from 'lodash/collection/includes';
 
 import providers from '../providers';
 
@@ -18,7 +19,7 @@ export class StaticSelect2 {
             allowClear: true,
             theme: 'bootstrap',
             data: map(ids, function (id) {
-                return {id: id, text: id, selected: initValues.includes(id)};
+                return {id: id, text: id, selected: includes(initValues, id)};
             })
         };
         el.select2($.extend({}, defaultOptions, select2Options));
@@ -98,7 +99,7 @@ export class PagedCodeSelect {
                 var parents = $filter.val();
                 var children = el.val();
                 var isInOrganization = (child) => {
-                    return parents.includes(child);
+                    return includes(parents, child);
                 };
                 el.val(filter(children, isInOrganization)).trigger('change');
                 defaultOptions.ajax.url = Config.CODES_ENDPOINT + '/' + this.spec.codes + this.getParentParams(parents);
@@ -116,7 +117,7 @@ export class PagedCodeSelect {
             suffix = '?' + this.parametername + '=';
             if (typeof parentValue === 'string') {
                 //val() converts arrays to strings if not called on a select multiple. In this case, convert it back.
-                if (parentValue.includes(',')) {
+                if (includes(parentValue, ',')) {
                     parentValue = parentValue.split(',');
                 } else {
                     suffix += parentValue;
@@ -171,13 +172,13 @@ export class CodeSelect {
                 return {
                     id: data.id,
                     text: data.desc + ' (' + providers.formatAvailableProviders(data.providers) + ')',
-                    selected: initValues.includes(data.id)
+                    selected: includes(initValues, data.id)
                 };
             };
         }
         const formatData = function(data) {
             let result = options.formatData(data);
-            result.selected = initValues.includes(result.id);
+            result.selected = includes(initValues, result.id);
             return result;
         };
 
@@ -250,7 +251,7 @@ export class CascadedCodeSelect {
         }
         const initFormatData = function(data) {
             let result = options.formatData(data);
-            result.selected = initValues.includes(result.id);
+            result.selected = includes(initValues, result.id);
             return result;
         };
         var defaultOptions = {
