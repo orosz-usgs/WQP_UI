@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- Updated python and javascript dependencies
+
+## [5.9.0]
 ### Added
 - New npm script that can be used to run the static server using https
 - Handles 401 or 403 status from ajax calls and informs user that they need to reload the page.
@@ -35,5 +39,6 @@ between 768px and 992px
 - An issue that affected the ability to add some query parameters to the 'web calls' on the portal page after the 'Reset
 form' button was pressed
 
-[Unreleased]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.8.0...master
+[Unreleased]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.9.0...master
+[5.9.0]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.8.0...WQP_UI-5.9.0
 [5.8.0]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.7.0...WQP_UI-5.8.0
