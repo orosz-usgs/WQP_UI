@@ -27,6 +27,7 @@ export default class DataDetailsView {
         let $site = this.$container.find('#sites');
         let $biosamples = this.$container.find('#biosamples');
         let $narrowResults = this.$container.find('#narrowsamples');
+        let $activity = this.$container.find('#activity-input');
 
         let $sorted = this.$container.find('#sorted');
         let $hiddenSorted = this.$container.find('input[type="hidden"][name="sorted"]');
@@ -67,13 +68,15 @@ export default class DataDetailsView {
 
             setEnabled($kml, $site.prop('checked'));
 
-            // If biological results or narrow results desired add a hidden input, otherwise remove it.
+            // If activity, biological results or narrow results desired add a hidden input to set the
+            // dataProfile, otherwise remove it.
             $dataProfile.remove();
             if ($biosamples.prop('checked')) {
                 this.$container.append('<input type="hidden" name="dataProfile" value="biological" />');
-
             } else if ($narrowResults.prop('checked')){
                 this.$container.append('<input type="hidden" name="dataProfile" value="narrowResult" />');
+            } else if ($activity.prop('checked')) {
+                this.$container.append('<input type="hidden" name="dataProfile" value="activityAll" />');
             }
 
             this.updateResultTypeAction(resultType);
