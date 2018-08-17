@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Changed
 - Updated python dependencies
+- Activity download uses a dataProfile in order to get all of the columns.
 
 ## [5.9.0]
 ### Added

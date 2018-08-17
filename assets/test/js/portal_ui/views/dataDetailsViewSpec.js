@@ -148,6 +148,15 @@ describe('Tests for DataDetailsView', function() {
         expect($testDiv.find('input[type="hidden"][name="dataProfile"]').length).toBe(0);
     });
 
+    it('Expects that if the activity radio button is checked, a hidden input is added with name dataProfile', function() {
+        testView.initialize();
+        $activity.prop('checked', true).trigger('change');
+        expect($testDiv.find('input[type="hidden"][name="dataProfile"]').length).toBe(1);
+
+        $sites.prop('checked', true).trigger('change');
+        expect($testDiv.find('input[type="hidden"][name="dataProfile"]').length).toBe(0);
+    });
+
     it('Expects that changing the sort checkbox updates the hidden sorted input', function() {
         testView.initialize();
         $sorted.prop('checked', true).trigger('change');
