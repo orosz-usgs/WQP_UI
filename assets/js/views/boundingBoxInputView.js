@@ -53,15 +53,8 @@ export default class BoundingBoxInputView {
             if (north && south && east && west) {
                 let bboxVal = west + ',' + south + ',' + east + ',' + north;
                 $bbox.val(bboxVal).trigger('change');
-            } else if ($bbox.val()) {
-                $bbox.val('');
-            }
-        });
-
-        // Add change event handler for $bbox to clear text inputs if $bbox is empty
-        $bbox.change(() => {
-            if (!$bbox.val()) {
-                $textInputs.val('');
+            } else  {
+                $bbox.val('').trigger('change');
             }
         });
     }

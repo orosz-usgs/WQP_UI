@@ -61,7 +61,7 @@ export default class SiteMap {
                 this.$loadingIndicator.show();
                 this.wqpSitesLayer.fetchSitesInBBox(bounds)
                     .done((resp) => {
-                        showIdentifyDialog(this.map, popupLatLng, resp.features);
+                        showIdentifyDialog(this.map, popupLatLng, resp);
                     })
                     .fail((jqxhr) => {
                         let msg = '';

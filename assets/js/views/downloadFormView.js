@@ -280,4 +280,18 @@ export default class DownloadFormView {
     getResultType() {
         return this.dataDetailsView.getResultType();
     }
+
+    /*
+     * Removes the existing value of parameter (if any) and replace with values.
+     * @param {String} parameter - query parameter name
+     * @param {Array} values - array of strings.
+     */
+    addQueryParameter(parameter, values) {
+        const currentQueryParams = window.location.hash.slice(1).split('&'); // Array of Arrays[name, value]
+
+        // Remove parameter from existing parameters and then add new ones
+        let newQueryParams = currentQueryParams.filter((pair) => pair[0] !== parameter);
+        values.forEach((value) => newQueryParams.push([parameter, value]));
+
+    }
 }

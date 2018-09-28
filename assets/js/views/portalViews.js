@@ -98,10 +98,10 @@ export class PagedCodeSelect {
             $filter.on('change', () => {
                 var parents = $filter.val();
                 var children = el.val();
-                var isInOrganization = (child) => {
+                var isInParent = (child) => {
                     return includes(parents, child);
                 };
-                el.val(filter(children, isInOrganization)).trigger('change');
+                el.val(filter(children, isInParent)).trigger('change');
                 defaultOptions.ajax.url = Config.CODES_ENDPOINT + '/' + this.spec.codes + this.getParentParams(parents);
                 el.select2($.extend(defaultOptions, select2Options));
             });
