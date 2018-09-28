@@ -1,5 +1,8 @@
+<div class="button-container">
+	<button id="identify-populate-button" class="btn btn-default" type="button">Populate form</button>
+</div>
 {{#if exceedsFeatureLimit}}
-    Retrieved {{features.length}} sites, only showing ' + FEATURE_LIMIT + '<br />
+    Retrieved {{features.length}} sites, only showing {{FEATURE_LIMIT}}<br />
 {{/if}}
 {{#each features}}
     <br />

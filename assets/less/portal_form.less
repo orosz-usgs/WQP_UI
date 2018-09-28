@@ -333,15 +333,21 @@
       z-index : 50;
     }
 
-    .popover-content {
-      height: 250px;
-      overflow-y: scroll;
-      font-size: x-small;
-
+    .leaflet-popup-content {
+      width: 200px;
+      max-height: 150px;
+      @media (min-width: @screen-sm-min) {
+        width: 310px;
+        max-height: 250px;
+      }
+      overflow-y: auto;
+      .button-container {
+        text-align: center;
+        margin-bottom: 10px;
+      }
       table {
         th {
-          width: 60px;
-          margin-left: 5px;
+          width: 70px;
         }
       }
     }

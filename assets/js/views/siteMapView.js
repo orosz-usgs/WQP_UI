@@ -1,14 +1,13 @@
 import filter from 'lodash/collection/filter';
 
-import IdentifyDialog from '../identifyDialog';
 import providers from '../providers';
 import queryService from '../queryService';
 import { getQueryString, toggleShowHideSections } from '../utils';
 import SiteMap from '../siteMap';
 
 
-var MAP_ID = 'query-results-map';
-var STATION_RESULTS = 'Station';
+const MAP_ID = 'query-results-map';
+const STATION_RESULTS = 'Station';
 
 /*
  * Managed the Site map and its controls.
@@ -30,40 +29,34 @@ export default class SiteMapView {
      * Initialize the site map and all of it's controls
      */
     initialize() {
-        this.identifyDialog = new IdentifyDialog({
-            $dialog : $('#map-info-dialog'),
-            $popover : this.$container.find('#map-popover')
-        });
         this.portalDataMap = new SiteMap({
             mapDivId : MAP_ID,
             $loadingIndicator : this.$container.find('#map-loading-indicator'),
             $legendDiv : this.$container.find('#query-map-legend-div .legend-container'),
-            $sldSelect : this.$container.find('#sld-select-input'),
-            identifyDialog : this.identifyDialog
+            $sldSelect : this.$container.find('#sld-select-input')
         });
 
-        var $mapContainer = this.$container.find('#query-map-container');
-        var $legendContainer = this.$container.find('#query-map-legend-div');
-        var $map = this.$container.find('#' + MAP_ID);
-        var $showHideBtn = this.$container.find('.show-hide-toggle');
+        const $mapContainer = this.$container.find('#query-map-container');
+        const $legendContainer = this.$container.find('#query-map-legend-div');
+        const $map = this.$container.find('#' + MAP_ID);
+        const $showHideBtn = this.$container.find('.show-hide-toggle');
 
         // The map div's height should always be set to the height its parent div.
         // OpenLayers will not draw the layer if the height of the map div is not set explictly.
         $map.height($mapContainer.height());
         $(window).resize(() => {
-            var mapContainerHeight = $mapContainer.height();
+            const mapContainerHeight = $mapContainer.height();
 
             if (mapContainerHeight !== $map.height()) {
                 $map.height(mapContainerHeight);
             }
         });
 
-        this.identifyDialog.initialize(() => this.portalDataMap.clearBoxIdFeature());
         this.portalDataMap.initialize();
 
         // Add click handler for map show/hide button
         $showHideBtn.click((event) => {
-            var isVisible = toggleShowHideSections($(event.currentTarget), $mapContainer);
+            const isVisible = toggleShowHideSections($(event.currentTarget), $mapContainer);
             if (isVisible) {
                 this.portalDataMap.render();
                 $legendContainer.show();
@@ -74,13 +67,13 @@ export default class SiteMapView {
 
         // Add click handler for Show Sites button
         this.$container.find('#show-on-map-button').click(() => {
-            var queryParamArray = this.downloadFormView.getQueryParamArray();
-            var queryString = getQueryString(queryParamArray);
-            var siteIds = filter(queryParamArray, (param) => {
+            const queryParamArray = this.downloadFormView.getQueryParamArray();
+            const queryString = getQueryString(queryParamArray);
+            const siteIds = filter(queryParamArray, (param) => {
                 return param.name === 'siteid';
             });
 
-            var showMap = (totalCount) => {
+            const showMap = (totalCount) => {
                 // Show the map if it is currently hidden
                 if ($mapContainer.is(':hidden')) {
                     $showHideBtn.click();
@@ -116,7 +109,7 @@ export default class SiteMapView {
                 this.downloadProgressDialog.show('map');
                 queryService.fetchQueryCounts(STATION_RESULTS, queryParamArray, providers.getIds())
                     .done((counts) => {
-                        var fileFormat = 'xml';
+                        const fileFormat = 'xml';
                         this.downloadProgressDialog.updateProgress(counts, STATION_RESULTS, fileFormat, showMap);
                     })
                     .fail((message) => {
