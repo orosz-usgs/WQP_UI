@@ -2,9 +2,9 @@ import BoundingBoxInputView from '../../../../js/views/boundingBoxInputView';
 
 
 describe('Tests for BoundingBoxInputView', function() {
-    var $testDiv;
-    var testView;
-    var $north, $south, $east, $west, $bbox;
+    let $testDiv;
+    let testView;
+    let $north, $south, $east, $west, $bbox;
 
     beforeEach(function() {
         $('body').append('<div id="test-div">' +

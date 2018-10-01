@@ -4,14 +4,14 @@ import SiteMap from '../../../../js/siteMap';
 
 
 describe ('Tests for SiteMapView', function() {
-    var testView;
-    var $testDiv;
+    let testView;
+    let $testDiv;
 
-    var mockDownloadDialog, mockDownloadView;
-    var fetchCountsDeferred;
-    var validateSuccess;
+    let mockDownloadDialog, mockDownloadView;
+    let fetchCountsDeferred;
+    let validateSuccess;
 
-    var $showHideBtn, $showMapBtn;
+    let $showHideBtn, $showMapBtn;
 
     beforeEach(function() {
         $('body').append('<div id="test-div">' +
@@ -69,7 +69,7 @@ describe ('Tests for SiteMapView', function() {
     });
 
     it('Expects that the legend container visibility is toggled when the show-hide-toggle is clicked', function() {
-        var $legendContainer = $testDiv.find('#query-map-legend-div');
+        const $legendContainer = $testDiv.find('#query-map-legend-div');
         expect($legendContainer.is(':visible')).toBe(false);
 
         $showHideBtn.trigger('click');
