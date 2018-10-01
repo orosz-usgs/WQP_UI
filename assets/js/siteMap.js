@@ -1,4 +1,4 @@
-import {showIdentifyDialog} from './identifyDialog';
+import {showIdentifyPopupContent} from './identifyDialog';
 
 const BASE_LAYER_Z_INDEX = 1;
 const HYDRO_LAYER_Z_INDEX = 2;
@@ -53,19 +53,24 @@ export default class SiteMap {
             zIndex: NWIS_SITES_LAYER_Z_INDEX
         });
         let drawIdentifyBoxControl;
+        let identifyPopup = L.popup();
 
-        const updateIdentifyDialog = (bounds) => {
+        const showIdentifyDialog = (bounds) => {
             if (this.wqpSitesLayer) {
                 const popupLatLng = bounds.getCenter();
 
                 this.$loadingIndicator.show();
                 this.wqpSitesLayer.fetchSitesInBBox(bounds)
                     .done((resp) => {
-                        showIdentifyDialog({
+                        showIdentifyPopupContent({
                             map: this.map,
+                            popup: identifyPopup,
                             atLatLng: popupLatLng,
                             features: resp
                         });
+                        if (!identifyPopup.getContent()) {
+                            this.drawnIdentifyBoxFeature.clearLayers();
+                        }
                     })
                     .fail((jqxhr) => {
                         let msg = '';
@@ -75,6 +80,7 @@ export default class SiteMap {
                         } else {
                             msg = 'Failed to fetch sites';
                         }
+                        identifyPopup.setContent(msg);
                         this.map.openPopup(msg, popupLatLng);
                     })
                     .always(() => {
@@ -91,13 +97,13 @@ export default class SiteMap {
                 this.map.layerPointToLatLng(northeastPoint)
             );
             this.drawnIdentifyBoxFeature.clearLayers();
-            updateIdentifyDialog(bounds);
+            showIdentifyDialog(bounds);
         };
 
         const drawIdentifyBox = (layer) => {
             this.drawnIdentifyBoxFeature.clearLayers();
             this.drawnIdentifyBoxFeature.addLayer(layer);
-            updateIdentifyDialog(layer.getBounds());
+            showIdentifyDialog(layer.getBounds());
         };
 
         this.drawnIdentifyBoxFeature = L.featureGroup();

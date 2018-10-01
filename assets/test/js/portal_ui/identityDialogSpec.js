@@ -1,7 +1,7 @@
 import {showIdentifyDialog} from '../../../js/identifyDialog';
 
 
-describe('Test identifyDialog', function () {
+fdescribe('Test identifyDialog', function () {
     let map, $testDiv, $siteid, $north, $south, $west, $east;
 
     beforeEach(() => {
@@ -108,6 +108,23 @@ describe('Test identifyDialog', function () {
            done();
         }, 500);
 
+    });
+
+    it('Calls the closefnc when the popup is closed', (done) => {
+        let closefncSpy = jasmine.createSpy('closefncSpy');
+        /* eslint no-use-before-define: 0 */
+        showIdentifyDialog({
+            map: map,
+            atLatLng: [43, -100],
+            features: TEST_ONE_FEATURE,
+            closefnc: closefncSpy
+        });
+        map.closePopup();
+
+        window.setTimeout(() => {
+            expect(closefncSpy).toHaveBeenCalled();
+            done();
+        }, 500);
     });
 
 

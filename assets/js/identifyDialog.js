@@ -14,13 +14,12 @@ const WEST_ID = '#west';
 const EAST_ID = '#east';
 
 /*
- * Make the identify dialog visible on map with popup positioned atLatLng. The identify contents
- * should contain the features.
- * @param {L.Map} map
- * @param {L.LatLng} atLatLng
+ * Update popup identify contents to contain features.
+ *
+ * @param {L.Popup} popup
  * @param {Object} features - response from a GetFeature request
  */
-export const showIdentifyDialog  = function({map, atLatLng, features}) {
+export const showIdentifyPopupContent  = function({map, popup, atLatLng, features}) {
 
     if (features.features.length) {
         const exceedsFeatureLimit = features.features.length > FEATURE_LIMIT;
@@ -29,8 +28,8 @@ export const showIdentifyDialog  = function({map, atLatLng, features}) {
             FEATURE_LIMIT: FEATURE_LIMIT,
             exceedsFeatureLimit: exceedsFeatureLimit
         };
-
-        map.openPopup(dialogTemplate(context), atLatLng);
+        popup.setContent(dialogTemplate(context)).setLatLng(atLatLng);
+        map.openPopup(popup);
         $('#identify-populate-button').click(() => {
             if (exceedsFeatureLimit) {
                 $(SOUTH_ID).val(features.bbox[0]);
@@ -50,6 +49,6 @@ export const showIdentifyDialog  = function({map, atLatLng, features}) {
             }
         });
     } else {
-        map.closePopup();
+        map.closePopup(popup);
     }
 };
