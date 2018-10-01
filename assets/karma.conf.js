@@ -27,9 +27,7 @@ module.exports = function (config) {
             'dist/scripts/vendor.js',
             'test/resources/testConfig.js',
             'temp-test-manifest.js',
-            //'js/**/*.js',
             {pattern: 'js/hbTemplates/*.hbs', included: false}
-            //'test/js/portal_ui/**/*.js'
         ],
 
 
