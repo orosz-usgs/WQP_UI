@@ -90,6 +90,7 @@ export default class SiteMap {
                 this.map.layerPointToLatLng(southwestPoint),
                 this.map.layerPointToLatLng(northeastPoint)
             );
+            this.drawnIdentifyBoxFeature.clearLayers();
             updateIdentifyDialog(bounds);
         };
 
