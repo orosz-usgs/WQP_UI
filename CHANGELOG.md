@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Updated python dependencies
 - Activity download uses a dataProfile in order to get all of the columns.
+- Identify dialog now uses a Leaflet popup for all screen sizes and the form within the dialog has
+been eliminated in favor of a Populate Form button which populates the form within the portal page.
 
 ## [5.9.0]
 ### Added
