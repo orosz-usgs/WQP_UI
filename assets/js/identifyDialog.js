@@ -19,7 +19,7 @@ const EAST_ID = '#east';
  * @param {L.Popup} popup
  * @param {Object} features - response from a GetFeature request
  */
-export const showIdentifyPopupContent  = function({map, popup, atLatLng, features}) {
+export const showIdentifyPopup  = function({map, popup, atLatLng, features}) {
 
     if (features.features.length) {
         const exceedsFeatureLimit = features.features.length > FEATURE_LIMIT;

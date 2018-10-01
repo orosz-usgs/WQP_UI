@@ -1,8 +1,8 @@
-import {showIdentifyDialog} from '../../../js/identifyDialog';
+import {showIdentifyPopup} from '../../../js/identifyDialog';
 
 
-fdescribe('Test identifyDialog', function () {
-    let map, $testDiv, $siteid, $north, $south, $west, $east;
+describe('Test identifyDialog', function () {
+    let map, popup, $testDiv, $siteid, $north, $south, $west, $east;
 
     beforeEach(() => {
         $('body').append('<div id="test-div"></div>');
@@ -18,6 +18,7 @@ fdescribe('Test identifyDialog', function () {
             zoom: 3
         });
 
+        popup = L.popup();
         $siteid = $('#siteid');
         $north = $('#north');
         $south = $('#south');
@@ -34,32 +35,35 @@ fdescribe('Test identifyDialog', function () {
     });
 
     it('Does not show the dialog if no features are passed', () => {
-        showIdentifyDialog({
+        showIdentifyPopup({
             map: map,
+            popup: popup,
             atLatLng: [43, -100],
             features: {
                 features: []
             }
         });
 
-        expect($testDiv.find('.leaflet-popup').length).toBe(0);
+        expect(map.hasLayer(popup)).toBe(false);
     });
 
     it('Shows the dialog if features are passed', () => {
         /* eslint no-use-before-define: 0 */
-        showIdentifyDialog({
+        showIdentifyPopup({
             map: map,
+            popup: popup,
             atLatLng: [43, -100],
             features: TEST_ONE_FEATURE
         });
 
-        expect($testDiv.find('.leaflet-popup').length).toBe(1);
+        expect(map.hasLayer(popup)).toBe(true);
     });
 
     it('Clicking the populate button with one feature adds the site id to the siteid select and does not fill in the bbox inputs', () => {
         /* eslint no-use-before-define: 0 */
-        showIdentifyDialog({
+        showIdentifyPopup({
             map: map,
+            popup: popup,
             atLatLng: [43, -100],
             features: TEST_ONE_FEATURE
         });
@@ -74,8 +78,9 @@ fdescribe('Test identifyDialog', function () {
 
     it('Clicking the populate button with one feature adds the site id to the siteid select and does not fill in the bbox inputs', () => {
         /* eslint no-use-before-define: 0 */
-        showIdentifyDialog({
+        showIdentifyPopup({
             map: map,
+            popup,
             atLatLng: [43, -100],
             features: TEST_FIFTY_FEATURES
         });
@@ -88,45 +93,25 @@ fdescribe('Test identifyDialog', function () {
         expect($east.val()).toEqual('-89.6956778');
     });
 
-    it('A second call to showIdentifyDialog with no features closes the popup', (done) => {
+    it('A second call to showIdentifyDialog with no features closes the popup', () => {
         /* eslint no-use-before-define: 0 */
-        showIdentifyDialog({
+        showIdentifyPopup({
             map: map,
+            popup: popup,
             atLatLng: [43, -100],
             features: TEST_ONE_FEATURE
         });
-        showIdentifyDialog({
+        showIdentifyPopup({
             map: map,
+            popup: popup,
             atLatLng: [43, -100],
             features: {
                 features: []
             }
         });
 
-        window.setTimeout(() => {
-           expect($testDiv.find('.leaflet-popup').length).toBe(0);
-           done();
-        }, 500);
-
+        expect(map.hasLayer(popup)).toBe(false);
     });
-
-    it('Calls the closefnc when the popup is closed', (done) => {
-        let closefncSpy = jasmine.createSpy('closefncSpy');
-        /* eslint no-use-before-define: 0 */
-        showIdentifyDialog({
-            map: map,
-            atLatLng: [43, -100],
-            features: TEST_ONE_FEATURE,
-            closefnc: closefncSpy
-        });
-        map.closePopup();
-
-        window.setTimeout(() => {
-            expect(closefncSpy).toHaveBeenCalled();
-            done();
-        }, 500);
-    });
-
 
     const TEST_ONE_FEATURE = {
         'type': 'FeatureCollection',

@@ -1,4 +1,4 @@
-import {showIdentifyPopupContent} from './identifyDialog';
+import {showIdentifyPopup} from './identifyDialog';
 
 const BASE_LAYER_Z_INDEX = 1;
 const HYDRO_LAYER_Z_INDEX = 2;
@@ -62,7 +62,7 @@ export default class SiteMap {
                 this.$loadingIndicator.show();
                 this.wqpSitesLayer.fetchSitesInBBox(bounds)
                     .done((resp) => {
-                        showIdentifyPopupContent({
+                        showIdentifyPopup({
                             map: this.map,
                             popup: identifyPopup,
                             atLatLng: popupLatLng,
