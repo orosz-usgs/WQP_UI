@@ -529,67 +529,6 @@
             </div>
         </div>
     </div>
-    <div id="map-info-dialog" style="display: none;">
-        <form method="get" style="vertical-align: top; display: inline-block;">
-            <div id="map-info-data-type-div" style="vertical-align: top; display: inline-block;">
-                Select data:
-                <ul class="download-lists">
-                    <li>
-                        <input checked="checked" type="radio" name="resultType" id="dialog-sites" value="Station"/>
-                        <label for="dialog-sites">Sites only</label>
-                    </li>
-                    <li>
-                        <input type="radio" name="resultType" id="dialog-samples" value="Result"/>
-                        <label for="dialog-samples">Sample results only</label>
-                    </li>
-                    <li>
-                        <input type="radio" name="resultType" id="dialog-biosamples" value="Result"/>
-                        <label for="dialog-biosamples">Sample results with biological metadata</label>
-                    </li>
-                    <li>
-                        <input type="radio" name="resultType" id="dialog-narrowsamples" value="Result"/>
-                        <label for="dialog-narrowsamples">Sample results with narrow metadata</label>
-                    </li>
-                    <li>
-                        <input type="radio" name="resultType" id="dialog-activities" value="Activity"/>
-                        <label for="dialog-activities">Sampling Activity</label>
-                    </li>
-                    <li>
-                        <input type="radio" class="resultType" id="dialog-activitymetric" value="ActivityMetric"/>
-                        <label for="dialog-activitymetric">Sampling Activity Metrics</label>
-                    </li>
-                    <li>
-                        <input type="radio" name="resultType" id="dialog-resultdetection"
-                               value="ResultDetectionQuantitationLimit"/>
-                        <label for="dialog-resultdetection">Result Detection Quantitation Limit Data</label>
-                    </li>
-                </ul>
-            </div>
-            <div style="display: inline-block;" id="map-info-file-format-div">
-                Select file format:
-                <ul class="download-lists">
-                    <li>
-                        <input type="radio" checked="checked" name="mimeType" id="dialog-csv" value="csv">
-                        <label for="dialog-csv">Comma-separated</label>
-                    </li>
-                    <li>
-                        <input type="radio" name="mimeType" id="dialog-tsv" value="tsv">
-                        <label for="dialog-tsv">Tab-separated</label>
-                    </li>
-                    <li>
-                        <input type="radio" name="mimeType" id="dialog-xlsx" value="xlsx">
-                        <label for="dialog-xlsx">MS Excel</label>
-                    </li>
-                </ul>
-            </div>
-            <div id="map-id-hidden-input-div"></div>
-        </form>
-        <div id="map-info-download-button-div" style="text-align: center;">
-            <button class="btn" id="download-map-info-button">Download Data</button>
-        </div>
-        <hr/>
-        <div id="map-info-details-div"></div>
-    </div>
     <div id="validate-download-dialog" class="modal fade">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">

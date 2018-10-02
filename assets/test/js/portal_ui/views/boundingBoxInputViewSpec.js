@@ -2,9 +2,9 @@ import BoundingBoxInputView from '../../../../js/views/boundingBoxInputView';
 
 
 describe('Tests for BoundingBoxInputView', function() {
-    var $testDiv;
-    var testView;
-    var $north, $south, $east, $west, $bbox;
+    let $testDiv;
+    let testView;
+    let $north, $south, $east, $west, $bbox;
 
     beforeEach(function() {
         $('body').append('<div id="test-div">' +
@@ -101,6 +101,9 @@ describe('Tests for BoundingBoxInputView', function() {
 
         $south.val('').trigger('change');
         expect($bbox.val()).toEqual('');
+        expect($north.val()).toEqual('12');
+        expect($east.val()).toEqual('15');
+        expect($west.val()).toEqual('20');
     });
 
     it('Expects the bbox inputs to be cleared if the hidden input is cleared', () => {

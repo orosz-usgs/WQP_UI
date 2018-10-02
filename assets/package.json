@@ -9,7 +9,6 @@
   "scripts": {
     "test": "mkdir -p dist/scripts && run-p build:vendorjs && karma start",
     "test:watch": "mkdir -p dist/scripts && run-p build:vendorjs && karma start --debug --no-single-run --browsers Chrome",
-    "postinstall": "node post_install.js",
     "build": "run-p build:* && npm run hash-assets",
     "build:css": "run-p buildcss:*",
     "buildcss:site": "lessc less/site.less > dist/site.css && uglifycss --output dist/site.css dist/site.css && postcss dist/site.css --no-map --use autoprefixer -o dist/site.css",
@@ -85,7 +84,7 @@
     "font-awesome": "4.7.0",
     "jquery": "3.3.1",
     "jquery-ui-dist": "1.12.1",
-    "leaflet": "1.3.1",
+    "leaflet": "1.3.4",
     "leaflet-draw": "0.4.14",
     "leaflet-easybutton": "2.3.0",
     "leaflet-providers": "1.1.17",

@@ -51,24 +51,26 @@ export default class BoundingBoxInputView {
             const east = $east.val();
             const west = $west.val();
             if (north && south && east && west) {
-                let bboxVal = west + ',' + south + ',' + east + ',' + north;
+                let bboxVal = `${west},${south},${east},${north}`;
                 $bbox.val(bboxVal).trigger('change');
-            } else if ($bbox.val()) {
-                $bbox.val('');
+            } else  {
+                $bbox.val('').trigger('change');
             }
         });
 
-        // Add change event handler for $bbox to clear text inputs if $bbox is empty
-        $bbox.change(() => {
-            if (!$bbox.val()) {
-                $textInputs.val('');
-            }
-        });
+
     }
 
     resetContainer() {
         let $inputs = this.$container.find(':input[name]');
         $inputs.val('');
         $inputs.trigger('change');
+
+        // Also reset text input boxes for bbox
+        this.$container.find('#north').val('');
+        this.$container.find('#south').val('');
+        this.$container.find('#west').val('');
+        this.$container.find('#east').val('');
+
     }
 }

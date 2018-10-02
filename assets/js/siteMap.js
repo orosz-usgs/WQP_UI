@@ -1,5 +1,4 @@
-import { isExtraSmallBrowser } from './utils';
-
+import {showIdentifyPopup} from './identifyDialog';
 
 const BASE_LAYER_Z_INDEX = 1;
 const HYDRO_LAYER_Z_INDEX = 2;
@@ -14,7 +13,6 @@ const WQP_SITES_LAYER_Z_INDEX = 4;
  *      @prop {Jquery element} $loadingIndicator
  *      @prop {Jquery element} $legendDiv
  *      @prop {Jquery element} $sldSelect
- *      @prop {Object instance of IdentifyDialog} identifyDialog
  * @return {Object}
  *      @func initialize
  *      @func render
@@ -23,12 +21,11 @@ const WQP_SITES_LAYER_Z_INDEX = 4;
  */
 export default class SiteMap {
 
-    constructor({mapDivId, $loadingIndicator, $legendDiv, $sldSelect, identifyDialog}) {
+    constructor({mapDivId, $loadingIndicator, $legendDiv, $sldSelect}) {
         this.mapDivId = mapDivId;
         this.$loadingIndicator = $loadingIndicator;
         this.$legendDiv = $legendDiv;
         this.$sldSelect = $sldSelect;
-        this.identifyDialog = identifyDialog;
     }
 
     /*
@@ -36,38 +33,44 @@ export default class SiteMap {
      * Should be called before any of the other methods in this object.
      */
     initialize() {
-        var MapWithSingleClickHandler = L.Map.extend({
+        const MapWithSingleClickHandler = L.Map.extend({
             includes: L.singleClickEventMixin()
         });
-        var baseLayers = {
+        const baseLayers = {
             'World Topo': L.tileLayer.provider('Esri.WorldTopoMap', {zIndex: BASE_LAYER_Z_INDEX}),
             'World Street': L.tileLayer.provider('Esri.WorldStreetMap', {zIndex: BASE_LAYER_Z_INDEX}),
             'World Relief': L.tileLayer.provider('Esri.WorldShadedRelief', {zIndex: BASE_LAYER_Z_INDEX}),
             'World Imagery': L.tileLayer.provider('Esri.WorldImagery', {zIndex: BASE_LAYER_Z_INDEX})
         };
-        var esriHydroLayer = L.esri.tiledMapLayer({
+        const esriHydroLayer = L.esri.tiledMapLayer({
             url: Config.HYDRO_LAYER_ENDPOINT,
             zIndex: HYDRO_LAYER_Z_INDEX
         });
-        var nwisSitesLayer = L.tileLayer.wms(Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wms', {
+        const nwisSitesLayer = L.tileLayer.wms(Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wms', {
             layers: 'qw_portal_map:nwis_sites',
             format: 'image/png',
             transparent: true,
             zIndex: NWIS_SITES_LAYER_Z_INDEX
         });
-        var drawIdentifyBoxControl;
+        let drawIdentifyBoxControl;
+        let identifyPopup = L.popup();
 
-        var updateIdentifyDialog = (bounds) => {
+        const showIdentifyDialog = (bounds) => {
             if (this.wqpSitesLayer) {
+                const popupLatLng = bounds.getCenter();
+
                 this.$loadingIndicator.show();
                 this.wqpSitesLayer.fetchSitesInBBox(bounds)
                     .done((resp) => {
-                        this.identifyDialog.showDialog({
-                            features: resp.features,
-                            queryParamArray: this.wqpSitesLayer.getQueryParamArray(),
-                            boundingBox: bounds.toBBoxString(),
-                            usePopover: isExtraSmallBrowser()
+                        showIdentifyPopup({
+                            map: this.map,
+                            popup: identifyPopup,
+                            atLatLng: popupLatLng,
+                            features: resp
                         });
+                        if (!identifyPopup.getContent()) {
+                            this.drawnIdentifyBoxFeature.clearLayers();
+                        }
                     })
                     .fail((jqxhr) => {
                         let msg = '';
@@ -77,7 +80,8 @@ export default class SiteMap {
                         } else {
                             msg = 'Failed to fetch sites';
                         }
-                        this.map.openPopup(msg, this.map.getCenter());
+                        identifyPopup.setContent(msg);
+                        this.map.openPopup(msg, popupLatLng);
                     })
                     .always(() => {
                         this.$loadingIndicator.hide();
@@ -85,20 +89,21 @@ export default class SiteMap {
             }
         };
 
-        var identifySitesAtPointHandler = (ev) => {
-            var southwestPoint = L.point(ev.layerPoint.x - 5, ev.layerPoint.y - 5);
-            var northeastPoint = L.point(ev.layerPoint.x + 5, ev.layerPoint.y + 5);
-            var bounds = L.latLngBounds(
+        const identifySitesAtPointHandler = (ev) => {
+            const southwestPoint = L.point(ev.layerPoint.x - 5, ev.layerPoint.y - 5);
+            const northeastPoint = L.point(ev.layerPoint.x + 5, ev.layerPoint.y + 5);
+            const bounds = L.latLngBounds(
                 this.map.layerPointToLatLng(southwestPoint),
                 this.map.layerPointToLatLng(northeastPoint)
             );
-            updateIdentifyDialog(bounds);
+            this.drawnIdentifyBoxFeature.clearLayers();
+            showIdentifyDialog(bounds);
         };
 
-        var drawIdentifyBox = (layer) => {
+        const drawIdentifyBox = (layer) => {
             this.drawnIdentifyBoxFeature.clearLayers();
             this.drawnIdentifyBoxFeature.addLayer(layer);
-            updateIdentifyDialog(layer.getBounds());
+            showIdentifyDialog(layer.getBounds());
         };
 
         this.drawnIdentifyBoxFeature = L.featureGroup();

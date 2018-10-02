@@ -1,19 +1,17 @@
 import SiteMapView from '../../../../js/views/siteMapView';
-import IdentifyDialog from '../../../../js/identifyDialog';
 import queryService from '../../../../js/queryService';
 import SiteMap from '../../../../js/siteMap';
 
 
 describe ('Tests for SiteMapView', function() {
-    var testView;
-    var $testDiv;
+    let testView;
+    let $testDiv;
 
-    var siteMapClearBoxIdSpy;
-    var mockDownloadDialog, mockDownloadView;
-    var fetchCountsDeferred;
-    var validateSuccess;
+    let mockDownloadDialog, mockDownloadView;
+    let fetchCountsDeferred;
+    let validateSuccess;
 
-    var $showHideBtn, $showMapBtn;
+    let $showHideBtn, $showMapBtn;
 
     beforeEach(function() {
         $('body').append('<div id="test-div">' +
@@ -27,12 +25,8 @@ describe ('Tests for SiteMapView', function() {
         $showHideBtn = $('.show-hide-toggle');
         $showMapBtn = $('#show-on-map-button');
 
-        spyOn(IdentifyDialog.prototype, 'initialize').and.callThrough();
-
         spyOn(SiteMap.prototype, 'initialize');
         spyOn(SiteMap.prototype, 'render');
-        siteMapClearBoxIdSpy = spyOn(SiteMap.prototype, 'clearBoxIdFeature');
-        spyOn(window._gaq, 'push');
         mockDownloadDialog = {
             show : jasmine.createSpy('mockShow'),
             updateProgress : jasmine.createSpy('mockUpdateProgress'),
@@ -65,10 +59,8 @@ describe ('Tests for SiteMapView', function() {
         $testDiv.remove();
     });
 
-    it('Expects that the identify dialog and the site map are initialized', function() {
+    it('Expects that the site map is initialized', function() {
         expect(SiteMap.prototype.initialize).toHaveBeenCalled();
-        testView.identifyDialog.closeFunc();
-        expect(siteMapClearBoxIdSpy).toHaveBeenCalled();
     });
 
     it('Expects that when the show-hide-toggle button is clicked the portal map rendered', function() {
@@ -77,7 +69,7 @@ describe ('Tests for SiteMapView', function() {
     });
 
     it('Expects that the legend container visibility is toggled when the show-hide-toggle is clicked', function() {
-        var $legendContainer = $testDiv.find('#query-map-legend-div');
+        const $legendContainer = $testDiv.find('#query-map-legend-div');
         expect($legendContainer.is(':visible')).toBe(false);
 
         $showHideBtn.trigger('click');

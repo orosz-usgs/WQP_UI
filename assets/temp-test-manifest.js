@@ -7,7 +7,6 @@ require('./js/leafletLayers/CoverageLayer');
 require('./js/leafletLayers/WQPSitesLayer');
 require('./js/LeafletMixins/SingleClickEventHandlerMixin');
 require('./js/leafletUtils');
-require('./test/js/portal_ui/controllers/controllersSpec');
 require('./test/js/portal_ui/dateValidatorSpec');
 require('./test/js/portal_ui/downloadFormControllerSpec');
 require('./test/js/portal_ui/downloadProgressDialogSpec');
