@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [5.10.0]
 ### Changed
 - Updated python dependencies
 - Activity download uses a dataProfile in order to get all of the columns.
@@ -42,6 +44,7 @@ between 768px and 992px
 - An issue that affected the ability to add some query parameters to the 'web calls' on the portal page after the 'Reset
 form' button was pressed
 
-[Unreleased]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.9.0...master
+[Unreleased]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.10.0...master
+[5.10.0]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.9.0...WQP_UI-5.10.0
 [5.9.0]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.8.0...WQP_UI-5.9.0
 [5.8.0]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.7.0...WQP_UI-5.8.0
