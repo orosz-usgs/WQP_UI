@@ -9,7 +9,7 @@
   "scripts": {
     "test": "mkdir -p dist/scripts && run-p build:vendorjs && karma start",
     "test:chrome": "mkdir -p dist/scripts && run-p build:vendorjs && karma start --browsers ChromeHeadless",
-    "test:watch": "mkdir -p dist/scripts && run-p build:vendorjs && karma start --debug --no-single-run --browsers Chrome",
+    "test:watch": "mkdir -p dist/scripts && run-p build:vendorjs && karma start --debug --no-single-run",
     "build": "run-p build:* && npm run hash-assets",
     "build:css": "run-p buildcss:*",
     "buildcss:site": "lessc less/site.less > dist/site.css && uglifycss --output dist/site.css dist/site.css && postcss dist/site.css --no-map --use autoprefixer -o dist/site.css",
