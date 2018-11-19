@@ -1,46 +1,47 @@
-PYTHON := server/env/bin/python
-PIP := server/env/bin/pip
+COVERAGE := coverage
+PIP := pip
+PYTHON := python
 
-.PHONY: env-server test-server clean-server cleanenv-server watch-server
+.PHONY: build devenv test clean cleanenv watch
 
-build-server: build-assets
+build:
 	@echo 'Building server...'
-	cd server && ./env/bin/python setup.py bdist_wheel
+	$(PYTHON) setup.py bdist_wheel
 
-clean-server:
+clean:
 	@echo 'Cleaning server...'
-	rm -rf server/dist
-	rm -rf server/build
+	rm -rf dist
+	rm -rf build
 
 
 #
 # Development targets
 #
-test-server:
-	cd server && env/bin/coverage run --omit=wqp/tests/*.py,env/* -m unittest
+test:
+	$(COVERAGE) run --omit=wqp/tests/*.py,env/* -m unittest
 
-watch-server:
-	$(PYTHON) server/run.py
+watch:
+	$(PYTHON) run.py
 
 
 #
 # Environment configuration targets
 #
-env-server: server/env server/instance/config.py server-env-requirements
 
-server/env:
+devenv: env instance/config.py requirements
+
+env:
 	@echo 'Creating the virtualenv env'
-	virtualenv --python=python3.6 --no-download server/env
+	virtualenv --python=python3.6 --no-download env
 
-server-env-requirements:
+requirements: env
 	@echo 'Installing requirements.txt'
-	$(PIP) install -r server/requirements.txt -r server/requirements-dev.txt
+	$(PIP) install -r requirements.txt -r requirements-dev.txt
 
-server/instance/config.py:
-	@echo 'Creating server/instance/config.py...'
-	mkdir -p server/instance
-	cp server/config.py.sample server/instance/config.py
+instance/config.py:
+	@echo 'Creating instance/config.py...'
+	cp instance/config.py.sample instance/config.py
 
-cleanenv-server: clean-server
-	@echo 'Cleaning graph-server environment...'
-	rm -rf server/env
+cleanenv: clean
+	@echo 'Cleaning server environment...'
+	rm -rf env

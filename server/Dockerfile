@@ -9,7 +9,8 @@ RUN apt-get update && apt-get install -y \
     build-essential
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements-dev.txt .
+RUN pip install --no-cache-dir -r requirements.txt -r requirements-dev.txt
 
 RUN adduser --disabled-password --gecos "" -u 1000 python
 USER python
