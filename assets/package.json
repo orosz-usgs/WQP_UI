@@ -8,6 +8,7 @@
   },
   "scripts": {
     "test": "mkdir -p dist/scripts && run-p build:vendorjs && karma start",
+    "test:chrome": "mkdir -p dist/scripts && run-p build:vendorjs && karma start --browsers ChromeHeadless",
     "test:watch": "mkdir -p dist/scripts && run-p build:vendorjs && karma start --debug --no-single-run --browsers Chrome",
     "build": "run-p build:* && npm run hash-assets",
     "build:css": "run-p buildcss:*",
@@ -32,7 +33,7 @@
     "watch:js": "mkdir -p dist/scripts && npm run build:vendorjs && rollup -c --watch"
   },
   "engines": {
-    "node": "8.11.2"
+    "node": "10.13.0"
   },
   "repository": {
     "type": "git",

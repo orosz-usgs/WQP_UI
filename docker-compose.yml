@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  server:
+    build: ./server
+    ports:
+      - "5050:5050"
+    command: python run.py --host 0.0.0.0
+    volumes:
+      - ./server:/app
+  assets:
+    build: ./assets
+    command: npm run watch
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./assets:/app
