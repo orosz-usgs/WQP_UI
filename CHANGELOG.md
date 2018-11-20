@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Added
 Docker configuration for the application
+### Fixed
+- Add nanobar.js to vendor.js so that it is loaded in the manage_cache page.
 
 ## [5.10.0]
 ### Changed
