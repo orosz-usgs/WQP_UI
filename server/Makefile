@@ -18,7 +18,8 @@ clean:
 # Development targets
 #
 test:
-	$(COVERAGE) run --omit=wqp/tests/*.py,env/* -m unittest
+	$(COVERAGE) run -m unittest
+	$(COVERAGE) xml
 
 watch:
 	$(PYTHON) run.py

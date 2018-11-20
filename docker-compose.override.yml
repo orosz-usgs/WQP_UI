@@ -1,0 +1,16 @@
+# These overrides are useful for local development purposes and will be loaded
+# by default when executing `docker-compose up`.
+
+version: "3"
+
+services:
+  assets:
+    command: npm run watch
+    volumes:
+      - ./assets:/assets
+  server:
+    volumes:
+      - ./server:/server
+    environment:
+      DEBUG: 1
+    command: python run.py --host 0.0.0.0

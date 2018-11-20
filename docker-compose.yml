@@ -1,17 +1,17 @@
+# This base config defines the production containers.
+
 version: "3"
 
 services:
-  server:
-    build: ./server
-    ports:
-      - "5050:5050"
-    command: python run.py --host 0.0.0.0
-    volumes:
-      - ./server:/app
+  # Node-based static asset build tooling
   assets:
     build: ./assets
-    command: npm run watch
     ports:
       - "9000:9000"
-    volumes:
-      - ./assets:/app
+  # Python WSGI server
+  server:
+    build: ./server
+    depends_on:
+      - assets
+    ports:
+      - "5050:5050"

@@ -3,7 +3,7 @@ FROM python:$version-slim-stretch
 
 ENV PYTHONUNBUFFERED 1
 
-WORKDIR /app
+WORKDIR /server
 
 RUN apt-get update && apt-get install -y \
     build-essential
@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir -r requirements.txt -r requirements-dev.txt
 RUN adduser --disabled-password --gecos "" -u 1000 python
 USER python
 
-COPY . /app
+COPY . /server
 
 EXPOSE 5050
 
