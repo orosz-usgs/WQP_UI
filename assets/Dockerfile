@@ -10,3 +10,5 @@ COPY package-lock.json .
 RUN npm install
 
 COPY . /assets
+
+RUN npm run build

@@ -9,6 +9,7 @@ from celery.signals import after_setup_task_logger
 from flask import Flask, jsonify, request
 from flask_swagger import swagger
 from requests import Session
+from whitenoise import WhiteNoise
 
 from .flask_swagger_blueprint import get_swaggerui_blueprint
 
@@ -151,3 +152,5 @@ swaggerui_blueprint = get_swaggerui_blueprint(
     api_view_func=API_VIEW_FUNC
 )
 app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
+
+app.wsgi_app = WhiteNoise(app.wsgi_app, root='/assets', prefix='static/')

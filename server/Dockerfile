@@ -17,6 +17,9 @@ USER python
 
 COPY . /server
 
+# Copy static files from the assets image to this one.
+COPY --from=wqp_assets /assets/dist /assets
+
 EXPOSE 5050
 
 CMD ["gunicorn", "--config", "gunicorn.conf", "wqp:app"]
