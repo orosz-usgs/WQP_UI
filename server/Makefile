@@ -18,6 +18,7 @@ clean:
 # Development targets
 #
 test:
+	mkdir -p coverage
 	$(COVERAGE) run -m unittest
 	$(COVERAGE) xml
 

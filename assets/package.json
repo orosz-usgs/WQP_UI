@@ -8,6 +8,7 @@
   },
   "scripts": {
     "test": "mkdir -p dist/scripts && run-p build:vendorjs && karma start",
+    "test:firefox": "mkdir -p dist/scripts && run-p build:vendorjs && karma start --browsers Firefox",
     "test:chrome": "mkdir -p dist/scripts && run-p build:vendorjs && karma start --browsers ChromeHeadless",
     "test:watch": "mkdir -p dist/scripts && run-p build:vendorjs && karma start --debug --no-single-run",
     "build": "run-p build:* && npm run hash-assets",

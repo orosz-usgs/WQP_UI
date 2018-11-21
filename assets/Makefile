@@ -16,7 +16,7 @@ clean:
 #
 test:
 	@echo 'Running assets tests...'
-	npm run test
+	npm run test:firefox
 
 watch:
 	npm run watch
