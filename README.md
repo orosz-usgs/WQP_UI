@@ -53,24 +53,18 @@ docker-compose run assets npm test
 The repository contains a make target to configure a local development environment:
 
 ```bash
-make env
+make devenv
 ```
 
 To manually configure your environment, please see the READMEs of each separate project.
 
 ### Development server
 
-To run all development servers in a watch mode at the same time, use the make target:
+To run each dev server individually:
 
 ```bash
-make watch
-```
-
-... and to run each dev server individually:
-
-```bash
-make watch-server
-make watch-assets
+cd server && make watch
+cd assets && make watch
 ```
 
 See the specific project READMEs for additional information, including how to use Redis
@@ -85,12 +79,6 @@ To run all project tests:
 
 ```bash
 make test
-```
-
-### Production build
-
-```bash
-make build
 ```
 
 ### Clean targets
