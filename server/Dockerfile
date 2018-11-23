@@ -1,3 +1,10 @@
+# Build the static assets in the node.js container.
+FROM wqp_assets as assets
+
+RUN npm run build
+
+
+# Base off the community Python image
 FROM python:3.6.7-slim-stretch
 
 RUN apt-get update && apt-get install -y \
@@ -20,7 +27,7 @@ RUN python -m compileall -f
 RUN python -m compileall -f .
 
 # Copy static files from the assets image to this one.
-COPY --from=wqp_assets /assets/dist /assets
+COPY --from=assets /assets/dist /assets
 
 RUN adduser --disabled-password --gecos "" -u 1000 python
 USER python
