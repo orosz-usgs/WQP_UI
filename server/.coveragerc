@@ -1,0 +1,12 @@
+[run]
+data_file=./coverage/.coverage
+source=wqp
+
+[report]
+show_missing = True
+omit =
+    wqp/tests/*.py
+    env/*
+
+[xml]
+output=coverage/coverage.xml

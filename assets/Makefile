@@ -1,33 +1,33 @@
-NODE_VERSION=$(shell python3 -c "import json; print(json.loads(open('assets/package.json').read())['engines']['node'])")
+NODE_VERSION=$(shell python3 -c "import json; print(json.loads(open('package.json').read())['engines']['node'])")
 
-.PHONY: env-assets test-assets clean-assets cleanenv-assets watch-assets
+.PHONY: devenv test clean cleanenv watch
 
-build-assets:
+build:
 	@echo 'Building assets...'
-	cd assets && npm run build
+	npm run build
 
-clean-assets:
+clean:
 	@echo 'Cleaning assets...'
-	rm -rf assets/dist
+	rm -rf dist
 
 
 #
 # Development targets
 #
-test-assets:
+test:
 	@echo 'Running assets tests...'
-	cd assets && npm run test
+	npm run test:firefox
 
-watch-assets:
-	cd assets && npm run watch
+watch:
+	npm run watch
 
 #
 # Environment configuration targets
 #
-env-assets: assert-assets-node assets-node-modules
+devenv: assert-node node-modules
 
 # Assert that we're using the proper node.js version
-assert-assets-node:
+assert-node:
 ifeq ($(shell node --version), v$(NODE_VERSION))
 	@echo 'Using node $(NODE_VERSION)'
 else
@@ -36,10 +36,10 @@ else
 	@exit 1
 endif
 
-assets-node-modules:
+node-modules:
 	@echo 'Installing assets dependencies...'
-	cd assets && npm install
+	npm install
 
-cleanenv-assets: clean-assets
+cleanenv: clean
 	@echo 'Cleaning assets environment...'
-	rm -rf assets/node_modules
+	rm -rf node_modules

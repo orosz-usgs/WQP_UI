@@ -144,7 +144,7 @@ def nwis_sites():
           type: string
     """
 
-    site_request_params = dict(request.args)
+    site_request_params = request.args.to_dict(flat=False)
     site_request_params['format'] = 'rdb'
     params_list = []
 

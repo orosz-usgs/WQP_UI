@@ -355,13 +355,13 @@ class RetrieveSiteTestCase(TestCase):
                     'USGS-AZ\tUSGS Arizona Water Science Center\tAZ003-365613111285900\tUS\t04\t005\tNWIS'))
 
         self.assertEqual(retrieve_site('NWIS', 'USGS-AZ', 'AZ003-365613111285900'),
-                         {u'OrganizationIdentifier': u'USGS-AZ',
-                          u'OrganizationFormalName': u'USGS Arizona Water Science Center',
-                          u'MonitoringLocationIdentifier': u'AZ003-365613111285900',
-                          u'CountryCode': u'US',
-                          u'StateCode': u'04',
-                          u'CountyCode': u'005',
-                          u'ProviderName': u'NWIS'})
+                         {'OrganizationIdentifier': 'USGS-AZ',
+                          'OrganizationFormalName': 'USGS Arizona Water Science Center',
+                          'MonitoringLocationIdentifier': 'AZ003-365613111285900',
+                          'CountryCode': 'US',
+                          'StateCode': '04',
+                          'CountyCode': '005',
+                          'ProviderName': 'NWIS'})
 
     @requests_mock.Mocker()
     def test_with_bad_response(self, m):

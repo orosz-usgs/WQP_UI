@@ -8,7 +8,9 @@
   },
   "scripts": {
     "test": "mkdir -p dist/scripts && run-p build:vendorjs && karma start",
-    "test:watch": "mkdir -p dist/scripts && run-p build:vendorjs && karma start --debug --no-single-run --browsers Chrome",
+    "test:firefox": "mkdir -p dist/scripts && run-p build:vendorjs && karma start --browsers Firefox",
+    "test:chrome": "mkdir -p dist/scripts && run-p build:vendorjs && karma start --browsers ChromeHeadless",
+    "test:watch": "mkdir -p dist/scripts && run-p build:vendorjs && karma start --debug --no-single-run",
     "build": "run-p build:* && npm run hash-assets",
     "build:css": "run-p buildcss:*",
     "buildcss:site": "lessc less/site.less > dist/site.css && uglifycss --output dist/site.css dist/site.css && postcss dist/site.css --no-map --use autoprefixer -o dist/site.css",
@@ -32,7 +34,7 @@
     "watch:js": "mkdir -p dist/scripts && npm run build:vendorjs && rollup -c --watch"
   },
   "engines": {
-    "node": "8.11.2"
+    "node": "10.13.0"
   },
   "repository": {
     "type": "git",
