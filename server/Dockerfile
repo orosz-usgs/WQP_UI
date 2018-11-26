@@ -7,8 +7,9 @@ RUN npm run build
 # Base off the community Python image
 FROM python:3.6.7-slim-stretch
 
-RUN apt-get update && apt-get install -y \
-    build-essential
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ENV PYTHONUNBUFFERED 1
 
