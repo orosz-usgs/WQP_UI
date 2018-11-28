@@ -12,4 +12,7 @@ services:
     volumes:
       - ./coverage/server:/server/coverage
       - ./server/instance:/server/instance
-    command: make test
+    command: >
+        bash -c "mkdir -p coverage
+        && coverage run -m unittest
+        && coverage xml"

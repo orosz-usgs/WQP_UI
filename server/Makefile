@@ -1,6 +1,6 @@
-COVERAGE := coverage
-PIP := pip
-PYTHON := python
+COVERAGE := env/bin/coverage
+PIP := env/bin/pip
+PYTHON := env/bin/python
 
 .PHONY: build devenv test clean cleanenv watch
 
