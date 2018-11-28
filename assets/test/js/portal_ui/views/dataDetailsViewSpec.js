@@ -21,7 +21,7 @@ describe('Tests for DataDetailsView', function() {
             '<input class="result-type" type="radio" id="activitymetric-input" value="ActivityMetric" />' +
             '<input class="result-type" type="radio" id="resultdetection" value="ResultDetectionQuantitationLimit" />' +
             '<input class="result-type" type="radio" id="organization" value="Organization" />' +
-            '<input class="result-type" type="radio" id="biologicalHabitatMetric" value="BiologicalMetric" />' +
+            '<input class="result-type" type="radio" id="biologicalHabitatMetric" value="BiologicalHabitatMetric" />' +
             '<input type="radio" checked name="mimeType" id="csv" value="csv" />' +
             '<input type="radio" checked name="mimeType" id="tsv" value="tsv" />' +
             '<input type="radio" checked name="mimeType" id="xlsx" value="xlsx" />' +
@@ -133,6 +133,9 @@ describe('Tests for DataDetailsView', function() {
         expect(updateResultTypeAction.calls.count()).toBe(10);
         expect(updateResultTypeAction.calls.argsFor(9)[0]).toEqual('Organization');
 
+        $biologicalMetric.prop('checked', true).trigger('change');
+        expect(updateResultTypeAction.calls.count()).toBe(11);
+        expect(updateResultTypeAction.calls.argsFor(10)[0]).toEqual('BiologicalHabitatMetric');
     });
 
     it('Expects that if the biosamples radio button is checked, a hidden input is added with name dataProfile', function() {
