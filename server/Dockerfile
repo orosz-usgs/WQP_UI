@@ -5,18 +5,13 @@ RUN npm run build
 
 
 # Base off the community Python image
-FROM python:3.6.7-slim-stretch
+FROM usgswma/python:3.6
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-ENV PYTHONUNBUFFERED 1
-
 WORKDIR /server
-
-RUN apt-get update && apt-get install -y \
-    build-essential
 
 COPY requirements.txt .
 COPY requirements-dev.txt .
@@ -30,7 +25,6 @@ RUN python -m compileall -f .
 # Copy static files from the assets image to this one.
 COPY --from=assets /assets/dist /assets
 
-RUN adduser --disabled-password --gecos "" -u 1000 python
 USER python
 
 EXPOSE 5050
