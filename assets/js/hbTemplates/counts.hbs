@@ -20,6 +20,9 @@ Your query will return
 {{#if isOrganization}}
 data on <b>{{total.organizations}}</b> organizations
 {{/if}}
+{{#if isBiologicalHabitatMetric}}
+data on <b>{{total.biologicalHabitatMetrics}}</b> organizations
+{{/if}}
 {{#if showSites}}
     <b>{{total.sites}}</b> sites:<br />
 {{else}}
@@ -46,6 +49,9 @@ data on <b>{{total.organizations}}</b> organizations
     {{/if}}
     {{#if ../isOrganization}}
         data on <b>{{counts.organizations}}</b> organizations
+    {{/if}}
+    {{#if ../isBiologicalHabitatMetric}}
+        data on <b>{{counts.biologicalHabitatMetrics}}</b> biological habitat metrics
     {{/if}}
     {{#if ../showSites}}
         {{counts.sites}} sites <br/>

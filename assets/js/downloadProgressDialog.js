@@ -33,7 +33,8 @@ const RESULT_TYPE_TO_TOTAL_COUNT_PROPERTY_MAP = {
     'Project': 'projects',
     'ProjectMonitoringLocationWeighting': 'projectmonitoringlocationweightings',
     'ResultDetectionQuantitationLimit': 'resultdetections',
-    'Organization': 'organizations'
+    'Organization': 'organizations',
+    'BiologicalHabitatMetric': 'biologicalHabitatMetrics'
 };
 
 
@@ -75,7 +76,8 @@ export default class DownloadProgressDialog {
                 isActivities : resultType === 'Activity',
                 isActivityMetrics : resultType === 'ActivityMetric',
                 isResultDetection: resultType === 'ResultDetectionQuantitationLimit',
-                isOrganization: resultType === 'Organization'
+                isOrganization: resultType === 'Organization',
+                isBiologicalHabitatMetric: resultType === 'BiologicalHabitatMetric'
             };
             context.providers = map(providers.getIds(), function (provider) {
                 return {
