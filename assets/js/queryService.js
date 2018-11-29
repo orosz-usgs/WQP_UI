@@ -61,7 +61,7 @@ export default {
                         activitymetrics: formatCount(data, provider + '-ActivityMetric-Count'),
                         resultdetections: formatCount(data, provider + '-ResultDetectionQuantitationLimit-Count'),
                         organizations: formatCount(data, provider + '-Organization-Count'),
-                        biologicalHabitatMetrics: formatCount(data, 'BiologicalMetric-Count')
+                        biologicalHabitatMetrics: formatCount(data, provider + '-BiologicalMetric-Count')
                     };
                 });
                 log.debug('Successfully got counts');

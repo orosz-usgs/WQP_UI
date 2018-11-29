@@ -8,6 +8,9 @@ Your query will return
 {{#if isProjectMonitoringLocationWeightings }}
     data on <b>{{total.projectmonitoringlocationweightings}}</b> project monitoring location weightings
 {{/if}}
+{{#if isBiologicalHabitatMetric}}
+    data on <b>{{total.biologicalHabitatMetrics}}</b> biological habitat metrics for
+{{/if}}
 {{#if isActivities }}
     data on <b>{{total.activities}}</b> sampling activities at
 {{/if}}
@@ -19,9 +22,6 @@ Your query will return
 {{/if}}
 {{#if isOrganization}}
 data on <b>{{total.organizations}}</b> organizations
-{{/if}}
-{{#if isBiologicalHabitatMetric}}
-data on <b>{{total.biologicalHabitatMetrics}}</b> organizations
 {{/if}}
 {{#if showSites}}
     <b>{{total.sites}}</b> sites:<br />
@@ -41,6 +41,9 @@ data on <b>{{total.biologicalHabitatMetrics}}</b> organizations
     {{#if ../isActivities}}
         {{counts.activities}} sampling activities from
     {{/if}}
+    {{#if ../isBiologicalHabitatMetric}}
+        <b>{{counts.biologicalHabitatMetrics}}</b> biological habitat metrics from
+    {{/if}}
     {{#if ../isActivityMetrics}}
         {{counts.activitymetrics}} activity metrics in {{counts.activities}} activities
     {{/if}}
@@ -50,9 +53,7 @@ data on <b>{{total.biologicalHabitatMetrics}}</b> organizations
     {{#if ../isOrganization}}
         data on <b>{{counts.organizations}}</b> organizations
     {{/if}}
-    {{#if ../isBiologicalHabitatMetric}}
-        data on <b>{{counts.biologicalHabitatMetrics}}</b> biological habitat metrics
-    {{/if}}
+
     {{#if ../showSites}}
         {{counts.sites}} sites <br/>
     {{else}}

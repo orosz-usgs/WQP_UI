@@ -23,7 +23,7 @@ describe('Tests for queryService', function() {
 
         //We expect some of these tests to log error messages, but we don't want them in the test output
         //so before each test we will record the initial logging level, mute logging,
-        //and after each teste we wil restore the logging level
+        //and after each test we will restore the logging level
         var initialLevel = log.getLevel();
 
         beforeEach(function() {
@@ -76,17 +76,17 @@ describe('Tests for queryService', function() {
                 total: {
                     sites: '492', results: '6,641', activities: '664', activitymetrics: '232',
                     resultdetections: '45', projects: '0', projectmonitoringlocationweightings: '0',
-                    organizations: '0'
+                    organizations: '0', biologicalHabitatMetrics: '0'
                 },
                 NWIS: {
                     sites: '492', results: '6,641', activities: '664', activitymetrics: '0',
                     resultdetections: '45', projects: '0', projectmonitoringlocationweightings: '0',
-                    organizations: '0'
+                    organizations: '0', biologicalHabitatMetrics: '0'
                 },
                 STORET: {
                     sites: '0', results: '0', activities: '0', activitymetrics: '232', resultdetections: '0',
                     projects: '0', projectmonitoringlocationweightings: '0',
-                    organizations: '0'
+                    organizations: '0', biologicalHabitatMetrics: '0'
                 }
             }]);
         });

@@ -69,7 +69,7 @@ export default class DownloadProgressDialog {
             // Return a string showing the site counts, formatted to be shown in html.
             var context = {
                 total: counts.total,
-                showSites: resultType === 'Station' || resultType === 'Result' || resultType === 'Activity',
+                showSites: resultType === 'Station' || resultType === 'Result' || resultType === 'Activity' || resultType === 'BiologicalHabitatMetric',
                 isProjects: resultType === 'Project',
                 isProjectMonitoringLocationWeightings: resultType === 'ProjectMonitoringLocationWeighting',
                 isResults : resultType === 'Result',
