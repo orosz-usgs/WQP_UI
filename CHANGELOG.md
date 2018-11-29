@@ -6,7 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
-Docker configuration for the application
+- Docker configuration for the application.
+- Radio button for selecting Biological Metric Download form.
+ 
 ### Fixed
 - Add nanobar.js to vendor.js so that it is loaded in the manage_cache page.
 
