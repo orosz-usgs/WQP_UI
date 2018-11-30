@@ -33,7 +33,8 @@ const RESULT_TYPE_TO_TOTAL_COUNT_PROPERTY_MAP = {
     'Project': 'projects',
     'ProjectMonitoringLocationWeighting': 'projectmonitoringlocationweightings',
     'ResultDetectionQuantitationLimit': 'resultdetections',
-    'Organization': 'organizations'
+    'Organization': 'organizations',
+    'BiologicalHabitatMetric': 'biologicalHabitatMetrics'
 };
 
 
@@ -68,14 +69,15 @@ export default class DownloadProgressDialog {
             // Return a string showing the site counts, formatted to be shown in html.
             var context = {
                 total: counts.total,
-                showSites: resultType === 'Station' || resultType === 'Result' || resultType === 'Activity',
+                showSites: resultType === 'Station' || resultType === 'Result' || resultType === 'Activity' || resultType === 'BiologicalHabitatMetric',
                 isProjects: resultType === 'Project',
                 isProjectMonitoringLocationWeightings: resultType === 'ProjectMonitoringLocationWeighting',
                 isResults : resultType === 'Result',
                 isActivities : resultType === 'Activity',
                 isActivityMetrics : resultType === 'ActivityMetric',
                 isResultDetection: resultType === 'ResultDetectionQuantitationLimit',
-                isOrganization: resultType === 'Organization'
+                isOrganization: resultType === 'Organization',
+                isBiologicalHabitatMetric: resultType === 'BiologicalHabitatMetric'
             };
             context.providers = map(providers.getIds(), function (provider) {
                 return {

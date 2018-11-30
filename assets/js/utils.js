@@ -200,6 +200,7 @@ export const dataProfileUsed = {
     'Activity': false,
     'ActivityMetric': false,
     'ResultDetectionQuantitationLimit': false,
+    'biologicalHabitatMetric': false,
     'default': false
 };
 

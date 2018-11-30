@@ -5,7 +5,7 @@ describe('Tests for DataDetailsView', function() {
     let testView;
     let $testDiv;
     let $kml, $sites, $samples, $biosamples, $sorted, $hiddenSorted, $narrowsamples, $activity, $activitymetrics, $resultdet;
-    let $projects, $projMonWeight, $organizations;
+    let $projects, $projMonWeight, $organizations, $biologicalMetric;
     let updateResultTypeAction;
 
     beforeEach(function() {
@@ -21,6 +21,7 @@ describe('Tests for DataDetailsView', function() {
             '<input class="result-type" type="radio" id="activitymetric-input" value="ActivityMetric" />' +
             '<input class="result-type" type="radio" id="resultdetection" value="ResultDetectionQuantitationLimit" />' +
             '<input class="result-type" type="radio" id="organization" value="Organization" />' +
+            '<input class="result-type" type="radio" id="biologicalHabitatMetric" value="BiologicalHabitatMetric" />' +
             '<input type="radio" checked name="mimeType" id="csv" value="csv" />' +
             '<input type="radio" checked name="mimeType" id="tsv" value="tsv" />' +
             '<input type="radio" checked name="mimeType" id="xlsx" value="xlsx" />' +
@@ -43,6 +44,7 @@ describe('Tests for DataDetailsView', function() {
         $activitymetrics = $('#activitymetric-input');
         $resultdet = $('#resultdetection');
         $organizations = $('#organization');
+        $biologicalMetric = $('#biologicalHabitatMetric');
 
         $sorted = $('#sorted');
         $hiddenSorted = $('#hidden-sorted');
@@ -73,6 +75,7 @@ describe('Tests for DataDetailsView', function() {
         expect($activitymetrics.is(':disabled')).toBe(true);
         expect($resultdet.is(':disabled')).toBe(true);
         expect($organizations.is(':disabled')).toBe(true);
+        expect($biologicalMetric.is(':disabled')).toBe(true);
 
         $kml.prop('checked', false).trigger('change');
 
@@ -86,6 +89,7 @@ describe('Tests for DataDetailsView', function() {
         expect($activitymetrics.is(':disabled')).toBe(false);
         expect($resultdet.is(':disabled')).toBe(false);
         expect($organizations.is(':disabled')).toBe(false);
+        expect($biologicalMetric.is(':disabled')).toBe(false);
     });
 
     it('Expects that if the result-type radio button is changed, updateResultTypeAction is executed', function() {
@@ -128,6 +132,10 @@ describe('Tests for DataDetailsView', function() {
         $organizations.prop('checked', true).trigger('change');
         expect(updateResultTypeAction.calls.count()).toBe(10);
         expect(updateResultTypeAction.calls.argsFor(9)[0]).toEqual('Organization');
+
+        $biologicalMetric.prop('checked', true).trigger('change');
+        expect(updateResultTypeAction.calls.count()).toBe(11);
+        expect(updateResultTypeAction.calls.argsFor(10)[0]).toEqual('BiologicalHabitatMetric');
     });
 
     it('Expects that if the biosamples radio button is checked, a hidden input is added with name dataProfile', function() {
