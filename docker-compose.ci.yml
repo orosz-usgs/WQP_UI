@@ -16,3 +16,5 @@ services:
         bash -c "mkdir -p coverage
         && coverage run -m unittest
         && coverage xml"
+    environment:
+      - SECRET_KEY=keep-me-secret
