@@ -25,6 +25,10 @@ RUN python -m compileall -f .
 # Copy static files from the assets image to this one.
 COPY --from=assets /assets/dist /assets
 
+# Use environment variables for application configuration rather than an
+# instance/config.py module.
+ENV NO_INSTANCE_CONFIG=1
+
 USER python
 
 EXPOSE 5050
