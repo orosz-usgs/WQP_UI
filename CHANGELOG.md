@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [5.11.0]
 ### Added
-- Docker configuration for the application.
+- Docker configuration for the application and environment-driven config.
 - Radio button for selecting Biological Metric Download form.
 
 ### Fixed
