@@ -108,7 +108,7 @@ def log_after(response):
 
 
 session = Session()
-session.verify = app.config.get('VERIFY_CERT', True)
+session.verify = app.config['VERIFY_CERT']
 
 
 # Load static assets manifest file, which maps source file names to the

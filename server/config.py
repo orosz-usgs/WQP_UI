@@ -4,14 +4,14 @@ import re
 
 
 DEBUG = 'DEBUG' in os.environ
-VERIFY_CERT = 'VERIFY_CERT' in os.environ
+
+# Verify SSL certs during web service calls by requests, can be a path to a cert bundle
+VERIFY_CERT = 'NO_VERIFY_CERT' not in os.environ
 
 # Do not use the same key as any of the deployment servers
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 PROJECT_HOME = os.path.dirname(__file__)
-
-VERIFY_CERT = True  # verify SSL certs during web service calls by requests, can be a path to a cert bundle
 
 # Application defined config variables
 
