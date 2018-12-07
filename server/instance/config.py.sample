@@ -5,7 +5,7 @@ VERIFY_CERT = True or False
 SECRET_KEY = 'local_secret_key'
 
 # points to the geoserver endpoint you want to use.
-WQP_MAP_GEOSERVER_ENDPOINT = 'http://cida-eros-wqpgsprod.er.usgs.gov:8080/geoserver'
+#WQP_MAP_GEOSERVER_ENDPOINT = 'http://url-to-geoserver'
 SITES_MAP_GEOSERVER_ENDPOINT = 'https://www.waterqualitydata.us/ogcservices'
 
 #points to the sld endpoint you want to use.

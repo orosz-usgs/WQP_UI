@@ -12,5 +12,7 @@ services:
     volumes:
       - ./server:/server
     command: python run.py --host 0.0.0.0
-    env_file:
-      - dev.env
+    environment:
+      LOCAL_BASE_URL=http://127.0.0.1:5050
+      STATIC_ROOT=http://localhost:9000
+      SECRET_KEY=keep-me-secret

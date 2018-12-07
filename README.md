@@ -22,6 +22,16 @@ docker-compose build
 
 ### Development server
 
+The Docker Compose configuration provides a default application configuration
+suitable for local development. If you would like to modify the configuration
+(see [`server/config.py`](./server/config.py)), set the appropriate environment
+variables in a `.env` file in the root directory of the project. The Geoserver
+Proxy requires a Geoserver URL. Example `.env` file:
+
+```
+WQP_MAP_GEOSERVER_ENDPOINT=<url to Geoserver>
+```
+
 ```bash
 # Run in the foreground
 docker-compose up
@@ -47,6 +57,11 @@ docker-compose run assets npm test
 ```
 
 ## Local development - Makefile configuration
+
+Application configuration may be specified by creating an instance config in
+`server/instance/config.py`. This configuration augments the default one.
+The make devenv target will copy a sample, `server/instance/config.py.sample`,
+as a convenience. You will need to edit this to set `WQP_MAP_GEOSERVER_ENDPOINT`.
 
 ### Install dependencies
 
