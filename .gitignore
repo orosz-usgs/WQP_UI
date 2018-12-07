@@ -69,4 +69,6 @@ target/
 /server/wqp/static/
 /server/instance/
 
-.env
+# Docker Compose environment files
+/.env
+/local.env

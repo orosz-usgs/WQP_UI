@@ -25,8 +25,8 @@ docker-compose build
 The Docker Compose configuration provides a default application configuration
 suitable for local development. If you would like to modify the configuration
 (see [`server/config.py`](./server/config.py)), set the appropriate environment
-variables in a `.env` file in the root directory of the project. The Geoserver
-Proxy requires a Geoserver URL. Example `.env` file:
+variables in the `local.env` file in the root directory of the project. The
+Geoserver Proxy requires a Geoserver URL. Example `local.env` file:
 
 ```
 WQP_MAP_GEOSERVER_ENDPOINT=<url to Geoserver>

@@ -1,5 +1,6 @@
 # These overrides are useful for local development purposes and will be loaded
 # by default when executing `docker-compose up`.
+# Put custom config in local.env.
 
 version: "3"
 
@@ -13,6 +14,8 @@ services:
       - ./server:/server
     command: python run.py --host 0.0.0.0
     environment:
-      LOCAL_BASE_URL=http://127.0.0.1:5050
-      STATIC_ROOT=http://localhost:9000
-      SECRET_KEY=keep-me-secret
+      - LOCAL_BASE_URL=http://127.0.0.1:5050
+      - STATIC_ROOT=http://localhost:9000
+      - SECRET_KEY=keep-me-secret
+    env_file:
+      - local.env
