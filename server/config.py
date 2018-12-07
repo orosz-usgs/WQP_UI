@@ -21,7 +21,7 @@ WQP_MAP_GEOSERVER_ENDPOINT = os.environ.get('WQP_MAP_GEOSERVER_ENDPOINT')
 SITES_MAP_GEOSERVER_ENDPOINT = os.environ.get('SITES_MAP_GEOSERVER_ENDPOINT')
 
 # Points to the sld endpoint you want to use.
-SLD_ENDPOINT = os.environ.get('SLD_ENDPOING', 'http://www.waterqualitydata.us/Summary')
+SLD_ENDPOINT = os.environ.get('SLD_ENDPOINT', 'http://www.waterqualitydata.us/Summary')
 
 # Points to the codes endpoint
 CODES_ENDPOINT = os.environ.get('CODES_ENDPOINT', 'https://www.waterqualitydata.us/Codes')
