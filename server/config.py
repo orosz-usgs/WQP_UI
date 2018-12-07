@@ -18,7 +18,7 @@ VERIFY_CERT = True  # verify SSL certs during web service calls by requests, can
 # Points to the geoserver endpoint you want to use.
 WQP_MAP_GEOSERVER_ENDPOINT = os.environ.get('WQP_MAP_GEOSERVER_ENDPOINT')
 
-SITES_MAP_GEOSERVER_ENDPOINT = os.environ.get('SITES_MAP_GEOSERVER_ENDPOINT')
+SITES_MAP_GEOSERVER_ENDPOINT = os.environ.get('SITES_MAP_GEOSERVER_ENDPOINT', 'https://www.waterqualitydata.us/ogcservices')
 
 # Points to the sld endpoint you want to use.
 SLD_ENDPOINT = os.environ.get('SLD_ENDPOINT', 'http://www.waterqualitydata.us/Summary')
