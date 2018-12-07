@@ -58,11 +58,12 @@ def _custom_celery_handler(logger=None, *args, **kwargs):
     logger.addHandler(celery_handler)
 
 
-app = Flask(__name__.split()[0], instance_relative_config=True)
+app = Flask(__name__.split()[0], instance_relative_config='NO_INSTANCE_CONFIG' not in os.environ)
 
 # Loads configuration information from config.py and instance/config.py
 app.config.from_object('config')
-app.config.from_pyfile('config.py')
+if 'NO_INSTANCE_CONFIG' not in os.environ:
+    app.config.from_pyfile('config.py')
 
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
@@ -107,7 +108,7 @@ def log_after(response):
 
 
 session = Session()
-session.verify = app.config.get('VERIFY_CERT', True)
+session.verify = app.config['VERIFY_CERT']
 
 
 # Load static assets manifest file, which maps source file names to the

@@ -66,6 +66,9 @@ target/
 *.sublime-project
 *.sublime-workspace
 
-
 /server/wqp/static/
 /server/instance/
+
+# Docker Compose environment files
+/.env
+/local.env
