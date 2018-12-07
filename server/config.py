@@ -78,7 +78,7 @@ if REDIS_CONFIG:
         'db': groups[0],
         'password': groups[1],
         'host': groups[2],
-        'port': groups[2]
+        'port': groups[3]
     }
 
 # Set the default cache timeout for wqp http caches
