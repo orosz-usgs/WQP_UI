@@ -1,0 +1,24 @@
+# docker image path in artifactory
+artifactoryPath: "wqp_ui"
+# docker image path in gitlab
+gitlabPath: "wma/docker/wqp"
+# name of the docker image
+dockerImageName: "wqp_ui"
+# type of build
+repoPath: "NWQMC/WQP_UI"
+# name of the deploy job to trigger
+deployJobName: "wqp-ui-deploy"
+# name of the project
+projectName: "wqp-external"
+# maximum amount of RAM for running Docker containers in the service
+memory: 512
+# name of the application or service
+applicationName: "wqp_ui"
+# integer representing the order of precedence that the ALB rule
+rulePriority: 10
+# port that is exposed by your container
+containerPort: 5050
+# string parameter specifying a path that ALB should use to verify that your application is alive
+healthCheck: "/robots.txt"
+# string parameter that tells the ALB how to route requests to the containers (e.g. /my-app/*); this forms a listener rule for the load balancer
+contextPath: "/*"
