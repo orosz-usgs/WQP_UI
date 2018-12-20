@@ -12,27 +12,10 @@ pipeline {
         choice(choices: ['snapshots', 'releases'], description: 'type of build', name: 'BUILD_TYPE')
     }
     stages {
-        stage('clean workspace') {
+        stage('read configuration') {
             steps {
                 script {
-                    pipelineUtils.cleanWorkspace()
-                }
-            }
-        }
-        stage('checkout parameters') {
-            steps {
-                script {
-                    // clone to get the pipeline.yml file
-                    checkout scm
                     p = pipelineCfg()
-                }
-            }
-        }
-        stage('checkout source') {
-            steps {
-                script {
-                    // do another clone with the correct branch behavior
-                    pipelineUtils.gitHubClone(p.repoPath)
                 }
             }
         }

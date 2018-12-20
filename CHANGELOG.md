@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Added
 - Environment-driven application configuration.
+- Jenkins build and deployment
 
 ## [5.11.0]
 ### Added
