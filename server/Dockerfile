@@ -30,6 +30,9 @@ COPY --from=assets /assets/dist /assets
 ENV NO_INSTANCE_CONFIG=1
 ENV ASSET_MANIFEST_PATH=/assets/rev-manifest.json
 
+COPY docker-entrypoint.sh /usr/local/bin/
+ENTRYPOINT ["docker-entrypoint.sh"]
+
 USER python
 
 EXPOSE 5050
