@@ -15,10 +15,25 @@ pipeline {
         pollSCM('H/5 * * * *')
     }
     stages {
-        stage('read configuration') {
+        stage('clean workspace') {
             steps {
                 script {
+                    pipelineUtils.cleanWorkspace()
+                }
+            }
+        }
+        stage('checkout source') {
+            steps {
+                script {
+                    // clone to get the pipeline.yml file
+                    checkout scm
+                }
+                script {
                     p = pipelineCfg()
+                }
+                script {
+                    // do another clone with the correct branch behavior
+                    pipelineUtils.gitHubClone(p.repoPath)
                 }
             }
         }
