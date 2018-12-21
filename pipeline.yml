@@ -14,8 +14,9 @@ projectName: "wqp-external"
 memory: 512
 # name of the application or service
 applicationName: "wqp_ui"
-# integer representing the order of precedence that the ALB rule
-rulePriority: 10
+# integer representing the order of precedence of the ALB rule.
+# set to a low priority; services are given higher priority.
+rulePriority: 503
 # port that is exposed by your container
 containerPort: 5050
 # string parameter specifying a path that ALB should use to verify that your application is alive
