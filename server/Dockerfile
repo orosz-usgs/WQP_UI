@@ -28,6 +28,10 @@ COPY --from=assets /assets/dist /assets
 # Use environment variables for application configuration rather than an
 # instance/config.py module.
 ENV NO_INSTANCE_CONFIG=1
+ENV ASSET_MANIFEST_PATH=/assets/rev-manifest.json
+
+COPY docker-entrypoint.sh /usr/local/bin/
+ENTRYPOINT ["docker-entrypoint.sh"]
 
 USER python
 

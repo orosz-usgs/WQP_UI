@@ -1,0 +1,16 @@
+@Library('dockerCI') _
+
+pipeline {
+    agent {
+        node {
+            label 'project:any'
+        }
+    }
+    stages {
+        stage('build artifact') {
+            steps {
+                serviceDeployPipeline()
+            }
+        }
+    }
+}

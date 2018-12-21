@@ -1,0 +1,85 @@
+@Library('dockerCI') _
+
+def p
+
+pipeline {
+    agent {
+        node {
+            label 'project:any'
+        }
+    }
+    parameters {
+        choice(choices: ['snapshots', 'releases'], description: 'type of build', name: 'BUILD_TYPE')
+    }
+    triggers {
+        pollSCM('H/5 * * * *')
+    }
+    stages {
+        stage('clean workspace') {
+            steps {
+                script {
+                    pipelineUtils.cleanWorkspace()
+                }
+            }
+        }
+        stage('checkout source') {
+            steps {
+                script {
+                    // clone to get the pipeline.yml file
+                    checkout scm
+                }
+                script {
+                    p = pipelineCfg()
+                }
+                script {
+                    // do another clone with the correct branch behavior
+                    pipelineUtils.gitHubClone(p.repoPath)
+                }
+            }
+        }
+        stage('create virtualenv') {
+            steps {
+                script {
+                    pipelineUtils.setUpPythonVirtualEnv()
+                }
+            }
+        }
+        stage('build assets docker image') {
+            steps {
+                script {
+                    pipelineUtils.buildDockerImage('wqp_assets', './assets')
+                }
+            }
+        }
+        stage('build server docker image') {
+            steps {
+                script {
+                    dockerPipeline.buildDockerArtifact(p.artifactoryPath, p.gitlabPath, p.dockerImageName, './server')
+                }
+            }
+        }
+        stage('publish docker images') {
+            steps {
+                script {
+                    dockerPipeline.publishDockerImages(p.artifactoryPath, p.gitlabPath)
+                }
+            }
+        }
+        stage('push to git') {
+            steps {
+                script {
+                    pipelineUtils.pushToGitHub(p.repoPath)
+                }
+            }
+        }
+        stage('kick off deploy job') {
+            steps {
+                script {
+                    if (p.containsKey('deployJobName')) {
+                        pipelineUtils.triggerDeployJob(p.deployJobName)
+                    }
+                }
+            }
+        }
+    }
+}
