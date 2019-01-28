@@ -1,8 +1,8 @@
-import each from 'lodash/collection/each';
-import includes from 'lodash/collection/includes';
-import reject from 'lodash/collection/reject';
-import omit from 'lodash/object/omit';
-import pick from 'lodash/object/pick';
+import each from 'lodash/each';
+import includes from 'lodash/includes';
+import reject from 'lodash/reject';
+import omit from 'lodash/omit';
+import pick from 'lodash/pick';
 
 const COLLAPSE_IMG = Config.STATIC_ENDPOINT + 'img/collapse.png';
 const EXPAND_IMG = Config.STATIC_ENDPOINT + 'img/expand.png';

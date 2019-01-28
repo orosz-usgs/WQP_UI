@@ -1,6 +1,6 @@
-import bind from 'lodash/function/bind';
-import each from 'lodash/collection/each';
-import reject from 'lodash/collection/reject';
+import bind from 'lodash/bind';
+import each from 'lodash/each';
+import reject from 'lodash/reject';
 
 
 /**

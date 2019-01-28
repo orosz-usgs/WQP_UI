@@ -1,4 +1,4 @@
-import map from 'lodash/collection/map';
+import map from 'lodash/map';
 
 import countsHbTemplate from './hbTemplates/counts.hbs';
 import providers from './providers';

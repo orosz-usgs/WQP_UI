@@ -1,8 +1,8 @@
-import has from 'lodash/object/has';
-import isEqual from 'lodash/lang/isEqual';
-import map from 'lodash/collection/map';
-import filter from 'lodash/collection/filter';
-import includes from 'lodash/collection/includes';
+import has from 'lodash/has';
+import isEqual from 'lodash/isEqual';
+import map from 'lodash/map';
+import filter from 'lodash/filter';
+import includes from 'lodash/includes';
 
 import providers from '../providers';
 

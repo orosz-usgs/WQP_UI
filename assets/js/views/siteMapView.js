@@ -1,4 +1,4 @@
-import filter from 'lodash/collection/filter';
+import filter from 'lodash/filter';
 
 import providers from '../providers';
 import queryService from '../queryService';
