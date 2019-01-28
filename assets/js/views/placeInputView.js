@@ -1,8 +1,8 @@
-import contains from 'lodash/collection/contains';
-import filter from 'lodash/collection/filter';
-import has from 'lodash/object/has';
-import last from 'lodash/array/last';
-import union from 'lodash/array/union';
+import includes from 'lodash/includes';
+import filter from 'lodash/filter';
+import has from 'lodash/has';
+import last from 'lodash/last';
+import union from 'lodash/union';
 
 import InputValidation from './inputValidationView';
 import { CodeSelect, CascadedCodeSelect } from './portalViews';
@@ -210,7 +210,7 @@ export default class PlaceInputView {
             const states = $stateSelect.val();
             const isInCountries = function(state) {
                 const countryCode = state.split(':')[0];
-                return contains(countries, countryCode);
+                return includes(countries, countryCode);
             };
 
             if (!countries) {
@@ -225,7 +225,7 @@ export default class PlaceInputView {
             const isInStates = function(county) {
                 const codes = county.split(':');
                 const stateCode = codes[0] + ':' + codes[1];
-                return contains(states, stateCode);
+                return includes(states, stateCode);
             };
 
             $countySelect.val(filter(counties, isInStates)).trigger('change');

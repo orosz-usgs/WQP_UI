@@ -1,4 +1,4 @@
-import map from 'lodash/collection/map';
+import map from 'lodash/map';
 
 
 var WMS_VERSION = '1.1.0';

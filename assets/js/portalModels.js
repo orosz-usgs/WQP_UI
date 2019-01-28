@@ -1,9 +1,8 @@
-import filter from 'lodash/collection/filter';
-import find from 'lodash/collection/find';
-import flatten from 'lodash/array/flatten';
-import has from 'lodash/object/has';
-import map from 'lodash/collection/map';
-import pluck from 'lodash/collection/pluck';
+import filter from 'lodash/filter';
+import find from 'lodash/find';
+import flatten from 'lodash/flatten';
+import has from 'lodash/has';
+import map from 'lodash/map';
 import log from 'loglevel';
 
 import { getHeaders } from './utils';
@@ -150,7 +149,7 @@ export class CodesWithKeys {
      * @return {Array of Object} - Object has id, desc, and providers string properties
      */
     getAll() {
-        var all = pluck(this.cachedData, 'data');
+        var all = map(this.cachedData, 'data');
         return flatten(all);
     }
 
@@ -158,7 +157,7 @@ export class CodesWithKeys {
      * @return {Array of String}
      */
     getAllKeys() {
-        return pluck(this.cachedData, 'key');
+        return map(this.cachedData, 'key');
     }
 
     /*

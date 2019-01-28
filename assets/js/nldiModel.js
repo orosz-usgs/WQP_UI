@@ -1,4 +1,4 @@
-import find from 'lodash/collection/find';
+import find from 'lodash/find';
 
 
 const huc12FeatureSource = {

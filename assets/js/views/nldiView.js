@@ -1,5 +1,5 @@
 import log from 'loglevel';
-import partial from 'lodash/function/partial';
+import partial from 'lodash/partial';
 
 import NldiNavPopupView from './nldiNavPopupView';
 import * as nldiModel from '../nldiModel';

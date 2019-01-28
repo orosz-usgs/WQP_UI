@@ -1,6 +1,6 @@
-import map from 'lodash/collection/map';
-import omit from 'lodash/object/omit';
-import mapValues from 'lodash/object/mapValues';
+import map from 'lodash/map';
+import omit from 'lodash/omit';
+import mapValues from 'lodash/mapValues';
 import { toBBoxString } from '../leafletUtils';
 import { getHeaders, getQueryParamJson } from '../utils';
 
