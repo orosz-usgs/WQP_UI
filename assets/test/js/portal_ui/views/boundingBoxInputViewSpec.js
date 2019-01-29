@@ -82,6 +82,7 @@ describe('Tests for BoundingBoxInputView', function() {
     });
 
     it('Expects the hidden input to be set to the null string unless all text inputs are filled in', function() {
+        window.location.hash = '';
         testView.initialize();
 
         $north.val('12').trigger('change');
@@ -107,6 +108,7 @@ describe('Tests for BoundingBoxInputView', function() {
     });
 
     it('Expects the bbox inputs to be cleared if the hidden input is cleared', () => {
+        window.location.hash = '';
         testView.initialize();
 
         $north.val('12').trigger('change');

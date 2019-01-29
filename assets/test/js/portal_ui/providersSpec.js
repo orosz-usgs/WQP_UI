@@ -5,12 +5,6 @@ import providers from '../../../js/providers';
 
 describe('Tests for providers', function () {
 
-    describe('State prior to fetching', () => {
-        it('Should return an empty array of ids if initialize has not been called', function() {
-            expect(providers.getIds()).toEqual([]);
-        });
-    });
-
     describe('Test fetch and getIds', () => {
         let server;
         var successSpy, failureSpy;

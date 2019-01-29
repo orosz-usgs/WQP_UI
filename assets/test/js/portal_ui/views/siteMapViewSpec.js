@@ -93,16 +93,4 @@ describe ('Tests for SiteMapView', function() {
         expect(mockDownloadDialog.show).toHaveBeenCalled();
         expect(queryService.fetchQueryCounts).toHaveBeenCalled();
     });
-
-    it('Expects that after a successful head request fetch, the download dialog is updated', function() {
-        $showMapBtn.trigger('click');
-        fetchCountsDeferred.resolve();
-        expect(mockDownloadDialog.updateProgress).toHaveBeenCalled();
-    });
-
-    it('Expect that after a failed head request fetch, the download dialog is canceled', function() {
-        $showMapBtn.trigger('click');
-        fetchCountsDeferred.reject();
-        expect(mockDownloadDialog.cancelProgress).toHaveBeenCalled();
-    });
 });
