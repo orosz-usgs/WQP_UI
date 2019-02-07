@@ -1,4 +1,4 @@
-@Library('dockerCI') _
+@Library('PipelineLibs@0.3.x') _
 
 pipeline {
     agent {
