@@ -4,6 +4,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/b4640bae0bcc4a279222f9c422da9ac5)](https://app.codacy.com/app/usgs_wma_dev/WQP_UI?utm_source=github.com&utm_medium=referral&utm_content=NWQMC/WQP_UI&utm_campaign=badger)
 [![Build Status](https://travis-ci.org/NWQMC/WQP_UI.svg?branch=master)](https://travis-ci.org/NWQMC/WQP_UI)
 [![codecov](https://codecov.io/gh/NWQMC/WQP_UI/branch/master/graph/badge.svg)](https://codecov.io/gh/NWQMC)
+[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=NWQMC/WQP_UI)](https://dependabot.com)
 
 Water Quality Portal User Interface
 
