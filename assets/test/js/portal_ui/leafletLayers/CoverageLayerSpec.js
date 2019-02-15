@@ -1,3 +1,5 @@
+import  '../../../../js/leafletLayers/CoverageLayer'; // Needed in order to include in the bundle for the test
+
 describe('L.CoverageLayer', function() {
     var testLayer;
 

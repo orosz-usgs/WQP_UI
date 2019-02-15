@@ -1,3 +1,5 @@
+import '../../../../js/leafletControls/FeatureSourceSelectControl'; // Needed in order to include in the bundle for the test
+
 describe('leafletControl/FeatureSourceSelectControl', function() {
     var map;
     var testControl;

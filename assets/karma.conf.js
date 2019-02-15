@@ -26,10 +26,6 @@ module.exports = function (config) {
         files: [
             'dist/scripts/vendor.js',
             'test/resources/testConfig.js',
-            'js/leafletControls/*.js',
-            'js/leafletLayers/*.js',
-            'js/LeafletMixins/*.js',
-            'js/leafletUtils.js',
             {pattern: 'test/js/**/*.js', watched: false},
             {pattern: 'js/hbTemplates/*.hbs', included: false}
         ],
@@ -48,11 +44,7 @@ module.exports = function (config) {
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
             'test/js/**/*.js': ['rollup'],
-            'test/resources/testConfig.js': ['rollup'],
-            'js/leafletControls/*.js': ['rollup'],
-            'js/leafletLayers/*.js': ['rollup'],
-            'js/LeafletMixins/*.js': ['rollup'],
-            'js/leafletUtils.js': ['rollup']
+            'test/resources/testConfig.js': ['rollup']
         },
 
         // test results reporter to use

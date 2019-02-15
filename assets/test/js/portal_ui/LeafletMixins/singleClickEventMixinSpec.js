@@ -1,3 +1,5 @@
+import  '../../../../js/LeafletMixins/SingleClickEventHandlerMixin'; // Needed in order to include in the bundle for the test
+
 describe('Test L.singleClickEventMixin', function () {
     describe('Mixins do not share state', function() {
 
