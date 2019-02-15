@@ -1,3 +1,5 @@
+import '../../../../js/leafletLayers/WQPSitesLayer'; // Needed in order to include in the bundle for the test
+
 describe('leafletLayers.WQPSitesLayer', function() {
     describe('Tests for initializing a layer', function() {
 

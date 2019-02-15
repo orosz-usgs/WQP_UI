@@ -26,7 +26,7 @@ module.exports = function (config) {
         files: [
             'dist/scripts/vendor.js',
             'test/resources/testConfig.js',
-            'temp-test-manifest.js',
+            {pattern: 'test/js/**/*.js', watched: false},
             {pattern: 'js/hbTemplates/*.hbs', included: false}
         ],
 
@@ -43,11 +43,8 @@ module.exports = function (config) {
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
-            // source files, that you wanna generate coverage for
-            // do not include tests or libraries
-            // (these files will be instrumented by Istanbul)
-            'js/**/*.js': ['rollup'],
-            'temp-test-manifest.js': ['rollup']
+            'test/js/**/*.js': ['rollup'],
+            'test/resources/testConfig.js': ['rollup']
         },
 
         // test results reporter to use
@@ -104,6 +101,9 @@ module.exports = function (config) {
                 ...karmaConfig.rollupPreprocessor,
                 plugins: [
                     ...karmaConfig.rollupPreprocessor.plugins,
+                    // source files, that you wanna generate coverage for
+                    // do not include tests or libraries
+                    // (these files will be instrumented by Istanbul)
                     istanbul({
                         exclude: [
                             'test/**/*.js',

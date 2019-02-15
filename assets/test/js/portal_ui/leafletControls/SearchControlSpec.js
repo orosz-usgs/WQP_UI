@@ -1,3 +1,5 @@
+import '../../../../js/leafletControls/SearchControl'; // Needed in order to include in the bundle for the test
+
 describe('leafletControl/SearchControl', function() {
     var FAKE_SERVICE = 'http://fakesearchservice.com/api';
 
