@@ -1,4 +1,4 @@
-@Library('PipelineLibs@0.3.x') _
+@Library(value='PipelineLibs@0.6.0', changelog=False) _
 
 def p
 
@@ -25,15 +25,11 @@ pipeline {
         stage('checkout source') {
             steps {
                 script {
-                    // clone to get the pipeline.yml file
-                    checkout scm
+                    // clone the repo
+                    pipelineUtils.cloneGitRepo()
                 }
                 script {
                     p = pipelineCfg()
-                }
-                script {
-                    // do another clone with the correct branch behavior
-                    pipelineUtils.gitHubClone(p.repoPath)
                 }
             }
         }
@@ -41,6 +37,7 @@ pipeline {
             steps {
                 script {
                     pipelineUtils.setUpPythonVirtualEnv()
+                    pipelineUtils.pipInstall('--only-binary=bumpversion bumpversion==0.5.3')
                 }
             }
         }
@@ -68,7 +65,7 @@ pipeline {
         stage('push to git') {
             steps {
                 script {
-                    pipelineUtils.pushToGitHub(p.repoPath)
+                    pipelineUtils.pushToGitRepo(p.gitRepoUrl, p.gitRepoCredentialsId)
                 }
             }
         }
