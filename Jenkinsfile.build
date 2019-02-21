@@ -65,6 +65,9 @@ pipeline {
         stage('push to git') {
             steps {
                 script {
+                    if ("${params.BUILD_TYPE}" == "releases") {
+                        pipelineUtils.bumpVersion()
+                    }
                     pipelineUtils.pushToGitRepo(p.gitRepoUrl, p.gitRepoCredentialsId)
                 }
             }
