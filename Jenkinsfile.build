@@ -1,4 +1,4 @@
-@Library(value='PipelineLibs@0.6.1', changelog=False) _
+@Library(value='PipelineLibs@0.6.1', changelog=false) _
 
 def p
 
@@ -29,7 +29,7 @@ pipeline {
                     pipelineUtils.cloneGitRepo()
                 }
                 script {
-                    p = pipelineCfg()
+                    p = pipelineCfg('pipeline.yml')
                 }
             }
         }
