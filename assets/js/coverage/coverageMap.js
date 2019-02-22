@@ -1,4 +1,4 @@
-import has from 'lodash/object/has';
+import has from 'lodash/has';
 
 import coverageMapPopup from '../hbTemplates/coverageMapPopup.hbs';
 
