@@ -5,7 +5,7 @@ gitlabPath: "wma/docker/wqp"
 # name of the docker image
 dockerImageName: "wqp_ui"
 # type of build
-repoPath: "NWQMC/WQP_UI"
+gitRepoUrl: "https://github.com/NWQMC/WQP_UI.git"
 # name of the deploy job to trigger
 deployJobName: "wqp-ui-deploy"
 # name of the project
@@ -23,3 +23,5 @@ containerPort: 5050
 healthCheck: "/robots.txt"
 # string parameter that tells the ALB how to route requests to the containers (e.g. /my-app/*); this forms a listener rule for the load balancer
 contextPath: "/*"
+# the Jenkins credential ID to be use when pushing commits
+gitRepoCredentialsId: "Jenkins-GitHub-Read-Write-Token"
