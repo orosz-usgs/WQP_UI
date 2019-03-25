@@ -34,7 +34,7 @@
     "watch:js": "mkdir -p dist/scripts && npm run build:vendorjs && rollup -c --watch"
   },
   "engines": {
-    "node": "10.13.0"
+    "node": "10.15.1"
   },
   "repository": {
     "type": "git",
