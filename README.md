@@ -31,6 +31,24 @@ Geoserver Proxy requires a Geoserver URL. Example `local.env` file:
 
 ```
 WQP_MAP_GEOSERVER_ENDPOINT=<url to Geoserver>
+SITES_MAP_GEOSERVER_ENDPOINT=<url to ogcproxy>
+SLD_ENDPOINT=<url to SLD endpoint>
+CODES_ENDPOINT=<url to lookup codes endpoint>
+SEARCH_QUERY_ENDPOINT=<url to search query endpoint - should add with '/'
+PUBLIC_SRSNAMES_ENDPOINT=<url to public srsnames endpoint>
+NLDI_SERVICES_ENDPOINT=<url to NLDI>
+```
+
+In addition are the following optional environment variables that may be used:
+```
+WSGI_STR=<this string will be removed when using really URLS. Defaults to empty string
+GA_TRACKING_CODE=<google analytics code, defaults to empty string
+NLDI_DISABLED=<include this if NLDI feature should be disabled>
+REDIS_CONFIG=<Should be in form: db:password@host:port or absent>
+CACHE_TIMEOUT=<integer timeout or don't include to have no timeout>
+ROBOTS_WELCOME=<include if you want to allow robot crawling>
+LOCAL_BASE_URL=<only needed if url mapping requires it>
+
 ```
 
 ```bash
@@ -62,7 +80,8 @@ docker-compose run assets npm test
 Application configuration may be specified by creating an instance config in
 `server/instance/config.py`. This configuration augments the default one.
 The make devenv target will copy a sample, `server/instance/config.py.sample`,
-as a convenience. You will need to edit this to set `WQP_MAP_GEOSERVER_ENDPOINT`.
+as a convenience if one doesn't exist. By default these will point to production services.
+You will need to fill in the url for the geoserver endpoint, WQP_MAP_GEOSERVER_ENDPOINT
 
 ### Install dependencies
 
