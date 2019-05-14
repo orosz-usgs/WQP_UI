@@ -1,4 +1,4 @@
-FROM node:10.13-stretch
+FROM node:10.15-stretch
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     firefox-esr && \

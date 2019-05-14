@@ -34,7 +34,7 @@
     "watch:js": "mkdir -p dist/scripts && npm run build:vendorjs && rollup -c --watch"
   },
   "engines": {
-    "node": "10.15.1"
+    "node": "10.15.3"
   },
   "repository": {
     "type": "git",
@@ -73,7 +73,7 @@
     "rollup-plugin-handlebars-plus": "^0.2.3",
     "rollup-plugin-istanbul": "^2.0.1",
     "rollup-plugin-json": "^4.0.0",
-    "rollup-plugin-node-resolve": "^4.2.3",
+    "rollup-plugin-node-resolve": "^4.2.4",
     "rollup-plugin-replace": "^2.1.1",
     "rollup-plugin-uglify": "^6.0.2",
     "sinon": "7.3.2",

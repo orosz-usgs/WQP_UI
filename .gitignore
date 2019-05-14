@@ -65,6 +65,7 @@ target/
 .sublimelinterrc
 *.sublime-project
 *.sublime-workspace
+.DS_Store
 
 /server/wqp/static/
 /server/instance/
