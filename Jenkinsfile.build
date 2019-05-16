@@ -37,14 +37,14 @@ pipeline {
             steps {
                 script {
                     pipelineUtils.setUpPythonVirtualEnv()
-                    pipelineUtils.pipInstall('--only-binary=bumpversion bumpversion==0.5.3')
+                    pipelineUtils.pipInstall('--only-binary=bumpversion bumpversion==0.5.3 requests')
                 }
             }
         }
         stage('build assets docker image') {
             steps {
                 script {
-                    pipelineUtils.buildDockerImage('wqp_assets', '.', './assets/Dockerfile')
+                    pipelineUtils.buildDockerImage('wqp_assets', './assets')
                 }
             }
         }
