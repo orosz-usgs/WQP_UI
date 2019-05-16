@@ -18,26 +18,26 @@ PROJECT_HOME = os.path.dirname(__file__)
 # Points to the geoserver endpoint you want to use.
 WQP_MAP_GEOSERVER_ENDPOINT = os.environ.get('WQP_MAP_GEOSERVER_ENDPOINT')
 
-SITES_MAP_GEOSERVER_ENDPOINT = os.environ.get('SITES_MAP_GEOSERVER_ENDPOINT', 'https://www.waterqualitydata.us/ogcservices')
+SITES_MAP_GEOSERVER_ENDPOINT = os.environ.get('SITES_MAP_GEOSERVER_ENDPOINT')
 
 # Points to the sld endpoint you want to use.
-SLD_ENDPOINT = os.environ.get('SLD_ENDPOINT', 'http://www.waterqualitydata.us/Summary')
+SLD_ENDPOINT = os.environ.get('SLD_ENDPOINT')
 
 # Points to the codes endpoint
-CODES_ENDPOINT = os.environ.get('CODES_ENDPOINT', 'https://www.waterqualitydata.us/Codes')
+CODES_ENDPOINT = os.environ.get('CODES_ENDPOINT')
 
 # Points to the query endpoint. Does not include the type of data or 'search' part of the endpoint
 SEARCH_QUERY_ENDPOINT = os.environ.get('SEARCH_QUERY_ENDPOINT', 'https://www.waterqualitydata.us/')
 
 # Points to the public srsnames endpoint you want to use.
-PUBLIC_SRSNAMES_ENDPOINT = os.environ.get('PUBLIC_SRSNAMES_ENDPOINT', 'https://www.waterqualitydata.us/Services/public_srsnames/')
+PUBLIC_SRSNAMES_ENDPOINT = os.environ.get('PUBLIC_SRSNAMES_ENDPOINT')
 
 HYDRO_LAYER_ENDPOINT = 'https://tiles.arcgis.com/tiles/P3ePLMYs2RVChkJx/arcgis/rest/services/Esri_Hydro_Reference_Overlay/MapServer'
 NHDPLUS_FLOWLINE_ENDPOINT = 'https://cida.usgs.gov/nwc/geoserver/gwc/service/wms'
 NHDPLUS_FLOWLINE_LAYER_NAME = 'nhdplus:nhdflowline_network'
 
 # Points to the endpoint which returns flow lines and sites for a comid
-NLDI_SERVICES_ENDPOINT = os.environ.get('NLDI_SERVICES_ENDPOINT', 'https://cida.usgs.gov/nldi/')
+NLDI_SERVICES_ENDPOINT = os.environ.get('NLDI_SERVICES_ENDPOINT')
 
 NWIS_SITES_SERVICE_ENDPOINT = 'https://waterservices.usgs.gov/nwis/site/'
 NWIS_SITES_INVENTORY_ENDPOINT = 'https://waterdata.usgs.gov/nwis/inventory'
@@ -86,9 +86,6 @@ CACHE_TIMEOUT = int(os.environ.get('CACHE_TIMEOUT')) if 'CACHE_TIMEOUT' in os.en
 
 # For robots.txt
 ROBOTS_WELCOME = 'ROBOTS_WELCOME' in os.environ
-
-# For provider pages
-PROVIDER_PAGES = 'PROVIDER_PAGES' in os.environ
 
 # Set the local base url, this deals with the weird way we do wsgi around here
 LOCAL_BASE_URL = os.environ.get('LOCAL_BASE_URL', '')
