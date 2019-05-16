@@ -25,4 +25,4 @@ healthCheck: "/robots.txt"
 contextPath: "/*"
 # the Jenkins credential ID to be use when pushing commits
 gitRepoCredentialsId: "Jenkins-GitHub-Read-Write-Token"
-dockerfile: "./server/Dockerfile"
+buildContext: "./server"
