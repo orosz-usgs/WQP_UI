@@ -37,7 +37,7 @@ pipeline {
             steps {
                 script {
                     pipelineUtils.setUpPythonVirtualEnv()
-                    pipelineUtils.pipInstall('--only-binary=bumpversion bumpversion==0.5.3')
+                    pipelineUtils.pipInstall('--only-binary=bumpversion bumpversion==0.5.3 requests')
                 }
             }
         }
@@ -51,14 +51,8 @@ pipeline {
         stage('build server docker image') {
             steps {
                 script {
-                    dockerPipeline.buildDockerArtifact(p.artifactoryPath, p.gitlabPath, p.dockerImageName, './server')
-                }
-            }
-        }
-        stage('publish docker images') {
-            steps {
-                script {
-                    dockerPipeline.publishDockerImages(p.artifactoryPath, p.gitlabPath)
+                    version = pipelineUtils.bumpVersion(params.BUILD_TYPE)
+                    dockerPipeline.buildPublishAndCleanUpOneDockerImage(p, version)
                 }
             }
         }
@@ -66,17 +60,7 @@ pipeline {
             steps {
                 script {
                     if ("${params.BUILD_TYPE}" == "releases") {
-                        pipelineUtils.bumpVersion()
-                    }
-                    pipelineUtils.pushToGitRepo(p.gitRepoUrl, p.gitRepoCredentialsId)
-                }
-            }
-        }
-        stage('kick off deploy job') {
-            steps {
-                script {
-                    if (p.containsKey('deployJobName')) {
-                        pipelineUtils.triggerDeployJob(p.deployJobName)
+                        pipelineUtils.pushToGitRepo(p.gitRepoUrl, p.gitRepoCredentialsId)
                     }
                 }
             }
