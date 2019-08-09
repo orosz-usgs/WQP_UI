@@ -176,7 +176,7 @@ export default class DownloadFormView {
         let $inputs = this.$form.find(':input[name]');
         $inputs.change(() => {
             const queryParamArray = this.getQueryParamArray();
-            const queryString = getQueryString(queryParamArray, ['zip']);
+            const queryString = getQueryString(queryParamArray, ['zip', 'csrf_token']);
             window.location.hash = `#${queryString}`;
 
             $shareText.val(window.location.href);
