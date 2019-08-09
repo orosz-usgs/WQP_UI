@@ -7,6 +7,7 @@ from authlib.flask.client import OAuth
 from celery import Celery
 from celery.signals import after_setup_task_logger
 from flask import Flask, jsonify, request
+from flask_wtf.csrf import CSRFProtect
 from flask_swagger import swagger
 from requests import Session
 from whitenoise import WhiteNoise
@@ -90,6 +91,8 @@ if app.config.get('LOGGING_ENABLED'):
     # global/worker logs are handled by the celeryd process running the VM
     # this configures a handler for the task logger:
     after_setup_task_logger.connect(_custom_celery_handler)
+
+csrf = CSRFProtect(app)
 
 
 @app.before_request

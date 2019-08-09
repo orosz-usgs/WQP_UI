@@ -14,6 +14,7 @@
                         {% endif %}
                         "
         >
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <button type="button" class="btn reset-button">Reset form</button>
             <div class="panel panel-default" id="location-parameters">
                 <div class="panel-heading">

@@ -12,7 +12,7 @@ import redis
 
 from ..auth.views import authentication_required_when_configured
 
-from .. import app, session, oauth
+from .. import app, session, csrf
 from ..utils import pull_feed, geoserver_proxy_request, retrieve_providers, retrieve_organizations, \
     get_site_key, retrieve_organization, retrieve_sites_geojson, retrieve_site, retrieve_county, \
     generate_redis_db_number, create_request_resp_log_msg, create_redis_log_msg, invalid_usgs_view
@@ -178,6 +178,9 @@ def public_srsnames():
     return render_template('public_srsnames.html', status_code=resp.status_code, content=resp.json())
 
 
+# Exempting this from CSRF because it is intended for use with WQP internal.
+# We may want to revisit if/when internal is resurrected
+@csrf.exempt
 @portal_ui.route('/wqp_download/<op>', methods=['POST'])
 def wqp_download_proxy(op):
     '''
