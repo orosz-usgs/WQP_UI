@@ -62,7 +62,7 @@ between 768px and 992px
 form' button was pressed
 
 [Unreleased]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.13.0...master
-[5.13.0]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.11.0...WQP_UI-5.13.0
+[5.13.0]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.12.0...WQP_UI-5.13.0
 [5.12.0]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.11.0...WQP_UI-5.12.0
 [5.11.0]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.10.0...WQP_UI-5.11.0
 [5.10.0]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.9.0...WQP_UI-5.10.0
