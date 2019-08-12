@@ -1,6 +1,6 @@
 {
   "name": "wqp_ui",
-  "version": "1.0.0",
+  "version": "5.13.0",
   "description": "Water Quality Portal",
   "main": "index.js",
   "directories": {
