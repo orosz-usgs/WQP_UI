@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [5.13.0]
 ### Fixed
 - Add CSRF protection to Contact Us and Portal pages.
 
@@ -60,7 +61,8 @@ between 768px and 992px
 - An issue that affected the ability to add some query parameters to the 'web calls' on the portal page after the 'Reset
 form' button was pressed
 
-[Unreleased]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.12.0...master
+[Unreleased]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.13.0...master
+[5.13.0]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.12.0...WQP_UI-5.13.0
 [5.12.0]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.11.0...WQP_UI-5.12.0
 [5.11.0]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.10.0...WQP_UI-5.11.0
 [5.10.0]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.9.0...WQP_UI-5.10.0
