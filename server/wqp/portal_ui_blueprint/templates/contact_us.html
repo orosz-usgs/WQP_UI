@@ -26,6 +26,7 @@
             <a href="mailto:STORET@epa.gov">STORET@epa.gov</a>.
             </p>
             <form action="mailto:STORET@epa.gov?subject=Water Quality Portal question/comments" enctype="text/plain" method="post" name="wqpform">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <table class="form-table">
                   <tr>
                     <th><label for="name">Name:</label></th>
