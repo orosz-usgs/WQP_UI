@@ -141,7 +141,11 @@ def site_feature_generator(iter_lines):
     found_header = False
     headers = []
     while not found_header:
-        line = next(iter_lines)
+        try:
+            line = next(iter_lines)
+        except StopIteration as e:
+            app.logger.warning('Received an empty rdb response')
+            return
         if line[0] != '#':
             headers = line.split('\t')
             try:
