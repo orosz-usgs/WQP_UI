@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 
-
 {% block title %}{{ site['MonitoringLocationName'] }} ({{ site['MonitoringLocationIdentifier'] }}) site data in the {{ super }}{% endblock %}
 
 {% block meta_tags %}
@@ -15,12 +14,7 @@
     ">
 {% endblock %}
 
-{% block page_style %}
-    <link rel="stylesheet" href="{{ 'site.css' | asset_url }}">
-{% endblock %}
-
 {% block page_content %}
-
     <p>
         <a href="{{ url_for('portal_ui.home-canonical') }}">WQP Home</a> > <a href="{{ url_for('portal_ui.uri_base') }}">Providers</a> > <a href="{{ url_for('portal_ui.uri_provider',provider_id=provider) }}">{{ provider }}</a> > <a href="{{ url_for('portal_ui.uri_organization',provider_id=provider, organization_id=organization) }}">{{ organization }}</a>
          > <a href="{{ url_for('portal_ui.uri_site',provider_id=provider, organization_id=organization, site_id=site_id) }}">{{ site_id }}</a>
@@ -77,7 +71,7 @@
     <p> This map shows all Water Quality Portal stations that are 10 miles upstream (dashed dark blue) and 10 miles downstream (solid light blue) of this monitoring location (indicated by the large blue circle).
         The upstream and downstream functionality is provided by the National Linked Data Index, part of the <a title="Link to ACWI Open Water Data Initiative page" href="http://acwi.gov/spatial/owdi/">Open Water Data Initiative</a>.
     </p>
-    <div id="sites_map"></div>
+    <div id="site-map"></div>
 
     <h2>Detailed Metadata</h2>
     <p>For the definitions of the metadata elements, please go to the Water Quality Portal <a href="{{ url_for('portal_ui.portal_userguide-canonical') }}">user guide</a> </p>

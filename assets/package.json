@@ -13,7 +13,6 @@
     "test:watch": "mkdir -p dist/scripts && run-p build:vendorjs && karma start --debug --no-single-run",
     "build": "run-p build:* && npm run hash-assets",
     "build:css": "run-p buildcss:*",
-    "buildcss:site": "lessc less/site.less > dist/site.css && uglifycss --output dist/site.css dist/site.css && postcss dist/site.css --no-map --use autoprefixer -o dist/site.css",
     "buildcss:theme_usgs": "lessc less/usgs_theme/custom.less > dist/nwis_qw_custom.css && uglifycss --output dist/nwis_qw_custom.css dist/nwis_qw_custom.css && postcss dist/nwis_qw_custom.css --no-map --use autoprefixer -o dist/nwis_qw_custom.css",
     "buildcss:wqp_theme": "lessc less/wqp_theme/custom.less > dist/custom.css && uglifycss --output dist/custom.css dist/custom.css && postcss dist/custom.css --no-map --use autoprefixer -o dist/custom.css",
     "buildcss:vendor": "lessc less/vendor.less > dist/vendor.css && uglifycss --output dist/vendor.css dist/vendor.css && postcss dist/vendor.css --no-map --use autoprefixer -o dist/vendor.css",

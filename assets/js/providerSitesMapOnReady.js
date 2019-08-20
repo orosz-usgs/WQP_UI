@@ -2,5 +2,5 @@ import sitesMap from './providerSitesMap';
 
 
 $(document).ready(function() {
-    sitesMap({mapDivId: 'sites_map', mapZoom: 3});
+    sitesMap({mapDivId: 'sites-map', mapZoom: 3});
 });
