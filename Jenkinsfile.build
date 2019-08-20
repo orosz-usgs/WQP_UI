@@ -60,6 +60,7 @@ pipeline {
             steps {
                 script {
                     if ("${params.BUILD_TYPE}" == "releases") {
+                        pipelineUtils.incrementToNextDevelopmentVersion()
                         pipelineUtils.pushToGitRepo(p.gitRepoUrl, p.gitRepoCredentialsId)
                     }
                 }
