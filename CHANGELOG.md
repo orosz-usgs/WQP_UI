@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- Issue when using hashed assets on the provider pages.
 
 ## [5.13.0]
 ### Fixed
