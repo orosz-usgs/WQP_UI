@@ -19,6 +19,6 @@ gulp.task('revall', function () {
             includeFilesInManifest: ['.css', '.js', '.ico', '.svg', '.png']
         }))
         .pipe(gulp.dest('dist'))
-        .pipe(RevAll.manifestFile({fileName: 'manifest.json'}))
+        .pipe(RevAll.manifestFile())
         .pipe(gulp.dest('dist'));
 });
