@@ -143,7 +143,7 @@ def site_feature_generator(iter_lines):
     while not found_header:
         try:
             line = next(iter_lines)
-        except StopIteration as e:
+        except StopIteration:
             app.logger.warning('Received an empty rdb response')
             return
         if line[0] != '#':
