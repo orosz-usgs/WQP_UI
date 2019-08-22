@@ -23,6 +23,7 @@ const nwisSitesFeatureSource = {
     text : 'Active NWIS stream gages',
     mapLayer : L.tileLayer.wms(Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wms', {
         layers: 'qw_portal_map:nwis_sites',
+        styles: 'nwis_sites',
         format : 'image/png',
         transparent : true,
         zIndex : 20
