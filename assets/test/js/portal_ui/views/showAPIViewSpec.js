@@ -74,5 +74,34 @@ describe('Tests for ShowAPIViewSpec', function() {
         expect($('#curl-query-div textarea').html()).toContain('{"dataProfile":"narrow","Testparam1":"value1","Testparam2":"value2"}');
         expect($('#getfeature-query-div textarea').html()).toContain('SEARCHPARAMS=' + encodeURIComponent('Testparam1:value1;Testparam2:value2'));
     });
+
+    it('expect that clicking on the show-queries-button will not show the csrf_token parameter in any service call.', function() {
+        let testView;
+        let mockGetQueryParamArray;
+        let mockGetResultType;
+
+        mockGetQueryParamArray = jasmine.createSpy('mockGetQueryParamArray').and.returnValue([
+            {name: 'dataProfile', value: 'narrow'},
+            {name : 'Testparam1', value : 'value1'},
+            {name : 'Testparam2', value : 'value2'},
+            {name : 'zip', value : 'fakeZipValue'},
+            {name : 'mimeType', value : 'fakeMimeType'},
+            {name : 'csrf_token', value : 'fakeCSRFToken'}
+        ]);
+
+        mockGetResultType = jasmine.createSpy('mockGetResultType').and.returnValue('Result');
+
+        testView = new ShowAPIView({
+            $container : $testDiv,
+            getQueryParamArray : mockGetQueryParamArray,
+            getResultType: mockGetResultType
+        });
+        testView.initialize();
+        $('#show-queries-button').trigger('click');
+
+        expect($('#query-div textarea').html()).not.toContain('csrf_token=fakeCSRFToken');
+        expect($('#curl-query-div textarea').html()).not.toContain('csrf_token=fakeCSRFToken');
+        expect($('#getfeature-query-div textarea').html()).not.toContain('csrf_token=fakeCSRFToken');
+    });
 });
 

@@ -28,18 +28,17 @@ export default class ShowAPIView {
         const showServiceCallsHandler = () => {
             let resultType = this.getResultType();
             let queryParamArray = this.getQueryParamArray();
+            const queryParamsWithoutCSRFToken = queryParamArray.filter( param => param.name !== 'csrf_token' );
 
-            let apiQueryString = queryService.getFormUrl(resultType, getQueryString(queryParamArray));
-            let curlString = getCurlString(resultType, queryParamArray);
+            let apiQueryString = queryService.getFormUrl(resultType, getQueryString(queryParamsWithoutCSRFToken));
+            let curlString = getCurlString(resultType, queryParamsWithoutCSRFToken);
 
             $apiQueryDiv.show();
             $apiQueryTitle.html(resultType.replace(/([A-Z])/g, ' $1'));
             $apiQueryText.html(apiQueryString);
             $curlText.html(curlString);
 
-            let queryWithoutDataProfileArray = queryParamArray.filter((param) => {
-               return param.name !== 'dataProfile';
-            });
+            let queryWithoutDataProfileArray = queryParamsWithoutCSRFToken.filter( param => param.name !== 'dataProfile' );
             $wfsText.html(L.WQPSitesLayer.getWfsGetFeatureUrl(queryWithoutDataProfileArray));
         };
 
