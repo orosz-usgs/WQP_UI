@@ -15,7 +15,7 @@ from whitenoise import WhiteNoise
 from .flask_swagger_blueprint import get_swaggerui_blueprint
 
 
-__version__ = '5.16.0'
+__version__ = '5.17.0dev'
 
 
 def _create_log_handler(log_dir=None, log_name=__name__):
