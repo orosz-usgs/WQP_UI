@@ -48,6 +48,7 @@ export default class SiteMap {
         });
         const nwisSitesLayer = L.tileLayer.wms(Config.WQP_MAP_GEOSERVER_ENDPOINT + 'wms', {
             layers: 'qw_portal_map:nwis_sites',
+            styles: 'nwis_sites',
             format: 'image/png',
             transparent: true,
             zIndex: NWIS_SITES_LAYER_Z_INDEX
