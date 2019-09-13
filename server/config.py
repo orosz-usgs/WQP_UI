@@ -40,7 +40,7 @@ NHDPLUS_FLOWLINE_LAYER_NAME = 'nhdplus:nhdflowline_network'
 NLDI_SERVICES_ENDPOINT = os.environ.get('NLDI_SERVICES_ENDPOINT')
 
 NWIS_SITES_SERVICE_ENDPOINT = 'https://waterservices.usgs.gov/nwis/site/'
-NWIS_SITES_INVENTORY_ENDPOINT = 'https://waterdata.usgs.gov/nwis/inventory'
+NWIS_SITES_INVENTORY_ENDPOINT = 'https://waterdata.usgs.gov/monitoring-location/'
 
 GEO_SEARCH_API_ENDPOINT = 'https://txdata.usgs.gov/search_api/1.1/services.ashx/search'
 

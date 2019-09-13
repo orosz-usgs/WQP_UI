@@ -49,7 +49,7 @@ class TestGetSiteFeature(TestCase):
             'SiteTypeCode': 'ST',
             'SiteType': 'Stream',
             'siteId' : 'USGS-12345',
-            'url': 'https://waterdata.usgs.gov/nwis/inventory?agency_code=USGS&site_no=12345'
+            'url': 'https://waterdata.usgs.gov/nwis/monitoring-location/12345'
         }
         result = geojson_loads(geojson_dumps(get_site_feature(station)))
 

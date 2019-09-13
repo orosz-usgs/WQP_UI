@@ -119,9 +119,7 @@ def get_site_feature(station):
             }
             properties['siteId'] = '{0}-{1}'.format(properties['agencyCode'], properties['siteNumber'])
             properties['SiteType'] = SITE_TYPES_MAPPING.get(properties['SiteTypeCode'], '')
-            properties['url'] = '{0}?agency_code={1}&site_no={2}'.format(NWIS_SITES_INVENTORY_ENDPOINT,
-                                                                         properties['agencyCode'],
-                                                                         properties['siteNumber'])
+            properties['url'] = '{0}{1}'.format(NWIS_SITES_INVENTORY_ENDPOINT, properties['siteNumber'])
 
             feature = Feature(geometry=Point((x2, y2)), properties=properties)
     else:
