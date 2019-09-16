@@ -52,7 +52,6 @@ pipeline {
             steps {
                 script {
                     version = pipelineUtils.bumpVersion(params.BUILD_TYPE)
-                    dockerPipeline.buildPublishAndCleanUpOneDockerImage(p, version)
                 }
             }
         }
@@ -65,6 +64,11 @@ pipeline {
                     }
                 }
             }
+        }
+        stage('deploy images') {
+            buildConfigs = p['docker_build'] ?: [p]
+            deployConfigs = buildPublishAndCleanUpDockerImages(buildConfigs, version)
+            deployImages(deployConfigs)
         }
     }
 }
