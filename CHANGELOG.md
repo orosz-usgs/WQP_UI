@@ -4,24 +4,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [Unreleased](https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.14.0...master)
 ### Fixed
 - Removed CSRF tokens from web service calls.
 
-## [5.14.0]
+### Changed
+- Updated url that is in the sites service to point at the new monitoring-location pages
+
+## [5.14.0](https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.13.0...WQP_UI-5.14.0)
 ### Fixed
 - Issue when using hashed assets on the provider pages.
 
-## [5.13.0]
+## [5.13.0](https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.12.0...WQP_UI-5.13.0)
 ### Fixed
 - Add CSRF protection to Contact Us and Portal pages.
 
-## [5.12.0]
+## [5.12.0](https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.11.0...WQP_UI-5.12.0)
 ### Added
 - Environment-driven application configuration.
 - Jenkins build and deployment
 
-## [5.11.0]
+## [5.11.0](https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.10.0...WQP_UI-5.11.0)
 ### Added
 - Docker configuration for the application.
 - Radio button for selecting Biological Metric Download form.
@@ -29,14 +32,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - Add nanobar.js to vendor.js so that it is loaded in the manage_cache page.
 
-## [5.10.0]
+## [5.10.0](https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.9.0...WQP_UI-5.10.0)
 ### Changed
 - Updated python dependencies
 - Activity download uses a dataProfile in order to get all of the columns.
 - Identify dialog now uses a Leaflet popup for all screen sizes and the form within the dialog has
 been eliminated in favor of a Populate Form button which populates the form within the portal page.
 
-## [5.9.0]
+## [5.9.0](https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.8.0...WQP_UI-5.9.0)
 ### Added
 - New npm script that can be used to run the static server using https
 - Handles 401 or 403 status from ajax calls and informs user that they need to reload the page.
@@ -51,7 +54,7 @@ been eliminated in favor of a Populate Form button which populates the form with
 - All endpoints now do not allow a download when there is no data to download.
 - Bug that prevented portal page selects from working in Internet Explorer 11.
 
-## [5.8.0]
+## [5.8.0](https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.7.0...WQP_UI-5.8.0)
 ### Added
 - Copy to clipboard button that takes the current portal page URL that is the window below the button and puts it in
 the browser clipboard.
@@ -67,11 +70,3 @@ between 768px and 992px
 - An issue that affected the ability to add some query parameters to the 'web calls' on the portal page after the 'Reset
 form' button was pressed
 
-[Unreleased]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.14.0...master
-[5.14.0]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.13.0...WQP_UI-5.14.0
-[5.13.0]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.12.0...WQP_UI-5.13.0
-[5.12.0]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.11.0...WQP_UI-5.12.0
-[5.11.0]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.10.0...WQP_UI-5.11.0
-[5.10.0]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.9.0...WQP_UI-5.10.0
-[5.9.0]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.8.0...WQP_UI-5.9.0
-[5.8.0]: https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.7.0...WQP_UI-5.8.0
