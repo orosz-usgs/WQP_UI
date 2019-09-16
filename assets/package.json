@@ -30,7 +30,7 @@
     "watch:fonts": "npm run build:fonts",
     "watch:templates": "npm run build:templates",
     "watch:images": "npm run build:images",
-    "watch:js": "mkdir -p dist/scripts && npm run build:vendorjs && rollup -c -watch"
+    "watch:js": "mkdir -p dist/scripts && npm run build:vendorjs && rollup -c --watch"
   },
   "engines": {
     "node": "10.16.3"
