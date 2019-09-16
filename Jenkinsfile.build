@@ -1,6 +1,7 @@
 @Library(value='PipelineLibs@2.0.3', changelog=false) _
 
 def p
+def deployConfigs
 
 pipeline {
     agent {
@@ -52,6 +53,8 @@ pipeline {
             steps {
                 script {
                     version = pipelineUtils.bumpVersion(params.BUILD_TYPE)
+                    buildConfigs = p['docker_build'] ?: [p]
+                    deployConfigs = dockerPipeline.buildPublishAndCleanUpDockerImages(buildConfigs, version)
                 }
             }
         }
@@ -65,10 +68,12 @@ pipeline {
                 }
             }
         }
-        stage('deploy images') {
-            buildConfigs = p['docker_build'] ?: [p]
-            deployConfigs = buildPublishAndCleanUpDockerImages(buildConfigs, version)
-            deployImages(deployConfigs)
+        stage('deploy image') {
+            steps {
+                script {
+                    dockerPipeline.deployImages(deployConfigs)
+                }
+            }
         }
     }
 }
