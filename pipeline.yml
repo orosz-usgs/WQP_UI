@@ -26,3 +26,6 @@ contextPath: "/*"
 # the Jenkins credential ID to be use when pushing commits
 gitRepoCredentialsId: "Jenkins-GitHub-Read-Write-Token"
 buildContext: "./server"
+# configuration repository paths
+configRepoPath: "wma/docker/wqp/wqp_ui"
+configCredentialsId: "wma-eto-eb-rsa"
