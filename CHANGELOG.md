@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased](https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.17.0...master)
+## Changed
+- Jenkins pipeline library was updated to use IOW specific library with new 
+configuration method.
 
 ## [5.17.0](https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.14.0...WQP_UI-5.17.0)
 ### Fixed
