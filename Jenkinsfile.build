@@ -42,6 +42,13 @@ pipeline {
                 }
             }
         }
+        stage('pull scripts') {
+            steps {
+                script {
+                    pipelineUtils.pullEcsScripts()
+                }
+            }
+        }
         stage('build assets docker image') {
             steps {
                 script {
