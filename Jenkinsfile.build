@@ -38,7 +38,7 @@ pipeline {
             steps {
                 script {
                     pipelineUtils.setUpPythonVirtualEnv()
-                    pipelineUtils.pipInstall('--only-binary=bumpversion bumpversion==0.5.3 requests')
+                    pipelineUtils.pipInstall('--only-binary=bumpversion bumpversion==0.5.3 requests boto3 pyyaml')
                 }
             }
         }
