@@ -4,7 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.17.0...master)
+## [Unreleased](https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.18.0...master)
+## Removed
+- Ability to click on a feature in the coverage mapper
+
+## [5.18.0](https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.17.0...WQP_UI-5.18.0)
 ## Changed
 - Jenkins pipeline library was updated to use IOW specific library with new 
 configuration method.
