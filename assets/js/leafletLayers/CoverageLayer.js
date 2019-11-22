@@ -125,7 +125,7 @@ L.CoverageLayer = L.TileLayer.WMS.extend({
                 typeNames: this.wmsParams.layers,
                 VIEWPARAMS: this.wmsParams.VIEWPARAMS,
                 outputFormat: 'application/json',
-                cql_filter : 'CONTAINS(GEOM, POINT (' + atLatLng.lat + ' ' + atLatLng.lng + '))'
+                cql_filter : 'CONTAINS(GEOM, SRID=4269;POINT (' + atLatLng.lat + ' ' + atLatLng.lng + '))'
             },
             success : function(resp) {
                 if (this.wmsParams.VIEWPARAMS.search(VIEWPARAMS_SOURCE.nwis) !== -1 ||
