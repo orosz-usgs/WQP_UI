@@ -69,7 +69,7 @@ export default class CoverageMap {
             }
             return result;
         }
-
+        /* Removing this temporarily. The WFS GetFeature call is not working properly with Postgres
         map.addSingleClickHandler((ev) => {
             var popup = L.popup().setLatLng(ev.latlng);
             var currentCursor = $mapDiv.css('cursor');
@@ -103,6 +103,7 @@ export default class CoverageMap {
                     $mapDiv.css('cursor', currentCursor);
                 });
         });
+        */
     }
 
     updateLegend() {
