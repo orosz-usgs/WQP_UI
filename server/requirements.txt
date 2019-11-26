@@ -1,5 +1,5 @@
-arrow==0.15.2
-Authlib==0.12.1
+arrow==0.15.4
+Authlib==0.13.0
 beautifulsoup4==4.8.1
 celery==4.3.0
 feedparser==5.2.1
@@ -7,8 +7,8 @@ Flask==1.1.1
 Flask-WTF==0.14.2
 flask-swagger==0.2.14
 geojson==2.5.0
-gunicorn[gevent]==19.9.0
-pyproj==2.4.0
+gunicorn[gevent]==20.0.3
+pyproj==2.4.1
 redis==3.3.11
 requests==2.22.0
 whitenoise==4.1.4
