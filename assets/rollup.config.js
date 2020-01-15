@@ -3,12 +3,12 @@
  * NOTE: This is a CommonJS module so it can be imported by Karma.
  */
 
-const buble = require('rollup-plugin-buble');
-const commonjs = require('rollup-plugin-commonjs');
+const buble = require('@rollup/plugin-buble');
+const commonjs = require('@rollup/plugin-commonjs');
 var handlebars = require('rollup-plugin-handlebars-plus');
-const json = require('rollup-plugin-json');
-const resolve = require('rollup-plugin-node-resolve');
-const replace = require('rollup-plugin-replace');
+const json = require('@rollup/plugin-json');
+const resolve = require('@rollup/plugin-node-resolve');
+const replace = require('@rollup/plugin-replace');
 const { uglify } = require('rollup-plugin-uglify');
 
 

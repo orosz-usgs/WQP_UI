@@ -5,7 +5,7 @@ RUN npm run build
 
 
 # Base off the community Python image
-FROM usgswma/python:debian-slim-stretch-python-3.6-24e21a7a7fc0ecea73ebfd36da71c320c3fb803d
+FROM usgswma/python:debian-slim-stretch-python-3.7
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential && \
