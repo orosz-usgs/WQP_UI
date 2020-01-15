@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## Removed
 - Ability to click on a feature in the coverage mapper
 
+## Changed
+-   Using latest tagged version of python 3.7 rather than 3.6.
+
 ## [5.18.0](https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.17.0...WQP_UI-5.18.0)
 ## Changed
 - Jenkins pipeline library was updated to use IOW specific library with new 
