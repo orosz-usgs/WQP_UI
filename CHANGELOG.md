@@ -5,9 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased](https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.20.0...master)
+### Changed
+-  Removed the ACWI branding.
 
 ## [5.20.0](https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.19.0...WQP_UI-5.20.0)
-## Changed
+### Changed
 -  Updated contact email
 
 ## [5.19.0](https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.18.0...WQP_UI-5.19.0)
