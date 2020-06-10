@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased](https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.20.0...master)
 ### Changed
--  Removed the ACWI branding.
+-   Removed the ACWI branding.
 
 ## [5.20.0](https://github.com/NWQMC/WQP_UI/compare/WQP_UI-5.19.0...WQP_UI-5.20.0)
 ### Changed
