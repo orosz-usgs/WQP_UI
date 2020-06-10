@@ -1,4 +1,4 @@
-@Library(value='iow-ecs-pipeline@1.0.0', changelog=false) _
+@Library(value='iow-ecs-pipeline@2.2.0', changelog=false) _
 
 def p
 def deployConfigs
@@ -6,7 +6,7 @@ def deployConfigs
 pipeline {
     agent {
         node {
-            label 'project:any'
+            label 'team:iow'
         }
     }
     parameters {
