@@ -11,7 +11,7 @@ deployJobName: "wqp-ui-deploy"
 # name of the project
 projectName: "wqp-external"
 # location of the Dockerfile
-buildContext: "./"
+buildContext: "./server/"
 # maximum amount of RAM for running Docker containers in the service
 memory: 512
 # name of the application or service
