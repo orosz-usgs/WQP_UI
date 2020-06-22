@@ -18,7 +18,7 @@ const getBundleConfig = function (src, dest) {
     return {
         input: src,
         plugins: [
-            resolve({
+            resolve.nodeResolve({
                 mainFields: ['module']
             }),
             json(),
